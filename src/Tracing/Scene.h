@@ -167,15 +167,13 @@ namespace Raycer
 			AmbientLight ambientLight;
 			std::vector<DirectionalLight> directionalLights;
 			std::vector<PointLight> pointLights;
-			std::vector<SpotLight> spotLights;
 
 			template <class Archive>
 			void serialize(Archive& ar)
 			{
 				ar(CEREAL_NVP(ambientLight),
 					CEREAL_NVP(directionalLights),
-					CEREAL_NVP(pointLights),
-					CEREAL_NVP(spotLights));
+					CEREAL_NVP(pointLights));
 			}
 
 		} lights;

@@ -202,13 +202,8 @@ Color Raytracer::calculateLightColor(const Scene& scene, const Ray& ray, const I
 	Color finalAmbientReflectance = material->ambientReflectance * mappedAmbientReflectance;
 	Color finalDiffuseReflectance = material->diffuseReflectance * mappedDiffuseReflectance;
 	Color finalSpecularReflectance = material->specularReflectance * mappedSpecularReflectance;
-
-	double ambientOcclusionAmount = 1.0;
-
-	if (scene.lights.ambientLight.enableAmbientOcclusion)
-		ambientOcclusionAmount = calculateAmbientOcclusionAmount(scene, intersection, generator);
-
-	lightColor += scene.lights.ambientLight.color * scene.lights.ambientLight.intensity * ambientOcclusionAmount * finalAmbientReflectance;
+	
+	lightColor += scene.lights.ambientLight.color * scene.lights.ambientLight.intensity * finalAmbientReflectance;
 
 	for (const DirectionalLight& light : scene.lights.directionalLights)
 	{
@@ -229,26 +224,6 @@ Color Raytracer::calculateLightColor(const Scene& scene, const Ray& ray, const I
 		distanceAttenuation = 1.0 - pow(distanceAttenuation, light.attenuation);
 
 		lightColor += pointLightColor * distanceAttenuation * (1.0 - shadowAmount);
-	}
-
-	for (const SpotLight& light : scene.lights.spotLights)
-	{
-		Vector3 directionToLight = (light.position - intersection.position);
-		double distanceToLight = directionToLight.length();
-		directionToLight.normalize();
-
-		Color spotLightColor = calculatePhongShadingColor(intersection.normal, directionToLight, directionToCamera, light, finalDiffuseReflectance, finalSpecularReflectance, material->shininess);
-		double shadowAmount = calculateShadowAmount(scene, ray, intersection, light, generator);
-		double distanceAttenuation = std::min(1.0, distanceToLight / light.maxDistance);
-		distanceAttenuation = 1.0 - pow(distanceAttenuation, light.attenuation);
-		double sideAttenuation = light.direction.dot(-directionToLight);
-
-		if (sideAttenuation > 0.0)
-		{
-			sideAttenuation = std::min(1.0, (1.0 - sideAttenuation) / (light.angle / 180.0));
-			sideAttenuation = 1.0 - pow(sideAttenuation, light.sideAttenuation);
-			lightColor += spotLightColor * distanceAttenuation * sideAttenuation * (1.0 - shadowAmount);
-		}
 	}
 
 	return lightColor;
@@ -293,39 +268,6 @@ Color Raytracer::calculateSimpleFogColor(const Scene& scene, const Intersection&
 	}
 
 	return Color::lerp(pixelColor, scene.simpleFog.color, t1);
-}
-
-double Raytracer::calculateAmbientOcclusionAmount(const Scene& scene, const Intersection& intersection, std::mt19937& generator)
-{
-	Sampler* sampler = samplers[scene.lights.ambientLight.ambientOcclusionSamplerType].get();
-	std::uniform_int_distribution<uint64_t> randomPermutation;
-	uint64_t permutation = randomPermutation(generator);
-
-	double ambientOcclusion = 0.0;
-	double distribution = scene.lights.ambientLight.ambientOcclusionSampleDistribution;
-	uint64_t n = scene.lights.ambientLight.ambientOcclusionSampleCountSqrt;
-
-	for (uint64_t y = 0; y < n; ++y)
-	{
-		for (uint64_t x = 0; x < n; ++x)
-		{
-			Vector3 sampleDirection = sampler->getHemisphereSample(intersection.onb, distribution, x, y, n, n, permutation, generator);
-
-			Ray sampleRay;
-			Intersection sampleIntersection;
-
-			sampleRay.origin = intersection.position + sampleDirection * scene.general.rayStartOffset;
-			sampleRay.direction = sampleDirection;
-			sampleRay.fastOcclusion = true;
-			sampleRay.maxDistance = scene.lights.ambientLight.ambientOcclusionMaxSampleDistance;
-			sampleRay.precalculate();
-
-			if (scene.bvh.intersect(sampleRay, sampleIntersection))
-				ambientOcclusion += 1.0;
-		}
-	}
-
-	return 1.0 - (ambientOcclusion / (double(n) * double(n)));
 }
 
 double Raytracer::calculateShadowAmount(const Scene& scene, const Ray& ray, const Intersection& intersection, const DirectionalLight& light)

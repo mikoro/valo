@@ -102,12 +102,18 @@ bool Triangle::intersect(const Ray& ray, Intersection& intersection) const
 
 	Vector3 finalNormal = material->normalInterpolation ? (w * normals[0] + u * normals[1] + v * normals[2]) : normal;
 
+	if (ray.direction.dot(finalNormal) > 0.0)
+		finalNormal = -finalNormal;
+
+	if (material->invertNormal)
+		finalNormal = -finalNormal;
+
 	intersection.wasFound = true;
 	intersection.distance = t;
 	intersection.position = ip;
-	intersection.normal = material->invertNormal ? -finalNormal : finalNormal;
+	intersection.normal = finalNormal;
 	intersection.texcoord = texcoord;
-	intersection.onb = ONB(tangent, bitangent, intersection.normal);
+	intersection.onb = ONB(tangent, bitangent, finalNormal);
 	intersection.material = material;
 
 	return true;

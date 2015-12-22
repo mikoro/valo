@@ -26,21 +26,10 @@ namespace Raycer
 
 	struct AmbientLight : public Light
 	{
-		bool enableAmbientOcclusion = false;
-		SamplerType ambientOcclusionSamplerType = SamplerType::CMJ;
-		uint64_t ambientOcclusionSampleCountSqrt = 0;
-		double ambientOcclusionMaxSampleDistance = 1.0;
-		double ambientOcclusionSampleDistribution = 1.0;
-
 		template <class Archive>
 		void serialize(Archive& ar)
 		{
-			ar(cereal::make_nvp("light", cereal::base_class<Light>(this)),
-				CEREAL_NVP(enableAmbientOcclusion),
-				CEREAL_NVP(ambientOcclusionSamplerType),
-				CEREAL_NVP(ambientOcclusionSampleCountSqrt),
-				CEREAL_NVP(ambientOcclusionMaxSampleDistance),
-				CEREAL_NVP(ambientOcclusionSampleDistribution));
+			ar(cereal::make_nvp("light", cereal::base_class<Light>(this)));
 		}
 	};
 
@@ -77,22 +66,6 @@ namespace Raycer
 				CEREAL_NVP(areaLightSamplerType),
 				CEREAL_NVP(areaLightSampleCountSqrt),
 				CEREAL_NVP(areaLightRadius));
-		}
-	};
-
-	struct SpotLight : public PointLight
-	{
-		Vector3 direction;
-		double angle = 45.0;
-		double sideAttenuation = 1.0;
-
-		template <class Archive>
-		void serialize(Archive& ar)
-		{
-			ar(cereal::make_nvp("light", cereal::base_class<PointLight>(this)),
-				CEREAL_NVP(direction),
-				CEREAL_NVP(angle),
-				CEREAL_NVP(sideAttenuation));
 		}
 	};
 }
