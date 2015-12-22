@@ -106,9 +106,7 @@ void DefaultState::update(double timeStep)
 	}
 
 	if (windowRunner.keyWasPressed(GLFW_KEY_SPACE))
-	{
 		scene.camera.stop();
-	}
 
 	if (windowRunner.keyWasPressed(GLFW_KEY_N))
 		scene.general.enableNormalMapping = !scene.general.enableNormalMapping;
@@ -118,6 +116,8 @@ void DefaultState::update(double timeStep)
 		if (scene.general.tracerType == TracerType::RAY)
 			scene.general.tracerType = TracerType::PATH;
 		else if (scene.general.tracerType == TracerType::PATH)
+			scene.general.tracerType = TracerType::PREVIEW;
+		else if (scene.general.tracerType == TracerType::PREVIEW)
 			scene.general.tracerType = TracerType::RAY;
 
 		tracer = Tracer::getTracer(scene.general.tracerType);
@@ -244,7 +244,9 @@ void DefaultState::render(double timeStep, double interpolation)
 	state.pixelStartOffset = 0;
 	state.pixelCount = state.filmWidth * state.filmHeight;
 
-	if (scene.general.tracerType == TracerType::RAY || (scene.general.tracerType == TracerType::PATH && scene.camera.isMoving()))
+	if (scene.general.tracerType == TracerType::RAY
+		|| scene.general.tracerType == TracerType::PREVIEW
+		|| (scene.general.tracerType == TracerType::PATH && scene.camera.isMoving()))
 	{
 		film.clear();
 		sampleCount = 0;
@@ -289,7 +291,6 @@ void DefaultState::resizeFilm()
 
     filmWidth = std::max(uint64_t(1), filmWidth);
     filmHeight = std::max(uint64_t(1), filmHeight);
-
 
 	film.resize(filmWidth, filmHeight);
 	filmRenderer.setFilmSize(filmWidth, filmHeight);

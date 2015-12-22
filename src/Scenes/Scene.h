@@ -43,6 +43,7 @@ namespace Raycer
 		std::string getXmlString() const;
 
 		void initialize();
+		bool intersect(const Ray& ray, Intersection& intersection) const;
 
 		static Scene createTestScene1();
 

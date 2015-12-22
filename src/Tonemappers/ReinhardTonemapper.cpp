@@ -7,6 +7,8 @@
 #include "Scenes/Scene.h"
 #include "Rendering/Image.h"
 #include "Rendering/Color.h"
+#include "App.h"
+#include "Settings.h"
 
 using namespace Raycer;
 
@@ -17,6 +19,8 @@ ReinhardTonemapper::ReinhardTonemapper()
 
 void ReinhardTonemapper::apply(const Scene& scene, const Image& inputImage, Image& outputImage)
 {
+	Settings& settings = App::getSettings();
+
 	const AlignedColorfVector& inputPixelData = inputImage.getPixelDataConst();
 	AlignedColorfVector& outputPixelData = outputImage.getPixelData();
 
@@ -50,7 +54,7 @@ void ReinhardTonemapper::apply(const Scene& scene, const Image& inputImage, Imag
 		}
 	}
 
-	if (scene.tonemapper.enableAveraging)
+	if (scene.tonemapper.enableAveraging && settings.general.interactive)
 	{
 		maxLuminanceAverage.setAlpha(scene.tonemapper.averagingAlpha);
 		maxLuminanceAverage.addMeasurement(maxLuminance);

@@ -280,3 +280,8 @@ void Scene::initialize()
 
 	log.logInfo("Scene initialization finished (time: %d ms)", milliseconds);
 }
+
+bool Scene::intersect(const Ray& ray, Intersection& intersection) const
+{
+	return bvh.intersect(ray, intersection);
+}

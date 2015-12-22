@@ -30,7 +30,7 @@ Color Raytracer::traceRecursive(const Scene& scene, const Ray& ray, Intersection
 	if (interrupted)
 		return finalColor;
 	
-	scene.bvh.intersect(ray, intersection);
+	scene.intersect(ray, intersection);
 
 	if (!intersection.wasFound)
 		return finalColor;
@@ -285,7 +285,7 @@ double Raytracer::calculateShadowAmount(const Scene& scene, const Ray& ray, cons
 	shadowRay.time = ray.time;
 	shadowRay.precalculate();
 
-	if (scene.bvh.intersect(shadowRay, shadowIntersection))
+	if (scene.intersect(shadowRay, shadowIntersection))
 		return 1.0;
 
 	return 0.0;
@@ -308,7 +308,7 @@ double Raytracer::calculateShadowAmount(const Scene& scene, const Ray& ray, cons
 		shadowRay.time = ray.time;
 		shadowRay.precalculate();
 
-		if (scene.bvh.intersect(shadowRay, shadowIntersection))
+		if (scene.intersect(shadowRay, shadowIntersection))
 			return 1.0;
 
 		return 0.0;
@@ -343,7 +343,7 @@ double Raytracer::calculateShadowAmount(const Scene& scene, const Ray& ray, cons
 			shadowRay.time = ray.time;
 			shadowRay.precalculate();
 
-			if (scene.bvh.intersect(shadowRay, shadowIntersection))
+			if (scene.intersect(shadowRay, shadowIntersection))
 				shadowAmount += 1.0;
 		}
 	}

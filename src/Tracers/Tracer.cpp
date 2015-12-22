@@ -6,6 +6,7 @@
 #include "Tracers/Tracer.h"
 #include "Tracers/Raytracer.h"
 #include "Tracers/Pathtracer.h"
+#include "Tracers/PreviewTracer.h"
 #include "Scenes/Scene.h"
 #include "Tracing/Ray.h"
 #include "Rendering/Color.h"
@@ -34,6 +35,7 @@ std::unique_ptr<Tracer> Tracer::getTracer(TracerType type)
 	{
 		case TracerType::RAY: return std::make_unique<Raytracer>();
 		case TracerType::PATH: return std::make_unique<Pathtracer>();
+		case TracerType::PREVIEW: return std::make_unique<PreviewTracer>();
 		default: throw std::runtime_error("Invalid tracer type");
 	}
 }

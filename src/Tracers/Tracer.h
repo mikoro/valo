@@ -20,7 +20,7 @@ namespace Raycer
 	class Color;
 	class Vector2;
 
-	enum class TracerType { RAY, PATH };
+	enum class TracerType { RAY, PATH, PREVIEW };
 
 	class Tracer
 	{

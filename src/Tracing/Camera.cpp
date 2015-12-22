@@ -101,7 +101,7 @@ void Camera::update(double timeStep)
 	double smoothVelocityLength = smoothVelocity.length();
 	double smoothAngularVelocityLength = smoothAngularVelocity.length();
 
-	if (smoothVelocityLength > 0.01)
+	if (smoothVelocityLength > 0.05 * cameraMoveSpeedModifier)
 		smoothAcceleration = settings.camera.moveDrag * (-smoothVelocity.normalized() * smoothVelocityLength);
 	else
 	{
@@ -109,7 +109,7 @@ void Camera::update(double timeStep)
 		smoothAcceleration = Vector3(0.0, 0.0, 0.0);
 	}
 
-	if (smoothAngularVelocityLength > 0.01)
+	if (smoothAngularVelocityLength > 0.05 * cameraMoveSpeedModifier)
 		smoothAngularAcceleration = settings.camera.mouseDrag * (-smoothAngularVelocity.normalized() * smoothAngularVelocityLength);
 	else
 	{

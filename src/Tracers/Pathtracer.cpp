@@ -31,7 +31,7 @@ Color Pathtracer::traceRecursive(const Scene& scene, const Ray& ray, uint64_t it
 		return Color::BLACK;
 
 	Intersection intersection;
-	scene.bvh.intersect(ray, intersection);
+	scene.intersect(ray, intersection);
 
 	if (!intersection.wasFound)
 		return Color::BLACK;

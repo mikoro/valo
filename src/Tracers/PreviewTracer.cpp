@@ -12,10 +12,35 @@ using namespace Raycer;
 
 Color PreviewTracer::trace(const Scene& scene, const Ray& ray, std::mt19937& generator, const std::atomic<bool>& interrupted)
 {
-	(void)scene;
-	(void)ray;
 	(void)generator;
 	(void)interrupted;
 
-	return Color();
+	Color finalColor = Color::BLACK;
+	Intersection intersection;
+
+	scene.intersect(ray, intersection);
+
+	if (!intersection.wasFound)
+		return finalColor;
+
+	const Material* material = intersection.material;
+
+	bool hasReflectance = !material->reflectance.isZero();
+
+	if (hasReflectance)
+	{
+		finalColor = material->reflectance;
+
+		if (material->reflectanceMapTexture != nullptr)
+			finalColor = material->reflectanceMapTexture->getColor(intersection.texcoord, intersection.position) * material->reflectanceMapTexture->intensity;
+	}
+	else
+	{
+		finalColor = material->diffuseReflectance;
+
+		if (material->diffuseMapTexture != nullptr)
+			finalColor = material->diffuseMapTexture->getColor(intersection.texcoord, intersection.position) * material->diffuseMapTexture->intensity;
+	}
+
+	return finalColor * std::abs(ray.direction.dot(intersection.normal));
 }
