@@ -82,6 +82,10 @@ namespace
 			{
 				currentMaterial.normalInterpolation = readDouble(line, lineIndex, part) != 0.0;
 			}
+			else if (part == "autoInvertNormal")
+			{
+				currentMaterial.autoInvertNormal = readDouble(line, lineIndex, part) != 0.0;
+			}
 			else if (part == "invertNormal")
 			{
 				currentMaterial.invertNormal = readDouble(line, lineIndex, part) != 0.0;

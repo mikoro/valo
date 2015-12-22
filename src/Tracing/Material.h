@@ -22,6 +22,7 @@ namespace Raycer
 		bool skipLighting = false;
 		bool nonShadowing = false;
 		bool normalInterpolation = false;
+		bool autoInvertNormal = true;
 		bool invertNormal = false;
 		bool fresnelReflection = false;
 		bool attenuating = false;
@@ -71,6 +72,7 @@ namespace Raycer
 				CEREAL_NVP(skipLighting),
 				CEREAL_NVP(nonShadowing),
 				CEREAL_NVP(normalInterpolation),
+				CEREAL_NVP(autoInvertNormal),
 				CEREAL_NVP(invertNormal),
 				CEREAL_NVP(fresnelReflection),
 				CEREAL_NVP(attenuating),

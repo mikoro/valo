@@ -61,12 +61,13 @@ namespace Raycer
 			bool freeLook;
 			bool smoothMovement;
 			double moveSpeed;
-			double moveDrag;
 			double mouseSpeed;
+			double moveDrag;
 			double mouseDrag;
-			double slowModifier;
-			double fastModifier;
-			double veryFastModifier;
+			double autoStopSpeed;
+			double slowSpeedModifier;
+			double fastSpeedModifier;
+			double veryFastSpeedModifier;
 		} camera;
 	};
 }

@@ -40,16 +40,6 @@ void Camera::reset()
 	smoothAngularAcceleration = Vector3(0.0, 0.0, 0.0);
 }
 
-void Camera::stop()
-{
-	velocity = Vector3(0.0, 0.0, 0.0);
-	smoothVelocity = Vector3(0.0, 0.0, 0.0);
-	smoothAcceleration = Vector3(0.0, 0.0, 0.0);
-	angularVelocity = Vector3(0.0, 0.0, 0.0);
-	smoothAngularVelocity = Vector3(0.0, 0.0, 0.0);
-	smoothAngularAcceleration = Vector3(0.0, 0.0, 0.0);
-}
-
 void Camera::update(double timeStep)
 {
 	WindowRunner& windowRunner = App::getWindowRunner();
@@ -96,37 +86,7 @@ void Camera::update(double timeStep)
 	fishEyeAngle = std::max(1.0, std::min(fishEyeAngle, 360.0));
 	imagePlaneDistance = 0.5 / tan(MathUtils::degToRad(fov / 2.0));
 
-	// CAMERA MOVEMENT //
-
-	double smoothVelocityLength = smoothVelocity.length();
-	double smoothAngularVelocityLength = smoothAngularVelocity.length();
-
-	if (smoothVelocityLength > 0.05 * cameraMoveSpeedModifier)
-		smoothAcceleration = settings.camera.moveDrag * (-smoothVelocity.normalized() * smoothVelocityLength);
-	else
-	{
-		smoothVelocity = Vector3(0.0, 0.0, 0.0);
-		smoothAcceleration = Vector3(0.0, 0.0, 0.0);
-	}
-
-	if (smoothAngularVelocityLength > 0.05 * cameraMoveSpeedModifier)
-		smoothAngularAcceleration = settings.camera.mouseDrag * (-smoothAngularVelocity.normalized() * smoothAngularVelocityLength);
-	else
-	{
-		smoothAngularVelocity = Vector3(0.0, 0.0, 0.0);
-		smoothAngularAcceleration = Vector3(0.0, 0.0, 0.0);
-	}
-
-	velocity = Vector3(0.0, 0.0, 0.0);
-	angularVelocity = Vector3(0.0, 0.0, 0.0);
-
-	if (windowRunner.mouseIsDown(GLFW_MOUSE_BUTTON_LEFT) || settings.camera.freeLook)
-	{
-		smoothAngularAcceleration.y -= mouseInfo.deltaX * settings.camera.mouseSpeed;
-		smoothAngularAcceleration.x += mouseInfo.deltaY * settings.camera.mouseSpeed;
-		angularVelocity.y = -mouseInfo.deltaX * settings.camera.mouseSpeed;
-		angularVelocity.x = mouseInfo.deltaY * settings.camera.mouseSpeed;
-	}
+	// SPEED MODIFIERS //
 
 	if (windowRunner.keyWasPressed(GLFW_KEY_INSERT))
 		cameraMoveSpeedModifier *= 2.0;
@@ -137,49 +97,81 @@ void Camera::update(double timeStep)
 	double moveSpeed = settings.camera.moveSpeed * cameraMoveSpeedModifier;
 
 	if (windowRunner.keyIsDown(GLFW_KEY_LEFT_CONTROL) || windowRunner.keyIsDown(GLFW_KEY_RIGHT_CONTROL))
-		moveSpeed *= settings.camera.slowModifier;
+		moveSpeed *= settings.camera.slowSpeedModifier;
 
 	if (windowRunner.keyIsDown(GLFW_KEY_LEFT_SHIFT) || windowRunner.keyIsDown(GLFW_KEY_RIGHT_SHIFT))
-		moveSpeed *= settings.camera.fastModifier;
+		moveSpeed *= settings.camera.fastSpeedModifier;
 
 	if (windowRunner.keyIsDown(GLFW_KEY_LEFT_ALT) || windowRunner.keyIsDown(GLFW_KEY_RIGHT_ALT))
-		moveSpeed *= settings.camera.veryFastModifier;
+		moveSpeed *= settings.camera.veryFastSpeedModifier;
+
+	// ACCELERATIONS AND VELOCITIES //
+
+	velocity = Vector3(0.0, 0.0, 0.0);
+	angularVelocity = Vector3(0.0, 0.0, 0.0);
+	bool movementKeyIsPressed = false;
+
+	if (windowRunner.mouseIsDown(GLFW_MOUSE_BUTTON_LEFT) || settings.camera.freeLook)
+	{
+		smoothAngularAcceleration.y -= mouseInfo.deltaX * settings.camera.mouseSpeed;
+		smoothAngularAcceleration.x += mouseInfo.deltaY * settings.camera.mouseSpeed;
+		angularVelocity.y = -mouseInfo.deltaX * settings.camera.mouseSpeed;
+		angularVelocity.x = mouseInfo.deltaY * settings.camera.mouseSpeed;
+	}
 
 	if (windowRunner.keyIsDown(GLFW_KEY_W) || windowRunner.keyIsDown(GLFW_KEY_UP))
 	{
 		smoothAcceleration += forward * moveSpeed;
-		velocity += forward * moveSpeed;
+		velocity = forward * moveSpeed;
+		movementKeyIsPressed = true;
 	}
 
 	if (windowRunner.keyIsDown(GLFW_KEY_S) || windowRunner.keyIsDown(GLFW_KEY_DOWN))
 	{
 		smoothAcceleration -= forward * moveSpeed;
-		velocity -= forward * moveSpeed;
+		velocity = -forward * moveSpeed;
+		movementKeyIsPressed = true;
 	}
 
 	if (windowRunner.keyIsDown(GLFW_KEY_A) || windowRunner.keyIsDown(GLFW_KEY_LEFT))
 	{
 		smoothAcceleration -= right * moveSpeed;
-		velocity -= right * moveSpeed;
+		velocity = -right * moveSpeed;
+		movementKeyIsPressed = true;
 	}
 
 	if (windowRunner.keyIsDown(GLFW_KEY_D) || windowRunner.keyIsDown(GLFW_KEY_RIGHT))
 	{
 		smoothAcceleration += right * moveSpeed;
-		velocity += right * moveSpeed;
+		velocity = right * moveSpeed;
+		movementKeyIsPressed = true;
 	}
 
 	if (windowRunner.keyIsDown(GLFW_KEY_Q))
 	{
 		smoothAcceleration -= up * moveSpeed;
-		velocity -= up * moveSpeed;
+		velocity = -up * moveSpeed;
+		movementKeyIsPressed = true;
 	}
 
 	if (windowRunner.keyIsDown(GLFW_KEY_E))
 	{
 		smoothAcceleration += up * moveSpeed;
-		velocity += up * moveSpeed;
+		velocity = up * moveSpeed;
+		movementKeyIsPressed = true;
 	}
+
+	if (windowRunner.keyIsDown(GLFW_KEY_SPACE))
+	{
+		velocity = Vector3(0.0, 0.0, 0.0);
+		smoothVelocity = Vector3(0.0, 0.0, 0.0);
+		smoothAcceleration = Vector3(0.0, 0.0, 0.0);
+		angularVelocity = Vector3(0.0, 0.0, 0.0);
+		smoothAngularVelocity = Vector3(0.0, 0.0, 0.0);
+		smoothAngularAcceleration = Vector3(0.0, 0.0, 0.0);
+	}
+
+	// EULER INTEGRATION //
 
 	cameraIsMoving = false;
 
@@ -192,8 +184,7 @@ void Camera::update(double timeStep)
 		orientation.yaw += smoothAngularVelocity.y * timeStep;
 		orientation.pitch += smoothAngularVelocity.x * timeStep;
 
-		if (!smoothVelocity.isZero() || !smoothAngularVelocity.isZero())
-			cameraIsMoving = true;
+		cameraIsMoving = !smoothVelocity.isZero() || !smoothAngularVelocity.isZero();
 	}
 	else
 	{
@@ -201,9 +192,25 @@ void Camera::update(double timeStep)
 		orientation.yaw += angularVelocity.y * timeStep;
 		orientation.pitch += angularVelocity.x * timeStep;
 
-		if (!velocity.isZero() || !angularVelocity.isZero())
-			cameraIsMoving = true;
+		cameraIsMoving = !velocity.isZero() || !angularVelocity.isZero();
 	}
+
+	// DRAG & AUTO STOP //
+
+	double smoothVelocityLength = smoothVelocity.length();
+	double smoothAngularVelocityLength = smoothAngularVelocity.length();
+
+	if ((smoothVelocityLength < settings.camera.autoStopSpeed * moveSpeed) && !movementKeyIsPressed)
+		smoothVelocity = smoothAcceleration = Vector3(0.0, 0.0, 0.0);
+	else if (!smoothVelocity.isZero())
+		smoothAcceleration = settings.camera.moveDrag * (-smoothVelocity.normalized() * smoothVelocityLength);
+	
+	if (smoothAngularVelocityLength < settings.camera.autoStopSpeed * moveSpeed)
+		smoothAngularVelocity = smoothAngularAcceleration = Vector3(0.0, 0.0, 0.0);
+	else if (!smoothAngularVelocity.isZero())
+		smoothAngularAcceleration = settings.camera.mouseDrag * (-smoothAngularVelocity.normalized() * smoothAngularVelocityLength);
+
+	// ORIENTATION & BASIS VECTORS //
 
 	orientation.clampPitch();
 	orientation.normalize();

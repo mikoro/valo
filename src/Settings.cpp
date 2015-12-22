@@ -46,10 +46,11 @@ void Settings::load(const std::string& fileName)
 	camera.freeLook = iniReader.getValue<bool>("camera", "freeLook");
 	camera.smoothMovement = iniReader.getValue<bool>("camera", "smoothMovement");
 	camera.moveSpeed = iniReader.getValue<double>("camera", "moveSpeed");
-	camera.moveDrag = iniReader.getValue<double>("camera", "moveDrag");
 	camera.mouseSpeed = iniReader.getValue<double>("camera", "mouseSpeed");
+	camera.moveDrag = iniReader.getValue<double>("camera", "moveDrag");
 	camera.mouseDrag = iniReader.getValue<double>("camera", "mouseDrag");
-	camera.slowModifier = iniReader.getValue<double>("camera", "slowModifier");
-	camera.fastModifier = iniReader.getValue<double>("camera", "fastModifier");
-	camera.veryFastModifier = iniReader.getValue<double>("camera", "veryFastModifier");
+	camera.autoStopSpeed = iniReader.getValue<double>("camera", "autoStopSpeed");
+	camera.slowSpeedModifier = iniReader.getValue<double>("camera", "slowSpeedModifier");
+	camera.fastSpeedModifier = iniReader.getValue<double>("camera", "fastSpeedModifier");
+	camera.veryFastSpeedModifier = iniReader.getValue<double>("camera", "veryFastSpeedModifier");
 }

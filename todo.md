@@ -9,6 +9,7 @@ textures
  - EWA texture filtering
 
 misc
+ - check if ONB is right handed
  - add material inheritance
  - add light inheritance
  - change tclap to boost program options and move settings to root

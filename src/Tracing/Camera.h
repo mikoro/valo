@@ -26,7 +26,6 @@ namespace Raycer
 		void setImagePlaneSize(uint64_t width, uint64_t height);
 		void update(double timeStep);
 		void reset();
-		void stop();
 		bool isMoving() const;
 
 		bool getRay(const Vector2& pixelCoordinate, Ray& ray) const;

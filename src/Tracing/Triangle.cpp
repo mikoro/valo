@@ -102,7 +102,7 @@ bool Triangle::intersect(const Ray& ray, Intersection& intersection) const
 
 	Vector3 finalNormal = material->normalInterpolation ? (w * normals[0] + u * normals[1] + v * normals[2]) : normal;
 
-	if (ray.direction.dot(finalNormal) > 0.0)
+	if (material->autoInvertNormal && ray.direction.dot(finalNormal) > 0.0)
 		finalNormal = -finalNormal;
 
 	if (material->invertNormal)
