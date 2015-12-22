@@ -10,8 +10,6 @@ namespace Raycer
 	class WindowRunner;
 	class ConsoleRunner;
 	class NetworkRunner;
-	class CLManager;
-	class CLTracer;
 
 	class App
 	{
@@ -24,7 +22,5 @@ namespace Raycer
 		static WindowRunner& getWindowRunner();
 		static ConsoleRunner& getConsoleRunner();
 		static NetworkRunner& getNetworkRunner();
-		static CLManager& getCLManager();
-		static CLTracer& getCLTracer();
 	};
 }

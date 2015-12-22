@@ -13,8 +13,6 @@
 #include "Raytracing/Tracers/Tracer.h"
 #include "Raytracing/Tracers/TracerState.h"
 #include "Raytracing/Camera.h"
-#include "OpenCL/CLManager.h"
-#include "OpenCL/CLTracer.h"
 
 using namespace Raycer;
 using namespace std::chrono;
@@ -28,7 +26,6 @@ int ConsoleRunner::run()
 	pixelsPerSecondAverage.setAlpha(0.05);
 	pixelsPerSecondAverage.setAverage(0.0);
 	timer.setAveragingAlpha(0.05);
-	progressCounter1 = progressCounter2 = 0;
 
 	Scene scene;
 
@@ -70,23 +67,8 @@ int ConsoleRunner::run()
 void ConsoleRunner::run(TracerState& state)
 {
 	Settings& settings = App::getSettings();
-	CLManager& clManager = App::getCLManager();
-	CLTracer& clTracer = App::getCLTracer();
-
+	
 	interrupted = false;
-
-	if (settings.openCL.enabled && !openCLInitialized)
-	{
-		clManager.initialize();
-		openCLInitialized = true;
-	}
-
-	if (settings.openCL.enabled)
-	{
-		clTracer.initializeKernels();
-		clTracer.initializeImageBuffers(state.filmWidth, state.filmHeight, 0);
-		clTracer.initializeBuffers(*state.scene);
-	}
 
 	std::atomic<bool> renderThreadFinished(false);
 	std::exception_ptr renderThreadException = nullptr;
@@ -95,10 +77,7 @@ void ConsoleRunner::run(TracerState& state)
 	{
 		try
 		{
-			if (!settings.openCL.enabled)
-				Tracer::getTracer(state.scene->general.tracerType)->run(state, interrupted);
-			else
-				clTracer.run(state, interrupted);
+			Tracer::getTracer(state.scene->general.tracerType)->run(state, interrupted);
 		}
 		catch (...)
 		{
@@ -133,10 +112,7 @@ void ConsoleRunner::run(TracerState& state)
 		if (elapsed.totalMilliseconds > 0)
 			pixelsPerSecondAverage.addMeasurement(double(state.pixelsProcessed) / (double(elapsed.totalMilliseconds) / 1000.0));
 
-		if (!settings.openCL.enabled)
-			printProgress(elapsed, remaining);
-		else
-			printProgressOpenCL(elapsed, remaining);
+		printProgress(elapsed, remaining);
 
 		std::this_thread::sleep_for(std::chrono::milliseconds(100));
 	}
@@ -151,10 +127,7 @@ void ConsoleRunner::run(TracerState& state)
 	auto elapsed = timer.getElapsed();
 	auto remaining = timer.getRemaining();
 
-	if (!settings.openCL.enabled)
-		printProgress(elapsed, remaining);
-	else
-		printProgressOpenCL(elapsed, remaining);
+	printProgress(elapsed, remaining);
 
 	double totalPixelsPerSecond = 0.0;
 
@@ -168,10 +141,7 @@ void ConsoleRunner::run(TracerState& state)
 
 	SysUtils::setConsoleTextColor(ConsoleTextColor::DEFAULT);
 
-	if (!settings.openCL.enabled)
-		state.film->generateToneMappedImage(*state.scene);
-	else
-		state.film->setToneMappedImage(clTracer.downloadImage());
+	state.film->generateToneMappedImage(*state.scene);
 }
 
 void ConsoleRunner::interrupt()
@@ -202,30 +172,5 @@ void ConsoleRunner::printProgress(const TimerData& elapsed, const TimerData& rem
     tfm::printf("Elapsed time: %s | ", elapsed.getString());
     tfm::printf("Remaining time: %s | ", remaining.getString());
     tfm::printf("Pixels/s: %s", StringUtils::humanizeNumber(pixelsPerSecondAverage.getAverage()));
-    tfm::printf("          \r");
-}
-
-void ConsoleRunner::printProgressOpenCL(const TimerData& elapsed, const TimerData& remaining)
-{
-	if (++progressCounter1 % 5 == 0)
-		++progressCounter2;
-
-	char progressChar;
-
-	switch (progressCounter2 % 4)
-	{
-		case 1: progressChar = '\\';
-			break;
-		case 2: progressChar = '|';
-			break;
-		case 3: progressChar = '/';
-			break;
-		default: progressChar = '-';
-			break;
-	}
-
-    tfm::printf("[%c] ", progressChar);
-    tfm::printf("Elapsed time: %s | ", elapsed.getString());
-    tfm::printf("Remaining time: %s | ", remaining.getString());
     tfm::printf("          \r");
 }

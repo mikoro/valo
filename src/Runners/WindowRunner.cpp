@@ -8,7 +8,6 @@
 #include "Settings.h"
 #include "Utils/Log.h"
 #include "Utils/GLHelper.h"
-#include "OpenCL/CLManager.h"
 #include "Rendering/Image.h"
 #include "Runners/WindowRunnerStates/WindowRunnerState.h"
 #include "Runners/WindowRunnerStates/DefaultState.h"
@@ -165,7 +164,6 @@ void WindowRunner::initialize()
 {
 	Log& log = App::getLog();
 	Settings& settings = App::getSettings();
-	CLManager& clManager = App::getCLManager();
 
 	mouseInfoPtr = &mouseInfo;
 
@@ -210,9 +208,6 @@ void WindowRunner::initialize()
 
 	if (settings.window.hideCursor)
 		glfwSetInputMode(glfwWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-
-	if (settings.openCL.enabled)
-		clManager.initialize();
 
 	defaultText.initialize(settings.window.defaultFont, double(settings.window.defaultFontSize));
 	pauseText.initialize(settings.window.defaultFont, 100);

@@ -7,7 +7,6 @@
 #include "App.h"
 #include "Settings.h"
 #include "Utils/Log.h"
-#include "OpenCL/CLTracer.h"
 #include "Math/Color.h"
 #include "Math/EulerAngle.h"
 #include "Math/Vector3.h"
@@ -24,7 +23,6 @@ DefaultState::DefaultState() : interrupted(false) {}
 void DefaultState::initialize()
 {
 	Settings& settings = App::getSettings();
-	CLTracer& clTracer = App::getCLTracer();
 
 	if (settings.scene.enableTestScenes)
 		scene = Scene::createTestScene(settings.scene.testSceneNumber);
@@ -36,12 +34,6 @@ void DefaultState::initialize()
 
 	scene.initialize();
 	tracer = Tracer::getTracer(scene.general.tracerType);
-
-	if (settings.openCL.enabled)
-	{
-		clTracer.initializeKernels();
-		clTracer.initializeBuffers(scene);
-	}
 
 	currentTestSceneNumber = settings.scene.testSceneNumber;
 }
@@ -63,7 +55,6 @@ void DefaultState::update(double timeStep)
 	Log& log = App::getLog();
 	Settings& settings = App::getSettings();
 	WindowRunner& windowRunner = App::getWindowRunner();
-	CLTracer& clTracer = App::getCLTracer();
 
 	bool increaseTestSceneNumber = windowRunner.keyWasPressed(GLFW_KEY_F2);
 	bool decreaseTestSceneNumber = windowRunner.keyWasPressed(GLFW_KEY_F3);
@@ -104,12 +95,6 @@ void DefaultState::update(double timeStep)
 			scene.camera.setImagePlaneSize(film.getWidth(), film.getHeight());
 			tracer = Tracer::getTracer(scene.general.tracerType);
 			sampleCount = 0;
-
-			if (settings.openCL.enabled)
-			{
-				clTracer.initializeBuffers(scene);
-				clTracer.clear();
-			}
 		}
 	}
 
@@ -118,9 +103,6 @@ void DefaultState::update(double timeStep)
 		scene.camera.reset();
 		film.clear();
 		sampleCount = 0;
-
-		if (settings.openCL.enabled)
-			clTracer.clear();
 	}
 
 	if (windowRunner.keyWasPressed(GLFW_KEY_N))
@@ -139,9 +121,6 @@ void DefaultState::update(double timeStep)
 		tracer = Tracer::getTracer(scene.general.tracerType);
 		film.clear();
 		sampleCount = 0;
-
-		if (settings.openCL.enabled)
-			clTracer.clear();
 	}
 
 	if (windowRunner.keyWasPressed(GLFW_KEY_F5))
@@ -256,7 +235,6 @@ void DefaultState::render(double timeStep, double interpolation)
 
 	Settings& settings = App::getSettings();
 	WindowRunner& windowRunner = App::getWindowRunner();
-	CLTracer& clTracer = App::getCLTracer();
 	Text& text = windowRunner.getDefaultText();
 
 	TracerState state;
@@ -271,22 +249,13 @@ void DefaultState::render(double timeStep, double interpolation)
 	{
 		film.clear();
 		sampleCount = 0;
-
-		if (settings.openCL.enabled)
-			clTracer.clear();
 	}
 
 	sampleCount += scene.general.pathSampleCount;
 
-	if (!settings.openCL.enabled)
-	{
-		tracer->run(state, interrupted);
-		film.generateToneMappedImage(scene);
-		filmRenderer.uploadFilmData(film);
-	}
-	else
-		clTracer.run(state, interrupted);
-
+	tracer->run(state, interrupted);
+	film.generateToneMappedImage(scene);
+	filmRenderer.uploadFilmData(film);
 	filmRenderer.render();
 
 	if (settings.window.showInfoText)
@@ -315,7 +284,6 @@ void DefaultState::resizeFilm()
 {
 	Settings& settings = App::getSettings();
 	WindowRunner& windowRunner = App::getWindowRunner();
-	CLTracer& clTracer = App::getCLTracer();
 
 	uint64_t filmWidth = uint64_t(double(windowRunner.getWindowWidth()) * settings.window.renderScale + 0.5);
 	uint64_t filmHeight = uint64_t(double(windowRunner.getWindowHeight()) * settings.window.renderScale + 0.5);
@@ -323,14 +291,9 @@ void DefaultState::resizeFilm()
     filmWidth = std::max(uint64_t(1), filmWidth);
     filmHeight = std::max(uint64_t(1), filmHeight);
 
-	if (settings.openCL.enabled)
-		clTracer.releaseImageBuffers();
 
 	film.resize(filmWidth, filmHeight);
 	filmRenderer.setFilmSize(filmWidth, filmHeight);
 	scene.camera.setImagePlaneSize(filmWidth, filmHeight);
 	sampleCount = 0;
-
-	if (settings.openCL.enabled)
-		clTracer.initializeImageBuffers(filmWidth, filmHeight, filmRenderer.getFilmTextureId());
 }

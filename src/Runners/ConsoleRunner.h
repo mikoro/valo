@@ -23,16 +23,11 @@ namespace Raycer
 	private:
 
 		void printProgress(const TimerData& elapsed, const TimerData& remaining);
-		void printProgressOpenCL(const TimerData& elapsed, const TimerData& remaining);
-
-		bool openCLInitialized = false;
+		
 		std::atomic<bool> interrupted;
 
 		Timer timer;
 
 		MovingAverage pixelsPerSecondAverage;
-
-		uint64_t progressCounter1 = 0;
-		uint64_t progressCounter2 = 0;
 	};
 }

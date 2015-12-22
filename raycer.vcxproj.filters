@@ -34,9 +34,6 @@
     <Filter Include="TestScenes">
       <UniqueIdentifier>{339bccda-e760-443a-99ee-4be40776f51c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="OpenCL">
-      <UniqueIdentifier>{354128de-2a9e-4922-9735-e198ab93b0cd}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Runners\WindowRunnerStates">
       <UniqueIdentifier>{12134eda-1511-499f-88c4-6d8d51b7d7e1}</UniqueIdentifier>
     </Filter>
@@ -202,12 +199,6 @@
     <ClCompile Include="src\Raytracing\AABB.cpp">
       <Filter>Raytracing</Filter>
     </ClCompile>
-    <ClCompile Include="src\OpenCL\CLManager.cpp">
-      <Filter>OpenCL</Filter>
-    </ClCompile>
-    <ClCompile Include="src\OpenCL\CLScene.cpp">
-      <Filter>OpenCL</Filter>
-    </ClCompile>
     <ClCompile Include="src\Utils\GLHelper.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
@@ -359,9 +350,6 @@
     </ClCompile>
     <ClCompile Include="src\Raytracing\Tracers\Tracer.cpp">
       <Filter>Raytracing\Tracers</Filter>
-    </ClCompile>
-    <ClCompile Include="src\OpenCL\CLTracer.cpp">
-      <Filter>OpenCL</Filter>
     </ClCompile>
     <ClCompile Include="src\Rendering\ToneMappers\PassthroughToneMapper.cpp">
       <Filter>Rendering\ToneMappers</Filter>
@@ -550,15 +538,6 @@
     <ClInclude Include="src\Raytracing\AABB.h">
       <Filter>Raytracing</Filter>
     </ClInclude>
-    <ClInclude Include="src\OpenCL\CLManager.h">
-      <Filter>OpenCL</Filter>
-    </ClInclude>
-    <ClInclude Include="src\OpenCL\CLScene.h">
-      <Filter>OpenCL</Filter>
-    </ClInclude>
-    <ClInclude Include="src\OpenCL\CLStructs.h">
-      <Filter>OpenCL</Filter>
-    </ClInclude>
     <ClInclude Include="src\Utils\GLHelper.h">
       <Filter>Utils</Filter>
     </ClInclude>
@@ -656,9 +635,6 @@
     </ClInclude>
     <ClInclude Include="src\Raytracing\Tracers\TracerState.h">
       <Filter>Raytracing\Tracers</Filter>
-    </ClInclude>
-    <ClInclude Include="src\OpenCL\CLTracer.h">
-      <Filter>OpenCL</Filter>
     </ClInclude>
     <ClInclude Include="src\Rendering\ToneMappers\PassthroughToneMapper.h">
       <Filter>Rendering\ToneMappers</Filter>

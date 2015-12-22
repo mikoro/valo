@@ -14,8 +14,6 @@
 #include "Runners/WindowRunner.h"
 #include "Runners/ConsoleRunner.h"
 #include "Runners/NetworkRunner.h"
-#include "OpenCL/CLManager.h"
-#include "OpenCL/CLTracer.h"
 
 #ifdef RUN_UNIT_TESTS
 #define CATCH_CONFIG_RUNNER
@@ -94,10 +92,6 @@ int App::run(int argc, char** argv)
 	TCLAP::CmdLine cmd("Raycer", ' ', RAYCER_VERSION);
 	TCLAP::SwitchArg interactiveSwitch("", "interactive", "View the scene interactively", cmd, false);
 	TCLAP::SwitchArg nonInteractiveSwitch("", "non-interactive", "Force non-interactive mode", cmd, false);
-	TCLAP::SwitchArg enableOpenCLSwitch("", "opencl", "Use OpenCL for raytracing", cmd, false);
-	TCLAP::ValueArg<uint32_t> clPlatformIdArg("", "cl-platform", "OpenCL platform to use", false, 0, "int", cmd);
-	TCLAP::ValueArg<uint32_t> clDeviceTypeArg("", "cl-device-type", "OpenCL device type to use", false, 0, "int", cmd);
-	TCLAP::ValueArg<uint32_t> clDeviceIdArg("", "cl-device", "OpenCL device to use", false, 0, "int", cmd);
 	TCLAP::ValueArg<uint32_t> testSceneArg("", "test", "Select one of the test scenes", false, 0, "int", cmd);
 	TCLAP::SwitchArg nonTestSceneSwitch("", "non-test", "Force test scene mode off", cmd, false);
 	TCLAP::SwitchArg clientSwitch("", "client", "Enable network client mode", cmd, false);
@@ -136,18 +130,6 @@ int App::run(int argc, char** argv)
 
 		if (nonInteractiveSwitch.isSet())
 			settings.general.interactive = false;
-
-		if (enableOpenCLSwitch.isSet())
-			settings.openCL.enabled = true;
-
-		if (clPlatformIdArg.isSet())
-			settings.openCL.platformId = clPlatformIdArg.getValue();
-
-		if (clDeviceTypeArg.isSet())
-			settings.openCL.deviceType = clDeviceTypeArg.getValue();
-
-		if (clDeviceIdArg.isSet())
-			settings.openCL.deviceId = clDeviceIdArg.getValue();
 
 		if (testSceneArg.isSet())
 		{
@@ -234,16 +216,4 @@ NetworkRunner& App::getNetworkRunner()
 {
 	static NetworkRunner networkRunner;
 	return networkRunner;
-}
-
-CLManager& App::getCLManager()
-{
-	static CLManager clManager;
-	return clManager;
-}
-
-CLTracer& App::getCLTracer()
-{
-	static CLTracer clTracer;
-	return clTracer;
 }

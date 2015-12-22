@@ -18,12 +18,6 @@ void Settings::load(const std::string& fileName)
 	general.checkGLErrors = iniReader.getValue<bool>("general", "checkGLErrors");
 	general.checkCLErrors = iniReader.getValue<bool>("general", "checkCLErrors");
 
-	openCL.enabled = iniReader.getValue<bool>("openCL", "enabled");
-	openCL.platformId = iniReader.getValue<uint64_t>("openCL", "platformId");
-	openCL.deviceType = iniReader.getValue<uint64_t>("openCL", "deviceType");
-	openCL.deviceId = iniReader.getValue<uint64_t>("openCL", "deviceId");
-	openCL.options = iniReader.getValue("openCL", "options");
-
 	network.isClient = iniReader.getValue<bool>("network", "isClient");
 	network.isServer = iniReader.getValue<bool>("network", "isServer");
 	network.localAddress = iniReader.getValue("network", "localAddress");

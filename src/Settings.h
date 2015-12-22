@@ -19,15 +19,6 @@ namespace Raycer
 			bool checkCLErrors;
 		} general;
 
-		struct OpenCL
-		{
-			bool enabled;
-			uint64_t platformId;
-			uint64_t deviceType;
-			uint64_t deviceId;
-			std::string options;
-		} openCL;
-
 		struct Network
 		{
 			bool isClient;

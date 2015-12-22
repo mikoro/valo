@@ -52,15 +52,6 @@
 #include <GL/glx.h>
 #endif
 
-#define CL_USE_DEPRECATED_OPENCL_1_1_APIS
-#define CL_USE_DEPRECATED_OPENCL_2_0_APIS
-#ifdef __APPLE__
-#include <OpenCL/opencl.h>
-#include <OpenGL/OpenGL.h>
-#else
-#include <CL/opencl.h>
-#endif
-
 #include "tinyformat/tinyformat.h"
 
 #ifdef __APPLE__

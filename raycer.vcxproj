@@ -94,7 +94,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>glfw.lib;opengl32.lib;freetype.lib;freetype-gl.lib;OpenCL.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glfw.lib;opengl32.lib;freetype.lib;freetype-gl.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalOptions>/NODEFAULTLIB:msvcrt.lib %(AdditionalOptions)</AdditionalOptions>
     </Link>
     <PostBuildEvent>
@@ -121,7 +121,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>glfw.lib;opengl32.lib;freetype.lib;freetype-gl.lib;OpenCL.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glfw.lib;opengl32.lib;freetype.lib;freetype-gl.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalOptions>/NODEFAULTLIB:msvcrt.lib %(AdditionalOptions)</AdditionalOptions>
     </Link>
     <PostBuildEvent>
@@ -158,7 +158,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>glfw.lib;opengl32.lib;freetype.lib;freetype-gl.lib;OpenCL.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glfw.lib;opengl32.lib;freetype.lib;freetype-gl.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>platform\windows\post-build.bat Release</Command>
@@ -179,9 +179,6 @@
     <ClCompile Include="src\Math\Vector2.cpp" />
     <ClCompile Include="src\Math\Vector3.cpp" />
     <ClCompile Include="src\Math\Vector4.cpp" />
-    <ClCompile Include="src\OpenCL\CLManager.cpp" />
-    <ClCompile Include="src\OpenCL\CLTracer.cpp" />
-    <ClCompile Include="src\OpenCL\CLScene.cpp" />
     <ClCompile Include="src\Raytracing\AABB.cpp" />
     <ClCompile Include="src\Raytracing\Camera.cpp" />
     <ClCompile Include="src\Raytracing\Primitives\BlinnBlob.cpp" />
@@ -312,10 +309,6 @@
     <ClInclude Include="src\Math\Vector2.h" />
     <ClInclude Include="src\Math\Vector3.h" />
     <ClInclude Include="src\Math\Vector4.h" />
-    <ClInclude Include="src\OpenCL\CLManager.h" />
-    <ClInclude Include="src\OpenCL\CLTracer.h" />
-    <ClInclude Include="src\OpenCL\CLScene.h" />
-    <ClInclude Include="src\OpenCL\CLStructs.h" />
     <ClInclude Include="src\Raytracing\AABB.h" />
     <ClInclude Include="src\Raytracing\Camera.h" />
     <ClInclude Include="src\Raytracing\Intersection.h" />

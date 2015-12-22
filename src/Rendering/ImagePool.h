@@ -9,7 +9,6 @@
 /*
 
 ImagePool is used by ImageTextures to prevent loading the same file twice to the memory.
-It will also be uploaded as is to the OpenCL device and indexed appropriately.
 
 */
 
