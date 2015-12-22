@@ -36,12 +36,3 @@ double ColorGradientTexture::getValue(const Vector2& texcoord, const Vector3& po
 
 	return 0.0;
 }
-
-Vector3 ColorGradientTexture::getNormalData(const Vector2& texcoord, const Vector3& position, TextureNormalDataType& type) const
-{
-	(void)texcoord;
-	(void)position;
-
-	type = TextureNormalDataType::NONE;
-	return Vector3(0.0, 0.0, 0.0);
-}

@@ -154,24 +154,10 @@ namespace
 
 				result.textures.push_back(imageTexture);
 			}
-			else if ((part == "map_bump" || part == "bump") && currentMaterial.normalMapTextureId == 0) // bump map
-			{
-				ImageTexture imageTexture;
-				imageTexture.id = ++currentId;
-				imageTexture.isBumpMap = true;
-				currentMaterial.normalMapTextureId = imageTexture.id;
-
-				StringUtils::readUntilSpace(line, lineIndex, part);
-				imageTexture.imageFilePath = getAbsolutePath(objFileDirectory, part);
-				imageTexture.applyGamma = false;
-
-				result.textures.push_back(imageTexture);
-			}
 			else if (part == "map_normal" && currentMaterial.normalMapTextureId == 0) // normal map
 			{
 				ImageTexture imageTexture;
 				imageTexture.id = ++currentId;
-				imageTexture.isNormalMap = true;
 				currentMaterial.normalMapTextureId = imageTexture.id;
 
 				StringUtils::readUntilSpace(line, lineIndex, part);

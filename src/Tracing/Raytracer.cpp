@@ -82,28 +82,11 @@ Color Raytracer::traceRecursive(const Scene& scene, const Ray& ray, Intersection
 
 void Raytracer::calculateNormalMapping(Intersection& intersection)
 {
-	const Material* material = intersection.material;
-	TextureNormalDataType normalType = TextureNormalDataType::NONE;
-	Vector3 normalData = material->normalMapTexture->getNormalData(intersection.texcoord, intersection.position, normalType);
-
-	if (normalType == TextureNormalDataType::BUMP_MAP)
-	{
-		normalData *= material->normalMapTexture->intensity;
-		ONB& onb = intersection.onb;
-		Vector3 bumpMapNormal = onb.w + normalData.x * (onb.u.cross(onb.w)) + normalData.y * (onb.v.cross(onb.w));
-		intersection.normal = bumpMapNormal.normalized();
-	}
-	else if (normalType == TextureNormalDataType::NORMAL_MAP)
-	{
-		ONB& onb = intersection.onb;
-		Vector3 normalMapNormal = onb.u * normalData.x + onb.v * normalData.y + onb.w * normalData.z;
-		intersection.normal = normalMapNormal.normalized();
-	}
-	else if (normalType == TextureNormalDataType::GRADIENT)
-	{
-		Vector3 gradedNormal = (intersection.normal - (normalData * material->normalMapTexture->intensity));
-		intersection.normal = gradedNormal.normalized();
-	}
+	Color normalColor = intersection.material->normalMapTexture->getColor(intersection.texcoord, intersection.position);
+	Vector3 normal(normalColor.r * 2.0 - 1.0, normalColor.g * 2.0 - 1.0, normalColor.b);
+	ONB& onb = intersection.onb;
+	Vector3 mappedNormal = onb.u * normal.x + onb.v * normal.y + onb.w * normal.z;
+	intersection.normal = mappedNormal.normalized();
 }
 
 void Raytracer::calculateRayReflectanceAndTransmittance(const Ray& ray, const Intersection& intersection, double& rayReflectance, double& rayTransmittance)

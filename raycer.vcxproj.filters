@@ -85,9 +85,6 @@
     <ClCompile Include="src\Utils\PoissonDisc.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
-    <ClCompile Include="src\Utils\CellNoise.cpp">
-      <Filter>Utils</Filter>
-    </ClCompile>
     <ClCompile Include="src\Tests\ColorGradientTest.cpp">
       <Filter>Tests</Filter>
     </ClCompile>
@@ -107,9 +104,6 @@
       <Filter>Tests</Filter>
     </ClCompile>
     <ClCompile Include="src\Utils\StringUtils.cpp">
-      <Filter>Utils</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Utils\ValueNoise.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
     <ClCompile Include="src\Tests\SamplerTest.cpp">
@@ -211,12 +205,6 @@
     <ClCompile Include="src\Tonemappers\Tonemapper.cpp">
       <Filter>Tonemappers</Filter>
     </ClCompile>
-    <ClCompile Include="src\Textures\AtmosphereTexture.cpp">
-      <Filter>Textures</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Textures\CellNoiseTexture.cpp">
-      <Filter>Textures</Filter>
-    </ClCompile>
     <ClCompile Include="src\Textures\CheckerTexture.cpp">
       <Filter>Textures</Filter>
     </ClCompile>
@@ -226,25 +214,10 @@
     <ClCompile Include="src\Textures\ColorTexture.cpp">
       <Filter>Textures</Filter>
     </ClCompile>
-    <ClCompile Include="src\Textures\FireTexture.cpp">
-      <Filter>Textures</Filter>
-    </ClCompile>
     <ClCompile Include="src\Textures\ImageTexture.cpp">
       <Filter>Textures</Filter>
     </ClCompile>
-    <ClCompile Include="src\Textures\MarbleTexture.cpp">
-      <Filter>Textures</Filter>
-    </ClCompile>
     <ClCompile Include="src\Textures\PerlinNoiseTexture.cpp">
-      <Filter>Textures</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Textures\ValueNoiseTexture.cpp">
-      <Filter>Textures</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Textures\WoodTexture.cpp">
-      <Filter>Textures</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Textures\VoronoiTexture.cpp">
       <Filter>Textures</Filter>
     </ClCompile>
     <ClCompile Include="src\Runners\ConsoleRunner.cpp">
@@ -352,13 +325,7 @@
     <ClInclude Include="src\Utils\PoissonDisc.h">
       <Filter>Utils</Filter>
     </ClInclude>
-    <ClInclude Include="src\Utils\CellNoise.h">
-      <Filter>Utils</Filter>
-    </ClInclude>
     <ClInclude Include="src\Utils\StringUtils.h">
-      <Filter>Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Utils\ValueNoise.h">
       <Filter>Utils</Filter>
     </ClInclude>
     <ClInclude Include="src\Utils\ColorGradient.h">
@@ -457,12 +424,6 @@
     <ClInclude Include="src\Tonemappers\Tonemapper.h">
       <Filter>Tonemappers</Filter>
     </ClInclude>
-    <ClInclude Include="src\Textures\AtmosphereTexture.h">
-      <Filter>Textures</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Textures\CellNoiseTexture.h">
-      <Filter>Textures</Filter>
-    </ClInclude>
     <ClInclude Include="src\Textures\CheckerTexture.h">
       <Filter>Textures</Filter>
     </ClInclude>
@@ -472,28 +433,13 @@
     <ClInclude Include="src\Textures\ColorTexture.h">
       <Filter>Textures</Filter>
     </ClInclude>
-    <ClInclude Include="src\Textures\FireTexture.h">
-      <Filter>Textures</Filter>
-    </ClInclude>
     <ClInclude Include="src\Textures\ImageTexture.h">
-      <Filter>Textures</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Textures\MarbleTexture.h">
       <Filter>Textures</Filter>
     </ClInclude>
     <ClInclude Include="src\Textures\PerlinNoiseTexture.h">
       <Filter>Textures</Filter>
     </ClInclude>
     <ClInclude Include="src\Textures\Texture.h">
-      <Filter>Textures</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Textures\ValueNoiseTexture.h">
-      <Filter>Textures</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Textures\WoodTexture.h">
-      <Filter>Textures</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Textures\VoronoiTexture.h">
       <Filter>Textures</Filter>
     </ClInclude>
     <ClInclude Include="src\Runners\ConsoleRunner.h">

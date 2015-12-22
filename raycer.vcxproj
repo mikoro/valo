@@ -220,18 +220,11 @@
     <ClCompile Include="src\Tests\SolverTest.cpp" />
     <ClCompile Include="src\Tests\TestScenesTest.cpp" />
     <ClCompile Include="src\Tests\Vector3Test.cpp" />
-    <ClCompile Include="src\Textures\AtmosphereTexture.cpp" />
-    <ClCompile Include="src\Textures\CellNoiseTexture.cpp" />
     <ClCompile Include="src\Textures\CheckerTexture.cpp" />
     <ClCompile Include="src\Textures\ColorGradientTexture.cpp" />
     <ClCompile Include="src\Textures\ColorTexture.cpp" />
-    <ClCompile Include="src\Textures\FireTexture.cpp" />
     <ClCompile Include="src\Textures\ImageTexture.cpp" />
-    <ClCompile Include="src\Textures\MarbleTexture.cpp" />
     <ClCompile Include="src\Textures\PerlinNoiseTexture.cpp" />
-    <ClCompile Include="src\Textures\ValueNoiseTexture.cpp" />
-    <ClCompile Include="src\Textures\VoronoiTexture.cpp" />
-    <ClCompile Include="src\Textures\WoodTexture.cpp" />
     <ClCompile Include="src\Tonemappers\LinearTonemapper.cpp" />
     <ClCompile Include="src\Tonemappers\PassthroughTonemapper.cpp" />
     <ClCompile Include="src\Tonemappers\ReinhardTonemapper.cpp" />
@@ -250,7 +243,6 @@
     </ClCompile>
     <ClCompile Include="src\Tracing\Tracer.cpp" />
     <ClCompile Include="src\Tracing\Triangle.cpp" />
-    <ClCompile Include="src\Utils\CellNoise.cpp" />
     <ClCompile Include="src\Utils\ColorGradient.cpp" />
     <ClCompile Include="src\Utils\FpsCounter.cpp" />
     <ClCompile Include="src\Utils\GLHelper.cpp" />
@@ -262,7 +254,6 @@
     <ClCompile Include="src\Utils\StringUtils.cpp" />
     <ClCompile Include="src\Utils\SysUtils.cpp" />
     <ClCompile Include="src\Utils\Timer.cpp" />
-    <ClCompile Include="src\Utils\ValueNoise.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\App.h" />
@@ -305,19 +296,12 @@
     <ClInclude Include="src\Samplers\Sampler.h" />
     <ClInclude Include="src\Settings.h" />
     <ClInclude Include="src\stdafx.h" />
-    <ClInclude Include="src\Textures\AtmosphereTexture.h" />
-    <ClInclude Include="src\Textures\CellNoiseTexture.h" />
     <ClInclude Include="src\Textures\CheckerTexture.h" />
     <ClInclude Include="src\Textures\ColorGradientTexture.h" />
     <ClInclude Include="src\Textures\ColorTexture.h" />
-    <ClInclude Include="src\Textures\FireTexture.h" />
     <ClInclude Include="src\Textures\ImageTexture.h" />
-    <ClInclude Include="src\Textures\MarbleTexture.h" />
     <ClInclude Include="src\Textures\PerlinNoiseTexture.h" />
     <ClInclude Include="src\Textures\Texture.h" />
-    <ClInclude Include="src\Textures\ValueNoiseTexture.h" />
-    <ClInclude Include="src\Textures\VoronoiTexture.h" />
-    <ClInclude Include="src\Textures\WoodTexture.h" />
     <ClInclude Include="src\Tonemappers\LinearTonemapper.h" />
     <ClInclude Include="src\Tonemappers\PassthroughTonemapper.h" />
     <ClInclude Include="src\Tonemappers\ReinhardTonemapper.h" />
@@ -337,7 +321,6 @@
     <ClInclude Include="src\Tracing\Tracer.h" />
     <ClInclude Include="src\Tracing\TracerState.h" />
     <ClInclude Include="src\Tracing\Triangle.h" />
-    <ClInclude Include="src\Utils\CellNoise.h" />
     <ClInclude Include="src\Utils\ColorGradient.h" />
     <ClInclude Include="src\Utils\FpsCounter.h" />
     <ClInclude Include="src\Utils\GLHelper.h" />
@@ -349,7 +332,6 @@
     <ClInclude Include="src\Utils\StringUtils.h" />
     <ClInclude Include="src\Utils\SysUtils.h" />
     <ClInclude Include="src\Utils\Timer.h" />
-    <ClInclude Include="src\Utils\ValueNoise.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="platform\windows\raycer.rc" />

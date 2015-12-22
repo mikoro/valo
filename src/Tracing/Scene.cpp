@@ -194,27 +194,6 @@ void Scene::initialize()
 	for (PerlinNoiseTexture& texture : textures.perlinNoiseTextures)
 		texturesList.push_back(&texture);
 
-	for (ValueNoiseTexture& texture : textures.valueNoiseTextures)
-		texturesList.push_back(&texture);
-
-	for (CellNoiseTexture& texture : textures.cellNoiseTextures)
-		texturesList.push_back(&texture);
-
-	for (MarbleTexture& texture : textures.marbleTextures)
-		texturesList.push_back(&texture);
-
-	for (WoodTexture& texture : textures.woodTextures)
-		texturesList.push_back(&texture);
-
-	for (FireTexture& texture : textures.fireTextures)
-		texturesList.push_back(&texture);
-
-	for (AtmosphereTexture& texture : textures.atmosphereTextures)
-		texturesList.push_back(&texture);
-
-	for (VoronoiTexture& texture : textures.voronoiTextures)
-		texturesList.push_back(&texture);
-
 	// POINTER MAP GENERATION
 
 	for (Material& material : materials)

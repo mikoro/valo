@@ -11,8 +11,6 @@ namespace Raycer
 	class Vector2;
 	class Vector3;
 
-	enum class TextureNormalDataType { NONE, BUMP_MAP, NORMAL_MAP, GRADIENT };
-
 	class Texture
 	{
 	public:
@@ -23,7 +21,6 @@ namespace Raycer
 
 		virtual Color getColor(const Vector2& texcoord, const Vector3& position) const = 0;
 		virtual double getValue(const Vector2& texcoord, const Vector3& position) const = 0;
-		virtual Vector3 getNormalData(const Vector2& texcoord, const Vector3& position, TextureNormalDataType& type) const = 0;
 
 		uint64_t id = 0;
 		double intensity = 1.0;

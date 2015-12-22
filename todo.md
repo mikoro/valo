@@ -12,15 +12,9 @@ textures
  - EWA texture filtering
 
 misc
- - cereal to public
- - remove csg suppport
- - remove primitives and use triangles only
- - remove some textures
- - remove ply loader
  - simplify material
  - add material inheritance
  - add light inheritance
- - use only normal mapping (remove rest)
  - change tclap to boost program options and move settings to root
  - move rayStartOffset to minDistance
  - templetize image (float and double images)

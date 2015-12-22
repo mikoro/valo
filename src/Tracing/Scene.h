@@ -16,13 +16,6 @@
 #include "Textures/CheckerTexture.h"
 #include "Textures/ImageTexture.h"
 #include "Textures/PerlinNoiseTexture.h"
-#include "Textures/ValueNoiseTexture.h"
-#include "Textures/CellNoiseTexture.h"
-#include "Textures/MarbleTexture.h"
-#include "Textures/WoodTexture.h"
-#include "Textures/FireTexture.h"
-#include "Textures/AtmosphereTexture.h"
-#include "Textures/VoronoiTexture.h"
 #include "Tracing/Material.h"
 #include "Tracing/Lights.h"
 #include "Tracing/Tracer.h"
@@ -154,13 +147,6 @@ namespace Raycer
 			std::vector<CheckerTexture> checkerTextures;
 			std::vector<ImageTexture> imageTextures;
 			std::vector<PerlinNoiseTexture> perlinNoiseTextures;
-			std::vector<ValueNoiseTexture> valueNoiseTextures;
-			std::vector<CellNoiseTexture> cellNoiseTextures;
-			std::vector<MarbleTexture> marbleTextures;
-			std::vector<WoodTexture> woodTextures;
-			std::vector<FireTexture> fireTextures;
-			std::vector<AtmosphereTexture> atmosphereTextures;
-			std::vector<VoronoiTexture> voronoiTextures;
 
 			template <class Archive>
 			void serialize(Archive& ar)
@@ -169,14 +155,7 @@ namespace Raycer
 					CEREAL_NVP(colorGradientTextures),
 					CEREAL_NVP(checkerTextures),
 					CEREAL_NVP(imageTextures),
-					CEREAL_NVP(perlinNoiseTextures),
-					CEREAL_NVP(valueNoiseTextures),
-					CEREAL_NVP(cellNoiseTextures),
-					CEREAL_NVP(marbleTextures),
-					CEREAL_NVP(woodTextures),
-					CEREAL_NVP(fireTextures),
-					CEREAL_NVP(atmosphereTextures),
-					CEREAL_NVP(voronoiTextures));
+					CEREAL_NVP(perlinNoiseTextures));
 			}
 
 		} textures;
