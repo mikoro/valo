@@ -16,7 +16,6 @@ void Settings::load(const std::string& fileName)
 	general.interactive = iniReader.getValue<bool>("general", "interactive");
 	general.maxThreadCount = iniReader.getValue<int32_t>("general", "maxThreadCount");
 	general.checkGLErrors = iniReader.getValue<bool>("general", "checkGLErrors");
-	general.checkCLErrors = iniReader.getValue<bool>("general", "checkCLErrors");
 
 	network.isClient = iniReader.getValue<bool>("network", "isClient");
 	network.isServer = iniReader.getValue<bool>("network", "isServer");

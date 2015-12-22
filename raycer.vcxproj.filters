@@ -22,9 +22,6 @@
     <Filter Include="Filters">
       <UniqueIdentifier>{27c18fe1-4130-47f8-8031-68bbc1b98e86}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Primitives">
-      <UniqueIdentifier>{97fd6641-da6b-4d45-aeb2-2bd03cc09230}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Rendering">
       <UniqueIdentifier>{5bd90a75-800b-404c-bb10-7b8d45dc6e4b}</UniqueIdentifier>
     </Filter>
@@ -142,12 +139,6 @@
     <ClCompile Include="src\Tests\PolynomialTest.cpp">
       <Filter>Tests</Filter>
     </ClCompile>
-    <ClCompile Include="src\Utils\ObjModelLoader.cpp">
-      <Filter>Utils</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Utils\PlyModelLoader.cpp">
-      <Filter>Utils</Filter>
-    </ClCompile>
     <ClCompile Include="src\stdafx.cpp" />
     <ClCompile Include="src\Tests\ModelLoaderTest.cpp">
       <Filter>Tests</Filter>
@@ -161,9 +152,6 @@
       <Filter>Utils</Filter>
     </ClCompile>
     <ClCompile Include="src\Math\Vector4.cpp">
-      <Filter>Math</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Math\ONB.cpp">
       <Filter>Math</Filter>
     </ClCompile>
     <ClCompile Include="src\Filters\BellFilter.cpp">
@@ -289,39 +277,6 @@
     <ClCompile Include="src\Rendering\Text.cpp">
       <Filter>Rendering</Filter>
     </ClCompile>
-    <ClCompile Include="src\Primitives\BlinnBlob.cpp">
-      <Filter>Primitives</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Primitives\Box.cpp">
-      <Filter>Primitives</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Primitives\CSG.cpp">
-      <Filter>Primitives</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Primitives\Cylinder.cpp">
-      <Filter>Primitives</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Primitives\FlatBVH.cpp">
-      <Filter>Primitives</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Primitives\Instance.cpp">
-      <Filter>Primitives</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Primitives\Plane.cpp">
-      <Filter>Primitives</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Primitives\PrimitiveGroup.cpp">
-      <Filter>Primitives</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Primitives\Sphere.cpp">
-      <Filter>Primitives</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Primitives\Torus.cpp">
-      <Filter>Primitives</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Primitives\Triangle.cpp">
-      <Filter>Primitives</Filter>
-    </ClCompile>
     <ClCompile Include="src\Samplers\CenterSampler.cpp">
       <Filter>Samplers</Filter>
     </ClCompile>
@@ -342,6 +297,18 @@
     </ClCompile>
     <ClCompile Include="src\Samplers\Sampler.cpp">
       <Filter>Samplers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Tracing\BVH.cpp">
+      <Filter>Tracing</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Tracing\Triangle.cpp">
+      <Filter>Tracing</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Tracing\ONB.cpp">
+      <Filter>Tracing</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Utils\ModelLoader.cpp">
+      <Filter>Utils</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -419,9 +386,6 @@
       <Filter>Utils</Filter>
     </ClInclude>
     <ClInclude Include="src\Math\Vector4.h">
-      <Filter>Math</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Math\ONB.h">
       <Filter>Math</Filter>
     </ClInclude>
     <ClInclude Include="src\Filters\BellFilter.h">
@@ -565,42 +529,6 @@
     <ClInclude Include="src\Rendering\Text.h">
       <Filter>Rendering</Filter>
     </ClInclude>
-    <ClInclude Include="src\Primitives\BlinnBlob.h">
-      <Filter>Primitives</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Primitives\Box.h">
-      <Filter>Primitives</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Primitives\CSG.h">
-      <Filter>Primitives</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Primitives\Cylinder.h">
-      <Filter>Primitives</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Primitives\FlatBVH.h">
-      <Filter>Primitives</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Primitives\Instance.h">
-      <Filter>Primitives</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Primitives\Plane.h">
-      <Filter>Primitives</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Primitives\Primitive.h">
-      <Filter>Primitives</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Primitives\PrimitiveGroup.h">
-      <Filter>Primitives</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Primitives\Sphere.h">
-      <Filter>Primitives</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Primitives\Torus.h">
-      <Filter>Primitives</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Primitives\Triangle.h">
-      <Filter>Primitives</Filter>
-    </ClInclude>
     <ClInclude Include="src\Samplers\CenterSampler.h">
       <Filter>Samplers</Filter>
     </ClInclude>
@@ -621,6 +549,15 @@
     </ClInclude>
     <ClInclude Include="src\Samplers\Sampler.h">
       <Filter>Samplers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Tracing\BVH.h">
+      <Filter>Tracing</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Tracing\Triangle.h">
+      <Filter>Tracing</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Tracing\ONB.h">
+      <Filter>Tracing</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

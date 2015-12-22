@@ -32,7 +32,7 @@ namespace
 		return StringUtils::parseDouble(result);
 	}
 
-	void processMaterialFile(const std::string& objFileDirectory, const std::string& mtlFilePath, const ModelLoaderInfo& info, ModelLoaderResult& result, std::map<std::string, uint64_t>& materialsMap, uint64_t& currentId)
+	void processMaterialFile(const std::string& objFileDirectory, const std::string& mtlFilePath, ModelLoaderResult& result, std::map<std::string, uint64_t>& materialsMap, uint64_t& currentId)
 	{
 		std::string absoluteMtlFilePath = getAbsolutePath(objFileDirectory, mtlFilePath);
 		App::getLog().logInfo("Reading MTL file (%s)", absoluteMtlFilePath);
@@ -41,7 +41,7 @@ namespace
 		if (!file.good())
 			throw std::runtime_error("Could not open the MTL file");
 
-		Material currentMaterial = info.baseMaterial;
+		Material currentMaterial;
 		bool materialPending = false;
 
 		std::string line;
@@ -64,7 +64,7 @@ namespace
 
 				materialPending = true;
 
-				currentMaterial = info.baseMaterial;
+				currentMaterial = Material();
 				currentMaterial.id = ++currentId;
 
 				StringUtils::readUntilSpace(line, lineIndex, part);
@@ -212,7 +212,7 @@ namespace
 			result.materials.push_back(currentMaterial);
 	}
 
-	void processFace(const std::string& line, std::vector<Vector3>& vertices, std::vector<Vector3>& normals, std::vector<Vector2>& texcoords, const ModelLoaderInfo& info, ModelLoaderResult& result, PrimitiveGroup& combinedGroup, uint64_t& currentId, uint64_t currentMaterialId)
+	void processFace(const std::string& line, std::vector<Vector3>& vertices, std::vector<Vector3>& normals, std::vector<Vector2>& texcoords, ModelLoaderResult& result, uint64_t& currentId, uint64_t currentMaterialId)
 	{
 		Log& log = App::getLog();
 
@@ -307,14 +307,7 @@ namespace
 			Triangle triangle;
 			triangle.id = ++currentId;
 			triangle.materialId = currentMaterialId;
-			triangle.invisible = info.invisibleTriangles;
-
-			if (info.enableGroups && result.groups.size() > 0)
-				result.groups.back().primitiveIds.push_back(triangle.id);
-
-			if (info.enableCombinedGroup)
-				combinedGroup.primitiveIds.push_back(triangle.id);
-
+			
 			triangle.vertices[0] = vertices[vertexIndices[0]];
 			triangle.vertices[1] = vertices[vertexIndices[i - 1]];
 			triangle.vertices[2] = vertices[vertexIndices[i]];
@@ -346,7 +339,7 @@ namespace
 	}
 }
 
-ModelLoaderResult ModelLoader::readObjFile(const ModelLoaderInfo& info)
+ModelLoaderResult ModelLoader::load(const ModelLoaderInfo& info)
 {
 	Log& log = App::getLog();
 
@@ -355,14 +348,6 @@ ModelLoaderResult ModelLoader::readObjFile(const ModelLoaderInfo& info)
 	auto startTime = std::chrono::high_resolution_clock::now();
 
 	ModelLoaderResult result;
-
-	PrimitiveGroup combinedGroup;
-	combinedGroup.id = info.combinedGroupId;
-	combinedGroup.invisible = info.invisibleCombinedGroup;
-
-	Instance combinedGroupInstance;
-	combinedGroupInstance.id = info.combinedGroupInstanceId;
-	combinedGroupInstance.primitiveId = combinedGroup.id;
 
 	uint64_t currentId = info.idStartOffset;
 	uint64_t currentMaterialId = info.defaultMaterialId;
@@ -400,25 +385,12 @@ ModelLoaderResult ModelLoader::readObjFile(const ModelLoaderInfo& info)
 		if (part.size() == 0)
 			continue;
 
-		if (part == "mtllib" && !info.ignoreMaterials) // new material file
+		if (part == "mtllib") // new material file
 		{
 			StringUtils::readUntilSpace(line, lineIndex, part);
-			processMaterialFile(objFileDirectory, part, info, result, materialsMap, currentId);
+			processMaterialFile(objFileDirectory, part, result, materialsMap, currentId);
 		}
-		else if (part == "g" && info.enableGroups) // new group
-		{
-			result.groups.push_back(PrimitiveGroup());
-			result.groups.back().id = ++currentId;
-			result.groups.back().invisible = info.invisibleGroups;
-
-			if (info.enableGroupsInstances)
-			{
-				result.instances.push_back(Instance());
-				result.instances.back().id = ++currentId;
-				result.instances.back().primitiveId = result.groups.back().id;
-			}
-		}
-		else if (part == "usemtl" && !info.ignoreMaterials) // select material
+		else if (part == "usemtl") // select material
 		{
 			StringUtils::readUntilSpace(line, lineIndex, part);
 
@@ -460,23 +432,15 @@ ModelLoaderResult ModelLoader::readObjFile(const ModelLoaderInfo& info)
 			texcoords.push_back(texcoord);
 		}
 		else if (part == "f") // face
-			processFace(line.substr(lineIndex), vertices, normals, texcoords, info, result, combinedGroup, currentId, currentMaterialId);
+			processFace(line.substr(lineIndex), vertices, normals, texcoords, result, currentId, currentMaterialId);
 	}
 
 	fclose(file);
 
-	if (info.enableCombinedGroup)
-	{
-		result.groups.push_back(combinedGroup);
-
-		if (info.enableCombinedGroupInstance)
-			result.instances.push_back(combinedGroupInstance);
-	}
-
 	auto elapsedTime = std::chrono::high_resolution_clock::now() - startTime;
 	auto milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(elapsedTime).count();
 
-	log.logInfo("OBJ file reading finished (time: %d ms, groups: %s, triangles: %s, materials: %s, textures: %s)", milliseconds, result.groups.size(), result.triangles.size(), result.materials.size(), result.textures.size());
+	log.logInfo("OBJ file reading finished (time: %d ms, triangles: %s, materials: %s, textures: %s)", milliseconds, result.triangles.size(), result.materials.size(), result.textures.size());
 
 	return result;
 }

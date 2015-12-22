@@ -166,7 +166,9 @@ Color Tracer::generateCameraSamples(const Scene& scene, const Vector2& pixelCoor
 	assert(scene.general.cameraSampleCountSqrt >= 1);
 
 	Ray ray;
-	bool isValidRay = scene.camera.getRay(pixelCoordinate, ray, time);
+	ray.time = time;
+
+	bool isValidRay = scene.camera.getRay(pixelCoordinate, ray);
 
 	if (scene.general.cameraSampleCountSqrt == 1)
 	{
@@ -184,10 +186,9 @@ Color Tracer::generateCameraSamples(const Scene& scene, const Vector2& pixelCoor
 	double apertureSize = scene.camera.apertureSize;
 	double focalDistance = scene.camera.focalDistance;
 
-	CameraState cameraState = scene.camera.getCameraState(time);
-	Vector3 cameraPosition = cameraState.position;
-	Vector3 cameraRight = cameraState.right;
-	Vector3 cameraUp = cameraState.up;
+	Vector3 cameraPosition = scene.camera.position;
+	Vector3 cameraRight = scene.camera.right;
+	Vector3 cameraUp = scene.camera.up;
 
 	Color sampledPixelColor;
 	uint64_t n = scene.general.cameraSampleCountSqrt;
@@ -197,8 +198,10 @@ Color Tracer::generateCameraSamples(const Scene& scene, const Vector2& pixelCoor
 		for (uint64_t x = 0; x < n; ++x)
 		{
 			Ray primaryRay;
+			primaryRay.time = time;
+
 			Vector2 jitter = (sampler->getSample2D(x, y, n, n, permutation, generator) - Vector2(0.5, 0.5)) * 2.0;
-			isValidRay = scene.camera.getRay(pixelCoordinate + jitter, primaryRay, time);
+			isValidRay = scene.camera.getRay(pixelCoordinate + jitter, primaryRay);
 
 			if (!isValidRay)
 			{

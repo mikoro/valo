@@ -108,9 +108,6 @@ void DefaultState::update(double timeStep)
 	if (windowRunner.keyWasPressed(GLFW_KEY_N))
 		scene.general.enableNormalMapping = !scene.general.enableNormalMapping;
 
-	if (windowRunner.keyWasPressed(GLFW_KEY_B))
-		scene.rebuildRootBVH();
-
 	if (windowRunner.keyWasPressed(GLFW_KEY_F4))
 	{
 		if (scene.general.tracerType == TracerType::RAY)
@@ -146,9 +143,6 @@ void DefaultState::update(double timeStep)
 			log.logInfo("Selected passthrough tone mapper");
 		}
 	}
-
-	if (windowRunner.keyWasPressed(GLFW_KEY_F6))
-		scene.general.visualizeDepth = !scene.general.visualizeDepth;
 
 	if (windowRunner.keyWasPressed(GLFW_KEY_F7))
 	{
@@ -225,7 +219,7 @@ void DefaultState::update(double timeStep)
 		scene.tonemapper.key = std::max(0.0, scene.tonemapper.key);
 	}
 
-	scene.camera.update(scene, timeStep);
+	scene.camera.update(timeStep);
 }
 
 void DefaultState::render(double timeStep, double interpolation)
@@ -245,7 +239,7 @@ void DefaultState::render(double timeStep, double interpolation)
 	state.pixelStartOffset = 0;
 	state.pixelCount = state.filmWidth * state.filmHeight;
 
-	if (scene.general.tracerType == TracerType::RAY || (scene.general.tracerType == TracerType::PATH && scene.camera.hasMoved()))
+	if (scene.general.tracerType == TracerType::RAY || (scene.general.tracerType == TracerType::PATH && scene.camera.isMoving()))
 	{
 		film.clear();
 		sampleCount = 0;
@@ -267,7 +261,7 @@ void DefaultState::render(double timeStep, double interpolation)
 		text.drawText(5.0, double(windowRunner.getWindowHeight() - 3 * settings.window.defaultFontSize), Color(255, 255, 255, 255), tfm::format("Pos: (%.2f, %.2f, %.2f)", scene.camera.position.x, scene.camera.position.y, scene.camera.position.z));
 		text.drawText(5.0, double(windowRunner.getWindowHeight() - 4 * settings.window.defaultFontSize - 2), Color(255, 255, 255, 255), tfm::format("Rot: (%.2f, %.2f, %.2f)", scene.camera.orientation.pitch, scene.camera.orientation.yaw, scene.camera.orientation.roll));
 		text.drawText(5.0, double(windowRunner.getWindowHeight() - 5 * settings.window.defaultFontSize - 4), Color(255, 255, 255, 255), tfm::format("Pix: (%d, %d, %d)", scaledMouseX, scaledMouseY, scaledMouseIndex));
-		text.drawText(5.0, double(windowRunner.getWindowHeight() - 6 * settings.window.defaultFontSize - 6), Color(255, 255, 255, 255), tfm::format("Mov: %s", scene.camera.hasMoved()));
+		text.drawText(5.0, double(windowRunner.getWindowHeight() - 6 * settings.window.defaultFontSize - 6), Color(255, 255, 255, 255), tfm::format("Mov: %s", scene.camera.isMoving()));
 
 		if (scene.general.tracerType == TracerType::PATH)
 			text.drawText(5.0, double(windowRunner.getWindowHeight() - 7 * settings.window.defaultFontSize - 8), Color(255, 255, 255, 255), tfm::format("Sam: %s", sampleCount));

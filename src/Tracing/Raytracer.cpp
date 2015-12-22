@@ -9,12 +9,11 @@
 #include "Tracing/Intersection.h"
 #include "Tracing/Material.h"
 #include "Tracing/Lights.h"
-#include "Primitives/Primitive.h"
 #include "Textures/Texture.h"
 #include "Math/Vector2.h"
 #include "Math/Vector3.h"
 #include "Rendering/Color.h"
-#include "Math/ONB.h"
+#include "Tracing/ONB.h"
 
 using namespace Raycer;
 
@@ -30,26 +29,13 @@ Color Raytracer::traceRecursive(const Scene& scene, const Ray& ray, Intersection
 
 	if (interrupted)
 		return finalColor;
-
-	std::vector<Intersection> intersections;
-
-	for (Primitive* primitive : scene.primitives.visible)
-	{
-		intersections.clear();
-		primitive->intersect(ray, intersection, intersections);
-	}
+	
+	scene.bvh.intersect(ray, intersection);
 
 	if (!intersection.wasFound)
 		return finalColor;
 
-	if (scene.general.visualizeDepth)
-	{
-		double depth = 1.0 - std::min(intersection.distance, scene.general.visualizeDepthMaxDistance) / scene.general.visualizeDepthMaxDistance;
-		depth = pow(depth, 2.0);
-		return Color(depth, depth, depth);
-	}
-
-	const Material* material = intersection.primitive->material;
+	const Material* material = intersection.material;
 
 	if (material->skipLighting)
 	{
@@ -89,9 +75,6 @@ Color Raytracer::traceRecursive(const Scene& scene, const Ray& ray, Intersection
 	{
 		if (scene.simpleFog.enabled)
 			finalColor = calculateSimpleFogColor(scene, intersection, finalColor);
-
-		if (scene.volumetricFog.enabled)
-			finalColor = calculateVolumetricFogColor(scene, ray, intersection, finalColor, generator);
 	}
 	
 	return finalColor;
@@ -99,7 +82,7 @@ Color Raytracer::traceRecursive(const Scene& scene, const Ray& ray, Intersection
 
 void Raytracer::calculateNormalMapping(Intersection& intersection)
 {
-	const Material* material = intersection.primitive->material;
+	const Material* material = intersection.material;
 	TextureNormalDataType normalType = TextureNormalDataType::NONE;
 	Vector3 normalData = material->normalMapTexture->getNormalData(intersection.texcoord, intersection.position, normalType);
 
@@ -125,7 +108,7 @@ void Raytracer::calculateNormalMapping(Intersection& intersection)
 
 void Raytracer::calculateRayReflectanceAndTransmittance(const Ray& ray, const Intersection& intersection, double& rayReflectance, double& rayTransmittance)
 {
-	const Material* material = intersection.primitive->material;
+	const Material* material = intersection.material;
 
 	double fresnelReflectance = 1.0;
 	double fresnelTransmittance = 1.0;
@@ -157,7 +140,7 @@ void Raytracer::calculateRayReflectanceAndTransmittance(const Ray& ray, const In
 
 Color Raytracer::calculateReflectedColor(const Scene& scene, const Ray& ray, const Intersection& intersection, double rayReflectance, uint64_t iteration, std::mt19937& generator, const std::atomic<bool>& interrupted)
 {
-	const Material* material = intersection.primitive->material;
+	const Material* material = intersection.material;
 
 	Vector3 reflectionDirection = ray.direction + 2.0 * -ray.direction.dot(intersection.normal) * intersection.normal;
 	reflectionDirection.normalize();
@@ -229,7 +212,7 @@ Color Raytracer::calculateReflectedColor(const Scene& scene, const Ray& ray, con
 
 Color Raytracer::calculateTransmittedColor(const Scene& scene, const Ray& ray, const Intersection& intersection, double rayTransmittance, uint64_t iteration, std::mt19937& generator, const std::atomic<bool>& interrupted)
 {
-	const Material* material = intersection.primitive->material;
+	const Material* material = intersection.material;
 
 	double cosine1 = ray.direction.dot(intersection.normal);
 	bool isOutside = cosine1 < 0.0;
@@ -313,7 +296,7 @@ Color Raytracer::calculateLightColor(const Scene& scene, const Ray& ray, const I
 {
 	Color lightColor;
 	Vector3 directionToCamera = -ray.direction;
-	const Material* material = intersection.primitive->material;
+	const Material* material = intersection.material;
 
 	Color mappedAmbientReflectance = Color(1.0, 1.0, 1.0);
 	Color mappedDiffuseReflectance = Color(1.0, 1.0, 1.0);
@@ -424,34 +407,6 @@ Color Raytracer::calculateSimpleFogColor(const Scene& scene, const Intersection&
 	return Color::lerp(pixelColor, scene.simpleFog.color, t1);
 }
 
-Color Raytracer::calculateVolumetricFogColor(const Scene& scene, const Ray& ray, const Intersection& intersection, const Color& pixelColor, std::mt19937& generator)
-{
-	// TODO: needs improving, very quick ad hoc implementation
-
-	double stepSize = intersection.distance / scene.volumetricFog.steps;
-	double currentDistance = 0.0;
-	double transparency = 1.0;
-
-	Color addedLight;
-	Intersection sampleIntersection;
-
-	for (uint64_t i = 0; i < scene.volumetricFog.steps; ++i)
-	{
-		transparency = (1.0 - stepSize * scene.volumetricFog.density) * transparency;
-
-		for (const PointLight& light : scene.lights.pointLights)
-		{
-			sampleIntersection.position = ray.origin + currentDistance * ray.direction;
-			double shadowAmount = calculateShadowAmount(scene, ray, sampleIntersection, light, generator);
-			addedLight += (1.0 - shadowAmount) * scene.volumetricFog.color * stepSize * scene.volumetricFog.density * transparency;
-		}
-
-		currentDistance += stepSize;
-	}
-
-	return transparency * pixelColor + addedLight;
-}
-
 double Raytracer::calculateAmbientOcclusionAmount(const Scene& scene, const Intersection& intersection, std::mt19937& generator)
 {
 	Sampler* sampler = samplers[scene.lights.ambientLight.ambientOcclusionSamplerType].get();
@@ -470,7 +425,6 @@ double Raytracer::calculateAmbientOcclusionAmount(const Scene& scene, const Inte
 
 			Ray sampleRay;
 			Intersection sampleIntersection;
-			std::vector<Intersection> sampleIntersections;
 
 			sampleRay.origin = intersection.position + sampleDirection * scene.general.rayStartOffset;
 			sampleRay.direction = sampleDirection;
@@ -478,16 +432,8 @@ double Raytracer::calculateAmbientOcclusionAmount(const Scene& scene, const Inte
 			sampleRay.maxDistance = scene.lights.ambientLight.ambientOcclusionMaxSampleDistance;
 			sampleRay.precalculate();
 
-			for (Primitive* primitive : scene.primitives.visible)
-			{
-				sampleIntersections.clear();
-
-				if (primitive->intersect(sampleRay, sampleIntersection, sampleIntersections))
-				{
-					ambientOcclusion += 1.0;
-					break;
-				}
-			}
+			if (scene.bvh.intersect(sampleRay, sampleIntersection))
+				ambientOcclusion += 1.0;
 		}
 	}
 
@@ -500,7 +446,6 @@ double Raytracer::calculateShadowAmount(const Scene& scene, const Ray& ray, cons
 
 	Ray shadowRay;
 	Intersection shadowIntersection;
-	std::vector<Intersection> shadowIntersections;
 
 	shadowRay.origin = intersection.position + directionToLight * scene.general.rayStartOffset;
 	shadowRay.direction = directionToLight;
@@ -510,13 +455,8 @@ double Raytracer::calculateShadowAmount(const Scene& scene, const Ray& ray, cons
 	shadowRay.time = ray.time;
 	shadowRay.precalculate();
 
-	for (Primitive* primitive : scene.primitives.visible)
-	{
-		shadowIntersections.clear();
-
-		if (primitive->intersect(shadowRay, shadowIntersection, shadowIntersections))
-			return 1.0;
-	}
+	if (scene.bvh.intersect(shadowRay, shadowIntersection))
+		return 1.0;
 
 	return 0.0;
 }
@@ -529,7 +469,6 @@ double Raytracer::calculateShadowAmount(const Scene& scene, const Ray& ray, cons
 	{
 		Ray shadowRay;
 		Intersection shadowIntersection;
-		std::vector<Intersection> shadowIntersections;
 
 		shadowRay.origin = intersection.position + directionToLight * scene.general.rayStartOffset;
 		shadowRay.direction = directionToLight;
@@ -539,13 +478,8 @@ double Raytracer::calculateShadowAmount(const Scene& scene, const Ray& ray, cons
 		shadowRay.time = ray.time;
 		shadowRay.precalculate();
 
-		for (Primitive* primitive : scene.primitives.visible)
-		{
-			shadowIntersections.clear();
-
-			if (primitive->intersect(shadowRay, shadowIntersection, shadowIntersections))
-				return 1.0;
-		}
+		if (scene.bvh.intersect(shadowRay, shadowIntersection))
+			return 1.0;
 
 		return 0.0;
 	}
@@ -570,7 +504,6 @@ double Raytracer::calculateShadowAmount(const Scene& scene, const Ray& ray, cons
 
 			Ray shadowRay;
 			Intersection shadowIntersection;
-			std::vector<Intersection> shadowIntersections;
 
 			shadowRay.origin = intersection.position + newDirectionToLight * scene.general.rayStartOffset;
 			shadowRay.direction = newDirectionToLight;
@@ -580,16 +513,8 @@ double Raytracer::calculateShadowAmount(const Scene& scene, const Ray& ray, cons
 			shadowRay.time = ray.time;
 			shadowRay.precalculate();
 
-			for (Primitive* primitive : scene.primitives.visible)
-			{
-				shadowIntersections.clear();
-
-				if (primitive->intersect(shadowRay, shadowIntersection, shadowIntersections))
-				{
-					shadowAmount += 1.0;
-					break;
-				}
-			}
+			if (scene.bvh.intersect(shadowRay, shadowIntersection))
+				shadowAmount += 1.0;
 		}
 	}
 

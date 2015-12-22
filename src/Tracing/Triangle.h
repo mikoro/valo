@@ -3,11 +3,9 @@
 
 #pragma once
 
-#include <vector>
-
 #include "cereal/cereal.hpp"
 
-#include "Primitives/Primitive.h"
+#include "Tracing/AABB.h"
 #include "Math/Vector3.h"
 #include "Math/Vector2.h"
 
@@ -15,20 +13,18 @@ namespace Raycer
 {
 	class Ray;
 	struct Intersection;
-	class AABB;
-	class EulerAngle;
+	class Material;
 
-	class Triangle : public Primitive
+	class Triangle
 	{
 	public:
 
-		friend class Scene;
-		friend class CLScene;
+		void initialize();
+		bool intersect(const Ray& ray, Intersection& intersection) const;
+		AABB getAABB() const;
 
-		void initialize(const Scene& scene) override;
-		bool intersect(const Ray& ray, Intersection& intersection, std::vector<Intersection>& intersections) override;
-		AABB getAABB() const override;
-		void transform(const Vector3& scale, const EulerAngle& rotate, const Vector3& translate) override;
+		uint64_t id = 0;
+		uint64_t materialId = 0;
 
 		Vector3 vertices[3];
 		Vector3 normals[3];
@@ -37,6 +33,10 @@ namespace Raycer
 		Vector3 tangent;
 		Vector3 bitangent;
 
+		AABB aabb;
+
+		Material* material = nullptr;
+
 	private:
 
 		friend class cereal::access;
@@ -44,7 +44,8 @@ namespace Raycer
 		template <class Archive>
 		void serialize(Archive& ar)
 		{
-			ar(cereal::make_nvp("primitive", cereal::base_class<Primitive>(this)),
+			ar(CEREAL_NVP(id),
+				CEREAL_NVP(materialId),
 				CEREAL_NVP(vertices),
 				CEREAL_NVP(normals),
 				CEREAL_NVP(texcoords));

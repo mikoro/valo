@@ -7,7 +7,6 @@
 #include "Tracing/Ray.h"
 #include "Tracing/Scene.h"
 #include "Tracing/Intersection.h"
-#include "Primitives/Primitive.h"
 #include "App.h"
 #include "Settings.h"
 #include "Math/MathUtils.h"
@@ -15,10 +14,6 @@
 #include "Runners/WindowRunner.h"
 
 using namespace Raycer;
-
-Camera::Camera()
-{
-}
 
 void Camera::initialize()
 {
@@ -45,79 +40,11 @@ void Camera::reset()
 	smoothAngularAcceleration = Vector3(0.0, 0.0, 0.0);
 }
 
-void Camera::update(const Scene& scene, double timeStep)
+void Camera::update(double timeStep)
 {
 	WindowRunner& windowRunner = App::getWindowRunner();
 	Settings& settings = App::getSettings();
 	MouseInfo mouseInfo = windowRunner.getMouseInfo();
-
-	ONB onb = ONB::fromNormal(orientation.getDirection());
-	Vector3 forward = onb.w;
-	Vector3 right = onb.u;
-	Vector3 up = onb.v;
-
-	// PRIMITIVE SELECTION AND MOVEMENT //
-
-	if (windowRunner.mouseWasPressed(GLFW_MOUSE_BUTTON_RIGHT))
-	{
-		if (!isMovingPrimitive)
-		{
-			Vector2 pixelCoordinate;
-			pixelCoordinate.x = double(mouseInfo.scaledX);
-			pixelCoordinate.y = double(mouseInfo.scaledY);
-
-			Ray ray;
-			bool isValid = getRay(pixelCoordinate, ray, 0.0);
-			Intersection intersection;
-			std::vector<Intersection> intersections;
-
-			if (isValid)
-			{
-				for (Primitive* primitive : scene.primitives.visible)
-				{
-					intersections.clear();
-					primitive->intersect(ray, intersection, intersections);
-				}
-
-				if (intersection.wasFound)
-				{
-					isMovingPrimitive = true;
-					movingPrimitive = (intersection.instancePrimitive != nullptr) ? intersection.instancePrimitive : intersection.primitive;
-				}
-			}
-		}
-		else
-			isMovingPrimitive = false;
-	}
-
-	if (isMovingPrimitive && movingPrimitive != nullptr)
-	{
-		Vector3 scale(1.0, 1.0, 1.0);
-		EulerAngle rotate(0.0, 0.0, 0.0);
-		Vector3 translate(0.0, 0.0, 0.0);
-
-		if (windowRunner.keyIsDown(GLFW_KEY_SPACE))
-		{
-			rotate.pitch -= mouseInfo.deltaY / 5.0;
-
-			if (windowRunner.mouseIsDown(GLFW_MOUSE_BUTTON_MIDDLE))
-				rotate.roll -= mouseInfo.deltaX / 5.0;
-			else
-				rotate.yaw += mouseInfo.deltaX / 5.0;
-		}
-		else
-		{
-			if (windowRunner.mouseIsDown(GLFW_MOUSE_BUTTON_MIDDLE))
-				translate += Vector3(forward.x, 0.0, forward.z).normalized() * double(mouseInfo.deltaY) / 100.0;
-			else
-				translate += Vector3::UP * double(mouseInfo.deltaY) / 100.0;
-
-			translate += right * double(mouseInfo.deltaX) / 100.0;
-		}
-
-		scale *= (1.0 + windowRunner.getMouseWheelScroll() * 0.05);
-		movingPrimitive->transform(scale, rotate, translate);
-	}
 
 	// LENS STUFF //
 
@@ -189,9 +116,6 @@ void Camera::update(const Scene& scene, double timeStep)
 		smoothAngularAcceleration.x += mouseInfo.deltaY * settings.camera.mouseSpeed;
 		angularVelocity.y = -mouseInfo.deltaX * settings.camera.mouseSpeed;
 		angularVelocity.x = mouseInfo.deltaY * settings.camera.mouseSpeed;
-
-		if (!settings.camera.freeLook)
-			isMovingPrimitive = false;
 	}
 
 	if (windowRunner.keyWasPressed(GLFW_KEY_INSERT))
@@ -247,7 +171,7 @@ void Camera::update(const Scene& scene, double timeStep)
 		velocity += up * moveSpeed;
 	}
 
-	cameraHasMoved = false;
+	cameraIsMoving = false;
 
 	if (settings.camera.smoothMovement)
 	{
@@ -259,7 +183,7 @@ void Camera::update(const Scene& scene, double timeStep)
 		orientation.pitch += smoothAngularVelocity.x * timeStep;
 
 		if (!smoothVelocity.isZero() || !smoothAngularVelocity.isZero())
-			cameraHasMoved = true;
+			cameraIsMoving = true;
 	}
 	else
 	{
@@ -268,54 +192,26 @@ void Camera::update(const Scene& scene, double timeStep)
 		orientation.pitch += angularVelocity.x * timeStep;
 
 		if (!velocity.isZero() || !angularVelocity.isZero())
-			cameraHasMoved = true;
+			cameraIsMoving = true;
 	}
 
 	orientation.clampPitch();
 	orientation.normalize();
 
-	onb = ONB::fromNormal(orientation.getDirection());
-
-	cameraState.position = position;
-	cameraState.forward = onb.w;
-	cameraState.right = onb.u;
-	cameraState.up = onb.v;
-	cameraState.imagePlaneCenter = position + (forward * imagePlaneDistance);
+	ONB onb = ONB::fromNormal(orientation.getDirection());
+	forward = onb.w;
+	right = onb.u;
+	up = onb.v;
+	imagePlaneCenter = position + (forward * imagePlaneDistance);
 }
 
-bool Camera::hasMoved() const
+bool Camera::isMoving() const
 {
-	return cameraHasMoved;
+	return cameraIsMoving;
 }
 
-CameraState Camera::getCameraState(double time) const
+bool Camera::getRay(const Vector2& pixelCoordinate, Ray& ray) const
 {
-	if (!isTimeVariant)
-		return cameraState;
-	
-	CameraState newCameraState;
-	ONB onb = ONB::fromNormal((orientation + time * rotateInTime).getDirection());
-
-	newCameraState.position = position + time * translateInTime;
-	newCameraState.forward = onb.w;
-	newCameraState.right = onb.u;
-	newCameraState.up = onb.v;
-	newCameraState.imagePlaneCenter = newCameraState.position + (newCameraState.forward * imagePlaneDistance);
-
-	return newCameraState;
-}
-
-bool Camera::getRay(const Vector2& pixelCoordinate, Ray& ray, double time) const
-{
-	ray.time = time;
-
-	CameraState currentCameraState = getCameraState(time);
-	Vector3 currentPosition = currentCameraState.position;
-	Vector3 forward = currentCameraState.forward;
-	Vector3 right = currentCameraState.right;
-	Vector3 up = currentCameraState.up;
-	Vector3 imagePlaneCenter = currentCameraState.imagePlaneCenter;
-
 	switch (projectionType)
 	{
 		case CameraProjectionType::PERSPECTIVE:
@@ -325,8 +221,8 @@ bool Camera::getRay(const Vector2& pixelCoordinate, Ray& ray, double time) const
 
 			Vector3 imagePlanePixelPosition = imagePlaneCenter + (dx * right) + (dy * aspectRatio * up);
 
-			ray.origin = currentPosition;
-			ray.direction = (imagePlanePixelPosition - currentPosition).normalized();
+			ray.origin = position;
+			ray.direction = (imagePlanePixelPosition - position).normalized();
 
 		} break;
 
@@ -335,7 +231,7 @@ bool Camera::getRay(const Vector2& pixelCoordinate, Ray& ray, double time) const
 			double dx = (pixelCoordinate.x / imagePlaneWidth) - 0.5;
 			double dy = (pixelCoordinate.y / imagePlaneHeight) - 0.5;
 
-			ray.origin = currentPosition + (dx * orthoSize * right) + (dy * orthoSize * aspectRatio * up);
+			ray.origin = position + (dx * orthoSize * right) + (dy * orthoSize * aspectRatio * up);
 			ray.direction = forward;
 
 		} break;
@@ -361,7 +257,7 @@ bool Camera::getRay(const Vector2& pixelCoordinate, Ray& ray, double time) const
 			double v = sin(theta) * sin(phi);
 			double w = cos(theta);
 
-			ray.origin = currentPosition;
+			ray.origin = position;
 			ray.direction = u * right + v * up + w * forward;
 
 		} break;

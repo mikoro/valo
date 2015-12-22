@@ -31,18 +31,12 @@ Color PathTracer::traceRecursive(const Scene& scene, const Ray& ray, uint64_t it
 		return Color::BLACK;
 
 	Intersection intersection;
-	std::vector<Intersection> intersections;
-
-	for (Primitive* primitive : scene.primitives.visible)
-	{
-		intersections.clear();
-		primitive->intersect(ray, intersection, intersections);
-	}
+	scene.bvh.intersect(ray, intersection);
 
 	if (!intersection.wasFound)
 		return Color::BLACK;
 
-	Material* material = intersection.primitive->material;
+	Material* material = intersection.material;
 
 	if (material->isEmissive)
 	{

@@ -12,6 +12,7 @@ textures
  - EWA texture filtering
 
 misc
+ - cereal to public
  - remove csg suppport
  - remove primitives and use triangles only
  - remove some textures

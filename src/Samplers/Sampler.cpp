@@ -12,7 +12,7 @@
 #include "Samplers/PoissonDiscSampler.h"
 #include "Math/Vector2.h"
 #include "Math/Vector3.h"
-#include "Math/ONB.h"
+#include "Tracing/ONB.h"
 #include "Math/MathUtils.h"
 
 using namespace Raycer;

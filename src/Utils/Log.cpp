@@ -36,7 +36,7 @@ namespace
 	}
 }
 
-Raycer::Log::Log()
+Log::Log()
 {
 }
 

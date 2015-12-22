@@ -1,25 +1,20 @@
-// Copyright © 2015 Mikko Ronkainen <firstname@mikkoronkainen.com>
+﻿// Copyright © 2015 Mikko Ronkainen <firstname@mikkoronkainen.com>
 // License: MIT, see the LICENSE file.
 
 #include "stdafx.h"
 
-#include "Primitives/FlatBVH.h"
+#include "Tracing/BVH.h"
 #include "Tracing/Scene.h"
 #include "Tracing/Ray.h"
 #include "Tracing/Intersection.h"
+#include "Tracing/Triangle.h"
 #include "App.h"
 #include "Utils/Log.h"
 #include "Math/Vector3.h"
-#include "Math/EulerAngle.h"
 
 using namespace Raycer;
 
-void Raycer::FlatBVH::initialize(const Scene& scene)
-{
-	(void)scene;
-}
-
-bool FlatBVH::intersect(const Ray& ray, Intersection& intersection, std::vector<Intersection>& intersections)
+bool BVH::intersect(const Ray& ray, Intersection& intersection) const
 {
 	if (ray.fastOcclusion && intersection.wasFound)
 		return true;
@@ -37,14 +32,14 @@ bool FlatBVH::intersect(const Ray& ray, Intersection& intersection, std::vector<
 		// pop from stack
 		stackptr--;
 		uint64_t index = stack[stackptr];
-		FlatBVHNode flatNode = flatNodes[index];
+		BVHNode node = nodes[index];
 
 		// leaf node -> intersect with all its primitives
-		if (flatNode.rightOffset == 0)
+		if (node.rightOffset == 0)
 		{
-			for (uint64_t i = 0; i < flatNode.primitiveCount; ++i)
+			for (uint64_t i = 0; i < node.primitiveCount; ++i)
 			{
-				if (orderedPrimitives[flatNode.startOffset + i]->intersect(ray, intersection, intersections))
+				if (orderedTriangles[node.startOffset + i]->intersect(ray, intersection))
 				{
 					if (ray.fastOcclusion)
 						return true;
@@ -56,14 +51,14 @@ bool FlatBVH::intersect(const Ray& ray, Intersection& intersection, std::vector<
 		else // travel down the tree
 		{
 			// right child
-			if (flatNodes[index + uint64_t(flatNode.rightOffset)].aabb.intersects(ray))
+			if (nodes[index + uint64_t(node.rightOffset)].aabb.intersects(ray))
 			{
-				stack[stackptr] = index + uint64_t(flatNode.rightOffset);
+				stack[stackptr] = index + uint64_t(node.rightOffset);
 				stackptr++;
 			}
 
 			// left child
-			if (flatNodes[index + 1].aabb.intersects(ray))
+			if (nodes[index + 1].aabb.intersects(ray))
 			{
 				stack[stackptr] = index + 1;
 				stackptr++;
@@ -74,32 +69,25 @@ bool FlatBVH::intersect(const Ray& ray, Intersection& intersection, std::vector<
 	return wasFound;
 }
 
-AABB FlatBVH::getAABB() const
-{
-	return aabb;
-}
-
-void FlatBVH::transform(const Vector3& scale, const EulerAngle& rotate, const Vector3& translate)
-{
-	(void)scale;
-	(void)rotate;
-	(void)translate;
-}
-
-void FlatBVH::build(const std::vector<Primitive*>& primitives, const BVHBuildInfo& buildInfo)
+void BVH::build(const std::vector<Triangle>& triangles, const BVHBuildInfo& buildInfo)
 {
 	Log& log = App::getLog();
 
-	log.logInfo("Building BVH (primitives: %d)", primitives.size());
+	log.logInfo("Building BVH (triangles: %d)", triangles.size());
 
 	auto startTime = std::chrono::high_resolution_clock::now();
 
 	std::random_device rd;
 	std::mt19937 generator(rd());
 
-	FlatBVHBuildEntry stack[128];
-	orderedPrimitives = primitives;
-	flatNodes.clear();
+	BVHBuildEntry stack[128];
+	orderedTriangles.clear();
+	nodes.clear();
+
+	orderedTriangles.reserve(triangles.size());
+
+	for (const Triangle& triangle : triangles)
+		orderedTriangles.push_back(&triangle);
 
 	uint64_t stackptr = 0;
 	uint64_t nodeCount = 0;
@@ -110,7 +98,7 @@ void FlatBVH::build(const std::vector<Primitive*>& primitives, const BVHBuildInf
 
 	// push to stack
 	stack[stackptr].start = 0;
-	stack[stackptr].end = orderedPrimitives.size();
+	stack[stackptr].end = orderedTriangles.size();
 	stack[stackptr].parent = ROOT;
 	stackptr++;
 
@@ -120,35 +108,35 @@ void FlatBVH::build(const std::vector<Primitive*>& primitives, const BVHBuildInf
 		nodeCount++;
 
 		// pop from stack
-		FlatBVHNode flatNode;
-		FlatBVHBuildEntry buildEntry = stack[stackptr];
-		flatNode.rightOffset = UNVISITED;
-		flatNode.startOffset = buildEntry.start;
-		flatNode.primitiveCount = buildEntry.end - buildEntry.start;
+		BVHNode node;
+		BVHBuildEntry buildEntry = stack[stackptr];
+		node.rightOffset = UNVISITED;
+		node.startOffset = buildEntry.start;
+		node.primitiveCount = buildEntry.end - buildEntry.start;
 
 		for (uint64_t i = buildEntry.start; i < buildEntry.end; ++i)
-			flatNode.aabb.expand(orderedPrimitives[i]->getAABB());
+			node.aabb.expand(orderedTriangles[i]->getAABB());
 
 		// leaf node indicated by rightOffset == 0
-		if (flatNode.primitiveCount <= buildInfo.maxLeafSize)
+		if (node.primitiveCount <= buildInfo.maxLeafSize)
 		{
-			flatNode.rightOffset = 0;
+			node.rightOffset = 0;
 			leafCount++;
 		}
 
-		flatNodes.push_back(flatNode);
+		nodes.push_back(node);
 
 		// update the parent rightOffset when visiting its right child
 		if (buildEntry.parent != ROOT)
 		{
-			flatNodes[uint64_t(buildEntry.parent)].rightOffset++;
+			nodes[uint64_t(buildEntry.parent)].rightOffset++;
 
-			if (flatNodes[uint64_t(buildEntry.parent)].rightOffset == VISITED_TWICE)
-				flatNodes[uint64_t(buildEntry.parent)].rightOffset = int64_t(nodeCount) - 1 - buildEntry.parent;
+			if (nodes[uint64_t(buildEntry.parent)].rightOffset == VISITED_TWICE)
+				nodes[uint64_t(buildEntry.parent)].rightOffset = int64_t(nodeCount) - 1 - buildEntry.parent;
 		}
 
 		// leaf node -> no further subdivision
-		if (flatNode.rightOffset == 0)
+		if (node.rightOffset == 0)
 			continue;
 
 		uint64_t axis;
@@ -156,18 +144,18 @@ void FlatBVH::build(const std::vector<Primitive*>& primitives, const BVHBuildInf
 		actualNodeCount++;
 
 		if (buildInfo.useSAH)
-			calculateSAHSplit(axis, splitPoint, flatNode.aabb, buildInfo, buildEntry);
+			calculateSAHSplit(axis, splitPoint, node.aabb, buildInfo, buildEntry);
 		else
-			calculateSplit(axis, splitPoint, flatNode.aabb, buildInfo, buildEntry, generator);
+			calculateSplit(axis, splitPoint, node.aabb, buildInfo, buildEntry, generator);
 
 		uint64_t middle = buildEntry.start;
 
 		// partition primitive range by the split point
 		for (uint64_t i = buildEntry.start; i < buildEntry.end; ++i)
 		{
-			if (orderedPrimitives[i]->getAABB().getCenter().get(axis) <= splitPoint)
+			if (orderedTriangles[i]->getAABB().getCenter().get(axis) <= splitPoint)
 			{
-				std::swap(orderedPrimitives[i], orderedPrimitives[middle]);
+				std::swap(orderedTriangles[i], orderedTriangles[middle]);
 				middle++;
 			}
 		}
@@ -190,12 +178,11 @@ void FlatBVH::build(const std::vector<Primitive*>& primitives, const BVHBuildInf
 	}
 
 	hasBeenBuilt = true;
-	aabb = flatNodes[0].aabb;
 
-	orderedPrimitiveIds.clear();
+	orderedTriangleIds.clear();
 
-	for (const Primitive* primitive : orderedPrimitives)
-		orderedPrimitiveIds.push_back(primitive->id);
+	for (const Triangle* triangle : orderedTriangles)
+		orderedTriangleIds.push_back(triangle->id);
 
 	auto elapsedTime = std::chrono::high_resolution_clock::now() - startTime;
 	auto milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(elapsedTime).count();
@@ -203,17 +190,17 @@ void FlatBVH::build(const std::vector<Primitive*>& primitives, const BVHBuildInf
 	log.logInfo("BVH building finished (time: %d ms, nodes: %d, leafs: %d)", milliseconds, nodeCount, leafCount);
 }
 
-void FlatBVH::restore(const Scene& scene)
+void BVH::restore(const Scene& scene)
 {
-	orderedPrimitives.clear();
+	orderedTriangles.clear();
 
-	for (uint64_t primitiveId : orderedPrimitiveIds)
-		orderedPrimitives.push_back(scene.primitivesMap.at(primitiveId));
+	for (uint64_t triangleId : orderedTriangleIds)
+		orderedTriangles.push_back(scene.trianglesMap.at(triangleId));
 
 	return;
 }
 
-void FlatBVH::calculateSplit(uint64_t& axis, double& splitPoint, const AABB& nodeAABB, const BVHBuildInfo& buildInfo, const FlatBVHBuildEntry& buildEntry, std::mt19937& generator)
+void BVH::calculateSplit(uint64_t& axis, double& splitPoint, const AABB& nodeAABB, const BVHBuildInfo& buildInfo, const BVHBuildEntry& buildEntry, std::mt19937& generator)
 {
 	if (buildInfo.axisSelection == BVHAxisSelection::LARGEST)
 		axis = nodeAABB.getLargestAxis();
@@ -238,7 +225,7 @@ void FlatBVH::calculateSplit(uint64_t& axis, double& splitPoint, const AABB& nod
 		throw std::runtime_error("Unknown BVH axis split");
 }
 
-void FlatBVH::calculateSAHSplit(uint64_t& axis, double& splitPoint, const AABB& nodeAABB, const BVHBuildInfo& buildInfo, const FlatBVHBuildEntry& buildEntry)
+void BVH::calculateSAHSplit(uint64_t& axis, double& splitPoint, const AABB& nodeAABB, const BVHBuildInfo& buildInfo, const BVHBuildEntry& buildEntry)
 {
 	double lowestScore = std::numeric_limits<double>::max();
 
@@ -285,7 +272,7 @@ void FlatBVH::calculateSAHSplit(uint64_t& axis, double& splitPoint, const AABB& 
 	}
 }
 
-double FlatBVH::calculateSAHScore(uint64_t axis, double splitPoint, const AABB& nodeAABB, const FlatBVHBuildEntry& buildEntry)
+double BVH::calculateSAHScore(uint64_t axis, double splitPoint, const AABB& nodeAABB, const BVHBuildEntry& buildEntry)
 {
 	assert(buildEntry.end != buildEntry.start);
 
@@ -295,7 +282,7 @@ double FlatBVH::calculateSAHScore(uint64_t axis, double splitPoint, const AABB& 
 
 	for (uint64_t i = buildEntry.start; i < buildEntry.end; ++i)
 	{
-		AABB primitiveAABB = orderedPrimitives[i]->getAABB();
+		AABB primitiveAABB = orderedTriangles[i]->getAABB();
 
 		if (primitiveAABB.getCenter().get(axis) <= splitPoint)
 		{
@@ -320,12 +307,12 @@ double FlatBVH::calculateSAHScore(uint64_t axis, double splitPoint, const AABB& 
 	return score;
 }
 
-double FlatBVH::calculateMedianPoint(uint64_t axis, const FlatBVHBuildEntry& buildEntry)
+double BVH::calculateMedianPoint(uint64_t axis, const BVHBuildEntry& buildEntry)
 {
 	std::vector<double> centerPoints;
 
 	for (uint64_t i = buildEntry.start; i < buildEntry.end; ++i)
-		centerPoints.push_back(orderedPrimitives[i]->getAABB().getCenter().get(axis));
+		centerPoints.push_back(orderedTriangles[i]->getAABB().getCenter().get(axis));
 
 	std::sort(centerPoints.begin(), centerPoints.end());
 	uint64_t size = centerPoints.size();

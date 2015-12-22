@@ -16,7 +16,6 @@ namespace Raycer
 			bool interactive;
 			int32_t maxThreadCount;
 			bool checkGLErrors;
-			bool checkCLErrors;
 		} general;
 
 		struct Network

@@ -3,7 +3,7 @@
 
 #include "stdafx.h"
 
-#include "Math/ONB.h"
+#include "Tracing/ONB.h"
 #include "Math/Matrix4x4.h"
 
 using namespace Raycer;

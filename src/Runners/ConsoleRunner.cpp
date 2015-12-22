@@ -36,7 +36,7 @@ int ConsoleRunner::run()
 
 	scene.initialize();
 	scene.camera.setImagePlaneSize(settings.image.width, settings.image.height);
-	scene.camera.update(scene, 0.0);
+	scene.camera.update(0.0);
 
 	Film film;
 	film.resize(settings.image.width, settings.image.height);
