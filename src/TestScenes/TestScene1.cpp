@@ -10,5 +10,13 @@ using namespace Raycer;
 Scene Scene::createTestScene1()
 {
 	Scene scene;
+
+	scene.camera.position = Vector3(0.0, 1.0, 3.5);
+
+	ModelLoaderInfo model;
+	model.modelFilePath = "data/models/cornellbox/cornellbox.obj";
+
+	scene.models.push_back(model);
+
 	return scene;
 }

@@ -70,42 +70,108 @@ namespace
 				StringUtils::readUntilSpace(line, lineIndex, part);
 				materialsMap[part] = currentMaterial.id;
 			}
-			else if (part == "Ka") // ambient reflectance
+			else if (part == "skipLighting")
 			{
-				currentMaterial.ambientReflectance.r = readDouble(line, lineIndex, part);
-				currentMaterial.ambientReflectance.g = readDouble(line, lineIndex, part);
-				currentMaterial.ambientReflectance.b = readDouble(line, lineIndex, part);
+				currentMaterial.skipLighting = readDouble(line, lineIndex, part) != 0.0;
 			}
-			else if (part == "Kd") // diffuse reflectance
+			else if (part == "nonShadowing")
 			{
-				currentMaterial.diffuseReflectance.r = readDouble(line, lineIndex, part);
-				currentMaterial.diffuseReflectance.g = readDouble(line, lineIndex, part);
-				currentMaterial.diffuseReflectance.b = readDouble(line, lineIndex, part);
+				currentMaterial.nonShadowing = readDouble(line, lineIndex, part) != 0.0;
 			}
-			else if (part == "Ks") // specular reflectance
+			else if (part == "normalInterpolation")
 			{
-				currentMaterial.specularReflectance.r = readDouble(line, lineIndex, part);
-				currentMaterial.specularReflectance.g = readDouble(line, lineIndex, part);
-				currentMaterial.specularReflectance.b = readDouble(line, lineIndex, part);
+				currentMaterial.normalInterpolation = readDouble(line, lineIndex, part) != 0.0;
 			}
-			else if (part == "Ke") // emittance
+			else if (part == "invertNormal")
+			{
+				currentMaterial.invertNormal = readDouble(line, lineIndex, part) != 0.0;
+			}
+			else if (part == "fresnelReflection")
+			{
+				currentMaterial.fresnelReflection = readDouble(line, lineIndex, part) != 0.0;
+			}
+			else if (part == "attenuating")
+			{
+				currentMaterial.attenuating = readDouble(line, lineIndex, part) != 0.0;
+			}
+			else if (part == "shininess" || part == "Ns")
+			{
+				currentMaterial.shininess = readDouble(line, lineIndex, part);
+			}
+			else if (part == "refractiveIndex" || part == "Ni")
+			{
+				currentMaterial.refractiveIndex = readDouble(line, lineIndex, part);
+			}
+			else if (part == "rayReflectance")
+			{
+				currentMaterial.rayReflectance = readDouble(line, lineIndex, part);
+			}
+			else if (part == "rayTransmittance")
+			{
+				currentMaterial.rayTransmittance = readDouble(line, lineIndex, part);
+			}
+			else if (part == "attenuationFactor")
+			{
+				currentMaterial.attenuationFactor = readDouble(line, lineIndex, part);
+			}
+			else if (part == "attenuationColor")
+			{
+				currentMaterial.attenuationColor.r = readDouble(line, lineIndex, part);
+				currentMaterial.attenuationColor.g = readDouble(line, lineIndex, part);
+				currentMaterial.attenuationColor.b = readDouble(line, lineIndex, part);
+			}
+			else if (part == "texcoordScale")
+			{
+				currentMaterial.texcoordScale.x = readDouble(line, lineIndex, part);
+				currentMaterial.texcoordScale.y = readDouble(line, lineIndex, part);
+			}
+			else if (part == "reflectance" || part == "Kr")
+			{
+				currentMaterial.reflectance.r = readDouble(line, lineIndex, part);
+				currentMaterial.reflectance.g = readDouble(line, lineIndex, part);
+				currentMaterial.reflectance.b = readDouble(line, lineIndex, part);
+			}
+			else if ((part == "reflectanceMap" || part == "map_Kr") && currentMaterial.reflectanceMapTextureId == 0)
+			{
+				ImageTexture imageTexture;
+				imageTexture.id = ++currentId;
+				currentMaterial.reflectanceMapTextureId = imageTexture.id;
+
+				StringUtils::readUntilSpace(line, lineIndex, part);
+				imageTexture.imageFilePath = getAbsolutePath(objFileDirectory, part);
+				imageTexture.applyGamma = !StringUtils::endsWith(imageTexture.imageFilePath, ".hdr");
+
+				result.textures.push_back(imageTexture);
+			}
+			else if (part == "emittance" || part == "Ke")
 			{
 				currentMaterial.emittance.r = readDouble(line, lineIndex, part);
 				currentMaterial.emittance.g = readDouble(line, lineIndex, part);
 				currentMaterial.emittance.b = readDouble(line, lineIndex, part);
 
 				if (!currentMaterial.emittance.isZero())
-					currentMaterial.isEmissive = true;
+					currentMaterial.emissive = true;
 			}
-			else if (part == "Ns") // shininess
+			else if ((part == "emittanceMap" || part == "map_Ke") && currentMaterial.emittanceMapTextureId == 0)
 			{
-				currentMaterial.specularShininess = readDouble(line, lineIndex, part);
+				ImageTexture imageTexture;
+				imageTexture.id = ++currentId;
+				currentMaterial.emittanceMapTextureId = imageTexture.id;
+				currentMaterial.emissive = true;
+
+				StringUtils::readUntilSpace(line, lineIndex, part);
+				imageTexture.imageFilePath = getAbsolutePath(objFileDirectory, part);
+				imageTexture.applyGamma = !StringUtils::endsWith(imageTexture.imageFilePath, ".hdr");
+
+				result.textures.push_back(imageTexture);
 			}
-			else if (part == "Ni") // refractive index
+			else if (part == "ambientReflectance" || part == "Ka")
 			{
-				currentMaterial.refractiveIndex = readDouble(line, lineIndex, part);
+				currentMaterial.ambientReflectance.r = readDouble(line, lineIndex, part);
+				currentMaterial.ambientReflectance.g = readDouble(line, lineIndex, part);
+				currentMaterial.ambientReflectance.b = readDouble(line, lineIndex, part);
 			}
-			else if (part == "map_Ka" && currentMaterial.ambientMapTextureId == 0) // ambient map
+			else if ((part == "ambientMap" || part == "map_Ka") && currentMaterial.ambientMapTextureId == 0)
 			{
 				ImageTexture imageTexture;
 				imageTexture.id = ++currentId;
@@ -117,11 +183,23 @@ namespace
 
 				result.textures.push_back(imageTexture);
 			}
-			else if (part == "map_Kd" && currentMaterial.diffuseMapTextureId == 0) // diffuse map + reflectance map
+			else if (part == "diffuseReflectance" || part == "Kd")
+			{
+				currentMaterial.diffuseReflectance.r = readDouble(line, lineIndex, part);
+				currentMaterial.diffuseReflectance.g = readDouble(line, lineIndex, part);
+				currentMaterial.diffuseReflectance.b = readDouble(line, lineIndex, part);
+
+				// for compatability
+				currentMaterial.reflectance.r = currentMaterial.diffuseReflectance.r;
+				currentMaterial.reflectance.g = currentMaterial.diffuseReflectance.g;
+				currentMaterial.reflectance.b = currentMaterial.diffuseReflectance.b;
+			}
+			else if ((part == "diffuseMap" || part == "map_Kd") && currentMaterial.diffuseMapTextureId == 0)
 			{
 				ImageTexture imageTexture;
 				imageTexture.id = ++currentId;
 				currentMaterial.diffuseMapTextureId = imageTexture.id;
+				currentMaterial.reflectanceMapTextureId = imageTexture.id;
 
 				StringUtils::readUntilSpace(line, lineIndex, part);
 				imageTexture.imageFilePath = getAbsolutePath(objFileDirectory, part);
@@ -129,7 +207,13 @@ namespace
 
 				result.textures.push_back(imageTexture);
 			}
-			else if (part == "map_Ks" && currentMaterial.specularMapTextureId == 0) // specular map
+			else if (part == "specularReflectance" || part == "Ks")
+			{
+				currentMaterial.specularReflectance.r = readDouble(line, lineIndex, part);
+				currentMaterial.specularReflectance.g = readDouble(line, lineIndex, part);
+				currentMaterial.specularReflectance.b = readDouble(line, lineIndex, part);
+			}
+			else if ((part == "specularMap" || part == "map_Ks") && currentMaterial.specularMapTextureId == 0)
 			{
 				ImageTexture imageTexture;
 				imageTexture.id = ++currentId;
@@ -141,20 +225,7 @@ namespace
 
 				result.textures.push_back(imageTexture);
 			}
-			else if (part == "map_Ke" && currentMaterial.emittanceMapTextureId == 0) // emittance map
-			{
-				ImageTexture imageTexture;
-				imageTexture.id = ++currentId;
-				currentMaterial.emittanceMapTextureId = imageTexture.id;
-				currentMaterial.isEmissive = true;
-
-				StringUtils::readUntilSpace(line, lineIndex, part);
-				imageTexture.imageFilePath = getAbsolutePath(objFileDirectory, part);
-				imageTexture.applyGamma = !StringUtils::endsWith(imageTexture.imageFilePath, ".hdr");
-
-				result.textures.push_back(imageTexture);
-			}
-			else if (part == "map_normal" && currentMaterial.normalMapTextureId == 0) // normal map
+			else if ((part == "normalMap" || part == "map_normal") && currentMaterial.normalMapTextureId == 0)
 			{
 				ImageTexture imageTexture;
 				imageTexture.id = ++currentId;
@@ -166,23 +237,11 @@ namespace
 
 				result.textures.push_back(imageTexture);
 			}
-			else if (part == "map_d" && currentMaterial.maskMapTextureId == 0) // mask map
+			else if ((part == "maskMap" || part == "map_d") && currentMaterial.maskMapTextureId == 0)
 			{
 				ImageTexture imageTexture;
 				imageTexture.id = ++currentId;
 				currentMaterial.maskMapTextureId = imageTexture.id;
-
-				StringUtils::readUntilSpace(line, lineIndex, part);
-				imageTexture.imageFilePath = getAbsolutePath(objFileDirectory, part);
-				imageTexture.applyGamma = false;
-
-				result.textures.push_back(imageTexture);
-			}
-			else if (part == "map_height" && currentMaterial.heightMapTextureId == 0) // height map
-			{
-				ImageTexture imageTexture;
-				imageTexture.id = ++currentId;
-				currentMaterial.heightMapTextureId = imageTexture.id;
 
 				StringUtils::readUntilSpace(line, lineIndex, part);
 				imageTexture.imageFilePath = getAbsolutePath(objFileDirectory, part);

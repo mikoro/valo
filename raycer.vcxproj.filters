@@ -512,16 +512,16 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="data\shaders\framebuffer.frag">
+    <None Include="src\Utils\Log.inl">
+      <Filter>Utils</Filter>
+    </None>
+    <None Include="src\Math\Polynomial.inl">
+      <Filter>Math</Filter>
+    </None>
+    <None Include="data\shaders\film.frag">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="data\shaders\framebuffer.vert">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="data\shaders\framebuffer_bicubic.frag">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="data\shaders\framebuffer_bicubic.vert">
+    <None Include="data\shaders\film.vert">
       <Filter>Shaders</Filter>
     </None>
     <None Include="data\shaders\text.frag">
@@ -529,12 +529,6 @@
     </None>
     <None Include="data\shaders\text.vert">
       <Filter>Shaders</Filter>
-    </None>
-    <None Include="src\Utils\Log.inl">
-      <Filter>Utils</Filter>
-    </None>
-    <None Include="src\Math\Polynomial.inl">
-      <Filter>Math</Filter>
     </None>
   </ItemGroup>
 </Project>

@@ -108,17 +108,8 @@ void Raytracer::calculateRayReflectanceAndTransmittance(const Ray& ray, const In
 		fresnelTransmittance = 1.0 - fresnelReflectance;
 	}
 
-	double mappedReflectance = 1.0;
-	double mappedTransmittance = 1.0;
-
-	if (material->rayReflectanceMapTexture != nullptr)
-		mappedReflectance = material->rayReflectanceMapTexture->getValue(intersection.texcoord, intersection.position);
-
-	if (material->rayTransmittanceMapTexture != nullptr)
-		mappedTransmittance = material->rayTransmittanceMapTexture->getValue(intersection.texcoord, intersection.position);
-
-	rayReflectance = material->rayReflectance * mappedReflectance * fresnelReflectance;
-	rayTransmittance = material->rayTransmittance * mappedTransmittance * fresnelTransmittance;
+	rayReflectance = material->rayReflectance * fresnelReflectance;
+	rayTransmittance = material->rayTransmittance * fresnelTransmittance;
 }
 
 Color Raytracer::calculateReflectedColor(const Scene& scene, const Ray& ray, const Intersection& intersection, double rayReflectance, uint64_t iteration, std::mt19937& generator, const std::atomic<bool>& interrupted)
@@ -131,66 +122,23 @@ Color Raytracer::calculateReflectedColor(const Scene& scene, const Ray& ray, con
 	Color reflectedColor;
 	bool isOutside = ray.direction.dot(intersection.normal) < 0.0;
 
-	if (material->rayReflectanceGlossinessSampleCountSqrt == 0)
+	Ray reflectedRay;
+	Intersection reflectedIntersection;
+
+	reflectedRay.origin = intersection.position + reflectionDirection * scene.general.rayStartOffset;
+	reflectedRay.direction = reflectionDirection;
+	reflectedRay.precalculate();
+
+	reflectedColor = traceRecursive(scene, reflectedRay, reflectedIntersection, iteration + 1, generator, interrupted) * rayReflectance;
+
+	// only attenuate if ray has traveled inside a primitive
+	if (!isOutside && reflectedIntersection.wasFound && material->attenuating)
 	{
-		Ray reflectedRay;
-		Intersection reflectedIntersection;
-
-		reflectedRay.origin = intersection.position + reflectionDirection * scene.general.rayStartOffset;
-		reflectedRay.direction = reflectionDirection;
-		reflectedRay.precalculate();
-
-		reflectedColor = traceRecursive(scene, reflectedRay, reflectedIntersection, iteration + 1, generator, interrupted) * rayReflectance;
-
-		// only attenuate if ray has traveled inside a primitive
-		if (!isOutside && reflectedIntersection.wasFound && material->enableRayTransmissionAttenuation)
-		{
-			double a = exp(-material->rayTransmissionAttenuationFactor * reflectedIntersection.distance);
-			reflectedColor = Color::lerp(material->rayTransmissionAttenuationColor, reflectedColor, a);
-		}
-
-		return reflectedColor;
+		double a = exp(-material->attenuationFactor * reflectedIntersection.distance);
+		reflectedColor = Color::lerp(material->attenuationColor, reflectedColor, a);
 	}
 
-	Sampler* sampler = samplers[material->rayReflectanceGlossinessSamplerType].get();
-	std::uniform_int_distribution<uint64_t> randomPermutation;
-	uint64_t permutation = randomPermutation(generator);
-
-	ONB reflectionOnb = ONB::fromNormal(reflectionDirection);
-	uint64_t n = material->rayReflectanceGlossinessSampleCountSqrt;
-	double distribution = material->rayReflectanceGlossiness;
-
-	for (uint64_t y = 0; y < n; ++y)
-	{
-		for (uint64_t x = 0; x < n; ++x)
-		{
-			Vector3 sampleDirection = sampler->getHemisphereSample(reflectionOnb, distribution, x, y, n, n, permutation, generator);
-
-			// prevent sample rays from crossing the primitive surface
-			if ((isOutside && sampleDirection.dot(intersection.normal) < 0.0) || (!isOutside && sampleDirection.dot(intersection.normal) > 0.0))
-				sampleDirection = sampleDirection.reflect(reflectionDirection);
-
-			Ray sampleRay;
-			Intersection sampleIntersection;
-
-			sampleRay.origin = intersection.position + sampleDirection * scene.general.rayStartOffset;
-			sampleRay.direction = sampleDirection;
-			sampleRay.precalculate();
-
-			Color sampleColor = traceRecursive(scene, sampleRay, sampleIntersection, iteration + 1, generator, interrupted) * rayReflectance;
-
-			// only attenuate if ray has traveled inside a primitive
-			if (!isOutside && sampleIntersection.wasFound && material->enableRayTransmissionAttenuation)
-			{
-				double a = exp(-material->rayTransmissionAttenuationFactor * sampleIntersection.distance);
-				sampleColor = Color::lerp(material->rayTransmissionAttenuationColor, sampleColor, a);
-			}
-
-			reflectedColor += sampleColor;
-		}
-	}
-
-	return reflectedColor / (double(n) * double(n));
+	return reflectedColor;
 }
 
 Color Raytracer::calculateTransmittedColor(const Scene& scene, const Ray& ray, const Intersection& intersection, double rayTransmittance, uint64_t iteration, std::mt19937& generator, const std::atomic<bool>& interrupted)
@@ -213,66 +161,23 @@ Color Raytracer::calculateTransmittedColor(const Scene& scene, const Ray& ray, c
 	Vector3 transmissionDirection = ray.direction * n3 + (std::abs(cosine1) * n3 - sqrt(cosine2)) * intersection.normal;
 	transmissionDirection.normalize();
 
-	if (material->rayTransmittanceGlossinessSampleCountSqrt == 0)
+	Ray transmittedRay;
+	Intersection transmittedIntersection;
+
+	transmittedRay.origin = intersection.position + transmissionDirection * scene.general.rayStartOffset;
+	transmittedRay.direction = transmissionDirection;
+	transmittedRay.precalculate();
+
+	transmittedColor = traceRecursive(scene, transmittedRay, transmittedIntersection, iteration + 1, generator, interrupted) * rayTransmittance;
+
+	// only attenuate if ray has traveled inside a primitive
+	if (isOutside && transmittedIntersection.wasFound && material->attenuating)
 	{
-		Ray transmittedRay;
-		Intersection transmittedIntersection;
-
-		transmittedRay.origin = intersection.position + transmissionDirection * scene.general.rayStartOffset;
-		transmittedRay.direction = transmissionDirection;
-		transmittedRay.precalculate();
-
-		transmittedColor = traceRecursive(scene, transmittedRay, transmittedIntersection, iteration + 1, generator, interrupted) * rayTransmittance;
-
-		// only attenuate if ray has traveled inside a primitive
-		if (isOutside && transmittedIntersection.wasFound && material->enableRayTransmissionAttenuation)
-		{
-			double a = exp(-material->rayTransmissionAttenuationFactor * transmittedIntersection.distance);
-			transmittedColor = Color::lerp(material->rayTransmissionAttenuationColor, transmittedColor, a);
-		}
-
-		return transmittedColor;
+		double a = exp(-material->attenuationFactor * transmittedIntersection.distance);
+		transmittedColor = Color::lerp(material->attenuationColor, transmittedColor, a);
 	}
 
-	Sampler* sampler = samplers[material->rayTransmittanceGlossinessSamplerType].get();
-	std::uniform_int_distribution<uint64_t> randomPermutation;
-	uint64_t permutation = randomPermutation(generator);
-
-	ONB transmissionOnb = ONB::fromNormal(transmissionDirection);
-	uint64_t n = material->rayTransmittanceGlossinessSampleCountSqrt;
-	double distribution = material->rayTransmittanceGlossiness;
-
-	for (uint64_t y = 0; y < n; ++y)
-	{
-		for (uint64_t x = 0; x < n; ++x)
-		{
-			Vector3 sampleDirection = sampler->getHemisphereSample(transmissionOnb, distribution, x, y, n, n, permutation, generator);
-
-			// prevent sample rays from crossing the primitive surface
-			if ((isOutside && sampleDirection.dot(intersection.normal) > 0.0) || (!isOutside && sampleDirection.dot(intersection.normal) < 0.0))
-				sampleDirection = sampleDirection.reflect(transmissionDirection);
-
-			Ray sampleRay;
-			Intersection sampleIntersection;
-
-			sampleRay.origin = intersection.position + sampleDirection * scene.general.rayStartOffset;
-			sampleRay.direction = sampleDirection;
-			sampleRay.precalculate();
-
-			Color sampleColor = traceRecursive(scene, sampleRay, sampleIntersection, iteration + 1, generator, interrupted) * rayTransmittance;
-
-			// only attenuate if ray has traveled inside a primitive
-			if (!isOutside && sampleIntersection.wasFound && material->enableRayTransmissionAttenuation)
-			{
-				double a = exp(-material->rayTransmissionAttenuationFactor * sampleIntersection.distance);
-				sampleColor = Color::lerp(material->rayTransmissionAttenuationColor, sampleColor, a);
-			}
-
-			transmittedColor += sampleColor;
-		}
-	}
-
-	return transmittedColor / (double(n) * double(n));
+	return transmittedColor;
 }
 
 Color Raytracer::calculateLightColor(const Scene& scene, const Ray& ray, const Intersection& intersection, std::mt19937& generator)
@@ -307,7 +212,7 @@ Color Raytracer::calculateLightColor(const Scene& scene, const Ray& ray, const I
 
 	for (const DirectionalLight& light : scene.lights.directionalLights)
 	{
-		Color directionalLightColor = calculatePhongShadingColor(intersection.normal, -light.direction, directionToCamera, light, finalDiffuseReflectance, finalSpecularReflectance, material->specularShininess);
+		Color directionalLightColor = calculatePhongShadingColor(intersection.normal, -light.direction, directionToCamera, light, finalDiffuseReflectance, finalSpecularReflectance, material->shininess);
 		double shadowAmount = calculateShadowAmount(scene, ray, intersection, light);
 		lightColor += directionalLightColor * (1.0 - shadowAmount);
 	}
@@ -318,7 +223,7 @@ Color Raytracer::calculateLightColor(const Scene& scene, const Ray& ray, const I
 		double distanceToLight = directionToLight.length();
 		directionToLight.normalize();
 
-		Color pointLightColor = calculatePhongShadingColor(intersection.normal, directionToLight, directionToCamera, light, finalDiffuseReflectance, finalSpecularReflectance, material->specularShininess);
+		Color pointLightColor = calculatePhongShadingColor(intersection.normal, directionToLight, directionToCamera, light, finalDiffuseReflectance, finalSpecularReflectance, material->shininess);
 		double shadowAmount = calculateShadowAmount(scene, ray, intersection, light, generator);
 		double distanceAttenuation = std::min(1.0, distanceToLight / light.maxDistance);
 		distanceAttenuation = 1.0 - pow(distanceAttenuation, light.attenuation);
@@ -332,7 +237,7 @@ Color Raytracer::calculateLightColor(const Scene& scene, const Ray& ray, const I
 		double distanceToLight = directionToLight.length();
 		directionToLight.normalize();
 
-		Color spotLightColor = calculatePhongShadingColor(intersection.normal, directionToLight, directionToCamera, light, finalDiffuseReflectance, finalSpecularReflectance, material->specularShininess);
+		Color spotLightColor = calculatePhongShadingColor(intersection.normal, directionToLight, directionToCamera, light, finalDiffuseReflectance, finalSpecularReflectance, material->shininess);
 		double shadowAmount = calculateShadowAmount(scene, ray, intersection, light, generator);
 		double distanceAttenuation = std::min(1.0, distanceToLight / light.maxDistance);
 		distanceAttenuation = 1.0 - pow(distanceAttenuation, light.attenuation);

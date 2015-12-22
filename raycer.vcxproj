@@ -238,6 +238,7 @@
     <ClCompile Include="src\Tracing\Ray.cpp" />
     <ClCompile Include="src\Tracing\Raytracer.cpp" />
     <ClCompile Include="src\Tracing\Scene.cpp">
+	  <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='DebugTest|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
@@ -337,10 +338,8 @@
     <ResourceCompile Include="platform\windows\raycer.rc" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="data\shaders\framebuffer.frag" />
-    <None Include="data\shaders\framebuffer.vert" />
-    <None Include="data\shaders\framebuffer_bicubic.frag" />
-    <None Include="data\shaders\framebuffer_bicubic.vert" />
+    <None Include="data\shaders\film.frag" />
+    <None Include="data\shaders\film.vert" />
     <None Include="data\shaders\text.frag" />
     <None Include="data\shaders\text.vert" />
     <None Include="src\Math\Polynomial.inl" />

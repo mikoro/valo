@@ -252,20 +252,11 @@ void Scene::initialize()
 		if (texturesMap.count(material.emittanceMapTextureId))
 			material.emittanceMapTexture = texturesMap[material.emittanceMapTextureId];
 
-		if (texturesMap.count(material.rayReflectanceMapTextureId))
-			material.rayReflectanceMapTexture = texturesMap[material.rayReflectanceMapTextureId];
-
-		if (texturesMap.count(material.rayTransmittanceMapTextureId))
-			material.rayTransmittanceMapTexture = texturesMap[material.rayTransmittanceMapTextureId];
-
 		if (texturesMap.count(material.normalMapTextureId))
 			material.normalMapTexture = texturesMap[material.normalMapTextureId];
 
 		if (texturesMap.count(material.maskMapTextureId))
 			material.maskMapTexture = texturesMap[material.maskMapTextureId];
-
-		if (texturesMap.count(material.heightMapTextureId))
-			material.heightMapTexture = texturesMap[material.heightMapTextureId];
 	}
 
 	// INITIALIZATION

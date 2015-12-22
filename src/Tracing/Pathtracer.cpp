@@ -38,7 +38,7 @@ Color PathTracer::traceRecursive(const Scene& scene, const Ray& ray, uint64_t it
 
 	Material* material = intersection.material;
 
-	if (material->isEmissive)
+	if (material->emissive)
 	{
 		Color emittance = material->emittance;
 
