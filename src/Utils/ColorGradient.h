@@ -7,7 +7,7 @@
 
 #include "cereal/cereal.hpp"
 
-#include "Math/Color.h"
+#include "Rendering/Color.h"
 
 namespace Raycer
 {

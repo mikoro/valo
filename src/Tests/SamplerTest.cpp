@@ -7,15 +7,15 @@
 
 #include "catch/catch.hpp"
 
-#include "Rendering/Samplers/Sampler.h"
-#include "Rendering/Samplers/RandomSampler.h"
-#include "Rendering/Samplers/RegularSampler.h"
-#include "Rendering/Samplers/JitteredSampler.h"
-#include "Rendering/Samplers/CMJSampler.h"
-#include "Rendering/Samplers/PoissonDiscSampler.h"
+#include "Samplers/Sampler.h"
+#include "Samplers/RandomSampler.h"
+#include "Samplers/RegularSampler.h"
+#include "Samplers/JitteredSampler.h"
+#include "Samplers/CMJSampler.h"
+#include "Samplers/PoissonDiscSampler.h"
 #include "Rendering/Image.h"
 #include "Math/ONB.h"
-#include "Math/Color.h"
+#include "Rendering/Color.h"
 #include "Math/Vector2.h"
 #include "Math/Vector3.h"
 

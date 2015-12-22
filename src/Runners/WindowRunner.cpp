@@ -9,9 +9,9 @@
 #include "Utils/Log.h"
 #include "Utils/GLHelper.h"
 #include "Rendering/Image.h"
-#include "Runners/WindowRunnerStates/WindowRunnerState.h"
-#include "Runners/WindowRunnerStates/DefaultState.h"
-#include "Math/Color.h"
+#include "RunnerStates/RunnerState.h"
+#include "RunnerStates/DefaultState.h"
+#include "Rendering/Color.h"
 
 using namespace Raycer;
 
@@ -151,9 +151,9 @@ double WindowRunner::getMouseWheelScroll()
 	return 0.0;
 }
 
-void WindowRunner::changeState(WindowRunnerStates newState)
+void WindowRunner::changeState(RunnerStates newState)
 {
-	if (currentState != WindowRunnerStates::NONE)
+	if (currentState != RunnerStates::NONE)
 		runnerStates[currentState]->shutdown();
 
 	currentState = newState;
@@ -214,13 +214,13 @@ void WindowRunner::initialize()
 
 	windowResized(settings.window.width, settings.window.height);
 
-	runnerStates[WindowRunnerStates::DEFAULT] = std::make_unique<DefaultState>();
-	changeState(WindowRunnerStates::DEFAULT);
+	runnerStates[RunnerStates::DEFAULT] = std::make_unique<DefaultState>();
+	changeState(RunnerStates::DEFAULT);
 }
 
 void WindowRunner::shutdown()
 {
-	if (currentState != WindowRunnerStates::NONE)
+	if (currentState != RunnerStates::NONE)
 		runnerStates[currentState]->shutdown();
 }
 
@@ -236,7 +236,7 @@ void WindowRunner::windowResized(uint64_t width, uint64_t height)
 	defaultText.setWindowSize(windowWidth, windowHeight);
 	pauseText.setWindowSize(windowWidth, windowHeight);
 
-	if (currentState != WindowRunnerStates::NONE)
+	if (currentState != RunnerStates::NONE)
 		runnerStates[currentState]->windowResized(windowWidth, windowHeight);
 }
 
@@ -313,7 +313,7 @@ void WindowRunner::update(double timeStep)
 	if (keyWasPressed(GLFW_KEY_P))
 		isPaused = !isPaused;
 
-	if (currentState != WindowRunnerStates::NONE)
+	if (currentState != RunnerStates::NONE)
 	{
 		if (!isPaused)
 			runnerStates[currentState]->update(timeStep);
@@ -331,7 +331,7 @@ void WindowRunner::render(double timeStep, double interpolation)
 	glClearColor(0.0, 0.0, 0.0, 0.0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	if (currentState != WindowRunnerStates::NONE)
+	if (currentState != RunnerStates::NONE)
 	{
 		if (!isPaused)
 			runnerStates[currentState]->render(timeStep, interpolation);

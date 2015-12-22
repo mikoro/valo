@@ -7,7 +7,7 @@
 
 #include "catch/catch.hpp"
 
-#include "Raytracing/Scene.h"
+#include "Tracing/Scene.h"
 
 using namespace Raycer;
 

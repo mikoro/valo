@@ -9,11 +9,11 @@
 #include "Utils/Log.h"
 #include "Utils/StringUtils.h"
 #include "Utils/SysUtils.h"
-#include "Raytracing/Tracers/TracerState.h"
-#include "Raytracing/Camera.h"
+#include "Tracing/TracerState.h"
+#include "Tracing/Camera.h"
 #include "Rendering/Film.h"
 #include "Runners/ConsoleRunner.h"
-#include "Math/Color.h"
+#include "Rendering/Color.h"
 
 using namespace Raycer;
 using namespace boost::asio;
@@ -414,7 +414,7 @@ void NetworkRunner::handleJobs()
 			film.resize(state.pixelCount);
 
 			App::getConsoleRunner().run(state);
-			film.generateToneMappedImage(job.scene);
+			film.generateTonemappedImage(job.scene);
 
 			std::cout << "Sending results back...\n\n";
 
@@ -428,7 +428,7 @@ void NetworkRunner::handleJobs()
 					ip::tcp::socket socket(io);
 					socket.connect(job.clientEndpoint);
 					boost::asio::write(socket, boost::asio::buffer(message));
-					boost::asio::write(socket, boost::asio::buffer(&film.getToneMappedImage().getPixelDataConst()[0], film.getToneMappedImage().getPixelDataConst().size() * sizeof(Colorf)));
+					boost::asio::write(socket, boost::asio::buffer(&film.getTonemappedImage().getPixelDataConst()[0], film.getTonemappedImage().getPixelDataConst().size() * sizeof(Colorf)));
 					socket.close();
 
 					break;

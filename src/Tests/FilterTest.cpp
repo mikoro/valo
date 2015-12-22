@@ -7,13 +7,13 @@
 
 #include "catch/catch.hpp"
 
-#include "Rendering/Filters/Filter.h"
-#include "Rendering/Filters/BoxFilter.h"
-#include "Rendering/Filters/TentFilter.h"
-#include "Rendering/Filters/BellFilter.h"
-#include "Rendering/Filters/GaussianFilter.h"
-#include "Rendering/Filters/MitchellFilter.h"
-#include "Rendering/Filters/LanczosSincFilter.h"
+#include "Filters/Filter.h"
+#include "Filters/BoxFilter.h"
+#include "Filters/TentFilter.h"
+#include "Filters/BellFilter.h"
+#include "Filters/GaussianFilter.h"
+#include "Filters/MitchellFilter.h"
+#include "Filters/LanczosSincFilter.h"
 
 using namespace Raycer;
 

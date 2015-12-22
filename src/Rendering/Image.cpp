@@ -13,7 +13,7 @@
 #include "App.h"
 #include "Utils/Log.h"
 #include "Utils/StringUtils.h"
-#include "Math/Color.h"
+#include "Rendering/Color.h"
 #include "Math/MathUtils.h"
 
 using namespace Raycer;

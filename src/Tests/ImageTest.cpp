@@ -8,7 +8,7 @@
 #include "catch/catch.hpp"
 
 #include "Rendering/Image.h"
-#include "Math/Color.h"
+#include "Rendering/Color.h"
 
 using namespace Raycer;
 

@@ -1,4 +1,4 @@
-// Copyright © 2015 Mikko Ronkainen <firstname@mikkoronkainen.com>
+﻿// Copyright © 2015 Mikko Ronkainen <firstname@mikkoronkainen.com>
 // License: MIT, see the LICENSE file.
 
 #pragma once
@@ -6,9 +6,9 @@
 #include <memory>
 #include <vector>
 
-#include "Math/Color.h"
+#include "Rendering/Color.h"
 #include "Rendering/Image.h"
-#include "ToneMappers/ToneMapper.h"
+#include "Tonemappers/Tonemapper.h"
 
 namespace Raycer
 {
@@ -32,9 +32,9 @@ namespace Raycer
 		void addSample(uint64_t x, uint64_t y, const Color& color, double filterWeight);
 		void addSample(uint64_t index, const Color& color, double filterWeight);
 		
-		void generateToneMappedImage(const Scene& scene);
-		void setToneMappedImage(const Image& other);
-		const Image& getToneMappedImage() const;
+		void generateTonemappedImage(const Scene& scene);
+		void setTonemappedImage(const Image& other);
+		const Image& getTonemappedImage() const;
 
 		uint64_t getWidth() const;
 		uint64_t getHeight() const;
@@ -46,8 +46,8 @@ namespace Raycer
 
 		std::vector<FilmPixel> filmPixels;
 		Image linearImage;
-		Image toneMappedImage;
+		Image tonemappedImage;
 
-		std::map<ToneMapperType, std::unique_ptr<ToneMapper>> toneMappers;
+		std::map<TonemapperType, std::unique_ptr<Tonemapper>> tonemappers;
 	};
 }

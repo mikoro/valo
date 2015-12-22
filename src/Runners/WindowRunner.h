@@ -8,7 +8,7 @@
 
 #include "Rendering/Text.h"
 #include "Utils/FpsCounter.h"
-#include "Runners/WindowRunnerStates/WindowRunnerState.h"
+#include "RunnerStates/RunnerState.h"
 
 struct GLFWwindow;
 
@@ -51,7 +51,7 @@ namespace Raycer
 		bool mouseWasPressed(int32_t button);
 		double getMouseWheelScroll();
 
-		void changeState(WindowRunnerStates newState);
+		void changeState(RunnerStates newState);
 
 	private:
 
@@ -83,8 +83,8 @@ namespace Raycer
 		std::map<int32_t, bool> keyStates;
 		std::map<int32_t, bool> mouseStates;
 
-		std::map<WindowRunnerStates, std::unique_ptr<WindowRunnerState>> runnerStates;
-		WindowRunnerStates currentState = WindowRunnerStates::NONE;
+		std::map<RunnerStates, std::unique_ptr<RunnerState>> runnerStates;
+		RunnerStates currentState = RunnerStates::NONE;
 
 		Text defaultText;
 		Text pauseText;

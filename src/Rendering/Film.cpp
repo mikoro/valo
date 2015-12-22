@@ -1,14 +1,14 @@
-// Copyright © 2015 Mikko Ronkainen <firstname@mikkoronkainen.com>
+﻿// Copyright © 2015 Mikko Ronkainen <firstname@mikkoronkainen.com>
 // License: MIT, see the LICENSE file.
 
 #include "stdafx.h"
 
 #include "Rendering/Film.h"
-#include "Rendering/ToneMappers/PassthroughToneMapper.h"
-#include "Rendering/ToneMappers/LinearToneMapper.h"
-#include "Rendering/ToneMappers/SimpleToneMapper.h"
-#include "Rendering/ToneMappers/ReinhardToneMapper.h"
-#include "Raytracing/Scene.h"
+#include "Tonemappers/PassthroughTonemapper.h"
+#include "Tonemappers/LinearTonemapper.h"
+#include "Tonemappers/SimpleTonemapper.h"
+#include "Tonemappers/ReinhardTonemapper.h"
+#include "Tracing/Scene.h"
 #include "App.h"
 #include "Utils/Log.h"
 
@@ -16,10 +16,10 @@ using namespace Raycer;
 
 Film::Film()
 {
-	toneMappers[ToneMapperType::PASSTHROUGH] = std::make_unique<PassthroughToneMapper>();
-	toneMappers[ToneMapperType::LINEAR] = std::make_unique<LinearToneMapper>();
-	toneMappers[ToneMapperType::SIMPLE] = std::make_unique<SimpleToneMapper>();
-	toneMappers[ToneMapperType::REINHARD] = std::make_unique<ReinhardToneMapper>();
+	tonemappers[TonemapperType::PASSTHROUGH] = std::make_unique<PassthroughTonemapper>();
+	tonemappers[TonemapperType::LINEAR] = std::make_unique<LinearTonemapper>();
+	tonemappers[TonemapperType::SIMPLE] = std::make_unique<SimpleTonemapper>();
+	tonemappers[TonemapperType::REINHARD] = std::make_unique<ReinhardTonemapper>();
 }
 
 void Film::resize(uint64_t width_, uint64_t height_)
@@ -31,7 +31,7 @@ void Film::resize(uint64_t width_, uint64_t height_)
 
 	filmPixels.resize(width * height);
 	linearImage.resize(width, height);
-	toneMappedImage.resize(width, height);
+	tonemappedImage.resize(width, height);
 
 	clear();
 }
@@ -58,24 +58,24 @@ void Film::addSample(uint64_t index, const Color& color, double filterWeight)
 	filmPixel.filterWeightSum += filterWeight;
 }
 
-void Film::generateToneMappedImage(const Scene& scene)
+void Film::generateTonemappedImage(const Scene& scene)
 {
 	#pragma omp parallel for
 	for (int64_t i = 0; i < int64_t(filmPixels.size()); ++i)
 		linearImage.setPixel(i, filmPixels[i].cumulativeColor / filmPixels[i].filterWeightSum);
 
-	ToneMapper* toneMapper = toneMappers[scene.toneMapper.type].get();
-	toneMapper->apply(scene, linearImage, toneMappedImage);
+	Tonemapper* tonemapper = tonemappers[scene.tonemapper.type].get();
+	tonemapper->apply(scene, linearImage, tonemappedImage);
 }
 
-void Film::setToneMappedImage(const Image& other)
+void Film::setTonemappedImage(const Image& other)
 {
-	toneMappedImage = other;
+	tonemappedImage = other;
 }
 
-const Image& Film::getToneMappedImage() const
+const Image& Film::getTonemappedImage() const
 {
-	return toneMappedImage;
+	return tonemappedImage;
 }
 
 uint64_t Film::getWidth() const

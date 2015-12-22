@@ -7,11 +7,11 @@
 
 #include "cereal/cereal.hpp"
 
-#include "Raytracing/Primitives/Triangle.h"
-#include "Raytracing/Primitives/PrimitiveGroup.h"
-#include "Raytracing/Primitives/Instance.h"
-#include "Raytracing/Textures/ImageTexture.h"
-#include "Raytracing/Material.h"
+#include "Primitives/Triangle.h"
+#include "Primitives/PrimitiveGroup.h"
+#include "Primitives/Instance.h"
+#include "Textures/ImageTexture.h"
+#include "Tracing/Material.h"
 #include "Math/Vector3.h"
 #include "Math/EulerAngle.h"
 

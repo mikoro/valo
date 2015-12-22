@@ -9,7 +9,7 @@
 
 #include "Utils/ColorGradient.h"
 #include "Rendering/Image.h"
-#include "Math/Color.h"
+#include "Rendering/Color.h"
 
 using namespace Raycer;
 

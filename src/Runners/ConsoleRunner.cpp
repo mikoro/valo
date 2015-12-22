@@ -9,10 +9,10 @@
 #include "Utils/StringUtils.h"
 #include "Utils/SysUtils.h"
 #include "Rendering/Film.h"
-#include "Raytracing/Scene.h"
-#include "Raytracing/Tracers/Tracer.h"
-#include "Raytracing/Tracers/TracerState.h"
-#include "Raytracing/Camera.h"
+#include "Tracing/Scene.h"
+#include "Tracing/Tracer.h"
+#include "Tracing/TracerState.h"
+#include "Tracing/Camera.h"
 
 using namespace Raycer;
 using namespace std::chrono;
@@ -53,13 +53,13 @@ int ConsoleRunner::run()
 
 	if (!interrupted)
 	{
-		film.getToneMappedImage().save(settings.image.fileName);
+		film.getTonemappedImage().save(settings.image.fileName);
 
 		if (settings.image.autoView)
 			SysUtils::openFileExternally(settings.image.fileName);
 	}
 	else
-		film.getToneMappedImage().save("partial_result.png");
+		film.getTonemappedImage().save("partial_result.png");
 
 	return 0;
 }
@@ -141,7 +141,7 @@ void ConsoleRunner::run(TracerState& state)
 
 	SysUtils::setConsoleTextColor(ConsoleTextColor::DEFAULT);
 
-	state.film->generateToneMappedImage(*state.scene);
+	state.film->generateTonemappedImage(*state.scene);
 }
 
 void ConsoleRunner::interrupt()
