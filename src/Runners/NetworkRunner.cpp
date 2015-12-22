@@ -9,7 +9,7 @@
 #include "Utils/Log.h"
 #include "Utils/StringUtils.h"
 #include "Utils/SysUtils.h"
-#include "Tracing/TracerState.h"
+#include "Tracers/TracerState.h"
 #include "Tracing/Camera.h"
 #include "Rendering/Film.h"
 #include "Runners/ConsoleRunner.h"

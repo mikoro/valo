@@ -3,14 +3,14 @@
 
 #include "stdafx.h"
 
-#include "Tracing/PathTracer.h"
-#include "Tracing/Scene.h"
+#include "Tracers/Pathtracer.h"
+#include "Scenes/Scene.h"
 #include "Tracing/Ray.h"
 #include "Tracing/Intersection.h"
 
 using namespace Raycer;
 
-Color PathTracer::trace(const Scene& scene, const Ray& ray, std::mt19937& generator, const std::atomic<bool>& interrupted)
+Color Pathtracer::trace(const Scene& scene, const Ray& ray, std::mt19937& generator, const std::atomic<bool>& interrupted)
 {
 	assert(scene.general.pathSampleCount >= 1);
 
@@ -22,7 +22,7 @@ Color PathTracer::trace(const Scene& scene, const Ray& ray, std::mt19937& genera
 	return sampledPixelColor / double(scene.general.pathSampleCount);
 }
 
-Color PathTracer::traceRecursive(const Scene& scene, const Ray& ray, uint64_t iteration, std::mt19937& generator, const std::atomic<bool>& interrupted)
+Color Pathtracer::traceRecursive(const Scene& scene, const Ray& ray, uint64_t iteration, std::mt19937& generator, const std::atomic<bool>& interrupted)
 {
 	if (interrupted)
 		return Color::BLACK;

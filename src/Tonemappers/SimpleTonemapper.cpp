@@ -4,7 +4,7 @@
 #include "stdafx.h"
 
 #include "Tonemappers/SimpleTonemapper.h"
-#include "Tracing/Scene.h"
+#include "Scenes/Scene.h"
 #include "Rendering/Image.h"
 #include "Rendering/Color.h"
 #include "Math/MathUtils.h"

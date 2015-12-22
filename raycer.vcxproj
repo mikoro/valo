@@ -201,13 +201,18 @@
     <ClCompile Include="src\Samplers\RandomSampler.cpp" />
     <ClCompile Include="src\Samplers\RegularSampler.cpp" />
     <ClCompile Include="src\Samplers\Sampler.cpp" />
+    <ClCompile Include="src\Scenes\Scene.cpp">
+	  <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='DebugTest|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="src\Scenes\Scene1.cpp" />
     <ClCompile Include="src\Settings.cpp" />
     <ClCompile Include="src\stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='DebugTest|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="src\TestScenes\TestScene1.cpp" />
     <ClCompile Include="src\Tests\ColorGradientTest.cpp" />
     <ClCompile Include="src\Tests\EulerAngleTest.cpp" />
     <ClCompile Include="src\Tests\FilterTest.cpp" />
@@ -230,19 +235,15 @@
     <ClCompile Include="src\Tonemappers\ReinhardTonemapper.cpp" />
     <ClCompile Include="src\Tonemappers\SimpleTonemapper.cpp" />
     <ClCompile Include="src\Tonemappers\Tonemapper.cpp" />
+    <ClCompile Include="src\Tracers\Pathtracer.cpp" />
+    <ClCompile Include="src\Tracers\PreviewTracer.cpp" />
+    <ClCompile Include="src\Tracers\Raytracer.cpp" />
+    <ClCompile Include="src\Tracers\Tracer.cpp" />
     <ClCompile Include="src\Tracing\AABB.cpp" />
     <ClCompile Include="src\Tracing\BVH.cpp" />
     <ClCompile Include="src\Tracing\Camera.cpp" />
     <ClCompile Include="src\Tracing\ONB.cpp" />
-    <ClCompile Include="src\Tracing\Pathtracer.cpp" />
     <ClCompile Include="src\Tracing\Ray.cpp" />
-    <ClCompile Include="src\Tracing\Raytracer.cpp" />
-    <ClCompile Include="src\Tracing\Scene.cpp">
-	  <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='DebugTest|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="src\Tracing\Tracer.cpp" />
     <ClCompile Include="src\Tracing\Triangle.cpp" />
     <ClCompile Include="src\Utils\ColorGradient.cpp" />
     <ClCompile Include="src\Utils\FpsCounter.cpp" />
@@ -295,6 +296,7 @@
     <ClInclude Include="src\Samplers\RandomSampler.h" />
     <ClInclude Include="src\Samplers\RegularSampler.h" />
     <ClInclude Include="src\Samplers\Sampler.h" />
+    <ClInclude Include="src\Scenes\Scene.h" />
     <ClInclude Include="src\Settings.h" />
     <ClInclude Include="src\stdafx.h" />
     <ClInclude Include="src\Textures\CheckerTexture.h" />
@@ -308,6 +310,11 @@
     <ClInclude Include="src\Tonemappers\ReinhardTonemapper.h" />
     <ClInclude Include="src\Tonemappers\SimpleTonemapper.h" />
     <ClInclude Include="src\Tonemappers\Tonemapper.h" />
+    <ClInclude Include="src\Tracers\Pathtracer.h" />
+    <ClInclude Include="src\Tracers\PreviewTracer.h" />
+    <ClInclude Include="src\Tracers\Raytracer.h" />
+    <ClInclude Include="src\Tracers\Tracer.h" />
+    <ClInclude Include="src\Tracers\TracerState.h" />
     <ClInclude Include="src\Tracing\AABB.h" />
     <ClInclude Include="src\Tracing\BVH.h" />
     <ClInclude Include="src\Tracing\Camera.h" />
@@ -315,12 +322,7 @@
     <ClInclude Include="src\Tracing\Lights.h" />
     <ClInclude Include="src\Tracing\Material.h" />
     <ClInclude Include="src\Tracing\ONB.h" />
-    <ClInclude Include="src\Tracing\Pathtracer.h" />
     <ClInclude Include="src\Tracing\Ray.h" />
-    <ClInclude Include="src\Tracing\Raytracer.h" />
-    <ClInclude Include="src\Tracing\Scene.h" />
-    <ClInclude Include="src\Tracing\Tracer.h" />
-    <ClInclude Include="src\Tracing\TracerState.h" />
     <ClInclude Include="src\Tracing\Triangle.h" />
     <ClInclude Include="src\Utils\ColorGradient.h" />
     <ClInclude Include="src\Utils\FpsCounter.h" />

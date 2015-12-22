@@ -6,7 +6,7 @@
 #include <atomic>
 #include <random>
 
-#include "Tracing/Tracer.h"
+#include "Tracers/Tracer.h"
 
 namespace Raycer
 {

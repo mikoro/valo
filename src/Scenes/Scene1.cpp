@@ -3,7 +3,7 @@
 
 #include "stdafx.h"
 
-#include "Tracing/Scene.h"
+#include "Scenes/Scene.h"
 
 using namespace Raycer;
 

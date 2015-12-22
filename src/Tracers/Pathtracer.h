@@ -6,7 +6,7 @@
 #include <atomic>
 #include <random>
 
-#include "Tracing/Tracer.h"
+#include "Tracers/Tracer.h"
 
 namespace Raycer
 {
@@ -14,7 +14,7 @@ namespace Raycer
 	class Color;
 	class Ray;
 	
-	class PathTracer : public Tracer
+	class Pathtracer : public Tracer
 	{
 	protected:
 

@@ -16,9 +16,6 @@
     <Filter Include="Tests">
       <UniqueIdentifier>{092f7e45-4acb-4fe5-b817-f311ac78a8de}</UniqueIdentifier>
     </Filter>
-    <Filter Include="TestScenes">
-      <UniqueIdentifier>{339bccda-e760-443a-99ee-4be40776f51c}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Filters">
       <UniqueIdentifier>{27c18fe1-4130-47f8-8031-68bbc1b98e86}</UniqueIdentifier>
     </Filter>
@@ -42,6 +39,12 @@
     </Filter>
     <Filter Include="Samplers">
       <UniqueIdentifier>{0eb52790-23f1-4bb2-a552-2cb8295f9600}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tracers">
+      <UniqueIdentifier>{c8a02df5-aad0-4513-b378-f3433b100713}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scenes">
+      <UniqueIdentifier>{15975929-201a-4fb5-bd21-2c9fc9bb347b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -109,9 +112,6 @@
     <ClCompile Include="src\Tests\SamplerTest.cpp">
       <Filter>Tests</Filter>
     </ClCompile>
-    <ClCompile Include="src\TestScenes\TestScene1.cpp">
-      <Filter>TestScenes</Filter>
-    </ClCompile>
     <ClCompile Include="src\Tests\TestScenesTest.cpp">
       <Filter>Tests</Filter>
     </ClCompile>
@@ -175,19 +175,7 @@
     <ClCompile Include="src\Tracing\Camera.cpp">
       <Filter>Tracing</Filter>
     </ClCompile>
-    <ClCompile Include="src\Tracing\Pathtracer.cpp">
-      <Filter>Tracing</Filter>
-    </ClCompile>
     <ClCompile Include="src\Tracing\Ray.cpp">
-      <Filter>Tracing</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Tracing\Raytracer.cpp">
-      <Filter>Tracing</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Tracing\Scene.cpp">
-      <Filter>Tracing</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Tracing\Tracer.cpp">
       <Filter>Tracing</Filter>
     </ClCompile>
     <ClCompile Include="src\Tonemappers\LinearTonemapper.cpp">
@@ -282,6 +270,24 @@
     </ClCompile>
     <ClCompile Include="src\Utils\ModelLoader.cpp">
       <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Tracers\Pathtracer.cpp">
+      <Filter>Tracers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Tracers\PreviewTracer.cpp">
+      <Filter>Tracers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Tracers\Raytracer.cpp">
+      <Filter>Tracers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Tracers\Tracer.cpp">
+      <Filter>Tracers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Scenes\Scene.cpp">
+      <Filter>Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Scenes\Scene1.cpp">
+      <Filter>Scenes</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -391,22 +397,7 @@
     <ClInclude Include="src\Tracing\Material.h">
       <Filter>Tracing</Filter>
     </ClInclude>
-    <ClInclude Include="src\Tracing\Pathtracer.h">
-      <Filter>Tracing</Filter>
-    </ClInclude>
     <ClInclude Include="src\Tracing\Ray.h">
-      <Filter>Tracing</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Tracing\Raytracer.h">
-      <Filter>Tracing</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Tracing\Scene.h">
-      <Filter>Tracing</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Tracing\Tracer.h">
-      <Filter>Tracing</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Tracing\TracerState.h">
       <Filter>Tracing</Filter>
     </ClInclude>
     <ClInclude Include="src\Tonemappers\LinearTonemapper.h">
@@ -504,6 +495,24 @@
     </ClInclude>
     <ClInclude Include="src\Tracing\ONB.h">
       <Filter>Tracing</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Tracers\Pathtracer.h">
+      <Filter>Tracers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Tracers\PreviewTracer.h">
+      <Filter>Tracers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Tracers\Raytracer.h">
+      <Filter>Tracers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Tracers\Tracer.h">
+      <Filter>Tracers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Tracers\TracerState.h">
+      <Filter>Tracers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Scenes\Scene.h">
+      <Filter>Scenes</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

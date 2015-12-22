@@ -10,7 +10,7 @@
 
 #include <boost/asio.hpp>
 
-#include "Tracing/Scene.h"
+#include "Scenes/Scene.h"
 
 namespace ba = boost::asio;
 

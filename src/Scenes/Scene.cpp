@@ -13,7 +13,7 @@
 #include "cereal/types/vector.hpp"
 #include "cereal/types/string.hpp"
 
-#include "Tracing/Scene.h"
+#include "Scenes/Scene.h"
 #include "Textures/Texture.h"
 #include "App.h"
 #include "Utils/Log.h"

@@ -9,9 +9,9 @@
 #include "Utils/StringUtils.h"
 #include "Utils/SysUtils.h"
 #include "Rendering/Film.h"
-#include "Tracing/Scene.h"
-#include "Tracing/Tracer.h"
-#include "Tracing/TracerState.h"
+#include "Scenes/Scene.h"
+#include "Tracers/Tracer.h"
+#include "Tracers/TracerState.h"
 #include "Tracing/Camera.h"
 
 using namespace Raycer;

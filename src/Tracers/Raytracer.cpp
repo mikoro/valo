@@ -3,8 +3,8 @@
 
 #include "stdafx.h"
 
-#include "Tracing/Raytracer.h"
-#include "Tracing/Scene.h"
+#include "Tracers/Raytracer.h"
+#include "Scenes/Scene.h"
 #include "Tracing/Ray.h"
 #include "Tracing/Intersection.h"
 #include "Tracing/Material.h"

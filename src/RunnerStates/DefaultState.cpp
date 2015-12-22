@@ -11,7 +11,7 @@
 #include "Math/EulerAngle.h"
 #include "Math/Vector3.h"
 #include "Tracing/Camera.h"
-#include "Tracing/TracerState.h"
+#include "Tracers/TracerState.h"
 #include "Rendering/Text.h"
 #include "Rendering/ImagePool.h"
 #include "Runners/WindowRunner.h"

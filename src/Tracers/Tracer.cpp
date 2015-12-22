@@ -3,10 +3,10 @@
 
 #include "stdafx.h"
 
-#include "Tracing/Tracer.h"
-#include "Tracing/Raytracer.h"
-#include "Tracing/PathTracer.h"
-#include "Tracing/Scene.h"
+#include "Tracers/Tracer.h"
+#include "Tracers/Raytracer.h"
+#include "Tracers/Pathtracer.h"
+#include "Scenes/Scene.h"
 #include "Tracing/Ray.h"
 #include "Rendering/Color.h"
 #include "App.h"
@@ -33,7 +33,7 @@ std::unique_ptr<Tracer> Tracer::getTracer(TracerType type)
 	switch (type)
 	{
 		case TracerType::RAY: return std::make_unique<Raytracer>();
-		case TracerType::PATH: return std::make_unique<PathTracer>();
+		case TracerType::PATH: return std::make_unique<Pathtracer>();
 		default: throw std::runtime_error("Invalid tracer type");
 	}
 }

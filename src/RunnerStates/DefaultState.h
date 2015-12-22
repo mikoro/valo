@@ -7,8 +7,8 @@
 #include <memory>
 
 #include "RunnerStates/RunnerState.h"
-#include "Tracing/Tracer.h"
-#include "Tracing/Scene.h"
+#include "Tracers/Tracer.h"
+#include "Scenes/Scene.h"
 #include "Rendering/Film.h"
 #include "Rendering/FilmRenderer.h"
 

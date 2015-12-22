@@ -4,7 +4,7 @@
 #include "stdafx.h"
 
 #include "Tracing/BVH.h"
-#include "Tracing/Scene.h"
+#include "Scenes/Scene.h"
 #include "Tracing/Ray.h"
 #include "Tracing/Intersection.h"
 #include "Tracing/Triangle.h"

@@ -18,7 +18,7 @@
 #include "Textures/PerlinNoiseTexture.h"
 #include "Tracing/Material.h"
 #include "Tracing/Lights.h"
-#include "Tracing/Tracer.h"
+#include "Tracers/Tracer.h"
 #include "Samplers/Sampler.h"
 #include "Filters/Filter.h"
 #include "Tonemappers/Tonemapper.h"
