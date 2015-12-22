@@ -1,11 +1,10 @@
 raytracer
  - height map
- - relativistic effects
 
 pathtracer
- - pathtracer materials
- - direct light sampling
  - russian roulette
+ - direct light sampling
+ - pathtracer materials
 
 textures
  - mip map generation
@@ -13,25 +12,30 @@ textures
  - EWA texture filtering
 
 misc
- - convert to using opencl c++ wrapper
- - opencl work group sizes
+ - remove opencl stuff
+ - remove csg suppport
+ - remove primitives and use triangles only
+ - remove some textures
+ - remove ply loader
+ - simplify material
+ - add material inheritance
+ - add light inheritance
+ - use only normal mapping (remove rest)
+ - change tclap to boost program options and move settings to root
+ - move rayStartOffset to minDistance
+ - templetize image (float and double images)
+ - change textures to float, output image to double
+ - fast preview with "dot product lighting"
+ - add image data to serialization
+ - implement info text panel + more statistics
+ - move ray-scene intersection to scene
+ - implement random class with different backends (pcg)
  - add spline curve class
- - add camera movement with splines
+ - add general transform class (translation with spline curves etc.)
  - add BVH -> QBVH conversion
  - implement QBVH travelsal and SIMD triangle intersect with ispc
- - change tclap to boost program options and move settings to root
- - remove freetype headers from windows platform
  - replace private constructors with =deleted
  - add scope exit to obj loader and consolerunner text color
  - replace align macro with alignas
- - check if camera dof needs jitter
- - fast preview with "dot product lighting"
- - replace mersenne twister with pcg
- - remove recursion from cpu pathtracer
- - implement info text panel + more statistics
- - move ray-scene intersection to scene
- - remove csg suppport
- - add image data to serialization
  - disable reinhard averaging when not in interactive mode
- - templetize image (float and double images)
- - opencl version check
+ - aabb optimization for triangles after transformation
