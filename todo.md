@@ -12,7 +12,6 @@ textures
  - EWA texture filtering
 
 misc
- - remove opencl stuff
  - remove csg suppport
  - remove primitives and use triangles only
  - remove some textures

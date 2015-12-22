@@ -202,7 +202,7 @@ void WindowRunner::initialize()
 	if (result == -1)
 		throw std::runtime_error("Could not initialize GL3W library");
 
-	log.logInfo("OpenGL info: %s/%s | Version: %s | GLSL: %s", glGetString(GL_VENDOR), glGetString(GL_RENDERER), glGetString(GL_VERSION), glGetString(GL_SHADING_LANGUAGE_VERSION));
+	log.logInfo("OpenGL Vendor: %s | Renderer: %s | Version: %s | GLSL: %s", glGetString(GL_VENDOR), glGetString(GL_RENDERER), glGetString(GL_VERSION), glGetString(GL_SHADING_LANGUAGE_VERSION));
 
 	glfwSwapInterval(settings.window.enableVsync ? 1 : 0);
 

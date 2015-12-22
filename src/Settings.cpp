@@ -43,10 +43,6 @@ void Settings::load(const std::string& fileName)
 	window.showInfoText = iniReader.getValue<bool>("window", "showInfoText");
 	window.defaultFont = iniReader.getValue("window", "defaultFont");
 	window.defaultFontSize = iniReader.getValue<uint64_t>("window", "defaultFontSize");
-	window.resampleVertexShader = iniReader.getValue("window", "resampleVertexShader");
-	window.resampleFragmentShader = iniReader.getValue("window", "resampleFragmentShader");
-	window.filterVertexShader = iniReader.getValue("window", "filterVertexShader");
-	window.filterFragmentShader = iniReader.getValue("window", "filterFragmentShader");
 
 	camera.freeLook = iniReader.getValue<bool>("camera", "freeLook");
 	camera.smoothMovement = iniReader.getValue<bool>("camera", "smoothMovement");

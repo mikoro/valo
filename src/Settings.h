@@ -55,10 +55,6 @@ namespace Raycer
 			bool showInfoText;
 			std::string defaultFont;
 			uint64_t defaultFontSize;
-			std::string resampleVertexShader;
-			std::string resampleFragmentShader;
-			std::string filterVertexShader;
-			std::string filterFragmentShader;
 		} window;
 
 		struct Camera
