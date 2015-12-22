@@ -18,5 +18,7 @@ Scene Scene::createTestScene1()
 
 	scene.models.push_back(model);
 
+	scene.lights.ambientLight.intensity = 0.1;
+
 	return scene;
 }

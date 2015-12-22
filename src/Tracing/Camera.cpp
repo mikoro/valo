@@ -40,6 +40,16 @@ void Camera::reset()
 	smoothAngularAcceleration = Vector3(0.0, 0.0, 0.0);
 }
 
+void Camera::stop()
+{
+	velocity = Vector3(0.0, 0.0, 0.0);
+	smoothVelocity = Vector3(0.0, 0.0, 0.0);
+	smoothAcceleration = Vector3(0.0, 0.0, 0.0);
+	angularVelocity = Vector3(0.0, 0.0, 0.0);
+	smoothAngularVelocity = Vector3(0.0, 0.0, 0.0);
+	smoothAngularAcceleration = Vector3(0.0, 0.0, 0.0);
+}
+
 void Camera::update(double timeStep)
 {
 	WindowRunner& windowRunner = App::getWindowRunner();

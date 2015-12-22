@@ -105,6 +105,11 @@ void DefaultState::update(double timeStep)
 		sampleCount = 0;
 	}
 
+	if (windowRunner.keyWasPressed(GLFW_KEY_SPACE))
+	{
+		scene.camera.stop();
+	}
+
 	if (windowRunner.keyWasPressed(GLFW_KEY_N))
 		scene.general.enableNormalMapping = !scene.general.enableNormalMapping;
 
