@@ -65,26 +65,8 @@ namespace Raycer
 		void rebuildRootBVH();
 
 		static Scene createTestScene1();
-		static Scene createTestScene2();
-		static Scene createTestScene3();
-		static Scene createTestScene4();
-		static Scene createTestScene5();
-		static Scene createTestScene6();
-		static Scene createTestScene7();
-		static Scene createTestScene8();
-		static Scene createTestScene9();
-		static Scene createTestScene10();
-		static Scene createTestScene11();
-		static Scene createTestScene12();
-		static Scene createTestScene13();
-		static Scene createTestScene14();
-		static Scene createTestScene15();
-		static Scene createTestScene16();
-		static Scene createTestScene17();
-		static Scene createTestScene18();
-		static Scene createTestScene19();
 
-		static const uint64_t TEST_SCENE_COUNT = 19;
+		static const uint64_t TEST_SCENE_COUNT = 1;
 
 		struct General
 		{
