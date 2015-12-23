@@ -10,9 +10,6 @@ textures
 
 misc
  - check if ONB is right handed
- - check command line switches where used
- - move external program launch to sysutils
- - move apple curdir stuff to sysutils
  - check if interrupt works on mac/linux
  - add possibility to save and restore film state
  - add material inheritance

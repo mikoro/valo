@@ -13,15 +13,15 @@ using namespace Raycer;
 
 void SimpleTonemapper::apply(const Scene& scene, const Image& inputImage, Image& outputImage)
 {
-	const AlignedColorfVector& inputPixelData = inputImage.getPixelDataConst();
-	AlignedColorfVector& outputPixelData = outputImage.getPixelData();
+	auto& inputPixelData = inputImage.getPixelDataConst();
+	auto& outputPixelData = outputImage.getPixelData();
 
 	const double invGamma = 1.0 / scene.tonemapper.gamma;
 
 	#pragma omp parallel for
 	for (int64_t i = 0; i < int64_t(inputPixelData.size()); ++i)
 	{
-		Color outputColor = inputPixelData.at(i).toColor();
+		Color outputColor = inputPixelData.at(i);
 		outputColor *= MathUtils::fastPow(2.0, scene.tonemapper.exposure);
 
 		outputColor = outputColor / (Color(1.0, 1.0, 1.0, 1.0) + outputColor);
@@ -33,6 +33,6 @@ void SimpleTonemapper::apply(const Scene& scene, const Image& inputImage, Image&
 			outputColor = Color::fastPow(outputColor, invGamma);
 
 		outputColor.a = 1.0;
-		outputPixelData[i] = outputColor.toColorf();
+		outputPixelData[i] = outputColor;
 	}
 }

@@ -10,6 +10,7 @@
 
 #include "Samplers/Sampler.h"
 #include "Filters/Filter.h"
+#include "Rendering/Color.h"
 
 namespace Raycer
 {
@@ -17,7 +18,6 @@ namespace Raycer
 	class Scene;
 	class Film;
 	class Ray;
-	class Color;
 	class Vector2;
 
 	enum class TracerType { RAY, PATH, PREVIEW };

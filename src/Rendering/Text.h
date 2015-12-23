@@ -10,10 +10,10 @@
 #include "freetype-gl/vertex-buffer.h"
 #include "freetype-gl/mat4.h"
 
+#include "Rendering/Color.h"
+
 namespace Raycer
 {
-	class Color;
-
 	class Text
 	{
 	public:

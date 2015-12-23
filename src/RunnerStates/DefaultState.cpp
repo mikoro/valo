@@ -165,13 +165,13 @@ void DefaultState::update(double timeStep)
 		scene.saveToFile("scene.bin");
 
 #ifdef _WIN32
-		ShellExecuteA(nullptr, "open", "raycer.exe", "-s scene.bin --non-interactive --non-test --view", nullptr, SW_SHOWNORMAL);
+		ShellExecuteA(nullptr, "open", "raycer.exe", "--scene.fileName scene.bin --general.interactive 0 --scene.enableTestScenes 0 --image.autoView 1", nullptr, SW_SHOWNORMAL);
 #else
 		int32_t pid = fork();
 
 		if (pid == 0)
 		{
-			char* arg[] = { (char*)"raycer", (char*)"-s scene.bin", (char*)"--non-interactive", (char*)"--non-test", (char*)"--view", (char*)nullptr };
+			char* arg[] = { (char*)"raycer", (char*)"--scene.fileName scene.bin", (char*)"--general.interactive 0", (char*)"--scene.enableTestScenes 0", (char*)"--image.autoView 1", (char*)nullptr };
 
 			if (execvp(arg[0], arg) == -1)
 				App::getLog().logWarning("Could not launch external rendering (%d) (try adding raycer to PATH)", errno);

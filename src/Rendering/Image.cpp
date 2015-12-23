@@ -81,7 +81,7 @@ void Image::load(const std::string& fileName)
 				pixelData[pixelIndex].r = loadData[dataIndex];
 				pixelData[pixelIndex].g = loadData[dataIndex + 1];
 				pixelData[pixelIndex].b = loadData[dataIndex + 2];
-				pixelData[pixelIndex].a = 1.0f;
+				pixelData[pixelIndex].a = 1.0;
 			}
 		}
 
@@ -100,7 +100,7 @@ void Image::load(const std::string& fileName)
 		for (uint64_t y = 0; y < height; ++y)
 		{
 			for (uint64_t x = 0; x < width; ++x)
-				pixelData[y * width + x] = Color::fromAbgrValue(loadData[(height - 1 - y) * width + x]).toColorf(); // flip vertically
+				pixelData[y * width + x] = Color::fromAbgrValue(loadData[(height - 1 - y) * width + x]); // flip vertically
 		}
 
 		stbi_image_free(loadData);
@@ -120,7 +120,7 @@ void Image::save(const std::string& fileName) const
 		for (uint64_t y = 0; y < height; ++y)
 		{
 			for (uint64_t x = 0; x < width; ++x)
-				saveData[(height - 1 - y) * width + x] = pixelData[y * width + x].toColor().getAbgrValue(); // flip vertically
+				saveData[(height - 1 - y) * width + x] = pixelData[y * width + x].getAbgrValue(); // flip vertically
 		}
 
 		if (StringUtils::endsWith(fileName, ".png"))
@@ -141,9 +141,9 @@ void Image::save(const std::string& fileName) const
 				uint64_t dataIndex = (height - 1 - y) * width * 3 + x * 3; // flip vertically
 				uint64_t pixelIndex = y * width + x;
 
-				saveData[dataIndex] = pixelData[pixelIndex].r;
-				saveData[dataIndex + 1] = pixelData[pixelIndex].g;
-				saveData[dataIndex + 2] = pixelData[pixelIndex].b;
+				saveData[dataIndex] = float(pixelData[pixelIndex].r);
+				saveData[dataIndex + 1] = float(pixelData[pixelIndex].g);
+				saveData[dataIndex + 2] = float(pixelData[pixelIndex].b);
 			}
 		}
 
@@ -172,37 +172,37 @@ void Image::resize(uint64_t width_, uint64_t height_)
 
 void Image::setPixel(uint64_t x, uint64_t y, const Color& color)
 {
-	pixelData[y * width + x] = color.toColorf();
+	pixelData[y * width + x] = color;
 }
 
 void Image::setPixel(uint64_t index, const Color& color)
 {
-	pixelData[index] = color.toColorf();
+	pixelData[index] = color;
 }
 
 void Image::clear()
 {
-	for (Colorf& c : pixelData)
-		c = Colorf(0.0f, 0.0f, 0.0f, 1.0f);
+	for (Color& c : pixelData)
+		c = Color(0.0, 0.0, 0.0, 1.0);
 }
 
 void Image::clear(const Color& color)
 {
-	for (Colorf& c : pixelData)
-		c = color.toColorf();
+	for (Color& c : pixelData)
+		c = color;
 }
 
 void Image::applyFastGamma(double gamma)
 {
-	for (Colorf& c : pixelData)
-		c = Color::fastPow(c.toColor(), gamma).clamped().toColorf();
+	for (Color& c : pixelData)
+		c = Color::fastPow(c, gamma).clamped();
 }
 
 void Image::swapComponents()
 {
-	for (Colorf& c1 : pixelData)
+	for (Color& c1 : pixelData)
 	{
-		Colorf c2 = c1;
+		Color c2 = c1;
 
 		c1.r = c2.a;
 		c1.g = c2.b;
@@ -235,7 +235,7 @@ void Image::fillTestPattern()
 			if (x % 2 == 0 && y % 2 == 0)
 				color = Color::lerp(Color::RED, Color::BLUE, double(x) / double(width));
 
-			pixelData[y * width + x] = color.toColorf();
+			pixelData[y * width + x] = color;
 		}
 	}
 }
@@ -258,13 +258,13 @@ uint64_t Image::getLength() const
 Color Image::getPixel(uint64_t x, uint64_t y) const
 {
 	assert(x < width && y < height);
-	return pixelData[y * width + x].toColor();
+	return pixelData[y * width + x];
 }
 
 Color Image::getPixel(uint64_t index) const
 {
 	assert(index < width * height);
-	return pixelData[index].toColor();
+	return pixelData[index];
 }
 
 Color Image::getPixelNearest(double u, double v) const
@@ -297,12 +297,12 @@ Color Image::getPixelBilinear(double u, double v) const
 	return (tx1 * c11 + tx2 * c21) * ty1 + (tx1 * c12 + tx2 * c22) * ty2;
 }
 
-AlignedColorfVector& Image::getPixelData()
+std::vector<Color>& Image::getPixelData()
 {
 	return pixelData;
 }
 
-const AlignedColorfVector& Image::getPixelDataConst() const
+const std::vector<Color>& Image::getPixelDataConst() const
 {
 	return pixelData;
 }

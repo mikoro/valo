@@ -217,9 +217,6 @@
     <ClCompile Include="src\RunnerStates\DefaultState.cpp">
       <Filter>RunnerStates</Filter>
     </ClCompile>
-    <ClCompile Include="src\Rendering\Color.cpp">
-      <Filter>Rendering</Filter>
-    </ClCompile>
     <ClCompile Include="src\Rendering\Film.cpp">
       <Filter>Rendering</Filter>
     </ClCompile>
@@ -532,6 +529,9 @@
     </None>
     <None Include="data\shaders\text.vert">
       <Filter>Shaders</Filter>
+    </None>
+    <None Include="src\Rendering\Color.inl">
+      <Filter>Rendering</Filter>
     </None>
   </ItemGroup>
 </Project>

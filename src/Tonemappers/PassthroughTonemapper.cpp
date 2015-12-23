@@ -14,8 +14,8 @@ void PassthroughTonemapper::apply(const Scene& scene, const Image& inputImage, I
 {
 	(void)scene;
 
-	const AlignedColorfVector& inputPixelData = inputImage.getPixelDataConst();
-	AlignedColorfVector& outputPixelData = outputImage.getPixelData();
+	auto& inputPixelData = inputImage.getPixelDataConst();
+	auto& outputPixelData = outputImage.getPixelData();
 
 	#pragma omp parallel for
 	for (int64_t i = 0; i < int64_t(inputPixelData.size()); ++i)

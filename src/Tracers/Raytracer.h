@@ -10,7 +10,6 @@
 
 namespace Raycer
 {
-	class Color;
 	class Scene;
 	class Vector3;
 	class Ray;

@@ -428,7 +428,7 @@ void NetworkRunner::handleJobs()
 					ip::tcp::socket socket(io);
 					socket.connect(job.clientEndpoint);
 					boost::asio::write(socket, boost::asio::buffer(message));
-					boost::asio::write(socket, boost::asio::buffer(&film.getTonemappedImage().getPixelDataConst()[0], film.getTonemappedImage().getPixelDataConst().size() * sizeof(Colorf)));
+					boost::asio::write(socket, boost::asio::buffer(&film.getTonemappedImage().getPixelDataConst()[0], film.getTonemappedImage().getPixelDataConst().size() * sizeof(Color)));
 					socket.close();
 
 					break;
@@ -566,7 +566,7 @@ void NetworkRunner::receiveResults()
 			return;
 
 		for (ImagePart& part : imageParts)
-			memcpy(reinterpret_cast<uint8_t*>(&resultImage.getPixelData()[0]) + part.pixelStartOffset * sizeof(Colorf), &part.pixelData[0], part.pixelCount * sizeof(Colorf));
+			memcpy(reinterpret_cast<uint8_t*>(&resultImage.getPixelData()[0]) + part.pixelStartOffset * sizeof(Color), &part.pixelData[0], part.pixelCount * sizeof(Color));
 
 		resultImage.save(settings.image.fileName);
 

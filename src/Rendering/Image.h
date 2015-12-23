@@ -48,14 +48,14 @@ namespace Raycer
 		Color getPixelNearest(double u, double v) const;
 		Color getPixelBilinear(double u, double v) const;
 
-		AlignedColorfVector& getPixelData();
-		const AlignedColorfVector& getPixelDataConst() const;
+		std::vector<Color>& getPixelData();
+		const std::vector<Color>& getPixelDataConst() const;
 
 	private:
 
 		uint64_t width = 0;
 		uint64_t height = 0;
 
-		AlignedColorfVector pixelData;
+		std::vector<Color> pixelData;
 	};
 }

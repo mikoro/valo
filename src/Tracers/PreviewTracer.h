@@ -11,7 +11,6 @@
 namespace Raycer
 {
 	struct TracerState;
-	class Color;
 	class Ray;
 	
 	class PreviewTracer : public Tracer

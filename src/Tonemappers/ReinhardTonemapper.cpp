@@ -21,8 +21,8 @@ void ReinhardTonemapper::apply(const Scene& scene, const Image& inputImage, Imag
 {
 	Settings& settings = App::getSettings();
 
-	const AlignedColorfVector& inputPixelData = inputImage.getPixelDataConst();
-	AlignedColorfVector& outputPixelData = outputImage.getPixelData();
+	auto& inputPixelData = inputImage.getPixelDataConst();
+	auto& outputPixelData = outputImage.getPixelData();
 
 	const double epsilon = 0.01;
 	const int64_t pixelCount = int64_t(inputPixelData.size());
@@ -37,7 +37,7 @@ void ReinhardTonemapper::apply(const Scene& scene, const Image& inputImage, Imag
 		#pragma omp for
 		for (int64_t i = 0; i < pixelCount; ++i)
 		{
-			double luminance = inputPixelData.at(i).toColor().getLuminance();
+			double luminance = inputPixelData.at(i).getLuminance();
 			luminanceLogSum += log(epsilon + luminance);
 
 			if (luminance > maxLuminancePrivate)
@@ -69,7 +69,7 @@ void ReinhardTonemapper::apply(const Scene& scene, const Image& inputImage, Imag
 	#pragma omp parallel for
 	for (int64_t i = 0; i < pixelCount; ++i)
 	{
-		Color inputColor = inputPixelData.at(i).toColor();
+		Color inputColor = inputPixelData.at(i);
 
 		double originalLuminance = inputColor.getLuminance();
 		double scaledLuminance = luminanceScale * originalLuminance;
@@ -85,6 +85,6 @@ void ReinhardTonemapper::apply(const Scene& scene, const Image& inputImage, Imag
 			outputColor = Color::fastPow(outputColor, invGamma);
 
 		outputColor.a = 1.0;
-		outputPixelData[i] = outputColor.toColorf();
+		outputPixelData[i] = outputColor;
 	}
 }

@@ -3,72 +3,54 @@
 
 #pragma once
 
-#include <boost/align/aligned_allocator.hpp>
-#include <cstdint>
 #include <random>
 
 #include "cereal/cereal.hpp"
 
-#include "Common.h"
-
 namespace Raycer
 {
-	class Colorf;
-
-	class Color
+	template <typename T>
+	class ColorType
 	{
 	public:
 
-		explicit Color(double r = 0.0, double g = 0.0, double b = 0.0, double a = 1.0);
-		explicit Color(int32_t r, int32_t g, int32_t b, int32_t a = 255);
+		explicit ColorType(T r = T(0.0), T g = T(0.0), T b = T(0.0), T a = T(1.0));
+		explicit ColorType(int32_t r, int32_t g, int32_t b, int32_t a = 255);
 
-		friend Color operator+(const Color& c1, const Color& c2);
-		friend Color operator-(const Color& c1, const Color& c2);
-		friend Color operator*(const Color& c1, const Color& c2);
-		friend Color operator*(const Color& c, double s);
-		friend Color operator*(double s, const Color& c);
-		friend Color operator/(const Color& c1, const Color& c2);
-		friend Color operator/(const Color& c, double s);
-
-		friend bool operator==(const Color& c1, const Color& c2);
-		friend bool operator!=(const Color& c1, const Color& c2);
-
-		Color& operator+=(const Color& c);
-		Color& operator-=(const Color& c);
-		Color& operator*=(double s);
-		Color& operator/=(double s);
+		ColorType<T>& operator+=(const ColorType<T>& c);
+		ColorType<T>& operator-=(const ColorType<T>& c);
+		ColorType<T>& operator*=(T s);
+		ColorType<T>& operator/=(T s);
 
 		uint32_t getRgbaValue() const;
 		uint32_t getAbgrValue() const;
-		double getLuminance() const;
+		T getLuminance() const;
 		bool isTransparent() const;
 		bool isZero() const;
 		bool isClamped() const;
 		bool isNan() const;
 		bool isNegative() const;
-		Color& clamp();
-		Color clamped() const;
-		Colorf toColorf() const;
+		ColorType<T>& clamp();
+		ColorType<T> clamped() const;
 
-		static Color fromRgbaValue(uint32_t rgba);
-		static Color fromAbgrValue(uint32_t abgr);
-		static Color lerp(const Color& start, const Color& end, double alpha);
-		static Color alphaBlend(const Color& first, const Color& second);
-		static Color pow(const Color& color, double power);
-		static Color fastPow(const Color& color, double power);
-		static Color random();
-		static Color random(std::mt19937& generator);
+		static ColorType<T> fromRgbaValue(uint32_t rgba);
+		static ColorType<T> fromAbgrValue(uint32_t abgr);
+		static ColorType<T> lerp(const ColorType<T>& start, const ColorType<T>& end, T alpha);
+		static ColorType<T> alphaBlend(const ColorType<T>& first, const ColorType<T>& second);
+		static ColorType<T> pow(const ColorType<T>& color, T power);
+		static ColorType<T> fastPow(const ColorType<T>& color, T power);
+		static ColorType<T> random(std::mt19937& generator);
 
-		static const Color RED;
-		static const Color GREEN;
-		static const Color BLUE;
-		static const Color WHITE;
-		static const Color BLACK;
+		static const ColorType<T> RED;
+		static const ColorType<T> GREEN;
+		static const ColorType<T> BLUE;
+		static const ColorType<T> WHITE;
+		static const ColorType<T> BLACK;
 
-		double r;
-		double g;
-		double b;
-		double a;
+		T r;
+		T g;
+		T b;
+		T a;
 
 	private:
 
@@ -84,32 +66,8 @@ namespace Raycer
 		}
 	};
 
-	class Colorf
-	{
-	public:
-
-		explicit Colorf(float r = 0.0f, float g = 0.0f, float b = 0.0f, float a = 1.0f);
-
-		Color toColor() const;
-
-		float r;
-		float g;
-		float b;
-		float a;
-
-	private:
-
-		friend class cereal::access;
-
-		template <class Archive>
-		void serialize(Archive& ar)
-		{
-			ar(CEREAL_NVP(r),
-				CEREAL_NVP(g),
-				CEREAL_NVP(b),
-				CEREAL_NVP(a));
-		}
-	};
-
-	using AlignedColorfVector = std::vector<Colorf, boost::alignment::aligned_allocator<Colorf, CACHE_LINE_SIZE>>;
+	using Color = ColorType<double>;
+	using Colorf = ColorType<float>;
 }
+
+#include "Rendering/Color.inl"

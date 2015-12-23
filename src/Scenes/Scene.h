@@ -99,7 +99,7 @@ namespace Raycer
 			double gamma = 2.2;
 			double exposure = 0.0;
 			double key = 0.18;
-			bool enableAveraging = false;
+			bool enableAveraging = true;
 			double averagingAlpha = 0.1;
 
 			template <class Archive>

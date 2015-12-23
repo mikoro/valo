@@ -8,7 +8,6 @@
 namespace Raycer
 {
 	class Film;
-	class Color;
 
 	class FilmRenderer
 	{
