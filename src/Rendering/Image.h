@@ -5,7 +5,10 @@
 
 #include <vector>
 
+#include <boost/align/aligned_allocator.hpp>
+
 #include "Rendering/Color.h"
+#include "Common.h"
 
 /*
 
@@ -41,6 +44,9 @@ namespace Raycer
 		void flip();
 		void fillTestPattern();
 
+		template <typename U>
+		void read(const ImageType<U>& other);
+
 		uint64_t getWidth() const;
 		uint64_t getHeight() const;
 		uint64_t getLength() const;
@@ -50,11 +56,10 @@ namespace Raycer
 		ColorType<T> getPixelNearest(double u, double v) const;
 		ColorType<T> getPixelBilinear(double u, double v) const;
 
-		std::vector<ColorType<T>>& getPixelData();
-		const std::vector<ColorType<T>>& getPixelDataConst() const;
+		using vector = std::vector<ColorType<T>, boost::alignment::aligned_allocator<ColorType<T>, CACHE_LINE_SIZE>>;
 
-		template <typename U>
-		void read(const ImageType<U>& other);
+		vector& getPixelData();
+		const vector& getPixelDataConst() const;
 
 	private:
 
@@ -62,7 +67,7 @@ namespace Raycer
 		uint64_t height = 0;
 		uint64_t length = 0;
 
-		std::vector<ColorType<T>> pixelData;
+		vector pixelData;
 	};
 
 	using Image = ImageType<double>;
