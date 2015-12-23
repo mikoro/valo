@@ -20,17 +20,17 @@ Color ImageTexture::getColor(const Vector2& texcoord, const Vector3& position) c
 {
 	(void)position;
 
-	return image->getPixelBilinear(texcoord.x, texcoord.y);
+	return image->getPixelBilinear(texcoord.x, texcoord.y).toColor();
 }
 
 double ImageTexture::getValue(const Vector2& texcoord, const Vector3& position) const
 {
 	(void)position;
 
-	return image->getPixelBilinear(texcoord.x, texcoord.y).r;
+	return double(image->getPixelBilinear(texcoord.x, texcoord.y).r);
 }
 
-const Image* ImageTexture::getImage() const
+const Imagef* ImageTexture::getImage() const
 {
 	return image;
 }

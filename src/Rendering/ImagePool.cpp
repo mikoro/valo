@@ -9,10 +9,10 @@
 using namespace Raycer;
 
 std::map<std::string, uint64_t> ImagePool::imageIndexMap = std::map<std::string, uint64_t>();
-std::vector<Image> ImagePool::images = std::vector<Image>();
+std::vector<Imagef> ImagePool::images = std::vector<Imagef>();
 bool ImagePool::initialized = false;
 
-const Image* ImagePool::loadImage(const std::string& fileName, bool applyGamma)
+const Imagef* ImagePool::loadImage(const std::string& fileName, bool applyGamma)
 {
 	if (!initialized)
 	{
@@ -22,7 +22,7 @@ const Image* ImagePool::loadImage(const std::string& fileName, bool applyGamma)
 
 	if (!imageIndexMap.count(fileName))
 	{
-		images.push_back(Image(fileName));
+		images.push_back(Imagef(fileName));
 		imageIndexMap[fileName] = images.size() - 1;
 
 		if (applyGamma)
@@ -42,7 +42,7 @@ uint64_t ImagePool::getImageIndex(const std::string& fileName)
 	return imageIndexMap[fileName];
 }
 
-const std::vector<Image>& ImagePool::getImages()
+const std::vector<Imagef>& ImagePool::getImages()
 {
 	return images;
 }

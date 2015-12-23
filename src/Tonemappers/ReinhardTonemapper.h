@@ -11,7 +11,6 @@
 namespace Raycer
 {
 	class Scene;
-	class Image;
 
 	class ReinhardTonemapper : public Tonemapper
 	{

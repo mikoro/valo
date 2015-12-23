@@ -55,25 +55,20 @@ void Film::addSample(uint64_t index, const Color& color, double filterWeight)
 {
 	FilmPixel& filmPixel = filmPixels[index];
 	filmPixel.cumulativeColor += color * filterWeight;
-	filmPixel.filterWeightSum += filterWeight;
+	filmPixel.cumulativeFilterWeight += filterWeight;
 }
 
-void Film::generateTonemappedImage(const Scene& scene)
+void Film::generateOutput(const Scene& scene)
 {
 	#pragma omp parallel for
 	for (int64_t i = 0; i < int64_t(filmPixels.size()); ++i)
-		linearImage.setPixel(i, filmPixels[i].cumulativeColor / filmPixels[i].filterWeightSum);
+		linearImage.setPixel(i, filmPixels[i].cumulativeColor / filmPixels[i].cumulativeFilterWeight);
 
 	Tonemapper* tonemapper = tonemappers[scene.tonemapper.type].get();
 	tonemapper->apply(scene, linearImage, tonemappedImage);
 }
 
-void Film::setTonemappedImage(const Image& other)
-{
-	tonemappedImage = other;
-}
-
-const Image& Film::getTonemappedImage() const
+const Image& Film::getOutput() const
 {
 	return tonemappedImage;
 }

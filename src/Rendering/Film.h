@@ -17,7 +17,7 @@ namespace Raycer
 	struct FilmPixel
 	{
 		Color cumulativeColor = Color(0.0, 0.0, 0.0, 0.0);
-		double filterWeightSum = 0.0;
+		double cumulativeFilterWeight = 0.0;
 	};
 
 	class Film
@@ -32,9 +32,8 @@ namespace Raycer
 		void addSample(uint64_t x, uint64_t y, const Color& color, double filterWeight);
 		void addSample(uint64_t index, const Color& color, double filterWeight);
 		
-		void generateTonemappedImage(const Scene& scene);
-		void setTonemappedImage(const Image& other);
-		const Image& getTonemappedImage() const;
+		void generateOutput(const Scene& scene);
+		const Image& getOutput() const;
 
 		uint64_t getWidth() const;
 		uint64_t getHeight() const;

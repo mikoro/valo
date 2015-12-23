@@ -204,6 +204,18 @@ namespace Raycer
 	}
 
 	template <typename T>
+	ColorType<double> ColorType<T>::toColor() const
+	{
+		return ColorType<double>(double(r), double(g), double(b), double(a));
+	}
+
+	template <typename T>
+	ColorType<float> ColorType<T>::toColorf() const
+	{
+		return ColorType<float>(float(r), float(g), float(b), float(a));
+	}
+
+	template <typename T>
 	ColorType<T> ColorType<T>::fromRgbaValue(uint32_t rgba)
 	{
 		const T inv255 = T(1.0 / 255.0);
@@ -286,13 +298,13 @@ namespace Raycer
 	}
 
 	template <typename T>
-	ColorType<T> ColorType<T>::fastPow(const ColorType<T>& color, T power)
+	ColorType<T> ColorType<T>::fastPow(const ColorType<T>& color, double power)
 	{
 		ColorType<T> c;
 
-		c.r = T(MathUtils::fastPow(double(color.r), double(power)));
-		c.g = T(MathUtils::fastPow(double(color.g), double(power)));
-		c.b = T(MathUtils::fastPow(double(color.b), double(power)));
+		c.r = T(MathUtils::fastPow(double(color.r), power));
+		c.g = T(MathUtils::fastPow(double(color.g), power));
+		c.b = T(MathUtils::fastPow(double(color.b), power));
 		c.a = color.a;
 
 		return c;

@@ -414,7 +414,7 @@ void NetworkRunner::handleJobs()
 			film.resize(state.pixelCount);
 
 			App::getConsoleRunner().run(state);
-			film.generateTonemappedImage(job.scene);
+			film.generateOutput(job.scene);
 
 			std::cout << "Sending results back...\n\n";
 
@@ -428,7 +428,7 @@ void NetworkRunner::handleJobs()
 					ip::tcp::socket socket(io);
 					socket.connect(job.clientEndpoint);
 					boost::asio::write(socket, boost::asio::buffer(message));
-					boost::asio::write(socket, boost::asio::buffer(&film.getTonemappedImage().getPixelDataConst()[0], film.getTonemappedImage().getPixelDataConst().size() * sizeof(Color)));
+					boost::asio::write(socket, boost::asio::buffer(&film.getOutput().getPixelDataConst()[0], film.getOutput().getPixelDataConst().size() * sizeof(Color)));
 					socket.close();
 
 					break;

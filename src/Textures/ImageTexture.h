@@ -22,7 +22,7 @@ namespace Raycer
 		Color getColor(const Vector2& texcoord, const Vector3& position) const override;
 		double getValue(const Vector2& texcoord, const Vector3& position) const override;
 		
-		const Image* getImage() const;
+		const Imagef* getImage() const;
 		uint64_t getImagePoolIndex() const;
 
 		std::string imageFilePath;
@@ -30,7 +30,7 @@ namespace Raycer
 
 	private:
 
-		const Image* image = nullptr;
+		const Imagef* image = nullptr;
 
 		friend class cereal::access;
 

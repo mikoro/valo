@@ -32,13 +32,15 @@ namespace Raycer
 		bool isNegative() const;
 		ColorType<T>& clamp();
 		ColorType<T> clamped() const;
+		ColorType<double> toColor() const;
+		ColorType<float> toColorf() const;
 
 		static ColorType<T> fromRgbaValue(uint32_t rgba);
 		static ColorType<T> fromAbgrValue(uint32_t abgr);
 		static ColorType<T> lerp(const ColorType<T>& start, const ColorType<T>& end, T alpha);
 		static ColorType<T> alphaBlend(const ColorType<T>& first, const ColorType<T>& second);
 		static ColorType<T> pow(const ColorType<T>& color, T power);
-		static ColorType<T> fastPow(const ColorType<T>& color, T power);
+		static ColorType<T> fastPow(const ColorType<T>& color, double power);
 		static ColorType<T> random(std::mt19937& generator);
 
 		static const ColorType<T> RED;

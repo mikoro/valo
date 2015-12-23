@@ -86,7 +86,7 @@ void FilmRenderer::setWindowSize(uint64_t width, uint64_t height)
 void FilmRenderer::uploadFilmData(const Film& film)
 {
 	glBindTexture(GL_TEXTURE_2D, filmTextureId);
-	glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, GLsizei(filmWidth), GLsizei(filmHeight), GL_RGBA, GL_FLOAT, &film.getTonemappedImage().getPixelDataConst()[0]);
+	glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, GLsizei(filmWidth), GLsizei(filmHeight), GL_RGBA, GL_FLOAT, &film.getOutput().getPixelDataConst()[0]);
 	glBindTexture(GL_TEXTURE_2D, 0);
 
 	GLHelper::checkError("Could not upload OpenGL texture data");

@@ -252,7 +252,7 @@ void DefaultState::render(double timeStep, double interpolation)
 	sampleCount += scene.general.pathSampleCount;
 
 	tracer->run(state, interrupted);
-	film.generateTonemappedImage(scene);
+	film.generateOutput(scene);
 	filmRenderer.uploadFilmData(film);
 	filmRenderer.render();
 

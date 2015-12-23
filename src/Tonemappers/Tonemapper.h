@@ -7,10 +7,11 @@
 #undef PASSTHROUGH
 #endif
 
+#include "Rendering/Image.h"
+
 namespace Raycer
 {
 	class Scene;
-	class Image;
 
 	enum class TonemapperType { PASSTHROUGH, LINEAR, SIMPLE, REINHARD };
 

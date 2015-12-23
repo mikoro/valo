@@ -533,5 +533,8 @@
     <None Include="src\Rendering\Color.inl">
       <Filter>Rendering</Filter>
     </None>
+    <None Include="src\Rendering\Image.inl">
+      <Filter>Rendering</Filter>
+    </None>
   </ItemGroup>
 </Project>

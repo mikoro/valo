@@ -8,7 +8,6 @@
 namespace Raycer
 {
 	class Scene;
-	class Image;
 
 	class SimpleTonemapper : public Tonemapper
 	{

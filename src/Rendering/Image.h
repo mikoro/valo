@@ -15,25 +15,27 @@ Origin (0, 0) is at the bottom left corner.
 
 namespace Raycer
 {
-	class Image
+	template <typename T>
+	class ImageType
 	{
 	public:
 
-		Image();
-		Image(uint64_t length);
-		Image(uint64_t width, uint64_t height);
-		Image(uint64_t width, uint64_t height, float* rgbaData);
-		Image(const std::string& fileName);
+		ImageType();
+		explicit ImageType(uint64_t length);
+		ImageType(uint64_t width, uint64_t height);
+		ImageType(uint64_t width, uint64_t height, float* rgbaData);
+		explicit ImageType(const std::string& fileName);
 
 		void load(uint64_t width, uint64_t height, float* rgbaData);
 		void load(const std::string& fileName);
 		void save(const std::string& fileName) const;
 		void resize(uint64_t length);
 		void resize(uint64_t width, uint64_t height);
-		void setPixel(uint64_t x, uint64_t y, const Color& color);
-		void setPixel(uint64_t index, const Color& color);
+		void setPixel(uint64_t x, uint64_t y, const ColorType<T>& color);
+		void setPixel(uint64_t index, const ColorType<T>& color);
 		void clear();
-		void clear(const Color& color);
+		void clear(const ColorType<T>& color);
+		void applyGamma(T gamma);
 		void applyFastGamma(double gamma);
 		void swapComponents();
 		void flip();
@@ -43,19 +45,24 @@ namespace Raycer
 		uint64_t getHeight() const;
 		uint64_t getLength() const;
 
-		Color getPixel(uint64_t x, uint64_t y) const;
-		Color getPixel(uint64_t index) const;
-		Color getPixelNearest(double u, double v) const;
-		Color getPixelBilinear(double u, double v) const;
+		ColorType<T> getPixel(uint64_t x, uint64_t y) const;
+		ColorType<T> getPixel(uint64_t index) const;
+		ColorType<T> getPixelNearest(double u, double v) const;
+		ColorType<T> getPixelBilinear(double u, double v) const;
 
-		std::vector<Color>& getPixelData();
-		const std::vector<Color>& getPixelDataConst() const;
+		std::vector<ColorType<T>>& getPixelData();
+		const std::vector<ColorType<T>>& getPixelDataConst() const;
 
 	private:
 
 		uint64_t width = 0;
 		uint64_t height = 0;
 
-		std::vector<Color> pixelData;
+		std::vector<ColorType<T>> pixelData;
 	};
+
+	using Image = ImageType<double>;
+	using Imagef = ImageType<float>;
 }
+
+#include "Rendering/Image.inl"

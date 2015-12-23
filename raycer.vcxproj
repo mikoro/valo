@@ -343,6 +343,7 @@
     <None Include="data\shaders\text.vert" />
     <None Include="src\Math\Polynomial.inl" />
     <None Include="src\Rendering\Color.inl" />
+    <None Include="src\Rendering\Image.inl" />
     <None Include="src\Utils\Log.inl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

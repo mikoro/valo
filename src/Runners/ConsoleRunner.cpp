@@ -53,13 +53,13 @@ int ConsoleRunner::run()
 
 	if (!interrupted)
 	{
-		film.getTonemappedImage().save(settings.image.fileName);
+		film.getOutput().save(settings.image.fileName);
 
 		if (settings.image.autoView)
 			SysUtils::openFileExternally(settings.image.fileName);
 	}
 	else
-		film.getTonemappedImage().save("partial_result.png");
+		film.getOutput().save("partial_result.png");
 
 	return 0;
 }
@@ -141,7 +141,7 @@ void ConsoleRunner::run(TracerState& state)
 
 	SysUtils::setConsoleTextColor(ConsoleTextColor::DEFAULT);
 
-	state.film->generateTonemappedImage(*state.scene);
+	state.film->generateOutput(*state.scene);
 }
 
 void ConsoleRunner::interrupt()
