@@ -10,6 +10,7 @@ textures
 
 misc
  - check if interrupt works on mac/linux
+ - add preview mode to pathtracer
  - add possibility to save and restore film state
  - film state and output image periodic saving
  - implement info text panel + more statistics

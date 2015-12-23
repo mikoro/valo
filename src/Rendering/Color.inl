@@ -42,56 +42,56 @@ namespace Raycer
 	ColorType<T> operator+(const ColorType<T>& c1, const ColorType<T>& c2)
 	{
 		return ColorType<T>(c1.r + c2.r, c1.g + c2.g, c1.b + c2.b, c1.a + c2.a);
-	};
+	}
 
 	template <typename T>
 	ColorType<T> operator-(const ColorType<T>& c1, const ColorType<T>& c2)
 	{
 		return ColorType<T>(c1.r - c2.r, c1.g - c2.g, c1.b - c2.b, c1.a - c2.a);
-	};
+	}
 
 	template <typename T>
 	ColorType<T> operator*(const ColorType<T>& c1, const ColorType<T>& c2)
 	{
 		return ColorType<T>(c1.r * c2.r, c1.g * c2.g, c1.b * c2.b, c1.a * c2.a);
-	};
+	}
 
 	template <typename T>
 	ColorType<T> operator*(const ColorType<T>& c, T s)
 	{
 		return ColorType<T>(c.r * s, c.g * s, c.b * s, c.a * s);
-	};
+	}
 
 	template <typename T>
 	ColorType<T> operator*(T s, const ColorType<T>& c)
 	{
 		return ColorType<T>(c.r * s, c.g * s, c.b * s, c.a * s);
-	};
+	}
 
 	template <typename T>
 	ColorType<T> operator/(const ColorType<T>& c1, const ColorType<T>& c2)
 	{
 		return ColorType<T>(c1.r / c2.r, c1.g / c2.g, c1.b / c2.b, c1.a / c2.a);
-	};
+	}
 
 	template <typename T>
 	ColorType<T> operator/(const ColorType<T>& c, T s)
 	{
 		T invS = T(1.0) / s;
 		return ColorType<T>(c.r * invS, c.g * invS, c.b * invS, c.a * invS);
-	};
+	}
 
 	template <typename T>
 	bool operator==(const ColorType<T>& c1, const ColorType<T>& c2)
 	{
 		return MathUtils::almostSame(c1.r, c2.r) && MathUtils::almostSame(c1.g, c2.g) && MathUtils::almostSame(c1.b, c2.b) && MathUtils::almostSame(c1.a, c2.a);
-	};
+	}
 
 	template <typename T>
 	bool operator!=(const ColorType<T>& c1, const ColorType<T>& c2)
 	{
 		return !(c1 == c2);
-	};
+	}
 
 	template <typename T>
 	ColorType<T>& ColorType<T>::operator+=(const ColorType<T>& c)

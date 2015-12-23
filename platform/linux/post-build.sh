@@ -4,6 +4,6 @@ if [ ! -d bin/data ]; then
   cp -R data bin/
 fi
 
-if [ ! -f bin/settings.ini ]; then
-  cp misc/settings.ini bin/
+if [ ! -f bin/raycer.ini ]; then
+  cp misc/raycer.ini bin/
 fi
