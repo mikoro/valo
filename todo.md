@@ -9,17 +9,15 @@ textures
  - EWA texture filtering
 
 misc
- - check if ONB is right handed
  - check if interrupt works on mac/linux
  - add possibility to save and restore film state
+ - film state and output image periodic saving
+ - implement info text panel + more statistics
+ - move rayStartOffset to minDistance
+ - move image pool to scene and add serialization
+ - implement random class with different backends (pcg)
  - add material inheritance
  - add light inheritance
- - move rayStartOffset to minDistance
- - templetize image (float and double images)
- - change textures to float, output image to double
- - add image data to serialization
- - implement info text panel + more statistics
- - implement random class with different backends (pcg)
  - add spline curve class
  - add general transform class (translation with spline curves etc.)
  - add BVH -> QBVH conversion

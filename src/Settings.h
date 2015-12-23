@@ -58,8 +58,9 @@ namespace Raycer
 
 		struct Camera
 		{
-			bool freeLook;
+			bool enableMovement;
 			bool smoothMovement;
+			bool freeLook;
 			double moveSpeed;
 			double mouseSpeed;
 			double moveDrag;

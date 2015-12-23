@@ -8,8 +8,10 @@
 /*
 
 OrthoNormal Basis
-
-w = normal
+right-handed coordinate system
+u = right
+v = up
+w = forward (normal)
 
 */
 
@@ -26,7 +28,7 @@ namespace Raycer
 
 		ONB transformed(const Matrix4x4& tranformation) const;
 
-		static ONB fromNormal(const Vector3& normal);
+		static ONB fromNormal(const Vector3& normal, const Vector3& up = Vector3::ALMOST_UP);
 
 		static const ONB UP;
 

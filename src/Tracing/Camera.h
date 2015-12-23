@@ -40,9 +40,9 @@ namespace Raycer
 		double apertureSize = 0.1;
 		double focalDistance = 10.0;
 
-		Vector3 forward;
 		Vector3 right;
 		Vector3 up;
+		Vector3 forward;
 		Vector3 imagePlaneCenter;
 
 	private:

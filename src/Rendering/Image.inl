@@ -263,7 +263,7 @@ namespace Raycer
 	template <typename U>
 	void ImageType<T>::read(const ImageType<U>& other)
 	{
-		assert(width == other.width && height == other.height);
+		assert(width == other.getWidth() && height == other.getHeight());
 
 		auto& otherPixelData = other.getPixelDataConst();
 

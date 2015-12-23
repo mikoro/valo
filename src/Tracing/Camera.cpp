@@ -113,9 +113,9 @@ void Camera::update(double timeStep)
 
 	if (windowRunner.mouseIsDown(GLFW_MOUSE_BUTTON_LEFT) || settings.camera.freeLook)
 	{
-		smoothAngularAcceleration.y -= mouseInfo.deltaX * settings.camera.mouseSpeed;
+		smoothAngularAcceleration.y += mouseInfo.deltaX * settings.camera.mouseSpeed;
 		smoothAngularAcceleration.x += mouseInfo.deltaY * settings.camera.mouseSpeed;
-		angularVelocity.y = -mouseInfo.deltaX * settings.camera.mouseSpeed;
+		angularVelocity.y = mouseInfo.deltaX * settings.camera.mouseSpeed;
 		angularVelocity.x = mouseInfo.deltaY * settings.camera.mouseSpeed;
 	}
 
@@ -133,13 +133,6 @@ void Camera::update(double timeStep)
 		movementKeyIsPressed = true;
 	}
 
-	if (windowRunner.keyIsDown(GLFW_KEY_A) || windowRunner.keyIsDown(GLFW_KEY_LEFT))
-	{
-		smoothAcceleration -= right * moveSpeed;
-		velocity = -right * moveSpeed;
-		movementKeyIsPressed = true;
-	}
-
 	if (windowRunner.keyIsDown(GLFW_KEY_D) || windowRunner.keyIsDown(GLFW_KEY_RIGHT))
 	{
 		smoothAcceleration += right * moveSpeed;
@@ -147,10 +140,10 @@ void Camera::update(double timeStep)
 		movementKeyIsPressed = true;
 	}
 
-	if (windowRunner.keyIsDown(GLFW_KEY_Q))
+	if (windowRunner.keyIsDown(GLFW_KEY_A) || windowRunner.keyIsDown(GLFW_KEY_LEFT))
 	{
-		smoothAcceleration -= up * moveSpeed;
-		velocity = -up * moveSpeed;
+		smoothAcceleration -= right * moveSpeed;
+		velocity = -right * moveSpeed;
 		movementKeyIsPressed = true;
 	}
 
@@ -161,7 +154,14 @@ void Camera::update(double timeStep)
 		movementKeyIsPressed = true;
 	}
 
-	if (windowRunner.keyIsDown(GLFW_KEY_SPACE))
+	if (windowRunner.keyIsDown(GLFW_KEY_Q))
+	{
+		smoothAcceleration -= up * moveSpeed;
+		velocity = -up * moveSpeed;
+		movementKeyIsPressed = true;
+	}
+
+	if (windowRunner.keyIsDown(GLFW_KEY_SPACE) || !settings.camera.enableMovement)
 	{
 		velocity = Vector3(0.0, 0.0, 0.0);
 		smoothVelocity = Vector3(0.0, 0.0, 0.0);
@@ -216,9 +216,9 @@ void Camera::update(double timeStep)
 	orientation.normalize();
 
 	ONB onb = ONB::fromNormal(orientation.getDirection());
-	forward = onb.w;
 	right = onb.u;
 	up = onb.v;
+	forward = onb.w;
 	imagePlaneCenter = position + (forward * imagePlaneDistance);
 }
 
