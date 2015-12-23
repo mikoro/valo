@@ -3,11 +3,6 @@
 
 #include "stdafx.h"
 
-#include "tclap/CmdLine.h"
-#include "tclap/SwitchArg.h"
-#include "tclap/ValueArg.h"
-#include "tclap/ArgException.h"
-
 #include "App.h"
 #include "Settings.h"
 #include "Utils/Log.h"
@@ -89,29 +84,6 @@ int App::run(int argc, char** argv)
 	changeDirectory();
 #endif
 
-	TCLAP::CmdLine cmd("Raycer", ' ', RAYCER_VERSION);
-	TCLAP::SwitchArg interactiveSwitch("", "interactive", "View the scene interactively", cmd, false);
-	TCLAP::SwitchArg nonInteractiveSwitch("", "non-interactive", "Force non-interactive mode", cmd, false);
-	TCLAP::ValueArg<uint32_t> testSceneArg("", "test", "Select one of the test scenes", false, 0, "int", cmd);
-	TCLAP::SwitchArg nonTestSceneSwitch("", "non-test", "Force test scene mode off", cmd, false);
-	TCLAP::SwitchArg clientSwitch("", "client", "Enable network client mode", cmd, false);
-	TCLAP::SwitchArg serverSwitch("", "server", "Enable network server mode", cmd, false);
-	TCLAP::ValueArg<std::string> sceneFileNameArg("s", "scene", "Path to the scene file", false, "", "string", cmd);
-	TCLAP::ValueArg<uint32_t> widthArg("w", "width", "Width of the output image or window", false, 0, "int", cmd);
-	TCLAP::ValueArg<uint32_t> heightArg("h", "height", "Height of the output image or window", false, 0, "int", cmd);
-	TCLAP::ValueArg<std::string> outputFileNameArg("o", "output", "Path to the output image file", false, "", "string", cmd);
-	TCLAP::SwitchArg autoViewSwitch("", "view", "Open the image automatically after completion", cmd, false);
-
-	try
-	{
-		cmd.parse(argc, argv);
-	}
-	catch (const TCLAP::ArgException& ex)
-	{
-		std::cerr << "Command line parsing error: " << ex.error() << " for arg " << ex.argId() << std::endl;
-		return -1;
-	}
-
 	Log& log = getLog();
 
 	try
@@ -121,51 +93,10 @@ int App::run(int argc, char** argv)
 		ConsoleRunner& consoleRunner = getConsoleRunner();
 		NetworkRunner& networkRunner = getNetworkRunner();
 
+		if (!settings.load(argc, argv))
+			return 0;
+
 		log.logInfo(std::string("Raycer v") + RAYCER_VERSION);
-
-		settings.load("settings.ini");
-
-		if (interactiveSwitch.isSet())
-			settings.general.interactive = true;
-
-		if (nonInteractiveSwitch.isSet())
-			settings.general.interactive = false;
-
-		if (testSceneArg.isSet())
-		{
-			settings.scene.enableTestScenes = true;
-			settings.scene.testSceneNumber = testSceneArg.getValue();
-		}
-
-		if (nonTestSceneSwitch.isSet())
-			settings.scene.enableTestScenes = false;
-
-		if (clientSwitch.isSet())
-		{
-			settings.network.isClient = true;
-			settings.network.isServer = false;
-		}
-
-		if (serverSwitch.isSet())
-		{
-			settings.network.isServer = true;
-			settings.network.isClient = false;
-		}
-
-		if (sceneFileNameArg.isSet())
-			settings.scene.fileName = sceneFileNameArg.getValue();
-
-		if (widthArg.isSet())
-			settings.image.width = settings.window.width = widthArg.getValue();
-
-		if (heightArg.isSet())
-			settings.image.height = settings.window.height = heightArg.getValue();
-
-		if (outputFileNameArg.isSet())
-			settings.image.fileName = outputFileNameArg.getValue();
-
-		if (autoViewSwitch.isSet())
-			settings.image.autoView = true;
 
 		if (settings.network.isClient && settings.network.isServer)
 			throw std::runtime_error("Could not be both a server and a client at the same time");

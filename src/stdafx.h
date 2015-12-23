@@ -32,6 +32,7 @@
 #include <boost/asio.hpp>
 #include <boost/array.hpp>
 #include <boost/filesystem.hpp>
+#include <boost/program_options.hpp>
 
 #ifdef _WIN32
 #include <windows.h>
@@ -62,11 +63,6 @@
 #include "cereal/archives/binary.hpp"
 #include "cereal/types/vector.hpp"
 #include "cereal/types/string.hpp"
-
-#include "tclap/CmdLine.h"
-#include "tclap/SwitchArg.h"
-#include "tclap/ValueArg.h"
-#include "tclap/ArgException.h"
 
 #include <Carbon/Carbon.h>
 #include <CoreFoundation/CoreFoundation.h>

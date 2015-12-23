@@ -17,7 +17,7 @@ Scene Scene::createTestScene1()
 	model.modelFilePath = "data/models/cornellbox/cornellbox.obj";
 
 	scene.models.push_back(model);
-
+	
 	scene.lights.ambientLight.color = Color(1.0, 1.0, 1.0);
 	scene.lights.ambientLight.intensity = 0.01;
 

@@ -51,9 +51,6 @@
     <ClCompile Include="src\Utils\FpsCounter.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
-    <ClCompile Include="src\Utils\IniReader.cpp">
-      <Filter>Utils</Filter>
-    </ClCompile>
     <ClCompile Include="src\Utils\Log.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
@@ -286,15 +283,12 @@
     <ClCompile Include="src\Scenes\Scene.cpp">
       <Filter>Scenes</Filter>
     </ClCompile>
-    <ClCompile Include="src\Scenes\Scene1.cpp">
+    <ClCompile Include="src\Scenes\TestScene1.cpp">
       <Filter>Scenes</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Utils\FpsCounter.h">
-      <Filter>Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Utils\IniReader.h">
       <Filter>Utils</Filter>
     </ClInclude>
     <ClInclude Include="src\Utils\Log.h">

@@ -4,53 +4,82 @@
 #include "stdafx.h"
 
 #include "Settings.h"
-#include "Utils/IniReader.h"
 
 using namespace Raycer;
 
-void Settings::load(const std::string& fileName)
+namespace po = boost::program_options;
+
+bool Settings::load(int argc, char** argv)
 {
-	IniReader iniReader;
-	iniReader.readFile(fileName);
+	po::options_description options("Options");
 
-	general.interactive = iniReader.getValue<bool>("general", "interactive");
-	general.maxThreadCount = iniReader.getValue<int32_t>("general", "maxThreadCount");
-	general.checkGLErrors = iniReader.getValue<bool>("general", "checkGLErrors");
+	options.add_options()
 
-	network.isClient = iniReader.getValue<bool>("network", "isClient");
-	network.isServer = iniReader.getValue<bool>("network", "isServer");
-	network.localAddress = iniReader.getValue("network", "localAddress");
-	network.localPort = iniReader.getValue<uint64_t>("network", "localPort");
-	network.broadcastAddress = iniReader.getValue("network", "broadcastAddress");
-	network.broadcastPort = iniReader.getValue<uint64_t>("network", "broadcastPort");
+		("help", "")
 
-	scene.fileName = iniReader.getValue("scene", "fileName");
-	scene.enableTestScenes = iniReader.getValue<bool>("scene", "enableTestScenes");
-	scene.testSceneNumber = iniReader.getValue<uint64_t>("scene", "testSceneNumber");
+		("general.interactive", po::value(&general.interactive)->default_value(true), "")
+		("general.maxThreadCount", po::value(&general.maxThreadCount)->default_value(4), "")
+		("general.checkGLErrors", po::value(&general.checkGLErrors)->default_value(true), "")
+		
+		("network.isClient", po::value(&network.isClient)->default_value(true), "")
+		("network.isServer", po::value(&network.isServer)->default_value(true), "")
+		("network.localAddress", po::value(&network.localAddress)->default_value(""), "")
+		("network.localPort", po::value(&network.localPort)->default_value(45001), "")
+		("network.broadcastAddress", po::value(&network.broadcastAddress)->default_value(""), "")
+		("network.broadcastPort", po::value(&network.broadcastPort)->default_value(45999), "")
 
-	image.width = iniReader.getValue<uint64_t>("image", "width");
-	image.height = iniReader.getValue<uint64_t>("image", "height");
-	image.fileName = iniReader.getValue("image", "fileName");
-	image.autoView = iniReader.getValue<bool>("image", "autoView");
+		("scene.fileName", po::value(&scene.fileName)->default_value(""), "")
+		("scene.enableTestScenes", po::value(&scene.enableTestScenes)->default_value(true), "")
+		("scene.testSceneNumber", po::value(&scene.testSceneNumber)->default_value(1), "")
 
-	window.width = iniReader.getValue<uint64_t>("window", "width");
-	window.height = iniReader.getValue<uint64_t>("window", "height");
-	window.renderScale = iniReader.getValue<double>("window", "renderScale");
-	window.enableFullscreen = iniReader.getValue<bool>("window", "enableFullscreen");
-	window.enableVsync = iniReader.getValue<bool>("window", "enableVsync");
-	window.hideCursor = iniReader.getValue<bool>("window", "hideCursor");
-	window.showInfoText = iniReader.getValue<bool>("window", "showInfoText");
-	window.defaultFont = iniReader.getValue("window", "defaultFont");
-	window.defaultFontSize = iniReader.getValue<uint64_t>("window", "defaultFontSize");
+		("image.width", po::value(&image.width)->default_value(1280), "")
+		("image.height", po::value(&image.height)->default_value(800), "")
+		("image.fileName", po::value(&image.fileName)->default_value("output.png"), "")
+		("image.autoView", po::value(&image.autoView)->default_value(true), "")
 
-	camera.freeLook = iniReader.getValue<bool>("camera", "freeLook");
-	camera.smoothMovement = iniReader.getValue<bool>("camera", "smoothMovement");
-	camera.moveSpeed = iniReader.getValue<double>("camera", "moveSpeed");
-	camera.mouseSpeed = iniReader.getValue<double>("camera", "mouseSpeed");
-	camera.moveDrag = iniReader.getValue<double>("camera", "moveDrag");
-	camera.mouseDrag = iniReader.getValue<double>("camera", "mouseDrag");
-	camera.autoStopSpeed = iniReader.getValue<double>("camera", "autoStopSpeed");
-	camera.slowSpeedModifier = iniReader.getValue<double>("camera", "slowSpeedModifier");
-	camera.fastSpeedModifier = iniReader.getValue<double>("camera", "fastSpeedModifier");
-	camera.veryFastSpeedModifier = iniReader.getValue<double>("camera", "veryFastSpeedModifier");
+		("window.width", po::value(&window.width)->default_value(1280), "")
+		("window.height", po::value(&window.height)->default_value(800), "")
+		("window.renderScale", po::value(&window.renderScale)->default_value(0.25), "")
+		("window.enableFullscreen", po::value(&window.enableFullscreen)->default_value(false), "")
+		("window.enableVsync", po::value(&window.enableVsync)->default_value(false), "")
+		("window.hideCursor", po::value(&window.hideCursor)->default_value(false), "")
+		("window.showInfoText", po::value(&window.showInfoText)->default_value(true), "")
+		("window.defaultFont", po::value(&window.defaultFont)->default_value("data/fonts/dejavu-sans-mono-regular.ttf"), "")
+		("window.defaultFontSize", po::value(&window.defaultFontSize)->default_value(14), "")
+
+		("camera.freeLook", po::value(&camera.freeLook)->default_value(false), "")
+		("camera.smoothMovement", po::value(&camera.smoothMovement)->default_value(true), "")
+		("camera.moveSpeed", po::value(&camera.moveSpeed)->default_value(10.0), "")
+		("camera.mouseSpeed", po::value(&camera.mouseSpeed)->default_value(40.0), "")
+		("camera.moveDrag", po::value(&camera.moveDrag)->default_value(3.0), "")
+		("camera.mouseDrag", po::value(&camera.mouseDrag)->default_value(6.0), "")
+		("camera.autoStopSpeed", po::value(&camera.autoStopSpeed)->default_value(0.01), "")
+		("camera.slowSpeedModifier", po::value(&camera.slowSpeedModifier)->default_value(0.25), "")
+		("camera.fastSpeedModifier", po::value(&camera.fastSpeedModifier)->default_value(2.5), "")
+		("camera.veryFastSpeedModifier", po::value(&camera.veryFastSpeedModifier)->default_value(5.0), "");
+
+	std::ifstream iniFile("raycer.ini");
+	po::variables_map vm;
+
+	try
+	{
+		po::store(po::parse_command_line(argc, argv, options), vm);
+		po::store(po::parse_config_file(iniFile, options), vm);
+		po::notify(vm);
+	}
+	catch (const po::error& e)
+	{
+		std::cout << "Command line / settings file parsing failed: " << e.what() << std::endl;
+		std::cout << "Try '--help' for list of valid options" << std::endl;
+
+		return false;
+	}
+
+	if (vm.count("help"))
+	{
+		std::cout << options;
+		return false;
+	}
+
+	return true;
 }

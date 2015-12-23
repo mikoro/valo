@@ -9,7 +9,7 @@ namespace Raycer
 	{
 	public:
 
-		void load(const std::string& fileName);
+		bool load(int argc, char** argv);
 
 		struct General
 		{

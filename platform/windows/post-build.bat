@@ -12,6 +12,6 @@ if not exist bin\%1\raycer.exe.config (
   xcopy /Y /Q platform\windows\raycer.exe.config bin\%1
 )
 
-if not exist bin\%1\settings.ini (
-  xcopy /Y /Q misc\settings.ini bin\%1
+if not exist bin\%1\raycer.ini (
+  xcopy /Y /Q misc\raycer.ini bin\%1
 )
