@@ -168,8 +168,9 @@ namespace Raycer
 	{
 		width = width_;
 		height = height_;
+		length = width * height;
 
-		pixelData.resize(width * height);
+		pixelData.resize(length);
 		clear();
 	}
 
@@ -273,7 +274,7 @@ namespace Raycer
 	template <typename T>
 	uint64_t ImageType<T>::getLength() const
 	{
-		return width * height;
+		return length;
 	}
 
 	template <typename T>
@@ -332,5 +333,25 @@ namespace Raycer
 	const std::vector<ColorType<T>>& ImageType<T>::getPixelDataConst() const
 	{
 		return pixelData;
+	}
+
+	template <typename T>
+	template <typename U>
+	void ImageType<T>::read(const ImageType<U>& other)
+	{
+		assert(width == other.width && height == other.height);
+
+		auto& otherPixelData = other.getPixelDataConst();
+
+		for (uint64_t i = 0; i < length; ++i)
+		{
+			ColorType<T>& c1 = pixelData[i];
+			const ColorType<U>& c2 = otherPixelData[i];
+
+			c1.r = T(c2.r);
+			c1.g = T(c2.g);
+			c1.b = T(c2.b);
+			c1.a = T(c2.a);
+		}
 	}
 }

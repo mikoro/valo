@@ -53,10 +53,14 @@ namespace Raycer
 		std::vector<ColorType<T>>& getPixelData();
 		const std::vector<ColorType<T>>& getPixelDataConst() const;
 
+		template <typename U>
+		void read(const ImageType<U>& other);
+
 	private:
 
 		uint64_t width = 0;
 		uint64_t height = 0;
+		uint64_t length = 0;
 
 		std::vector<ColorType<T>> pixelData;
 	};
