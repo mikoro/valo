@@ -42,6 +42,7 @@
 #include <stdlib.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include <signal.h>
 #endif
 
 #include <GL/gl3w.h>
@@ -56,7 +57,7 @@
 #include "tinyformat/tinyformat.h"
 
 #ifdef __APPLE__
-// cereal and tclap needs to be here, otherwise won't compile on Apple clang
+// cereal needs to be here, otherwise won't compile on Apple clang
 #include "cereal/cereal.hpp"
 #include "cereal/archives/json.hpp"
 #include "cereal/archives/xml.hpp"

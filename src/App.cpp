@@ -39,12 +39,22 @@ BOOL consoleCtrlHandler(DWORD fdwCtrlType)
 	
 	return false;
 }
+#else
+void signalHandler(int signal)
+{
+	(void)signal;
+
+	App::getConsoleRunner().interrupt();
+	App::getNetworkRunner().interrupt();
+}
 #endif
 
 int App::run(int argc, char** argv)
 {
 #ifdef _WIN32
 	SetConsoleCtrlHandler(PHANDLER_ROUTINE(consoleCtrlHandler), TRUE);
+#else
+	signal(SIGINT, signalHandler);
 #endif
 
 	Log& log = getLog();
