@@ -46,6 +46,9 @@
     <Filter Include="Scenes">
       <UniqueIdentifier>{15975929-201a-4fb5-bd21-2c9fc9bb347b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="External">
+      <UniqueIdentifier>{b2657f2b-747d-4206-a809-796eb405a2cd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Utils\FpsCounter.cpp">
@@ -130,12 +133,9 @@
     <ClCompile Include="src\Tests\PolynomialTest.cpp">
       <Filter>Tests</Filter>
     </ClCompile>
-    <ClCompile Include="src\stdafx.cpp" />
     <ClCompile Include="src\Tests\ModelLoaderTest.cpp">
       <Filter>Tests</Filter>
     </ClCompile>
-    <ClCompile Include="src\gl3w.cpp" />
-    <ClCompile Include="src\Settings.cpp" />
     <ClCompile Include="src\Utils\Timer.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
@@ -223,13 +223,7 @@
     <ClCompile Include="src\Rendering\FilmRenderer.cpp">
       <Filter>Rendering</Filter>
     </ClCompile>
-    <ClCompile Include="src\Rendering\Image.cpp">
-      <Filter>Rendering</Filter>
-    </ClCompile>
     <ClCompile Include="src\Rendering\ImagePool.cpp">
-      <Filter>Rendering</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Rendering\Text.cpp">
       <Filter>Rendering</Filter>
     </ClCompile>
     <ClCompile Include="src\Samplers\CenterSampler.cpp">
@@ -285,6 +279,19 @@
     </ClCompile>
     <ClCompile Include="src\Tests\OnbTest.cpp">
       <Filter>Tests</Filter>
+    </ClCompile>
+    <ClCompile Include="src\External\nanovg.c">
+      <Filter>External</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Precompiled.cpp" />
+    <ClCompile Include="src\Utils\Settings.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="src\External\gl3w.c">
+      <Filter>External</Filter>
+    </ClCompile>
+    <ClCompile Include="src\External\stb.c">
+      <Filter>External</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -343,9 +350,7 @@
     <ClInclude Include="src\Utils\ModelLoader.h">
       <Filter>Utils</Filter>
     </ClInclude>
-    <ClInclude Include="src\stdafx.h" />
     <ClInclude Include="src\Common.h" />
-    <ClInclude Include="src\Settings.h" />
     <ClInclude Include="src\Utils\Timer.h">
       <Filter>Utils</Filter>
     </ClInclude>
@@ -457,9 +462,6 @@
     <ClInclude Include="src\Rendering\ImagePool.h">
       <Filter>Rendering</Filter>
     </ClInclude>
-    <ClInclude Include="src\Rendering\Text.h">
-      <Filter>Rendering</Filter>
-    </ClInclude>
     <ClInclude Include="src\Samplers\CenterSampler.h">
       <Filter>Samplers</Filter>
     </ClInclude>
@@ -507,6 +509,10 @@
     </ClInclude>
     <ClInclude Include="src\Scenes\Scene.h">
       <Filter>Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Precompiled.h" />
+    <ClInclude Include="src\Utils\Settings.h">
+      <Filter>Utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

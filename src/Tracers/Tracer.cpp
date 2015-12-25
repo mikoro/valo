@@ -1,7 +1,7 @@
 // Copyright © 2015 Mikko Ronkainen <firstname@mikkoronkainen.com>
 // License: MIT, see the LICENSE file.
 
-#include "stdafx.h"
+#include "Precompiled.h"
 
 #include "Tracers/Tracer.h"
 #include "Tracers/Raytracer.h"
@@ -11,7 +11,7 @@
 #include "Tracing/Ray.h"
 #include "Rendering/Color.h"
 #include "App.h"
-#include "Settings.h"
+#include "Utils/Settings.h"
 #include "TracerState.h"
 #include "Rendering/Film.h"
 #include "Samplers/CenterSampler.h"

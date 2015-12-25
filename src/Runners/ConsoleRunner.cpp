@@ -1,11 +1,11 @@
 ﻿// Copyright © 2015 Mikko Ronkainen <firstname@mikkoronkainen.com>
 // License: MIT, see the LICENSE file.
 
-#include "stdafx.h"
+#include "Precompiled.h"
 
 #include "Runners/ConsoleRunner.h"
 #include "App.h"
-#include "Settings.h"
+#include "Utils/Settings.h"
 #include "Utils/StringUtils.h"
 #include "Utils/SysUtils.h"
 #include "Rendering/Film.h"

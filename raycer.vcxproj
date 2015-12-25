@@ -90,11 +90,12 @@
       <AdditionalOptions>/bigobj /Zm200 %(AdditionalOptions)</AdditionalOptions>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <DisableSpecificWarnings>4313</DisableSpecificWarnings>
+      <PrecompiledHeaderFile>Precompiled.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>glfw.lib;opengl32.lib;freetype.lib;freetype-gl.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glfw3.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalOptions>/NODEFAULTLIB:msvcrt.lib %(AdditionalOptions)</AdditionalOptions>
     </Link>
     <PostBuildEvent>
@@ -117,11 +118,12 @@
       <AdditionalOptions>/bigobj /Zm200 %(AdditionalOptions)</AdditionalOptions>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <DisableSpecificWarnings>4313</DisableSpecificWarnings>
+      <PrecompiledHeaderFile>Precompiled.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>glfw.lib;opengl32.lib;freetype.lib;freetype-gl.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glfw3.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalOptions>/NODEFAULTLIB:msvcrt.lib %(AdditionalOptions)</AdditionalOptions>
     </Link>
     <PostBuildEvent>
@@ -152,13 +154,14 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <AdditionalOptions>/bigobj /Zm200 %(AdditionalOptions)</AdditionalOptions>
       <DisableSpecificWarnings>4313</DisableSpecificWarnings>
+      <PrecompiledHeaderFile>Precompiled.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>glfw.lib;opengl32.lib;freetype.lib;freetype-gl.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glfw3.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>platform\windows\post-build.bat Release</Command>
@@ -166,6 +169,18 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\App.cpp" />
+    <ClCompile Include="src\External\gl3w.c">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='DebugTest|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="src\External\nanovg.c">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='DebugTest|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="src\External\stb.c">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='DebugTest|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="src\Filters\BellFilter.cpp" />
     <ClCompile Include="src\Filters\BoxFilter.cpp" />
     <ClCompile Include="src\Filters\Filter.cpp" />
@@ -173,7 +188,6 @@
     <ClCompile Include="src\Filters\LanczosSincFilter.cpp" />
     <ClCompile Include="src\Filters\MitchellFilter.cpp" />
     <ClCompile Include="src\Filters\TentFilter.cpp" />
-    <ClCompile Include="src\gl3w.cpp" />
     <ClCompile Include="src\Math\AxisAngle.cpp" />
     <ClCompile Include="src\Math\EulerAngle.cpp" />
     <ClCompile Include="src\Math\Matrix4x4.cpp" />
@@ -184,11 +198,13 @@
     <ClCompile Include="src\Math\Vector2.cpp" />
     <ClCompile Include="src\Math\Vector3.cpp" />
     <ClCompile Include="src\Math\Vector4.cpp" />
+    <ClCompile Include="src\Precompiled.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='DebugTest|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="src\Rendering\Film.cpp" />
     <ClCompile Include="src\Rendering\FilmRenderer.cpp" />
-    <ClCompile Include="src\Rendering\Image.cpp" />
     <ClCompile Include="src\Rendering\ImagePool.cpp" />
-    <ClCompile Include="src\Rendering\Text.cpp" />
     <ClCompile Include="src\RunnerStates\DefaultState.cpp" />
     <ClCompile Include="src\Runners\ConsoleRunner.cpp" />
     <ClCompile Include="src\Runners\NetworkRunner.cpp" />
@@ -206,12 +222,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="src\Scenes\TestScene1.cpp" />
-    <ClCompile Include="src\Settings.cpp" />
-    <ClCompile Include="src\stdafx.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='DebugTest|x64'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
-    </ClCompile>
     <ClCompile Include="src\Tests\ColorGradientTest.cpp" />
     <ClCompile Include="src\Tests\EulerAngleTest.cpp" />
     <ClCompile Include="src\Tests\FilterTest.cpp" />
@@ -252,6 +262,7 @@
     <ClCompile Include="src\Utils\ModelLoader.cpp" />
     <ClCompile Include="src\Utils\PerlinNoise.cpp" />
     <ClCompile Include="src\Utils\PoissonDisc.cpp" />
+    <ClCompile Include="src\Utils\Settings.cpp" />
     <ClCompile Include="src\Utils\StringUtils.cpp" />
     <ClCompile Include="src\Utils\SysUtils.cpp" />
     <ClCompile Include="src\Utils\Timer.cpp" />
@@ -277,12 +288,12 @@
     <ClInclude Include="src\Math\Vector2.h" />
     <ClInclude Include="src\Math\Vector3.h" />
     <ClInclude Include="src\Math\Vector4.h" />
+    <ClInclude Include="src\Precompiled.h" />
     <ClInclude Include="src\Rendering\Color.h" />
     <ClInclude Include="src\Rendering\Film.h" />
     <ClInclude Include="src\Rendering\FilmRenderer.h" />
     <ClInclude Include="src\Rendering\Image.h" />
     <ClInclude Include="src\Rendering\ImagePool.h" />
-    <ClInclude Include="src\Rendering\Text.h" />
     <ClInclude Include="src\RunnerStates\DefaultState.h" />
     <ClInclude Include="src\RunnerStates\RunnerState.h" />
     <ClInclude Include="src\Runners\ConsoleRunner.h" />
@@ -296,8 +307,6 @@
     <ClInclude Include="src\Samplers\RegularSampler.h" />
     <ClInclude Include="src\Samplers\Sampler.h" />
     <ClInclude Include="src\Scenes\Scene.h" />
-    <ClInclude Include="src\Settings.h" />
-    <ClInclude Include="src\stdafx.h" />
     <ClInclude Include="src\Textures\CheckerTexture.h" />
     <ClInclude Include="src\Textures\ColorGradientTexture.h" />
     <ClInclude Include="src\Textures\ColorTexture.h" />
@@ -330,6 +339,7 @@
     <ClInclude Include="src\Utils\ModelLoader.h" />
     <ClInclude Include="src\Utils\PerlinNoise.h" />
     <ClInclude Include="src\Utils\PoissonDisc.h" />
+    <ClInclude Include="src\Utils\Settings.h" />
     <ClInclude Include="src\Utils\StringUtils.h" />
     <ClInclude Include="src\Utils\SysUtils.h" />
     <ClInclude Include="src\Utils\Timer.h" />

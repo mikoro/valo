@@ -1,11 +1,11 @@
 ﻿// Copyright © 2015 Mikko Ronkainen <firstname@mikkoronkainen.com>
 // License: MIT, see the LICENSE file.
 
-#include "stdafx.h"
+#include "Precompiled.h"
 
 #include "Runners/WindowRunner.h"
 #include "App.h"
-#include "Settings.h"
+#include "Utils/Settings.h"
 #include "Utils/Log.h"
 #include "Utils/GLHelper.h"
 #include "Rendering/Image.h"
@@ -81,11 +81,6 @@ uint64_t WindowRunner::getWindowHeight() const
 const MouseInfo& WindowRunner::getMouseInfo() const
 {
 	return mouseInfo;
-}
-
-Text& WindowRunner::getDefaultText()
-{
-	return defaultText;
 }
 
 double WindowRunner::getElapsedTime() const
@@ -211,9 +206,6 @@ void WindowRunner::initialize()
 	if (settings.window.hideCursor)
 		glfwSetInputMode(glfwWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
-	defaultText.initialize(settings.window.defaultFont, double(settings.window.defaultFontSize));
-	pauseText.initialize(settings.window.defaultFont, 100);
-
 	windowResized(settings.window.width, settings.window.height);
 
 	runnerStates[RunnerStates::DEFAULT] = std::make_unique<DefaultState>();
@@ -235,8 +227,6 @@ void WindowRunner::windowResized(uint64_t width, uint64_t height)
 	windowHeight = height;
 
 	glViewport(0, 0, GLsizei(windowWidth), GLsizei(windowHeight));
-	defaultText.setWindowSize(windowWidth, windowHeight);
-	pauseText.setWindowSize(windowWidth, windowHeight);
 
 	if (currentState != RunnerStates::NONE)
 		runnerStates[currentState]->windowResized(windowWidth, windowHeight);
@@ -326,8 +316,6 @@ void WindowRunner::update(double timeStep)
 
 void WindowRunner::render(double timeStep, double interpolation)
 {
-	Settings& settings = App::getSettings();
-
 	fpsCounter.tick();
 
 	glClearColor(0.0, 0.0, 0.0, 0.0);
@@ -342,17 +330,6 @@ void WindowRunner::render(double timeStep, double interpolation)
 	}
 	else
 		throw std::runtime_error("Runner state has not been set");
-
-	if (settings.window.showInfoText)
-		defaultText.drawText(5.0, double(windowHeight - settings.window.defaultFontSize - 2), Color::WHITE, fpsCounter.getFpsString());
-
-	defaultText.render();
-
-	if (isPaused)
-	{
-		pauseText.drawText(double(windowWidth) / 2.0 - 200.0, double(windowHeight) / 2.0 - 40.0, Color::WHITE, "PAUSED");
-		pauseText.render();
-	}
 
 	glfwSwapBuffers(glfwWindow);
 

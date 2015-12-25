@@ -1,18 +1,17 @@
 ﻿// Copyright © 2015 Mikko Ronkainen <firstname@mikkoronkainen.com>
 // License: MIT, see the LICENSE file.
 
-#include "stdafx.h"
+#include "Precompiled.h"
 
 #include "RunnerStates/DefaultState.h"
 #include "App.h"
-#include "Settings.h"
+#include "Utils/Settings.h"
 #include "Utils/Log.h"
 #include "Rendering/Color.h"
 #include "Math/EulerAngle.h"
 #include "Math/Vector3.h"
 #include "Tracing/Camera.h"
 #include "Tracers/TracerState.h"
-#include "Rendering/Text.h"
 #include "Rendering/ImagePool.h"
 #include "Runners/WindowRunner.h"
 
@@ -230,9 +229,7 @@ void DefaultState::render(double timeStep, double interpolation)
 	(void)interpolation;
 
 	Settings& settings = App::getSettings();
-	WindowRunner& windowRunner = App::getWindowRunner();
-	Text& text = windowRunner.getDefaultText();
-
+	
 	TracerState state;
 	state.scene = &scene;
 	state.film = &film;
@@ -258,17 +255,9 @@ void DefaultState::render(double timeStep, double interpolation)
 
 	if (settings.window.showInfoText)
 	{
-		int64_t scaledMouseX = windowRunner.getMouseInfo().scaledX;
+		/*int64_t scaledMouseX = windowRunner.getMouseInfo().scaledX;
 		int64_t scaledMouseY = windowRunner.getMouseInfo().scaledY;
-		int64_t scaledMouseIndex = scaledMouseY * film.getWidth() + scaledMouseX;
-
-		text.drawText(5.0, double(windowRunner.getWindowHeight() - 3 * settings.window.defaultFontSize), Color(255, 255, 255, 255), tfm::format("Pos: (%.2f, %.2f, %.2f)", scene.camera.position.x, scene.camera.position.y, scene.camera.position.z));
-		text.drawText(5.0, double(windowRunner.getWindowHeight() - 4 * settings.window.defaultFontSize - 2), Color(255, 255, 255, 255), tfm::format("Rot: (%.2f, %.2f, %.2f)", scene.camera.orientation.pitch, scene.camera.orientation.yaw, scene.camera.orientation.roll));
-		text.drawText(5.0, double(windowRunner.getWindowHeight() - 5 * settings.window.defaultFontSize - 4), Color(255, 255, 255, 255), tfm::format("Pix: (%d, %d, %d)", scaledMouseX, scaledMouseY, scaledMouseIndex));
-		text.drawText(5.0, double(windowRunner.getWindowHeight() - 6 * settings.window.defaultFontSize - 6), Color(255, 255, 255, 255), tfm::format("Mov: %s", scene.camera.isMoving()));
-
-		if (scene.general.tracerType == TracerType::PATH)
-			text.drawText(5.0, double(windowRunner.getWindowHeight() - 7 * settings.window.defaultFontSize - 8), Color(255, 255, 255, 255), tfm::format("Sam: %s", sampleCount));
+		int64_t scaledMouseIndex = scaledMouseY * film.getWidth() + scaledMouseX;*/
 	}
 }
 

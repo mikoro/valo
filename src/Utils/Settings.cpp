@@ -1,9 +1,9 @@
 // Copyright © 2015 Mikko Ronkainen <firstname@mikkoronkainen.com>
 // License: MIT, see the LICENSE file.
 
-#include "stdafx.h"
+#include "Precompiled.h"
 
-#include "Settings.h"
+#include "Utils/Settings.h"
 
 using namespace Raycer;
 

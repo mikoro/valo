@@ -6,7 +6,6 @@
 #include <map>
 #include <memory>
 
-#include "Rendering/Text.h"
 #include "Utils/FpsCounter.h"
 #include "RunnerStates/RunnerState.h"
 
@@ -41,7 +40,6 @@ namespace Raycer
 		uint64_t getWindowWidth() const;
 		uint64_t getWindowHeight() const;
 		const MouseInfo& getMouseInfo() const;
-		Text& getDefaultText();
 		double getElapsedTime() const;
 		double getFps() const;
 
@@ -85,9 +83,6 @@ namespace Raycer
 
 		std::map<RunnerStates, std::unique_ptr<RunnerState>> runnerStates;
 		RunnerStates currentState = RunnerStates::NONE;
-
-		Text defaultText;
-		Text pauseText;
 
 		FpsCounter fpsCounter;
 	};
