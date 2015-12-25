@@ -320,6 +320,33 @@ bool Matrix4x4::isNan() const
 	return false;
 }
 
+std::array<float, 16> Matrix4x4::getOpenGLArray() const
+{
+	std::array<float, 16> result;
+
+	result[0] = float(m[0][0]);
+	result[1] = float(m[1][0]);
+	result[2] = float(m[2][0]);
+	result[3] = float(m[3][0]);
+
+	result[4] = float(m[0][1]);
+	result[5] = float(m[1][1]);
+	result[6] = float(m[2][1]);
+	result[7] = float(m[3][1]);
+
+	result[8] = float(m[0][2]);
+	result[9] = float(m[1][2]);
+	result[10] = float(m[2][2]);
+	result[11] = float(m[3][2]);
+
+	result[12] = float(m[0][3]);
+	result[13] = float(m[1][3]);
+	result[14] = float(m[2][3]);
+	result[15] = float(m[3][3]);
+
+	return result;
+}
+
 Vector3 Matrix4x4::transformPosition(const Vector3& v) const
 {
 	Vector3 result;

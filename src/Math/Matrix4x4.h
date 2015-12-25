@@ -9,7 +9,9 @@
 
 https://en.wikipedia.org/wiki/Row-major_order
 
-row major
+row major memory data order
+basis vectors are stored as columns
+needs to be transposed when sent to opengl
 
 array indices:
 m[row][column]
@@ -74,6 +76,7 @@ namespace Raycer
 		Matrix4x4 inverted() const;
 		bool isZero() const;
 		bool isNan() const;
+		std::array<float, 16> getOpenGLArray() const;
 
 		Vector3 transformPosition(const Vector3& v) const;
 		Vector3 transformDirection(const Vector3& v) const;
