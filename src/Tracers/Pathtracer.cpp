@@ -12,14 +12,7 @@ using namespace Raycer;
 
 Color Pathtracer::trace(const Scene& scene, const Ray& ray, std::mt19937& generator, const std::atomic<bool>& interrupted)
 {
-	assert(scene.general.pathSampleCount >= 1);
-
-	Color sampledPixelColor;
-
-	for (uint64_t i = 0; i < scene.general.pathSampleCount; ++i)
-		sampledPixelColor += traceRecursive(scene, ray, 0, generator, interrupted);
-
-	return sampledPixelColor / double(scene.general.pathSampleCount);
+	return traceRecursive(scene, ray, 0, generator, interrupted);
 }
 
 Color Pathtracer::traceRecursive(const Scene& scene, const Ray& ray, uint64_t iteration, std::mt19937& generator, const std::atomic<bool>& interrupted)

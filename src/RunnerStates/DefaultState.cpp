@@ -233,14 +233,13 @@ void DefaultState::render(double timeStep, double interpolation)
 		film.clear();
 	}
 
-	uint64_t samplesPerPixel = scene.general.multiSampleCountSqrt
+	uint64_t samplesPerPixel =
+		scene.general.pixelSampleCount
+		* scene.general.multiSampleCountSqrt
 		* scene.general.multiSampleCountSqrt
 		* scene.general.timeSampleCount
 		* scene.general.cameraSampleCountSqrt
 		* scene.general.cameraSampleCountSqrt;
-
-	if (scene.general.tracerType == TracerType::PATH)
-		samplesPerPixel *= scene.general.pathSampleCount;
 
 	film.increaseSamplesPerPixelCount(samplesPerPixel);
 

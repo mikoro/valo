@@ -59,10 +59,15 @@ Tracer::Tracer()
 
 void Tracer::run(TracerState& state, std::atomic<bool>& interrupted)
 {
-	omp_set_num_threads(App::getSettings().general.maxThreadCount);
+	Settings& settings = App::getSettings();
+	Scene& scene = *state.scene;
+	Film& film = *state.film;
+
+	omp_set_num_threads(settings.general.maxThreadCount);
 	uint64_t maxThreads = std::max(1, omp_get_max_threads());
 
 	assert(maxThreads >= 1);
+	assert(scene.general.pixelSampleCount >= 1);
 
 	if (maxThreads != generators.size())
 	{
@@ -90,9 +95,9 @@ void Tracer::run(TracerState& state, std::atomic<bool>& interrupted)
 			Vector2 pixelCoordinate = Vector2(x, y);
 			std::mt19937& generator = generators[omp_get_thread_num()];
 
-			generateMultiSamples(*state.scene, *state.film, pixelCoordinate, uint64_t(pixelIndex), generator, interrupted);
-			
-			// progress reporting to another thread
+			for (uint64_t i = 0; i < scene.general.pixelSampleCount; ++i)
+				generateMultiSamples(scene, film, pixelCoordinate, uint64_t(pixelIndex), generator, interrupted);
+
 			if ((pixelIndex + 1) % 100 == 0)
 				state.pixelsProcessed += 100;
 		}

@@ -54,10 +54,10 @@ namespace Raycer
 			TracerType tracerType = TracerType::RAY;
 			uint64_t maxRayIterations = 3;
 			uint64_t maxPathLength = 3;
-			uint64_t pathSampleCount = 1;
 			double rayStartOffset = 0.00001;
 			Color backgroundColor = Color(0.0, 0.0, 0.0);
 			Color offLensColor = Color(0.0, 0.0, 0.0);
+			uint64_t pixelSampleCount = 1;
 			SamplerType multiSamplerType = SamplerType::CMJ;
 			FilterType multiSamplerFilterType = FilterType::MITCHELL;
 			uint64_t multiSampleCountSqrt = 1;
@@ -73,10 +73,10 @@ namespace Raycer
 				ar(CEREAL_NVP(tracerType),
 					CEREAL_NVP(maxRayIterations),
 					CEREAL_NVP(maxPathLength),
-					CEREAL_NVP(pathSampleCount),
 					CEREAL_NVP(rayStartOffset),
 					CEREAL_NVP(backgroundColor),
 					CEREAL_NVP(offLensColor),
+					CEREAL_NVP(pixelSampleCount),
 					CEREAL_NVP(multiSamplerType),
 					CEREAL_NVP(multiSamplerFilterType),
 					CEREAL_NVP(multiSampleCountSqrt),

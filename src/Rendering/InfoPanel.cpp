@@ -196,9 +196,12 @@ void InfoPanel::renderFull(const Scene& scene, const Film& film)
 	currentY += lineSpacing;
 
 	double pixelSamplesPerSecond = double(film.getWidth() * film.getWidth()
-		* scene.general.multiSampleCountSqrt * scene.general.multiSampleCountSqrt
+		* scene.general.pixelSampleCount
+		* scene.general.multiSampleCountSqrt
+		* scene.general.multiSampleCountSqrt
 		* scene.general.timeSampleCount
-		* scene.general.cameraSampleCountSqrt * scene.general.cameraSampleCountSqrt) * fpsCounter.getFps();
+		* scene.general.cameraSampleCountSqrt
+		* scene.general.cameraSampleCountSqrt) * fpsCounter.getFps();
 
 	nvgText(context, currentX, currentY, tfm::format("Pixel samples/s: %s", StringUtils::humanizeNumber(pixelSamplesPerSecond)).c_str(), nullptr);
 	currentY += lineSpacing;
