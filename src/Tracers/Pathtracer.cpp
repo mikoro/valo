@@ -10,12 +10,12 @@
 
 using namespace Raycer;
 
-Color Pathtracer::trace(const Scene& scene, const Ray& ray, std::mt19937& generator)
+Color Pathtracer::trace(const Scene& scene, const Ray& ray, Random& random)
 {
-	return traceRecursive(scene, ray, 0, generator);
+	return traceRecursive(scene, ray, 0, random);
 }
 
-Color Pathtracer::traceRecursive(const Scene& scene, const Ray& ray, uint64_t iteration, std::mt19937& generator)
+Color Pathtracer::traceRecursive(const Scene& scene, const Ray& ray, uint64_t iteration, Random& random)
 {
 	if (iteration >= scene.pathtracing.maxPathLength)
 		return Color::BLACK;
@@ -39,7 +39,7 @@ Color Pathtracer::traceRecursive(const Scene& scene, const Ray& ray, uint64_t it
 	}
 
 	Sampler* sampler = samplers[SamplerType::RANDOM].get();
-	Vector3 newDirection = sampler->getHemisphereSample(intersection.onb, 1.0, 0, 0, 1, 1, 0, generator);
+	Vector3 newDirection = sampler->getHemisphereSample(intersection.onb, 1.0, 0, 0, 1, 1, 0, random);
 
 	Ray newRay;
 	newRay.origin = intersection.position + newDirection * scene.general.rayStartOffset;
@@ -53,7 +53,7 @@ Color Pathtracer::traceRecursive(const Scene& scene, const Ray& ray, uint64_t it
 
 	double alpha = std::abs(newDirection.dot(intersection.normal));
 	Color brdf = 2.0 * reflectance * alpha;
-	Color reflected = traceRecursive(scene, newRay, iteration + 1, generator);
+	Color reflected = traceRecursive(scene, newRay, iteration + 1, random);
 
 	return brdf * reflected;
 }

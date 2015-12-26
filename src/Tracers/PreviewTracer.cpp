@@ -10,9 +10,9 @@
 
 using namespace Raycer;
 
-Color PreviewTracer::trace(const Scene& scene, const Ray& ray, std::mt19937& generator)
+Color PreviewTracer::trace(const Scene& scene, const Ray& ray, Random& random)
 {
-	(void)generator;
+	(void)random;
 
 	Color finalColor = Color::BLACK;
 	Intersection intersection;

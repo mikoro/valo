@@ -3,10 +3,10 @@
 
 #pragma once
 
-#include <random>
 #include <vector>
 
 #include "Math/Vector2.h"
+#include "Utils/Random.h"
 
 namespace Raycer
 {
@@ -26,10 +26,6 @@ namespace Raycer
 	{
 	public:
 
-		PoissonDisc();
-		explicit PoissonDisc(uint32_t seed);
-
-		void seed(uint32_t seed);
 		std::vector<Vector2> generate(uint64_t width, uint64_t height, double minDistance, uint64_t iterationLimit = 30, bool normalize = false);
 
 	private:
@@ -49,6 +45,6 @@ namespace Raycer
 		std::vector<Vector2> points;
 		std::vector<Vector2> pointsToProcess;
 
-		std::mt19937 generator;
+		Random random;
 	};
 }

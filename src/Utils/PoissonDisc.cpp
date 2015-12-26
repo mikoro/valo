@@ -7,22 +7,6 @@
 
 using namespace Raycer;
 
-PoissonDisc::PoissonDisc()
-{
-	std::random_device rd;
-	seed(rd());
-}
-
-PoissonDisc::PoissonDisc(uint32_t seed_)
-{
-	seed(seed_);
-}
-
-void PoissonDisc::seed(uint32_t seed)
-{
-	generator.seed(seed);
-}
-
 std::vector<Vector2> PoissonDisc::generate(uint64_t width, uint64_t height, double minDistance_, uint64_t iterationLimit, bool normalize)
 {
 	minDistance = minDistance_;
@@ -42,8 +26,7 @@ std::vector<Vector2> PoissonDisc::generate(uint64_t width, uint64_t height, doub
 	points.clear();
 	pointsToProcess.clear();
 
-	std::uniform_real_distribution<double> randomDouble(0.0, 1.0);
-	Vector2 firstPoint = Vector2(randomDouble(generator) * double(width), randomDouble(generator) * double(height));
+	Vector2 firstPoint = Vector2(random.getDouble() * double(width), random.getDouble() * double(height));
 
 	points.push_back(firstPoint);
 	pointsToProcess.push_back(firstPoint);
@@ -102,8 +85,7 @@ PoissonDiscCell& PoissonDisc::getCell(const Vector2& point)
 
 Vector2 PoissonDisc::getNextPointToProcess()
 {
-	std::uniform_int_distribution<uint64_t> randomIndex(0, pointsToProcess.size() - 1);
-	uint64_t index = randomIndex(generator);
+	uint64_t index = random.getUint64(0, pointsToProcess.size() - 1);
 
 	Vector2 point = pointsToProcess[index];
 	pointsToProcess.erase(pointsToProcess.begin() + index);
@@ -113,10 +95,8 @@ Vector2 PoissonDisc::getNextPointToProcess()
 
 Vector2 PoissonDisc::generateNewPoint(const Vector2& origin)
 {
-	std::uniform_real_distribution<double> randomDouble(0.0, 1.0);
-
-	double radius = minDistance * (1.0 + randomDouble(generator));
-	double angle = 2.0 * M_PI * randomDouble(generator);
+	double radius = minDistance * (1.0 + random.getDouble());
+	double angle = 2.0 * M_PI * random.getDouble();
 
 	Vector2 point;
 

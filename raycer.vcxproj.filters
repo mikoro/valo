@@ -296,6 +296,9 @@
     <ClCompile Include="src\External\nanovg.c">
       <Filter>External</Filter>
     </ClCompile>
+    <ClCompile Include="src\Utils\Random.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Utils\FpsCounter.h">
@@ -519,6 +522,9 @@
     </ClInclude>
     <ClInclude Include="src\Rendering\InfoPanel.h">
       <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Utils\Random.h">
+      <Filter>Utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

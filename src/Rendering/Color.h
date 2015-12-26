@@ -3,8 +3,6 @@
 
 #pragma once
 
-#include <random>
-
 #include "cereal/cereal.hpp"
 
 namespace Raycer
@@ -41,7 +39,6 @@ namespace Raycer
 		static ColorType<T> alphaBlend(const ColorType<T>& first, const ColorType<T>& second);
 		static ColorType<T> pow(const ColorType<T>& color, T power);
 		static ColorType<T> fastPow(const ColorType<T>& color, double power);
-		static ColorType<T> random(std::mt19937& generator);
 
 		static const ColorType<T> RED;
 		static const ColorType<T> GREEN;

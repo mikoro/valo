@@ -4,27 +4,28 @@
 #include "Precompiled.h"
 
 #include "Utils/PerlinNoise.h"
+#include "Utils/Random.h"
 
 using namespace Raycer;
 
 PerlinNoise::PerlinNoise()
 {
 	std::random_device rd;
-	seed(rd());
+	initialize(rd());
 }
 
-PerlinNoise::PerlinNoise(uint32_t seed_)
+PerlinNoise::PerlinNoise(uint64_t seed)
 {
-	seed(seed_);
+	initialize(seed);
 }
 
-void PerlinNoise::seed(uint32_t seed)
+void PerlinNoise::initialize(uint64_t seed)
 {
 	permutations.clear();
 	permutations.resize(256);
 	std::iota(permutations.begin(), permutations.end(), 0);
-	std::mt19937 mt(seed);
-	std::shuffle(permutations.begin(), permutations.end(), mt);
+	Random random(seed);
+	std::shuffle(permutations.begin(), permutations.end(), random);
 	std::vector<uint64_t> duplicate = permutations;
 	permutations.insert(permutations.end(), duplicate.begin(), duplicate.end());
 }

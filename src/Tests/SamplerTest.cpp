@@ -18,6 +18,7 @@
 #include "Rendering/Color.h"
 #include "Math/Vector2.h"
 #include "Math/Vector3.h"
+#include "Utils/Random.h"
 
 using namespace Raycer;
 
@@ -47,11 +48,10 @@ TEST_CASE("Sampler functionality", "[sampler]")
 		
 		std::ofstream file(tfm::format("sampler_%s_hemisphere.txt", sampler.first));
 
-		std::random_device rd;
-		std::mt19937 generator(rd());
+		Random random;
 
-		sampler.second->generateSamples1D(sampleCount, generator);
-		sampler.second->generateSamples2D(sampleCount, generator);
+		sampler.second->generateSamples1D(sampleCount, random);
+		sampler.second->generateSamples2D(sampleCount, random);
 
 		double sample1D;
 

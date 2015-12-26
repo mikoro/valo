@@ -309,19 +309,4 @@ namespace Raycer
 
 		return c;
 	}
-
-	template <typename T>
-	ColorType<T> ColorType<T>::random(std::mt19937& generator)
-	{
-		std::uniform_real_distribution<T> random(T(0.0), T(1.0));
-
-		ColorType<T> c;
-
-		c.r = random(generator);
-		c.g = random(generator);
-		c.b = random(generator);
-		c.a = T(1.0);
-
-		return c;
-	}
 }

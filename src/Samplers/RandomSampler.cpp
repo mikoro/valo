@@ -8,7 +8,7 @@
 
 using namespace Raycer;
 
-double RandomSampler::getSample1D(uint64_t x, uint64_t n, uint64_t permutation, std::mt19937& generator)
+double RandomSampler::getSample1D(uint64_t x, uint64_t n, uint64_t permutation, Random& random)
 {
 	(void)x;
 	(void)n;
@@ -16,11 +16,10 @@ double RandomSampler::getSample1D(uint64_t x, uint64_t n, uint64_t permutation, 
 
 	assert(x < n);
 
-	std::uniform_real_distribution<double> randomOffset(0.0, 1.0);
-	return randomOffset(generator);
+	return random.getDouble();
 }
 
-Vector2 RandomSampler::getSample2D(uint64_t x, uint64_t y, uint64_t nx, uint64_t ny, uint64_t permutation, std::mt19937& generator)
+Vector2 RandomSampler::getSample2D(uint64_t x, uint64_t y, uint64_t nx, uint64_t ny, uint64_t permutation, Random& random)
 {
 	(void)x;
 	(void)y;
@@ -30,6 +29,5 @@ Vector2 RandomSampler::getSample2D(uint64_t x, uint64_t y, uint64_t nx, uint64_t
 
 	assert(x < nx && y < ny);
 
-	std::uniform_real_distribution<double> randomOffset(0.0, 1.0);
-	return Vector2(randomOffset(generator), randomOffset(generator));
+	return Vector2(random.getDouble(), random.getDouble());
 }

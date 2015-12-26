@@ -6,11 +6,11 @@
 #include <atomic>
 #include <map>
 #include <memory>
-#include <random>
 
 #include "Samplers/Sampler.h"
 #include "Filters/Filter.h"
 #include "Rendering/Color.h"
+#include "Utils/Random.h"
 
 namespace Raycer
 {
@@ -35,17 +35,17 @@ namespace Raycer
 
 	protected:
 
-		virtual Color trace(const Scene& scene, const Ray& ray, std::mt19937& generator) = 0;
+		virtual Color trace(const Scene& scene, const Ray& ray, Random& random) = 0;
 
 		std::map<SamplerType, std::unique_ptr<Sampler>> samplers;
 		std::map<FilterType, std::unique_ptr<Filter>> filters;
 
 	private:
 
-		void generateMultiSamples(const Scene& scene, Film& film, const Vector2& pixelCoordinate, uint64_t pixelIndex, std::mt19937& generator);
-		Color generateTimeSamples(const Scene& scene, const Vector2& pixelCoordinate, std::mt19937& generator);
-		Color generateCameraSamples(const Scene& scene, const Vector2& pixelCoordinate, double time, std::mt19937& generator);
+		void generateMultiSamples(const Scene& scene, Film& film, const Vector2& pixelCoordinate, uint64_t pixelIndex, Random& random);
+		Color generateTimeSamples(const Scene& scene, const Vector2& pixelCoordinate, Random& random);
+		Color generateCameraSamples(const Scene& scene, const Vector2& pixelCoordinate, double time, Random& random);
 		
-		std::vector<std::mt19937> generators;
+		std::vector<Random> randoms;
 	};
 }

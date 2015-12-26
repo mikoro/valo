@@ -17,13 +17,13 @@
 
 using namespace Raycer;
 
-Color Raytracer::trace(const Scene& scene, const Ray& ray, std::mt19937& generator)
+Color Raytracer::trace(const Scene& scene, const Ray& ray, Random& random)
 {
 	Intersection intersection;
-	return traceRecursive(scene, ray, intersection, 0, generator);
+	return traceRecursive(scene, ray, intersection, 0, random);
 }
 
-Color Raytracer::traceRecursive(const Scene& scene, const Ray& ray, Intersection& intersection, uint64_t iteration, std::mt19937& generator)
+Color Raytracer::traceRecursive(const Scene& scene, const Ray& ray, Intersection& intersection, uint64_t iteration, Random& random)
 {
 	Color finalColor = scene.general.backgroundColor;
 	
@@ -53,12 +53,12 @@ Color Raytracer::traceRecursive(const Scene& scene, const Ray& ray, Intersection
 	calculateRayReflectanceAndTransmittance(ray, intersection, rayReflectance, rayTransmittance);
 
 	if (rayReflectance > 0.0 && iteration < scene.raytracing.maxRayIterations)
-		reflectedColor = calculateReflectedColor(scene, ray, intersection, rayReflectance, iteration, generator);
+		reflectedColor = calculateReflectedColor(scene, ray, intersection, rayReflectance, iteration, random);
 
 	if (rayTransmittance > 0.0 && iteration < scene.raytracing.maxRayIterations)
-		transmittedColor = calculateTransmittedColor(scene, ray, intersection, rayTransmittance, iteration, generator);
+		transmittedColor = calculateTransmittedColor(scene, ray, intersection, rayTransmittance, iteration, random);
 
-	Color lightColor = calculateLightColor(scene, ray, intersection, generator);
+	Color lightColor = calculateLightColor(scene, ray, intersection, random);
 
 	finalColor = lightColor + reflectedColor + transmittedColor;
 
@@ -97,7 +97,7 @@ void Raytracer::calculateRayReflectanceAndTransmittance(const Ray& ray, const In
 	rayTransmittance = material->rayTransmittance * fresnelTransmittance;
 }
 
-Color Raytracer::calculateReflectedColor(const Scene& scene, const Ray& ray, const Intersection& intersection, double rayReflectance, uint64_t iteration, std::mt19937& generator)
+Color Raytracer::calculateReflectedColor(const Scene& scene, const Ray& ray, const Intersection& intersection, double rayReflectance, uint64_t iteration, Random& random)
 {
 	const Material* material = intersection.material;
 
@@ -114,7 +114,7 @@ Color Raytracer::calculateReflectedColor(const Scene& scene, const Ray& ray, con
 	reflectedRay.direction = reflectionDirection;
 	reflectedRay.precalculate();
 
-	reflectedColor = traceRecursive(scene, reflectedRay, reflectedIntersection, iteration + 1, generator) * rayReflectance;
+	reflectedColor = traceRecursive(scene, reflectedRay, reflectedIntersection, iteration + 1, random) * rayReflectance;
 
 	// only attenuate if ray has traveled inside a primitive
 	if (!isOutside && reflectedIntersection.wasFound && material->attenuating)
@@ -126,7 +126,7 @@ Color Raytracer::calculateReflectedColor(const Scene& scene, const Ray& ray, con
 	return reflectedColor;
 }
 
-Color Raytracer::calculateTransmittedColor(const Scene& scene, const Ray& ray, const Intersection& intersection, double rayTransmittance, uint64_t iteration, std::mt19937& generator)
+Color Raytracer::calculateTransmittedColor(const Scene& scene, const Ray& ray, const Intersection& intersection, double rayTransmittance, uint64_t iteration, Random& random)
 {
 	const Material* material = intersection.material;
 
@@ -153,7 +153,7 @@ Color Raytracer::calculateTransmittedColor(const Scene& scene, const Ray& ray, c
 	transmittedRay.direction = transmissionDirection;
 	transmittedRay.precalculate();
 
-	transmittedColor = traceRecursive(scene, transmittedRay, transmittedIntersection, iteration + 1, generator) * rayTransmittance;
+	transmittedColor = traceRecursive(scene, transmittedRay, transmittedIntersection, iteration + 1, random) * rayTransmittance;
 
 	// only attenuate if ray has traveled inside a primitive
 	if (isOutside && transmittedIntersection.wasFound && material->attenuating)
@@ -165,7 +165,7 @@ Color Raytracer::calculateTransmittedColor(const Scene& scene, const Ray& ray, c
 	return transmittedColor;
 }
 
-Color Raytracer::calculateLightColor(const Scene& scene, const Ray& ray, const Intersection& intersection, std::mt19937& generator)
+Color Raytracer::calculateLightColor(const Scene& scene, const Ray& ray, const Intersection& intersection, Random& random)
 {
 	Color lightColor;
 	Vector3 directionToCamera = -ray.direction;
@@ -204,7 +204,7 @@ Color Raytracer::calculateLightColor(const Scene& scene, const Ray& ray, const I
 		directionToLight.normalize();
 
 		Color pointLightColor = calculatePhongShadingColor(intersection.normal, directionToLight, directionToCamera, light, finalDiffuseReflectance, finalSpecularReflectance, material->shininess);
-		double shadowAmount = calculateShadowAmount(scene, ray, intersection, light, generator);
+		double shadowAmount = calculateShadowAmount(scene, ray, intersection, light, random);
 		double distanceAttenuation = std::min(1.0, distanceToLight / light.maxDistance);
 		distanceAttenuation = 1.0 - pow(distanceAttenuation, light.attenuation);
 
@@ -258,7 +258,7 @@ double Raytracer::calculateShadowAmount(const Scene& scene, const Ray& ray, cons
 	return 0.0;
 }
 
-double Raytracer::calculateShadowAmount(const Scene& scene, const Ray& ray, const Intersection& intersection, const PointLight& light, std::mt19937& generator)
+double Raytracer::calculateShadowAmount(const Scene& scene, const Ray& ray, const Intersection& intersection, const PointLight& light, Random& random)
 {
 	Vector3 directionToLight = (light.position - intersection.position).normalized();
 
@@ -285,8 +285,7 @@ double Raytracer::calculateShadowAmount(const Scene& scene, const Ray& ray, cons
 	Vector3 lightUp = lightRight.cross(directionToLight).normalized();
 
 	Sampler* sampler = samplers[light.areaLightSamplerType].get();
-	std::uniform_int_distribution<uint64_t> randomPermutation;
-	uint64_t permutation = randomPermutation(generator);
+	uint64_t permutation = random.getUint64();
 
 	double shadowAmount = 0.0;
 	uint64_t n = light.areaLightSampleCountSqrt;
@@ -295,7 +294,7 @@ double Raytracer::calculateShadowAmount(const Scene& scene, const Ray& ray, cons
 	{
 		for (uint64_t x = 0; x < n; ++x)
 		{
-			Vector2 jitter = sampler->getDiscSample(x, y, n, n, permutation, generator) * light.areaLightRadius;
+			Vector2 jitter = sampler->getDiscSample(x, y, n, n, permutation, random) * light.areaLightRadius;
 			Vector3 newLightPosition = light.position + jitter.x * lightRight + jitter.y * lightUp;
 			Vector3 newDirectionToLight = (newLightPosition - intersection.position).normalized();
 

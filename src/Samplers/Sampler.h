@@ -6,6 +6,7 @@
 #include <vector>
 
 #include "Math/Vector2.h"
+#include "Utils/Random.h"
 
 /*
 
@@ -29,13 +30,13 @@ namespace Raycer
 
 		virtual ~Sampler() {}
 
-		virtual double getSample1D(uint64_t x, uint64_t n, uint64_t permutation, std::mt19937& generator) = 0;
-		virtual Vector2 getSample2D(uint64_t x, uint64_t y, uint64_t nx, uint64_t ny, uint64_t permutation, std::mt19937& generator) = 0;
-		Vector2 getDiscSample(uint64_t x, uint64_t y, uint64_t nx, uint64_t ny, uint64_t permutation, std::mt19937& generator);
-		Vector3 getHemisphereSample(const ONB& onb, double distribution, uint64_t x, uint64_t y, uint64_t nx, uint64_t ny, uint64_t permutation, std::mt19937& generator);
+		virtual double getSample1D(uint64_t x, uint64_t n, uint64_t permutation, Random& random) = 0;
+		virtual Vector2 getSample2D(uint64_t x, uint64_t y, uint64_t nx, uint64_t ny, uint64_t permutation, Random& random) = 0;
+		Vector2 getDiscSample(uint64_t x, uint64_t y, uint64_t nx, uint64_t ny, uint64_t permutation, Random& random);
+		Vector3 getHemisphereSample(const ONB& onb, double distribution, uint64_t x, uint64_t y, uint64_t nx, uint64_t ny, uint64_t permutation, Random& random);
 
-		virtual void generateSamples1D(uint64_t sampleCount, std::mt19937& generator);
-		virtual void generateSamples2D(uint64_t sampleCountSqrt, std::mt19937& generator);
+		virtual void generateSamples1D(uint64_t sampleCount, Random& random);
+		virtual void generateSamples2D(uint64_t sampleCountSqrt, Random& random);
 
 		bool getNextSample1D(double& result);
 		bool getNextSample2D(Vector2& result);

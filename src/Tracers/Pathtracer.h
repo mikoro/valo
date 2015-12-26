@@ -3,8 +3,6 @@
 
 #pragma once
 
-#include <random>
-
 #include "Tracers/Tracer.h"
 
 namespace Raycer
@@ -16,10 +14,10 @@ namespace Raycer
 	{
 	protected:
 
-		Color trace(const Scene& scene, const Ray& ray, std::mt19937& generator) override;
+		Color trace(const Scene& scene, const Ray& ray, Random& random) override;
 
 	private:
 
-		Color traceRecursive(const Scene& scene, const Ray& ray, uint64_t iteration, std::mt19937& generator);
+		Color traceRecursive(const Scene& scene, const Ray& ray, uint64_t iteration, Random& random);
 	};
 }

@@ -12,7 +12,7 @@ using namespace Raycer;
 
 void PerlinNoiseTexture::initialize()
 {
-	perlinNoise.seed(seed);
+	perlinNoise.initialize(seed);
 }
 
 Color PerlinNoiseTexture::getColor(const Vector2& texcoord, const Vector3& position) const

@@ -10,6 +10,7 @@
 #include "Tracing/Triangle.h"
 #include "App.h"
 #include "Utils/Log.h"
+#include "Utils/Random.h"
 #include "Math/Vector3.h"
 
 using namespace Raycer;
@@ -77,8 +78,7 @@ void BVH::build(const std::vector<Triangle>& triangles, const BVHBuildInfo& buil
 
 	auto startTime = std::chrono::high_resolution_clock::now();
 
-	std::random_device rd;
-	std::mt19937 generator(rd());
+	Random random;
 
 	BVHBuildEntry stack[128];
 	orderedTriangles.clear();
@@ -146,7 +146,7 @@ void BVH::build(const std::vector<Triangle>& triangles, const BVHBuildInfo& buil
 		if (buildInfo.useSAH)
 			calculateSAHSplit(axis, splitPoint, node.aabb, buildInfo, buildEntry);
 		else
-			calculateSplit(axis, splitPoint, node.aabb, buildInfo, buildEntry, generator);
+			calculateSplit(axis, splitPoint, node.aabb, buildInfo, buildEntry, random);
 
 		uint64_t middle = buildEntry.start;
 
@@ -200,15 +200,12 @@ void BVH::restore(const Scene& scene)
 	return;
 }
 
-void BVH::calculateSplit(uint64_t& axis, double& splitPoint, const AABB& nodeAABB, const BVHBuildInfo& buildInfo, const BVHBuildEntry& buildEntry, std::mt19937& generator)
+void BVH::calculateSplit(uint64_t& axis, double& splitPoint, const AABB& nodeAABB, const BVHBuildInfo& buildInfo, const BVHBuildEntry& buildEntry, Random& random)
 {
 	if (buildInfo.axisSelection == BVHAxisSelection::LARGEST)
 		axis = nodeAABB.getLargestAxis();
 	else if (buildInfo.axisSelection == BVHAxisSelection::RANDOM)
-	{
-		std::uniform_int_distribution<uint64_t> randomAxis(0, 2);
-		axis = randomAxis(generator);
-	}
+		axis = random.getUint64(0, 2);
 	else
 		throw std::runtime_error("Unknown BVH axis selection");
 
@@ -217,10 +214,7 @@ void BVH::calculateSplit(uint64_t& axis, double& splitPoint, const AABB& nodeAAB
 	else if (buildInfo.axisSplit == BVHAxisSplit::MEDIAN)
 		splitPoint = calculateMedianPoint(axis, buildEntry);
 	else if (buildInfo.axisSplit == BVHAxisSplit::RANDOM)
-	{
-		std::uniform_real_distribution<double> randomDouble(nodeAABB.getMin().get(axis), nodeAABB.getMax().get(axis));
-		splitPoint = randomDouble(generator);
-	}
+		splitPoint = random.getDouble(nodeAABB.getMin().get(axis), nodeAABB.getMax().get(axis));
 	else
 		throw std::runtime_error("Unknown BVH axis split");
 }

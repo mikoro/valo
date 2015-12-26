@@ -3,7 +3,6 @@
 
 #pragma once
 
-#include <random>
 #include <vector>
 
 #include "cereal/cereal.hpp"
@@ -62,6 +61,7 @@ namespace Raycer
 	struct Intersection;
 	class Triangle;
 	class Scene;
+	class Random;
 
 	class BVH
 	{
@@ -79,7 +79,7 @@ namespace Raycer
 
 	private:
 
-		void calculateSplit(uint64_t& axis, double& splitPoint, const AABB& nodeAABB, const BVHBuildInfo& buildInfo, const BVHBuildEntry& buildEntry, std::mt19937& generator);
+		void calculateSplit(uint64_t& axis, double& splitPoint, const AABB& nodeAABB, const BVHBuildInfo& buildInfo, const BVHBuildEntry& buildEntry, Random& random);
 		void calculateSAHSplit(uint64_t& axis, double& splitPoint, const AABB& nodeAABB, const BVHBuildInfo& buildInfo, const BVHBuildEntry& buildEntry);
 		double calculateSAHScore(uint64_t axis, double splitPoint, const AABB& nodeAABB, const BVHBuildEntry& buildEntry);
 		double calculateMedianPoint(uint64_t axis, const BVHBuildEntry& buildEntry);
