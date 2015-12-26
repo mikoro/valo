@@ -52,44 +52,72 @@ namespace Raycer
 		struct General
 		{
 			TracerType tracerType = TracerType::RAY;
-			uint64_t maxRayIterations = 3;
-			uint64_t maxPathLength = 3;
 			double rayStartOffset = 0.00001;
 			Color backgroundColor = Color(0.0, 0.0, 0.0);
 			Color offLensColor = Color(0.0, 0.0, 0.0);
-			uint64_t pixelSampleCount = 1;
-			SamplerType multiSamplerType = SamplerType::CMJ;
-			FilterType multiSamplerFilterType = FilterType::MITCHELL;
-			uint64_t multiSampleCountSqrt = 1;
-			SamplerType timeSamplerType = SamplerType::JITTERED;
-			uint64_t timeSampleCount = 1;
-			SamplerType cameraSamplerType = SamplerType::CMJ;
-			uint64_t cameraSampleCountSqrt = 1;
 			bool enableNormalMapping = true;
 
 			template <class Archive>
 			void serialize(Archive& ar)
 			{
 				ar(CEREAL_NVP(tracerType),
-					CEREAL_NVP(maxRayIterations),
-					CEREAL_NVP(maxPathLength),
 					CEREAL_NVP(rayStartOffset),
 					CEREAL_NVP(backgroundColor),
 					CEREAL_NVP(offLensColor),
-					CEREAL_NVP(pixelSampleCount),
-					CEREAL_NVP(multiSamplerType),
-					CEREAL_NVP(multiSamplerFilterType),
-					CEREAL_NVP(multiSampleCountSqrt),
-					CEREAL_NVP(timeSamplerType),
-					CEREAL_NVP(timeSampleCount),
-					CEREAL_NVP(cameraSamplerType),
-					CEREAL_NVP(cameraSampleCountSqrt),
 					CEREAL_NVP(enableNormalMapping));
 			}
 
 		} general;
 
-		Camera camera;
+		struct Raytracer
+		{
+			uint64_t maxRayIterations = 3;
+
+			template <class Archive>
+			void serialize(Archive& ar)
+			{
+				ar(CEREAL_NVP(maxRayIterations));
+			}
+
+		} raytracing;
+
+		struct Pathtracer
+		{
+			uint64_t maxPathLength = 3;
+
+			template <class Archive>
+			void serialize(Archive& ar)
+			{
+				ar(CEREAL_NVP(maxPathLength));
+			}
+
+		} pathtracing;
+
+		struct Sampling
+		{
+			uint64_t pixelSampleCount = 1;
+			uint64_t multiSampleCountSqrt = 1;
+			uint64_t timeSampleCount = 1;
+			uint64_t cameraSampleCountSqrt = 1;
+			SamplerType multiSamplerType = SamplerType::CMJ;
+			FilterType multiSamplerFilterType = FilterType::MITCHELL;
+			SamplerType timeSamplerType = SamplerType::JITTERED;
+			SamplerType cameraSamplerType = SamplerType::CMJ;
+
+			template <class Archive>
+			void serialize(Archive& ar)
+			{
+				ar(CEREAL_NVP(pixelSampleCount),
+					CEREAL_NVP(multiSampleCountSqrt),
+					CEREAL_NVP(timeSampleCount),
+					CEREAL_NVP(cameraSampleCountSqrt),
+					CEREAL_NVP(multiSamplerType),
+					CEREAL_NVP(multiSamplerFilterType),
+					CEREAL_NVP(timeSamplerType),
+					CEREAL_NVP(cameraSamplerType));
+			}
+
+		} sampling;
 
 		struct Tonemapper
 		{
@@ -115,31 +143,9 @@ namespace Raycer
 					CEREAL_NVP(averagingAlpha));
 			}
 
-		} tonemapper;
+		} tonemapping;
 
-		struct SimpleFog
-		{
-			bool enabled = false;
-			Color color = Color::WHITE;
-			double distance = 100.0;
-			double steepness = 1.0;
-			bool heightDispersion = false;
-			double height = 100.0;
-			double heightSteepness = 1.0;
-
-			template <class Archive>
-			void serialize(Archive& ar)
-			{
-				ar(CEREAL_NVP(enabled),
-					CEREAL_NVP(color),
-					CEREAL_NVP(distance),
-					CEREAL_NVP(steepness),
-					CEREAL_NVP(heightDispersion),
-					CEREAL_NVP(height),
-					CEREAL_NVP(heightSteepness));
-			}
-
-		} simpleFog;
+		Camera camera;
 
 		struct Textures
 		{
@@ -196,9 +202,11 @@ namespace Raycer
 		void serialize(Archive& ar)
 		{
 			ar(CEREAL_NVP(general),
+				CEREAL_NVP(raytracing),
+				CEREAL_NVP(pathtracing),
+				CEREAL_NVP(sampling),
+				CEREAL_NVP(tonemapping),
 				CEREAL_NVP(camera),
-				CEREAL_NVP(tonemapper),
-				CEREAL_NVP(simpleFog),
 				CEREAL_NVP(textures),
 				CEREAL_NVP(materials),
 				CEREAL_NVP(lights),

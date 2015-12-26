@@ -109,7 +109,7 @@ void Tracer::run(TracerState& state, std::atomic<bool>& interrupted)
 			}
 			else
 			{
-				for (uint64_t i = 0; i < scene.general.pixelSampleCount; ++i)
+				for (uint64_t i = 0; i < scene.sampling.pixelSampleCount; ++i)
 					generateMultiSamples(scene, film, pixelCoordinate, uint64_t(pixelIndex), generator);
 			}
 
@@ -138,7 +138,7 @@ void Tracer::generateMultiSamples(const Scene& scene, Film& film, const Vector2&
 {
 	assert(scene.general.multiSampleCountSqrt >= 1);
 
-	if (scene.general.multiSampleCountSqrt == 1)
+	if (scene.sampling.multiSampleCountSqrt == 1)
 	{
 		Color pixelColor = generateTimeSamples(scene, pixelCoordinate, generator);
 		film.addSample(pixelIndex, pixelColor, 1.0);
@@ -146,12 +146,12 @@ void Tracer::generateMultiSamples(const Scene& scene, Film& film, const Vector2&
 		return;
 	}
 	
-	Sampler* sampler = samplers[scene.general.multiSamplerType].get();
-	Filter* filter = filters[scene.general.multiSamplerFilterType].get();
+	Sampler* sampler = samplers[scene.sampling.multiSamplerType].get();
+	Filter* filter = filters[scene.sampling.multiSamplerFilterType].get();
 
 	std::uniform_int_distribution<uint64_t> randomPermutation;
 	uint64_t permutation = randomPermutation(generator);
-	uint64_t n = scene.general.multiSampleCountSqrt;
+	uint64_t n = scene.sampling.multiSampleCountSqrt;
 
 	for (uint64_t y = 0; y < n; ++y)
 	{
@@ -169,13 +169,13 @@ Color Tracer::generateTimeSamples(const Scene& scene, const Vector2& pixelCoordi
 {
 	assert(scene.general.timeSampleCount >= 1);
 
-	if (scene.general.timeSampleCount == 1)
+	if (scene.sampling.timeSampleCount == 1)
 		return generateCameraSamples(scene, pixelCoordinate, 0.0, generator);
 
-	Sampler* sampler = samplers[scene.general.timeSamplerType].get();
+	Sampler* sampler = samplers[scene.sampling.timeSamplerType].get();
 
 	Color sampledPixelColor;
-	uint64_t n = scene.general.timeSampleCount;
+	uint64_t n = scene.sampling.timeSampleCount;
 
 	for (uint64_t i = 0; i < n; ++i)
 		sampledPixelColor += generateCameraSamples(scene, pixelCoordinate, sampler->getSample1D(i, n, 0, generator), generator);
@@ -192,7 +192,7 @@ Color Tracer::generateCameraSamples(const Scene& scene, const Vector2& pixelCoor
 
 	bool isValidRay = scene.camera.getRay(pixelCoordinate, ray);
 
-	if (scene.general.cameraSampleCountSqrt == 1)
+	if (scene.sampling.cameraSampleCountSqrt == 1)
 	{
 		if (isValidRay)
 			return trace(scene, ray, generator);
@@ -200,7 +200,7 @@ Color Tracer::generateCameraSamples(const Scene& scene, const Vector2& pixelCoor
 			return scene.general.offLensColor;
 	}
 
-	Sampler* sampler = samplers[scene.general.cameraSamplerType].get();
+	Sampler* sampler = samplers[scene.sampling.cameraSamplerType].get();
 
 	std::uniform_int_distribution<uint64_t> randomPermutation;
 	uint64_t permutation = randomPermutation(generator);
@@ -213,7 +213,7 @@ Color Tracer::generateCameraSamples(const Scene& scene, const Vector2& pixelCoor
 	Vector3 cameraUp = scene.camera.up;
 
 	Color sampledPixelColor;
-	uint64_t n = scene.general.cameraSampleCountSqrt;
+	uint64_t n = scene.sampling.cameraSampleCountSqrt;
 
 	for (uint64_t y = 0; y < n; ++y)
 	{

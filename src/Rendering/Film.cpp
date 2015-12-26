@@ -64,14 +64,14 @@ void Film::increaseSamplesPerPixelCount(uint64_t count)
 	samplesPerPixelCount += count;
 }
 
-void Film::load(const std::string filePath)
+void Film::load(const std::string& filePath)
 {
-	
+	(void)filePath;
 }
 
-void Film::save(const std::string filePath) const
+void Film::save(const std::string& filePath) const
 {
-	
+	(void)filePath;
 }
 
 void Film::generateOutputImage(const Scene& scene)
@@ -80,7 +80,7 @@ void Film::generateOutputImage(const Scene& scene)
 	for (int64_t i = 0; i < int64_t(filmPixels.size()); ++i)
 		linearImage.setPixel(i, filmPixels[i].cumulativeColor / filmPixels[i].cumulativeFilterWeight);
 
-	Tonemapper* tonemapper = tonemappers[scene.tonemapper.type].get();
+	Tonemapper* tonemapper = tonemappers[scene.tonemapping.type].get();
 	tonemapper->apply(scene, linearImage, outputImage);
 }
 

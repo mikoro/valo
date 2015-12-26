@@ -32,8 +32,8 @@ namespace Raycer
 		void addSample(uint64_t x, uint64_t y, const Color& color, double filterWeight);
 		void addSample(uint64_t index, const Color& color, double filterWeight);
 		void increaseSamplesPerPixelCount(uint64_t count);
-		void load(const std::string filePath);
-		void save(const std::string filePath) const;
+		void load(const std::string& filePath);
+		void save(const std::string& filePath) const;
 		
 		void generateOutputImage(const Scene& scene);
 		const Image& getOutputImage() const;

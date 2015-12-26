@@ -54,17 +54,17 @@ void ReinhardTonemapper::apply(const Scene& scene, const Image& inputImage, Imag
 		}
 	}
 
-	if (scene.tonemapper.enableAveraging && settings.interactive.enabled)
+	if (scene.tonemapping.enableAveraging && settings.interactive.enabled)
 	{
-		maxLuminanceAverage.setAlpha(scene.tonemapper.averagingAlpha);
+		maxLuminanceAverage.setAlpha(scene.tonemapping.averagingAlpha);
 		maxLuminanceAverage.addMeasurement(maxLuminance);
 		maxLuminance = maxLuminanceAverage.getAverage();
 	}
 
 	const double luminanceLogAvg = exp(luminanceLogSum / double(pixelCount));
-	const double luminanceScale = scene.tonemapper.key / luminanceLogAvg;
+	const double luminanceScale = scene.tonemapping.key / luminanceLogAvg;
 	const double maxLuminance2Inv = 1.0 / (maxLuminance * maxLuminance);
-	const double invGamma = 1.0 / scene.tonemapper.gamma;
+	const double invGamma = 1.0 / scene.tonemapping.gamma;
 	
 	#pragma omp parallel for
 	for (int64_t i = 0; i < pixelCount; ++i)
@@ -78,10 +78,10 @@ void ReinhardTonemapper::apply(const Scene& scene, const Image& inputImage, Imag
 
 		Color outputColor = inputColor * colorScale;
 
-		if (scene.tonemapper.shouldClamp)
+		if (scene.tonemapping.shouldClamp)
 			outputColor.clamp();
 
-		if (scene.tonemapper.applyGamma)
+		if (scene.tonemapping.applyGamma)
 			outputColor = Color::fastPow(outputColor, invGamma);
 
 		outputColor.a = 1.0;

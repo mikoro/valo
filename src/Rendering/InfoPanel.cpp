@@ -196,12 +196,12 @@ void InfoPanel::renderFull(const Scene& scene, const Film& film)
 	currentY += lineSpacing;
 
 	double pixelSamplesPerSecond = double(film.getWidth() * film.getWidth()
-		* scene.general.pixelSampleCount
-		* scene.general.multiSampleCountSqrt
-		* scene.general.multiSampleCountSqrt
-		* scene.general.timeSampleCount
-		* scene.general.cameraSampleCountSqrt
-		* scene.general.cameraSampleCountSqrt) * fpsCounter.getFps();
+		* scene.sampling.pixelSampleCount
+		* scene.sampling.multiSampleCountSqrt
+		* scene.sampling.multiSampleCountSqrt
+		* scene.sampling.timeSampleCount
+		* scene.sampling.cameraSampleCountSqrt
+		* scene.sampling.cameraSampleCountSqrt) * fpsCounter.getFps();
 
 	nvgText(context, currentX, currentY, tfm::format("Pixel samples/s: %s", StringUtils::humanizeNumber(pixelSamplesPerSecond)).c_str(), nullptr);
 	currentY += lineSpacing;
@@ -227,7 +227,7 @@ void InfoPanel::renderFull(const Scene& scene, const Film& film)
 
 	std::string tonemapperName = "unknown";
 
-	switch (scene.tonemapper.type)
+	switch (scene.tonemapping.type)
 	{
 		case TonemapperType::PASSTHROUGH: tonemapperName = "passthrough"; break;
 		case TonemapperType::LINEAR: tonemapperName = "linear"; break;

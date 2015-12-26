@@ -135,14 +135,14 @@ void DefaultState::update(double timeStep)
 
 	if (windowRunner.keyWasPressed(GLFW_KEY_F5))
 	{
-		if (scene.tonemapper.type == TonemapperType::PASSTHROUGH)
-			scene.tonemapper.type = TonemapperType::LINEAR;
-		else if (scene.tonemapper.type == TonemapperType::LINEAR)
-			scene.tonemapper.type = TonemapperType::SIMPLE;
-		else if (scene.tonemapper.type == TonemapperType::SIMPLE)
-			scene.tonemapper.type = TonemapperType::REINHARD;
-		else if (scene.tonemapper.type == TonemapperType::REINHARD)
-			scene.tonemapper.type = TonemapperType::PASSTHROUGH;
+		if (scene.tonemapping.type == TonemapperType::PASSTHROUGH)
+			scene.tonemapping.type = TonemapperType::LINEAR;
+		else if (scene.tonemapping.type == TonemapperType::LINEAR)
+			scene.tonemapping.type = TonemapperType::SIMPLE;
+		else if (scene.tonemapping.type == TonemapperType::SIMPLE)
+			scene.tonemapping.type = TonemapperType::REINHARD;
+		else if (scene.tonemapping.type == TonemapperType::REINHARD)
+			scene.tonemapping.type = TonemapperType::PASSTHROUGH;
 	}
 
 	if (windowRunner.keyWasPressed(GLFW_KEY_F7))
@@ -208,16 +208,16 @@ void DefaultState::update(double timeStep)
 	{
 		if (windowRunner.keyIsDown(GLFW_KEY_PAGE_DOWN))
 		{
-			scene.tonemapper.exposure -= 2.0 * timeStep;
-			scene.tonemapper.key -= 0.5 * timeStep;
+			scene.tonemapping.exposure -= 2.0 * timeStep;
+			scene.tonemapping.key -= 0.5 * timeStep;
 		}
 		else if (windowRunner.keyIsDown(GLFW_KEY_PAGE_UP))
 		{
-			scene.tonemapper.exposure += 2.0 * timeStep;
-			scene.tonemapper.key += 0.5 * timeStep;
+			scene.tonemapping.exposure += 2.0 * timeStep;
+			scene.tonemapping.key += 0.5 * timeStep;
 		}
 
-		scene.tonemapper.key = std::max(0.0, scene.tonemapper.key);
+		scene.tonemapping.key = std::max(0.0, scene.tonemapping.key);
 	}
 
 	scene.camera.update(timeStep);
@@ -246,12 +246,12 @@ void DefaultState::render(double timeStep, double interpolation)
 	}
 
 	uint64_t samplesPerPixel =
-		scene.general.pixelSampleCount
-		* scene.general.multiSampleCountSqrt
-		* scene.general.multiSampleCountSqrt
-		* scene.general.timeSampleCount
-		* scene.general.cameraSampleCountSqrt
-		* scene.general.cameraSampleCountSqrt;
+		scene.sampling.pixelSampleCount
+		* scene.sampling.multiSampleCountSqrt
+		* scene.sampling.multiSampleCountSqrt
+		* scene.sampling.timeSampleCount
+		* scene.sampling.cameraSampleCountSqrt
+		* scene.sampling.cameraSampleCountSqrt;
 
 	film.increaseSamplesPerPixelCount(samplesPerPixel);
 

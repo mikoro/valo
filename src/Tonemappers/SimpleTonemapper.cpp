@@ -16,20 +16,20 @@ void SimpleTonemapper::apply(const Scene& scene, const Image& inputImage, Image&
 	auto& inputPixelData = inputImage.getPixelDataConst();
 	auto& outputPixelData = outputImage.getPixelData();
 
-	const double invGamma = 1.0 / scene.tonemapper.gamma;
+	const double invGamma = 1.0 / scene.tonemapping.gamma;
 
 	#pragma omp parallel for
 	for (int64_t i = 0; i < int64_t(inputPixelData.size()); ++i)
 	{
 		Color outputColor = inputPixelData.at(i);
-		outputColor *= MathUtils::fastPow(2.0, scene.tonemapper.exposure);
+		outputColor *= MathUtils::fastPow(2.0, scene.tonemapping.exposure);
 
 		outputColor = outputColor / (Color(1.0, 1.0, 1.0, 1.0) + outputColor);
 
-		if (scene.tonemapper.shouldClamp)
+		if (scene.tonemapping.shouldClamp)
 			outputColor.clamp();
 
-		if (scene.tonemapper.applyGamma)
+		if (scene.tonemapping.applyGamma)
 			outputColor = Color::fastPow(outputColor, invGamma);
 
 		outputColor.a = 1.0;

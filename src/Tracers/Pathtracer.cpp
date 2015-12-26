@@ -17,7 +17,7 @@ Color Pathtracer::trace(const Scene& scene, const Ray& ray, std::mt19937& genera
 
 Color Pathtracer::traceRecursive(const Scene& scene, const Ray& ray, uint64_t iteration, std::mt19937& generator)
 {
-	if (iteration >= scene.general.maxPathLength)
+	if (iteration >= scene.pathtracing.maxPathLength)
 		return Color::BLACK;
 
 	Intersection intersection;

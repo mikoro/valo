@@ -41,12 +41,6 @@ Color Raytracer::traceRecursive(const Scene& scene, const Ray& ray, Intersection
 		if (material->diffuseMapTexture != nullptr)
 			finalColor = material->diffuseMapTexture->getColor(intersection.texcoord, intersection.position) * material->diffuseMapTexture->intensity;
 
-		if (scene.simpleFog.enabled)
-		{
-			if (ray.direction.dot(intersection.normal) < 0.0) // is outside
-				finalColor = calculateSimpleFogColor(scene, intersection, finalColor);
-		}
-		
 		return finalColor;
 	}
 
@@ -58,22 +52,16 @@ Color Raytracer::traceRecursive(const Scene& scene, const Ray& ray, Intersection
 
 	calculateRayReflectanceAndTransmittance(ray, intersection, rayReflectance, rayTransmittance);
 
-	if (rayReflectance > 0.0 && iteration < scene.general.maxRayIterations)
+	if (rayReflectance > 0.0 && iteration < scene.raytracing.maxRayIterations)
 		reflectedColor = calculateReflectedColor(scene, ray, intersection, rayReflectance, iteration, generator);
 
-	if (rayTransmittance > 0.0 && iteration < scene.general.maxRayIterations)
+	if (rayTransmittance > 0.0 && iteration < scene.raytracing.maxRayIterations)
 		transmittedColor = calculateTransmittedColor(scene, ray, intersection, rayTransmittance, iteration, generator);
 
 	Color lightColor = calculateLightColor(scene, ray, intersection, generator);
 
 	finalColor = lightColor + reflectedColor + transmittedColor;
 
-	if (ray.direction.dot(intersection.normal) < 0.0) // is outside
-	{
-		if (scene.simpleFog.enabled)
-			finalColor = calculateSimpleFogColor(scene, intersection, finalColor);
-	}
-	
 	return finalColor;
 }
 
@@ -247,24 +235,6 @@ Color Raytracer::calculatePhongShadingColor(const Vector3& normal, const Vector3
 	}
 
 	return phongColor;
-}
-
-Color Raytracer::calculateSimpleFogColor(const Scene& scene, const Intersection& intersection, const Color& pixelColor)
-{
-	double t1 = intersection.distance / scene.simpleFog.distance;
-	t1 = std::max(0.0, std::min(t1, 1.0));
-	t1 = pow(t1, scene.simpleFog.steepness);
-
-	if (scene.simpleFog.heightDispersion && intersection.position.y > 0.0)
-	{
-		double t2 = intersection.position.y / scene.simpleFog.height;
-		t2 = std::max(0.0, std::min(t2, 1.0));
-		t2 = pow(t2, scene.simpleFog.heightSteepness);
-		t2 = 1.0 - t2;
-		t1 *= t2;
-	}
-
-	return Color::lerp(pixelColor, scene.simpleFog.color, t1);
 }
 
 double Raytracer::calculateShadowAmount(const Scene& scene, const Ray& ray, const Intersection& intersection, const DirectionalLight& light)
