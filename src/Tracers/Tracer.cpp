@@ -96,7 +96,7 @@ void Tracer::run(TracerState& state, std::atomic<bool>& interrupted)
 			std::mt19937& generator = generators[omp_get_thread_num()];
 
 			for (uint64_t i = 0; i < scene.general.pixelSampleCount; ++i)
-				generateMultiSamples(scene, film, pixelCoordinate, uint64_t(pixelIndex), generator, interrupted);
+				generateMultiSamples(scene, film, pixelCoordinate, uint64_t(pixelIndex), generator);
 
 			if ((pixelIndex + 1) % 100 == 0)
 				state.pixelsProcessed += 100;
@@ -119,13 +119,13 @@ void Tracer::run(TracerState& state, std::atomic<bool>& interrupted)
 		state.pixelsProcessed = state.pixelCount;
 }
 
-void Tracer::generateMultiSamples(const Scene& scene, Film& film, const Vector2& pixelCoordinate, uint64_t pixelIndex, std::mt19937& generator, const std::atomic<bool>& interrupted)
+void Tracer::generateMultiSamples(const Scene& scene, Film& film, const Vector2& pixelCoordinate, uint64_t pixelIndex, std::mt19937& generator)
 {
 	assert(scene.general.multiSampleCountSqrt >= 1);
 
 	if (scene.general.multiSampleCountSqrt == 1)
 	{
-		Color pixelColor = generateTimeSamples(scene, pixelCoordinate, generator, interrupted);
+		Color pixelColor = generateTimeSamples(scene, pixelCoordinate, generator);
 		film.addSample(pixelIndex, pixelColor, 1.0);
 
 		return;
@@ -144,18 +144,18 @@ void Tracer::generateMultiSamples(const Scene& scene, Film& film, const Vector2&
 		{
 			Vector2 sampleOffset = sampler->getSample2D(x, y, n, n, permutation, generator);
 			sampleOffset = (sampleOffset - Vector2(0.5, 0.5)) * 2.0 * filter->getRadius();
-			Color sampledPixelColor = generateTimeSamples(scene, pixelCoordinate + sampleOffset, generator, interrupted);
+			Color sampledPixelColor = generateTimeSamples(scene, pixelCoordinate + sampleOffset, generator);
 			film.addSample(pixelIndex, sampledPixelColor, filter->getWeight(sampleOffset));
 		}
 	}
 }
 
-Color Tracer::generateTimeSamples(const Scene& scene, const Vector2& pixelCoordinate, std::mt19937& generator, const std::atomic<bool>& interrupted)
+Color Tracer::generateTimeSamples(const Scene& scene, const Vector2& pixelCoordinate, std::mt19937& generator)
 {
 	assert(scene.general.timeSampleCount >= 1);
 
 	if (scene.general.timeSampleCount == 1)
-		return generateCameraSamples(scene, pixelCoordinate, 0.0, generator, interrupted);
+		return generateCameraSamples(scene, pixelCoordinate, 0.0, generator);
 
 	Sampler* sampler = samplers[scene.general.timeSamplerType].get();
 
@@ -163,12 +163,12 @@ Color Tracer::generateTimeSamples(const Scene& scene, const Vector2& pixelCoordi
 	uint64_t n = scene.general.timeSampleCount;
 
 	for (uint64_t i = 0; i < n; ++i)
-		sampledPixelColor += generateCameraSamples(scene, pixelCoordinate, sampler->getSample1D(i, n, 0, generator), generator, interrupted);
+		sampledPixelColor += generateCameraSamples(scene, pixelCoordinate, sampler->getSample1D(i, n, 0, generator), generator);
 
 	return sampledPixelColor / double(n);
 }
 
-Color Tracer::generateCameraSamples(const Scene& scene, const Vector2& pixelCoordinate, double time, std::mt19937& generator, const std::atomic<bool>& interrupted)
+Color Tracer::generateCameraSamples(const Scene& scene, const Vector2& pixelCoordinate, double time, std::mt19937& generator)
 {
 	assert(scene.general.cameraSampleCountSqrt >= 1);
 
@@ -180,7 +180,7 @@ Color Tracer::generateCameraSamples(const Scene& scene, const Vector2& pixelCoor
 	if (scene.general.cameraSampleCountSqrt == 1)
 	{
 		if (isValidRay)
-			return trace(scene, ray, generator, interrupted);
+			return trace(scene, ray, generator);
 		else
 			return scene.general.offLensColor;
 	}
@@ -225,7 +225,7 @@ Color Tracer::generateCameraSamples(const Scene& scene, const Vector2& pixelCoor
 			sampleRay.time = time;
 			sampleRay.precalculate();
 
-			sampledPixelColor += trace(scene, sampleRay, generator, interrupted);
+			sampledPixelColor += trace(scene, sampleRay, generator);
 		}
 	}
 

@@ -31,6 +31,7 @@ BOOL consoleCtrlHandler(DWORD fdwCtrlType)
 {
 	if (fdwCtrlType == CTRL_C_EVENT)
 	{
+		App::getLog().logInfo("Interrupted!");
 		App::getConsoleRunner().interrupt();
 		App::getNetworkRunner().interrupt();
 
@@ -44,6 +45,7 @@ void signalHandler(int signal)
 {
 	(void)signal;
 
+	App::getLog().logInfo("Interrupted!");
 	App::getConsoleRunner().interrupt();
 	App::getNetworkRunner().interrupt();
 }

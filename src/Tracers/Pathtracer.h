@@ -17,10 +17,10 @@ namespace Raycer
 	{
 	protected:
 
-		Color trace(const Scene& scene, const Ray& ray, std::mt19937& generator, const std::atomic<bool>& interrupted) override;
+		Color trace(const Scene& scene, const Ray& ray, std::mt19937& generator) override;
 
 	private:
 
-		Color traceRecursive(const Scene& scene, const Ray& ray, uint64_t iteration, std::mt19937& generator, const std::atomic<bool>& interrupted);
+		Color traceRecursive(const Scene& scene, const Ray& ray, uint64_t iteration, std::mt19937& generator);
 	};
 }

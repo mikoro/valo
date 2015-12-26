@@ -35,16 +35,16 @@ namespace Raycer
 
 	protected:
 
-		virtual Color trace(const Scene& scene, const Ray& ray, std::mt19937& generator, const std::atomic<bool>& interrupted) = 0;
+		virtual Color trace(const Scene& scene, const Ray& ray, std::mt19937& generator) = 0;
 
 		std::map<SamplerType, std::unique_ptr<Sampler>> samplers;
 		std::map<FilterType, std::unique_ptr<Filter>> filters;
 
 	private:
 
-		void generateMultiSamples(const Scene& scene, Film& film, const Vector2& pixelCoordinate, uint64_t pixelIndex, std::mt19937& generator, const std::atomic<bool>& interrupted);
-		Color generateTimeSamples(const Scene& scene, const Vector2& pixelCoordinate, std::mt19937& generator, const std::atomic<bool>& interrupted);
-		Color generateCameraSamples(const Scene& scene, const Vector2& pixelCoordinate, double time, std::mt19937& generator, const std::atomic<bool>& interrupted);
+		void generateMultiSamples(const Scene& scene, Film& film, const Vector2& pixelCoordinate, uint64_t pixelIndex, std::mt19937& generator);
+		Color generateTimeSamples(const Scene& scene, const Vector2& pixelCoordinate, std::mt19937& generator);
+		Color generateCameraSamples(const Scene& scene, const Vector2& pixelCoordinate, double time, std::mt19937& generator);
 		
 		std::vector<std::mt19937> generators;
 	};

@@ -17,18 +17,15 @@
 
 using namespace Raycer;
 
-Color Raytracer::trace(const Scene& scene, const Ray& ray, std::mt19937& generator, const std::atomic<bool>& interrupted)
+Color Raytracer::trace(const Scene& scene, const Ray& ray, std::mt19937& generator)
 {
 	Intersection intersection;
-	return traceRecursive(scene, ray, intersection, 0, generator, interrupted);
+	return traceRecursive(scene, ray, intersection, 0, generator);
 }
 
-Color Raytracer::traceRecursive(const Scene& scene, const Ray& ray, Intersection& intersection, uint64_t iteration, std::mt19937& generator, const std::atomic<bool>& interrupted)
+Color Raytracer::traceRecursive(const Scene& scene, const Ray& ray, Intersection& intersection, uint64_t iteration, std::mt19937& generator)
 {
 	Color finalColor = scene.general.backgroundColor;
-
-	if (interrupted)
-		return finalColor;
 	
 	scene.intersect(ray, intersection);
 
@@ -62,10 +59,10 @@ Color Raytracer::traceRecursive(const Scene& scene, const Ray& ray, Intersection
 	calculateRayReflectanceAndTransmittance(ray, intersection, rayReflectance, rayTransmittance);
 
 	if (rayReflectance > 0.0 && iteration < scene.general.maxRayIterations)
-		reflectedColor = calculateReflectedColor(scene, ray, intersection, rayReflectance, iteration, generator, interrupted);
+		reflectedColor = calculateReflectedColor(scene, ray, intersection, rayReflectance, iteration, generator);
 
 	if (rayTransmittance > 0.0 && iteration < scene.general.maxRayIterations)
-		transmittedColor = calculateTransmittedColor(scene, ray, intersection, rayTransmittance, iteration, generator, interrupted);
+		transmittedColor = calculateTransmittedColor(scene, ray, intersection, rayTransmittance, iteration, generator);
 
 	Color lightColor = calculateLightColor(scene, ray, intersection, generator);
 
@@ -112,7 +109,7 @@ void Raytracer::calculateRayReflectanceAndTransmittance(const Ray& ray, const In
 	rayTransmittance = material->rayTransmittance * fresnelTransmittance;
 }
 
-Color Raytracer::calculateReflectedColor(const Scene& scene, const Ray& ray, const Intersection& intersection, double rayReflectance, uint64_t iteration, std::mt19937& generator, const std::atomic<bool>& interrupted)
+Color Raytracer::calculateReflectedColor(const Scene& scene, const Ray& ray, const Intersection& intersection, double rayReflectance, uint64_t iteration, std::mt19937& generator)
 {
 	const Material* material = intersection.material;
 
@@ -129,7 +126,7 @@ Color Raytracer::calculateReflectedColor(const Scene& scene, const Ray& ray, con
 	reflectedRay.direction = reflectionDirection;
 	reflectedRay.precalculate();
 
-	reflectedColor = traceRecursive(scene, reflectedRay, reflectedIntersection, iteration + 1, generator, interrupted) * rayReflectance;
+	reflectedColor = traceRecursive(scene, reflectedRay, reflectedIntersection, iteration + 1, generator) * rayReflectance;
 
 	// only attenuate if ray has traveled inside a primitive
 	if (!isOutside && reflectedIntersection.wasFound && material->attenuating)
@@ -141,7 +138,7 @@ Color Raytracer::calculateReflectedColor(const Scene& scene, const Ray& ray, con
 	return reflectedColor;
 }
 
-Color Raytracer::calculateTransmittedColor(const Scene& scene, const Ray& ray, const Intersection& intersection, double rayTransmittance, uint64_t iteration, std::mt19937& generator, const std::atomic<bool>& interrupted)
+Color Raytracer::calculateTransmittedColor(const Scene& scene, const Ray& ray, const Intersection& intersection, double rayTransmittance, uint64_t iteration, std::mt19937& generator)
 {
 	const Material* material = intersection.material;
 
@@ -168,7 +165,7 @@ Color Raytracer::calculateTransmittedColor(const Scene& scene, const Ray& ray, c
 	transmittedRay.direction = transmissionDirection;
 	transmittedRay.precalculate();
 
-	transmittedColor = traceRecursive(scene, transmittedRay, transmittedIntersection, iteration + 1, generator, interrupted) * rayTransmittance;
+	transmittedColor = traceRecursive(scene, transmittedRay, transmittedIntersection, iteration + 1, generator) * rayTransmittance;
 
 	// only attenuate if ray has traveled inside a primitive
 	if (isOutside && transmittedIntersection.wasFound && material->attenuating)

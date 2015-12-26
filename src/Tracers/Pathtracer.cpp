@@ -10,16 +10,13 @@
 
 using namespace Raycer;
 
-Color Pathtracer::trace(const Scene& scene, const Ray& ray, std::mt19937& generator, const std::atomic<bool>& interrupted)
+Color Pathtracer::trace(const Scene& scene, const Ray& ray, std::mt19937& generator)
 {
-	return traceRecursive(scene, ray, 0, generator, interrupted);
+	return traceRecursive(scene, ray, 0, generator);
 }
 
-Color Pathtracer::traceRecursive(const Scene& scene, const Ray& ray, uint64_t iteration, std::mt19937& generator, const std::atomic<bool>& interrupted)
+Color Pathtracer::traceRecursive(const Scene& scene, const Ray& ray, uint64_t iteration, std::mt19937& generator)
 {
-	if (interrupted)
-		return Color::BLACK;
-
 	if (iteration >= scene.general.maxPathLength)
 		return Color::BLACK;
 
@@ -56,7 +53,7 @@ Color Pathtracer::traceRecursive(const Scene& scene, const Ray& ray, uint64_t it
 
 	double alpha = std::abs(newDirection.dot(intersection.normal));
 	Color brdf = 2.0 * reflectance * alpha;
-	Color reflected = traceRecursive(scene, newRay, iteration + 1, generator, interrupted);
+	Color reflected = traceRecursive(scene, newRay, iteration + 1, generator);
 
 	return brdf * reflected;
 }
