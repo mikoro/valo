@@ -3,7 +3,6 @@
 
 #pragma once
 
-#include <atomic>
 #include <random>
 
 #include "Tracers/Tracer.h"

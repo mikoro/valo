@@ -11,7 +11,6 @@
 #include "Rendering/Image.h"
 #include "RunnerStates/RunnerState.h"
 #include "RunnerStates/DefaultState.h"
-#include "Rendering/Color.h"
 
 using namespace Raycer;
 

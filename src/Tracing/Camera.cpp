@@ -5,7 +5,6 @@
 
 #include "Tracing/Camera.h"
 #include "Tracing/Ray.h"
-#include "Scenes/Scene.h"
 #include "Tracing/Intersection.h"
 #include "App.h"
 #include "Utils/Settings.h"

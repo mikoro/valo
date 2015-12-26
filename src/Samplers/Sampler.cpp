@@ -13,7 +13,6 @@
 #include "Math/Vector2.h"
 #include "Math/Vector3.h"
 #include "Tracing/ONB.h"
-#include "Math/MathUtils.h"
 
 using namespace Raycer;
 
