@@ -11,6 +11,7 @@
 #include "Scenes/Scene.h"
 #include "Rendering/Film.h"
 #include "Rendering/FilmRenderer.h"
+#include "Rendering/InfoPanel.h"
 
 namespace Raycer
 {
@@ -37,11 +38,11 @@ namespace Raycer
 		Scene scene;
 		Film film;
 		FilmRenderer filmRenderer;
+		InfoPanel infoPanel;
 
 		std::unique_ptr<Tracer> tracer;
 
 		std::atomic<bool> interrupted;
 		uint64_t currentTestSceneNumber = 1;
-		uint64_t sampleCount = 0;
 	};
 }

@@ -280,9 +280,6 @@
     <ClCompile Include="src\Tests\OnbTest.cpp">
       <Filter>Tests</Filter>
     </ClCompile>
-    <ClCompile Include="src\External\nanovg.c">
-      <Filter>External</Filter>
-    </ClCompile>
     <ClCompile Include="src\Precompiled.cpp" />
     <ClCompile Include="src\Utils\Settings.cpp">
       <Filter>Utils</Filter>
@@ -291,6 +288,12 @@
       <Filter>External</Filter>
     </ClCompile>
     <ClCompile Include="src\External\stb.c">
+      <Filter>External</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Rendering\InfoPanel.cpp">
+      <Filter>Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="src\External\nanovg.c">
       <Filter>External</Filter>
     </ClCompile>
   </ItemGroup>
@@ -513,6 +516,9 @@
     <ClInclude Include="src\Precompiled.h" />
     <ClInclude Include="src\Utils\Settings.h">
       <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Rendering\InfoPanel.h">
+      <Filter>Rendering</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

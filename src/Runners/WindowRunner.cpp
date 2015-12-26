@@ -88,9 +88,9 @@ double WindowRunner::getElapsedTime() const
 	return glfwGetTime() - startTime;
 }
 
-double WindowRunner::getFps() const
+const FpsCounter& WindowRunner::getFpsCounter() const
 {
-	return fpsCounter.getFps();
+	return fpsCounter;
 }
 
 bool WindowRunner::keyIsDown(int32_t key)
@@ -186,6 +186,7 @@ void WindowRunner::initialize()
 	if (!glfwWindow)
 		throw std::runtime_error("Could not create the window");
 
+	printWindowSize();
 	glfwSetScrollCallback(glfwWindow, ::glfwMouseWheelScroll);
 
 	const GLFWvidmode* videoMode = glfwGetVideoMode(glfwGetPrimaryMonitor());
@@ -206,7 +207,7 @@ void WindowRunner::initialize()
 	if (settings.window.hideCursor)
 		glfwSetInputMode(glfwWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
-	windowResized(settings.window.width, settings.window.height);
+	checkWindowSize();
 
 	runnerStates[RunnerStates::DEFAULT] = std::make_unique<DefaultState>();
 	changeState(RunnerStates::DEFAULT);
@@ -218,11 +219,34 @@ void WindowRunner::shutdown()
 		runnerStates[currentState]->shutdown();
 }
 
-void WindowRunner::windowResized(uint64_t width, uint64_t height)
+void WindowRunner::checkWindowSize()
 {
-	if (width == 0 || height == 0)
+	int tempFramebufferWidth, tempFramebufferHeight;
+
+	glfwGetFramebufferSize(glfwWindow, &tempFramebufferWidth, &tempFramebufferHeight);
+
+	if (tempFramebufferWidth == 0 || tempFramebufferHeight == 0)
 		return;
 
+	if (uint64_t(tempFramebufferWidth) != windowWidth || uint64_t(tempFramebufferHeight) != windowHeight)
+	{
+		printWindowSize();
+		windowResized(uint64_t(tempFramebufferWidth), uint64_t(tempFramebufferHeight));
+	}
+}
+
+void WindowRunner::printWindowSize()
+{
+	int tempWindowWidth, tempWindowHeight, tempFramebufferWidth, tempFramebufferHeight;
+
+	glfwGetWindowSize(glfwWindow, &tempWindowWidth, &tempWindowHeight);
+	glfwGetFramebufferSize(glfwWindow, &tempFramebufferWidth, &tempFramebufferHeight);
+
+	App::getLog().logInfo("GLFW window size: %dx%d | framebuffer size: %dx%d", tempWindowWidth, tempWindowHeight, tempFramebufferWidth, tempFramebufferHeight);
+}
+
+void WindowRunner::windowResized(uint64_t width, uint64_t height)
+{
 	windowWidth = width;
 	windowHeight = height;
 
@@ -275,11 +299,7 @@ void WindowRunner::update(double timeStep)
 	fpsCounter.update();
 	glfwPollEvents();
 
-	int32_t newWindowWidth, newWindowHeight;
-	glfwGetFramebufferSize(glfwWindow, &newWindowWidth, &newWindowHeight);
-
-	if (uint64_t(newWindowWidth) != windowWidth || uint64_t(newWindowHeight) != windowHeight)
-		windowResized(uint64_t(newWindowWidth), uint64_t(newWindowHeight));
+	checkWindowSize();
 
 	double newMouseX, newMouseY;
 	glfwGetCursorPos(glfwWindow, &newMouseX, &newMouseY);
@@ -299,9 +319,6 @@ void WindowRunner::update(double timeStep)
 	if (keyWasPressed(GLFW_KEY_ESCAPE))
 		shouldRun = false;
 
-	if (keyWasPressed(GLFW_KEY_F1))
-		settings.window.showInfoText = !settings.window.showInfoText;
-
 	if (keyWasPressed(GLFW_KEY_P))
 		isPaused = !isPaused;
 
@@ -318,8 +335,8 @@ void WindowRunner::render(double timeStep, double interpolation)
 {
 	fpsCounter.tick();
 
-	glClearColor(0.0, 0.0, 0.0, 0.0);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
 	if (currentState != RunnerStates::NONE)
 	{

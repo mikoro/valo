@@ -31,6 +31,11 @@ void FpsCounter::update()
 	averageFrameTime.addMeasurement(frameTime);
 }
 
+double FpsCounter::getFrameTime() const
+{
+	return averageFrameTime.getAverage() * 1000.0;
+}
+
 double FpsCounter::getFps() const
 {
 	return 1.0 / averageFrameTime.getAverage();

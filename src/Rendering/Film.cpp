@@ -31,7 +31,7 @@ void Film::resize(uint64_t width_, uint64_t height_)
 
 	filmPixels.resize(width * height);
 	linearImage.resize(width, height);
-	tonemappedImage.resize(width, height);
+	outputImage.resize(width, height);
 
 	clear();
 }
@@ -44,6 +44,7 @@ void Film::resize(uint64_t length)
 void Film::clear()
 {
 	std::memset(&filmPixels[0], 0, filmPixels.size() * sizeof(FilmPixel));
+	samplesPerPixelCount = 0;
 }
 
 void Film::addSample(uint64_t x, uint64_t y, const Color& color, double filterWeight)
@@ -58,19 +59,34 @@ void Film::addSample(uint64_t index, const Color& color, double filterWeight)
 	filmPixel.cumulativeFilterWeight += filterWeight;
 }
 
-void Film::generateOutput(const Scene& scene)
+void Film::increaseSamplesPerPixelCount(uint64_t count)
+{
+	samplesPerPixelCount += count;
+}
+
+void Film::load(const std::string filePath)
+{
+	
+}
+
+void Film::save(const std::string filePath) const
+{
+	
+}
+
+void Film::generateOutputImage(const Scene& scene)
 {
 	#pragma omp parallel for
 	for (int64_t i = 0; i < int64_t(filmPixels.size()); ++i)
 		linearImage.setPixel(i, filmPixels[i].cumulativeColor / filmPixels[i].cumulativeFilterWeight);
 
 	Tonemapper* tonemapper = tonemappers[scene.tonemapper.type].get();
-	tonemapper->apply(scene, linearImage, tonemappedImage);
+	tonemapper->apply(scene, linearImage, outputImage);
 }
 
-const Image& Film::getOutput() const
+const Image& Film::getOutputImage() const
 {
-	return tonemappedImage;
+	return outputImage;
 }
 
 uint64_t Film::getWidth() const
@@ -81,4 +97,9 @@ uint64_t Film::getWidth() const
 uint64_t Film::getHeight() const
 {
 	return height;
+}
+
+uint64_t Film::getSamplesPerPixelCount() const
+{
+	return samplesPerPixelCount;
 }

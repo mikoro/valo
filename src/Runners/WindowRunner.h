@@ -41,7 +41,7 @@ namespace Raycer
 		uint64_t getWindowHeight() const;
 		const MouseInfo& getMouseInfo() const;
 		double getElapsedTime() const;
-		double getFps() const;
+		const FpsCounter& getFpsCounter() const;
 
 		bool keyIsDown(int32_t key);
 		bool mouseIsDown(int32_t button);
@@ -56,8 +56,10 @@ namespace Raycer
 		void initialize();
 		void shutdown();
 
+		void checkWindowSize();
+		void printWindowSize();
 		void windowResized(uint64_t width, uint64_t height);
-
+		
 		void mainLoop();
 		void update(double timeStep);
 		void render(double timeStep, double interpolation);

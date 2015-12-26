@@ -51,9 +51,8 @@ namespace Raycer
 			bool enableFullscreen;
 			bool enableVsync;
 			bool hideCursor;
-			bool showInfoText;
-			std::string defaultFont;
-			uint64_t defaultFontSize;
+			uint64_t infoPanelState;
+			uint64_t infoPanelFontSize;
 		} window;
 
 		struct Camera

@@ -7,9 +7,6 @@
 #include "App.h"
 #include "Utils/Settings.h"
 #include "Utils/Log.h"
-#include "Rendering/Color.h"
-#include "Math/EulerAngle.h"
-#include "Math/Vector3.h"
 #include "Tracing/Camera.h"
 #include "Tracers/TracerState.h"
 #include "Rendering/ImagePool.h"
@@ -22,19 +19,23 @@ DefaultState::DefaultState() : interrupted(false) {}
 void DefaultState::initialize()
 {
 	Settings& settings = App::getSettings();
+	WindowRunner& windowRunner = App::getWindowRunner();
 
 	if (settings.scene.enableTestScenes)
 		scene = Scene::createTestScene(settings.scene.testSceneNumber);
 	else
 		scene = Scene::loadFromFile(settings.scene.fileName);
 
+	currentTestSceneNumber = settings.scene.testSceneNumber;
+
 	filmRenderer.initialize();
-	windowResized(settings.window.width, settings.window.height);
+	windowResized(windowRunner.getWindowWidth(), windowRunner.getWindowHeight());
 
 	scene.initialize();
 	tracer = Tracer::getTracer(scene.general.tracerType);
 
-	currentTestSceneNumber = settings.scene.testSceneNumber;
+	infoPanel.initialize();
+	infoPanel.setState(InfoPanelState(settings.window.infoPanelState));
 }
 
 void DefaultState::pause()
@@ -54,6 +55,9 @@ void DefaultState::update(double timeStep)
 	Log& log = App::getLog();
 	Settings& settings = App::getSettings();
 	WindowRunner& windowRunner = App::getWindowRunner();
+
+	if (windowRunner.keyWasPressed(GLFW_KEY_F1))
+		infoPanel.selectNextState();
 
 	bool increaseTestSceneNumber = windowRunner.keyWasPressed(GLFW_KEY_F2);
 	bool decreaseTestSceneNumber = windowRunner.keyWasPressed(GLFW_KEY_F3);
@@ -93,7 +97,7 @@ void DefaultState::update(double timeStep)
 
 			scene.camera.setImagePlaneSize(film.getWidth(), film.getHeight());
 			tracer = Tracer::getTracer(scene.general.tracerType);
-			sampleCount = 0;
+			film.clear();
 		}
 	}
 
@@ -101,7 +105,6 @@ void DefaultState::update(double timeStep)
 	{
 		scene.camera.reset();
 		film.clear();
-		sampleCount = 0;
 	}
 
 	if (windowRunner.keyWasPressed(GLFW_KEY_N))
@@ -118,31 +121,18 @@ void DefaultState::update(double timeStep)
 
 		tracer = Tracer::getTracer(scene.general.tracerType);
 		film.clear();
-		sampleCount = 0;
 	}
 
 	if (windowRunner.keyWasPressed(GLFW_KEY_F5))
 	{
 		if (scene.tonemapper.type == TonemapperType::PASSTHROUGH)
-		{
 			scene.tonemapper.type = TonemapperType::LINEAR;
-			log.logInfo("Selected linear tone mapper");
-		}
 		else if (scene.tonemapper.type == TonemapperType::LINEAR)
-		{
 			scene.tonemapper.type = TonemapperType::SIMPLE;
-			log.logInfo("Selected simple tone mapper");
-		}
 		else if (scene.tonemapper.type == TonemapperType::SIMPLE)
-		{
 			scene.tonemapper.type = TonemapperType::REINHARD;
-			log.logInfo("Selected reinhard tone mapper");
-		}
 		else if (scene.tonemapper.type == TonemapperType::REINHARD)
-		{
 			scene.tonemapper.type = TonemapperType::PASSTHROUGH;
-			log.logInfo("Selected passthrough tone mapper");
-		}
 	}
 
 	if (windowRunner.keyWasPressed(GLFW_KEY_F7))
@@ -228,8 +218,6 @@ void DefaultState::render(double timeStep, double interpolation)
 	(void)timeStep;
 	(void)interpolation;
 
-	Settings& settings = App::getSettings();
-	
 	TracerState state;
 	state.scene = &scene;
 	state.film = &film;
@@ -243,22 +231,24 @@ void DefaultState::render(double timeStep, double interpolation)
 		|| (scene.general.tracerType == TracerType::PATH && scene.camera.isMoving()))
 	{
 		film.clear();
-		sampleCount = 0;
 	}
 
-	sampleCount += scene.general.pathSampleCount;
+	uint64_t samplesPerPixel = scene.general.multiSampleCountSqrt
+		* scene.general.multiSampleCountSqrt
+		* scene.general.timeSampleCount
+		* scene.general.cameraSampleCountSqrt
+		* scene.general.cameraSampleCountSqrt;
+
+	if (scene.general.tracerType == TracerType::PATH)
+		samplesPerPixel *= scene.general.pathSampleCount;
+
+	film.increaseSamplesPerPixelCount(samplesPerPixel);
 
 	tracer->run(state, interrupted);
-	film.generateOutput(scene);
+	film.generateOutputImage(scene);
 	filmRenderer.uploadFilmData(film);
 	filmRenderer.render();
-
-	if (settings.window.showInfoText)
-	{
-		/*int64_t scaledMouseX = windowRunner.getMouseInfo().scaledX;
-		int64_t scaledMouseY = windowRunner.getMouseInfo().scaledY;
-		int64_t scaledMouseIndex = scaledMouseY * film.getWidth() + scaledMouseX;*/
-	}
+	infoPanel.render(scene, film);
 }
 
 void DefaultState::windowResized(uint64_t width, uint64_t height)
@@ -281,5 +271,4 @@ void DefaultState::resizeFilm()
 	film.resize(filmWidth, filmHeight);
 	filmRenderer.setFilmSize(filmWidth, filmHeight);
 	scene.camera.setImagePlaneSize(filmWidth, filmHeight);
-	sampleCount = 0;
 }
