@@ -13,10 +13,18 @@ namespace Raycer
 
 		struct General
 		{
-			bool interactive;
 			int32_t maxThreadCount;
-			bool checkGLErrors;
 		} general;
+
+		struct Interactive
+		{
+			bool enabled;
+			bool checkGLErrors;
+			double renderScale;
+			uint64_t infoPanelState;
+			uint64_t infoPanelFontSize;
+			bool usePreviewWhileMoving;
+		} interactive;
 
 		struct Network
 		{
@@ -47,12 +55,9 @@ namespace Raycer
 		{
 			uint64_t width;
 			uint64_t height;
-			double renderScale;
 			bool enableFullscreen;
 			bool enableVsync;
 			bool hideCursor;
-			uint64_t infoPanelState;
-			uint64_t infoPanelFontSize;
 		} window;
 
 		struct Camera

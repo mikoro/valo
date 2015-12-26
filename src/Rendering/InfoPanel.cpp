@@ -85,7 +85,7 @@ void InfoPanel::renderFps()
 
 	nvgBeginPath(context);
 
-	nvgFontSize(context, float(settings.window.infoPanelFontSize));
+	nvgFontSize(context, float(settings.interactive.infoPanelFontSize));
 	nvgFontFace(context, "mono");
 
 	float lineSpacing;
@@ -125,7 +125,7 @@ void InfoPanel::renderFull(const Scene& scene, const Film& film)
 
 	nvgBeginPath(context);
 
-	nvgFontSize(context, float(settings.window.infoPanelFontSize));
+	nvgFontSize(context, float(settings.interactive.infoPanelFontSize));
 	nvgFontFace(context, "mono");
 
 	float lineSpacing;
@@ -187,7 +187,7 @@ void InfoPanel::renderFull(const Scene& scene, const Film& film)
 	nvgText(context, currentX, currentY, tfm::format("Window: %dx%d (%dx%d)", tempWindowWidth, tempWindowHeight, tempFramebufferWidth, tempFramebufferHeight).c_str(), nullptr);
 	currentY += lineSpacing;
 
-	nvgText(context, currentX, currentY, tfm::format("Film: %dx%d (%.2fx)", film.getWidth(), film.getWidth(), settings.window.renderScale).c_str(), nullptr);
+	nvgText(context, currentX, currentY, tfm::format("Film: %dx%d (%.2fx)", film.getWidth(), film.getWidth(), settings.interactive.renderScale).c_str(), nullptr);
 	currentY += lineSpacing;
 
 	double pixelsPerSecond = double(film.getWidth() * film.getWidth()) * fpsCounter.getFps();

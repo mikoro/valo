@@ -81,6 +81,8 @@ void Tracer::run(TracerState& state, std::atomic<bool>& interrupted)
 	std::mutex ompThreadExceptionMutex;
 	std::exception_ptr ompThreadException = nullptr;
 
+	const bool isPreviewTracer = (dynamic_cast<PreviewTracer*>(this) != nullptr);
+
 	#pragma omp parallel for schedule(dynamic, 1000)
 	for (int64_t pixelIndex = 0; pixelIndex < int64_t(state.pixelCount); ++pixelIndex)
 	{
@@ -95,8 +97,21 @@ void Tracer::run(TracerState& state, std::atomic<bool>& interrupted)
 			Vector2 pixelCoordinate = Vector2(x, y);
 			std::mt19937& generator = generators[omp_get_thread_num()];
 
-			for (uint64_t i = 0; i < scene.general.pixelSampleCount; ++i)
-				generateMultiSamples(scene, film, pixelCoordinate, uint64_t(pixelIndex), generator);
+			if (isPreviewTracer)
+			{
+				Ray ray;
+				Color pixelColor = scene.general.backgroundColor;
+
+				if (scene.camera.getRay(pixelCoordinate, ray))
+					pixelColor = trace(scene, ray, generator);
+
+				film.addSample(uint64_t(pixelIndex), pixelColor, 1.0);
+			}
+			else
+			{
+				for (uint64_t i = 0; i < scene.general.pixelSampleCount; ++i)
+					generateMultiSamples(scene, film, pixelCoordinate, uint64_t(pixelIndex), generator);
+			}
 
 			if ((pixelIndex + 1) % 100 == 0)
 				state.pixelsProcessed += 100;

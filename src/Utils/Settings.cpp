@@ -17,9 +17,14 @@ bool Settings::load(int argc, char** argv)
 
 		("help", "")
 
-		("general.interactive", po::value(&general.interactive)->default_value(true), "")
 		("general.maxThreadCount", po::value(&general.maxThreadCount)->default_value(4), "")
-		("general.checkGLErrors", po::value(&general.checkGLErrors)->default_value(true), "")
+
+		("interactive.enabled", po::value(&interactive.enabled)->default_value(true), "")
+		("interactive.checkGLErrors", po::value(&interactive.checkGLErrors)->default_value(true), "")
+		("interactive.renderScale", po::value(&interactive.renderScale)->default_value(0.25), "")
+		("interactive.infoPanelState", po::value(&interactive.infoPanelState)->default_value(2), "")
+		("interactive.infoPanelFontSize", po::value(&interactive.infoPanelFontSize)->default_value(18), "")
+		("interactive.usePreviewWhileMoving", po::value(&interactive.usePreviewWhileMoving)->default_value(false), "")
 		
 		("network.isClient", po::value(&network.isClient)->default_value(true), "")
 		("network.isServer", po::value(&network.isServer)->default_value(true), "")
@@ -39,12 +44,9 @@ bool Settings::load(int argc, char** argv)
 
 		("window.width", po::value(&window.width)->default_value(1280), "")
 		("window.height", po::value(&window.height)->default_value(800), "")
-		("window.renderScale", po::value(&window.renderScale)->default_value(0.25), "")
 		("window.enableFullscreen", po::value(&window.enableFullscreen)->default_value(false), "")
 		("window.enableVsync", po::value(&window.enableVsync)->default_value(false), "")
 		("window.hideCursor", po::value(&window.hideCursor)->default_value(false), "")
-		("window.infoPanelState", po::value(&window.infoPanelState)->default_value(1), "")
-		("window.infoPanelFontSize", po::value(&window.infoPanelFontSize)->default_value(14), "")
 
 		("camera.enableMovement", po::value(&camera.enableMovement)->default_value(true), "")
 		("camera.smoothMovement", po::value(&camera.smoothMovement)->default_value(true), "")

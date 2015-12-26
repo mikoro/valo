@@ -77,9 +77,9 @@ int App::run(int argc, char** argv)
 			throw std::runtime_error("Could not be both a server and a client at the same time");
 
 		if (settings.network.isClient || settings.network.isServer)
-			settings.general.interactive = false;
+			settings.interactive.enabled = false;
 
-		if (settings.general.interactive)
+		if (settings.interactive.enabled)
 			return windowRunner.run();
 
 		if (settings.network.isClient || settings.network.isServer)

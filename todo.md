@@ -9,11 +9,9 @@ textures
  - EWA texture filtering
 
 misc
- - check if interrupt works on mac/linux
- - add preview mode to pathtracer
  - add possibility to save and restore film state
  - film state and output image periodic saving
- - implement info text panel + more statistics
+ - move properties behind getters/setters
  - move rayStartOffset to minDistance
  - move image pool to scene and add serialization
  - implement random class with different backends (pcg)

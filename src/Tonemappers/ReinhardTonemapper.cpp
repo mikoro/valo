@@ -54,7 +54,7 @@ void ReinhardTonemapper::apply(const Scene& scene, const Image& inputImage, Imag
 		}
 	}
 
-	if (scene.tonemapper.enableAveraging && settings.general.interactive)
+	if (scene.tonemapper.enableAveraging && settings.interactive.enabled)
 	{
 		maxLuminanceAverage.setAlpha(scene.tonemapper.averagingAlpha);
 		maxLuminanceAverage.addMeasurement(maxLuminance);

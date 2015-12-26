@@ -40,7 +40,7 @@ namespace Raycer
 		FilmRenderer filmRenderer;
 		InfoPanel infoPanel;
 
-		std::unique_ptr<Tracer> tracer;
+		std::map<TracerType, std::unique_ptr<Tracer>> tracers;
 
 		std::atomic<bool> interrupted;
 		uint64_t currentTestSceneNumber = 1;

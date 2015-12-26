@@ -24,7 +24,7 @@ Color PreviewTracer::trace(const Scene& scene, const Ray& ray, std::mt19937& gen
 
 	const Material* material = intersection.material;
 
-	bool hasReflectance = !material->reflectance.isZero();
+	bool hasReflectance = !material->reflectance.isZero() || (material->reflectanceMapTexture != nullptr);
 
 	if (hasReflectance)
 	{

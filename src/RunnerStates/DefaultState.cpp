@@ -9,12 +9,20 @@
 #include "Utils/Log.h"
 #include "Tracing/Camera.h"
 #include "Tracers/TracerState.h"
+#include "Tracers/Raytracer.h"
+#include "Tracers/Pathtracer.h"
+#include "Tracers/PreviewTracer.h"
 #include "Rendering/ImagePool.h"
 #include "Runners/WindowRunner.h"
 
 using namespace Raycer;
 
-DefaultState::DefaultState() : interrupted(false) {}
+DefaultState::DefaultState() : interrupted(false)
+{
+	tracers[TracerType::RAY] = std::make_unique<Raytracer>();
+	tracers[TracerType::PATH] = std::make_unique<Pathtracer>();
+	tracers[TracerType::PREVIEW] = std::make_unique<PreviewTracer>();
+}
 
 void DefaultState::initialize()
 {
@@ -32,10 +40,9 @@ void DefaultState::initialize()
 	windowResized(windowRunner.getWindowWidth(), windowRunner.getWindowHeight());
 
 	scene.initialize();
-	tracer = Tracer::getTracer(scene.general.tracerType);
 
 	infoPanel.initialize();
-	infoPanel.setState(InfoPanelState(settings.window.infoPanelState));
+	infoPanel.setState(InfoPanelState(settings.interactive.infoPanelState));
 }
 
 void DefaultState::pause()
@@ -96,7 +103,6 @@ void DefaultState::update(double timeStep)
 			}
 
 			scene.camera.setImagePlaneSize(film.getWidth(), film.getHeight());
-			tracer = Tracer::getTracer(scene.general.tracerType);
 			film.clear();
 		}
 	}
@@ -112,14 +118,18 @@ void DefaultState::update(double timeStep)
 
 	if (windowRunner.keyWasPressed(GLFW_KEY_F4))
 	{
-		if (scene.general.tracerType == TracerType::RAY)
-			scene.general.tracerType = TracerType::PATH;
-		else if (scene.general.tracerType == TracerType::PATH)
-			scene.general.tracerType = TracerType::PREVIEW;
-		else if (scene.general.tracerType == TracerType::PREVIEW)
-			scene.general.tracerType = TracerType::RAY;
-
-		tracer = Tracer::getTracer(scene.general.tracerType);
+		if (windowRunner.keyIsDown(GLFW_KEY_LEFT_CONTROL) || windowRunner.keyIsDown(GLFW_KEY_RIGHT_CONTROL))
+			settings.interactive.usePreviewWhileMoving = !settings.interactive.usePreviewWhileMoving;
+		else
+		{
+			if (scene.general.tracerType == TracerType::RAY)
+				scene.general.tracerType = TracerType::PATH;
+			else if (scene.general.tracerType == TracerType::PATH)
+				scene.general.tracerType = TracerType::PREVIEW;
+			else if (scene.general.tracerType == TracerType::PREVIEW)
+				scene.general.tracerType = TracerType::RAY;
+		}
+		
 		film.clear();
 	}
 
@@ -170,25 +180,25 @@ void DefaultState::update(double timeStep)
 
 	if (windowRunner.keyWasPressed(GLFW_KEY_F10))
 	{
-		double newScale = settings.window.renderScale * 0.5;
+		double newScale = settings.interactive.renderScale * 0.5;
 		uint64_t newWidth = uint64_t(double(windowRunner.getWindowWidth()) * newScale + 0.5);
 		uint64_t newHeight = uint64_t(double(windowRunner.getWindowHeight()) * newScale + 0.5);
 
 		if (newWidth >= 2 && newHeight >= 2)
 		{
-			settings.window.renderScale = newScale;
+			settings.interactive.renderScale = newScale;
 			resizeFilm();
 		}
 	}
 
 	if (windowRunner.keyWasPressed(GLFW_KEY_F11))
 	{
-		if (settings.window.renderScale < 1.0)
+		if (settings.interactive.renderScale < 1.0)
 		{
-			settings.window.renderScale *= 2.0;
+			settings.interactive.renderScale *= 2.0;
 
-			if (settings.window.renderScale > 1.0)
-				settings.window.renderScale = 1.0;
+			if (settings.interactive.renderScale > 1.0)
+				settings.interactive.renderScale = 1.0;
 
 			resizeFilm();
 		}
@@ -218,6 +228,8 @@ void DefaultState::render(double timeStep, double interpolation)
 	(void)timeStep;
 	(void)interpolation;
 
+	Settings& settings = App::getSettings();
+
 	TracerState state;
 	state.scene = &scene;
 	state.film = &film;
@@ -243,7 +255,13 @@ void DefaultState::render(double timeStep, double interpolation)
 
 	film.increaseSamplesPerPixelCount(samplesPerPixel);
 
+	Tracer* tracer = tracers[scene.general.tracerType].get();
+
+	if (scene.camera.isMoving() && settings.interactive.usePreviewWhileMoving)
+		tracer = tracers[TracerType::PREVIEW].get();
+
 	tracer->run(state, interrupted);
+
 	film.generateOutputImage(scene);
 	filmRenderer.uploadFilmData(film);
 	filmRenderer.render();
@@ -261,8 +279,8 @@ void DefaultState::resizeFilm()
 	Settings& settings = App::getSettings();
 	WindowRunner& windowRunner = App::getWindowRunner();
 
-	uint64_t filmWidth = uint64_t(double(windowRunner.getWindowWidth()) * settings.window.renderScale + 0.5);
-	uint64_t filmHeight = uint64_t(double(windowRunner.getWindowHeight()) * settings.window.renderScale + 0.5);
+	uint64_t filmWidth = uint64_t(double(windowRunner.getWindowWidth()) * settings.interactive.renderScale + 0.5);
+	uint64_t filmHeight = uint64_t(double(windowRunner.getWindowHeight()) * settings.interactive.renderScale + 0.5);
 
     filmWidth = std::max(uint64_t(1), filmWidth);
     filmHeight = std::max(uint64_t(1), filmHeight);

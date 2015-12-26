@@ -306,8 +306,8 @@ void WindowRunner::update(double timeStep)
 
 	mouseInfo.windowX = int64_t(newMouseX + 0.5);
 	mouseInfo.windowY = int64_t(double(windowHeight) - newMouseY - 1.0 + 0.5);
-	mouseInfo.scaledX = int64_t((mouseInfo.windowX / double(windowWidth)) * (double(windowWidth) * settings.window.renderScale) + 0.5);
-	mouseInfo.scaledY = int64_t((mouseInfo.windowY / double(windowHeight)) * (double(windowHeight) * settings.window.renderScale) + 0.5);
+	mouseInfo.scaledX = int64_t((mouseInfo.windowX / double(windowWidth)) * (double(windowWidth) * settings.interactive.renderScale) + 0.5);
+	mouseInfo.scaledY = int64_t((mouseInfo.windowY / double(windowHeight)) * (double(windowHeight) * settings.interactive.renderScale) + 0.5);
 	mouseInfo.deltaX = mouseInfo.windowX - previousMouseX;
 	mouseInfo.deltaY = mouseInfo.windowY - previousMouseY;
 	previousMouseX = mouseInfo.windowX;
