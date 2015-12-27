@@ -9,7 +9,7 @@ textures
  - EWA texture filtering
 
 misc
- - materialid to obj file
+ - use own timer and add double milliseconds
  - add possibility to save and restore film state
  - film state and output image periodic saving
  - move image pool to scene and add serialization

@@ -32,7 +32,7 @@ namespace
 		return StringUtils::parseDouble(result);
 	}
 
-	void processMaterialFile(const std::string& objFileDirectory, const std::string& mtlFilePath, ModelLoaderResult& result, std::map<std::string, uint64_t>& materialsMap, uint64_t& currentId)
+	void processMaterialFile(const std::string& objFileDirectory, const std::string& mtlFilePath, ModelLoaderResult& result, std::map<std::string, uint64_t>& materialsMap, std::map<std::string, uint64_t>& externalMaterialsMap, uint64_t& currentId)
 	{
 		std::string absoluteMtlFilePath = getAbsolutePath(objFileDirectory, mtlFilePath);
 		App::getLog().logInfo("Reading MTL file (%s)", absoluteMtlFilePath);
@@ -46,6 +46,7 @@ namespace
 
 		std::string line;
 		std::string part;
+		std::string currentMaterialName;
 		uint64_t lineIndex = 0;
 
 		while (std::getline(file, line))
@@ -67,8 +68,12 @@ namespace
 				currentMaterial = Material();
 				currentMaterial.id = ++currentId;
 
-				StringUtils::readUntilSpace(line, lineIndex, part);
-				materialsMap[part] = currentMaterial.id;
+				StringUtils::readUntilSpace(line, lineIndex, currentMaterialName);
+				materialsMap[currentMaterialName] = currentMaterial.id;
+			}
+			else if (part == "materialId")
+			{
+				externalMaterialsMap[currentMaterialName] = uint64_t(readDouble(line, lineIndex, part));
 			}
 			else if (part == "skipLighting")
 			{
@@ -402,6 +407,7 @@ ModelLoaderResult ModelLoader::load(const ModelLoaderInfo& info)
 	uint64_t currentMaterialId = info.defaultMaterialId;
 
 	std::map<std::string, uint64_t> materialsMap;
+	std::map<std::string, uint64_t> externalMaterialsMap;
 	std::string objFileDirectory = boost::filesystem::absolute(info.modelFilePath).parent_path().string();
 
 	Matrix4x4 scaling = Matrix4x4::scale(info.scale);
@@ -437,13 +443,15 @@ ModelLoaderResult ModelLoader::load(const ModelLoaderInfo& info)
 		if (part == "mtllib") // new material file
 		{
 			StringUtils::readUntilSpace(line, lineIndex, part);
-			processMaterialFile(objFileDirectory, part, result, materialsMap, currentId);
+			processMaterialFile(objFileDirectory, part, result, materialsMap, externalMaterialsMap, currentId);
 		}
 		else if (part == "usemtl") // select material
 		{
 			StringUtils::readUntilSpace(line, lineIndex, part);
 
-			if (materialsMap.count(part))
+			if (externalMaterialsMap.count(part))
+				currentMaterialId = externalMaterialsMap[part];
+			else if (materialsMap.count(part))
 				currentMaterialId = materialsMap[part];
 			else
 			{
