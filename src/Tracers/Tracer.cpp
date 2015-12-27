@@ -206,8 +206,8 @@ Color Tracer::generateCameraSamples(const Scene& scene, const Vector2& pixelCoor
 	double focalDistance = scene.camera.focalDistance;
 
 	Vector3 cameraPosition = scene.camera.position;
-	Vector3 cameraRight = scene.camera.right;
-	Vector3 cameraUp = scene.camera.up;
+	Vector3 cameraRight = scene.camera.getRight();
+	Vector3 cameraUp = scene.camera.getUp();
 
 	Color sampledPixelColor;
 	uint64_t n = scene.sampling.cameraSampleCountSqrt;

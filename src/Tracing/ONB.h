@@ -35,8 +35,8 @@ namespace Raycer
 
 		static const ONB UP;
 
-		Vector3 u = Vector3(0.0, 0.0, 0.0);
-		Vector3 v = Vector3(0.0, 0.0, 0.0);
-		Vector3 w = Vector3(0.0, 0.0, 0.0);
+		Vector3 u;
+		Vector3 v;
+		Vector3 w;
 	};
 }

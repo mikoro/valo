@@ -9,12 +9,9 @@ textures
  - EWA texture filtering
 
 misc
- - fix coordinate system
- - move properties behind getters/setters
- - remove unnecessary initializers
+ - materialid to obj file
  - add possibility to save and restore film state
  - film state and output image periodic saving
-
  - move image pool to scene and add serialization
  - move rayStartOffset to minDistance
  - add material inheritance
@@ -27,4 +24,3 @@ misc
  - replace private constructors with =deleted
  - add scope exit to obj loader and consolerunner text color
  - replace align macro with alignas
-

@@ -72,10 +72,7 @@ namespace Raycer
 		void build(const std::vector<Triangle>& triangles, const BVHBuildInfo& buildInfo);
 		void restore(const Scene& scene);
 
-		bool hasBeenBuilt = false;
-		std::vector<BVHNode> nodes;
-		std::vector<uint64_t> orderedTriangleIds;
-		std::vector<const Triangle*> orderedTriangles;
+		bool hasBeenBuilt() const;
 
 	private:
 
@@ -84,12 +81,17 @@ namespace Raycer
 		double calculateSAHScore(uint64_t axis, double splitPoint, const AABB& nodeAABB, const BVHBuildEntry& buildEntry);
 		double calculateMedianPoint(uint64_t axis, const BVHBuildEntry& buildEntry);
 
+		bool bvhHasBeenBuilt = false;
+		std::vector<BVHNode> nodes;
+		std::vector<uint64_t> orderedTriangleIds;
+		std::vector<const Triangle*> orderedTriangles;
+
 		friend class cereal::access;
 
 		template <class Archive>
 		void serialize(Archive& ar)
 		{
-			ar(CEREAL_NVP(hasBeenBuilt),
+			ar(CEREAL_NVP(bvhHasBeenBuilt),
 				CEREAL_NVP(nodes),
 				CEREAL_NVP(orderedTriangleIds));
 		}

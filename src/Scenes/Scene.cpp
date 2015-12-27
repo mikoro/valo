@@ -270,7 +270,7 @@ void Scene::initialize()
 
 	// BVH BUILD
 
-	if (bvh.hasBeenBuilt)
+	if (bvh.hasBeenBuilt())
 		bvh.restore(*this);
 	else
 		bvh.build(triangles, bvhBuildInfo);

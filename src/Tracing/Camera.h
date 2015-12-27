@@ -30,6 +30,10 @@ namespace Raycer
 
 		bool getRay(const Vector2& pixelCoordinate, Ray& ray) const;
 
+		Vector3 getRight() const;
+		Vector3 getUp() const;
+		Vector3 getForward() const;
+
 		Vector3 position;
 		EulerAngle orientation;
 		CameraProjectionType projectionType = CameraProjectionType::PERSPECTIVE;
@@ -40,17 +44,17 @@ namespace Raycer
 		double apertureSize = 0.1;
 		double focalDistance = 10.0;
 
-		Vector3 right;
-		Vector3 up;
-		Vector3 forward;
-		Vector3 imagePlaneCenter;
-
 	private:
 
 		double aspectRatio = 1.0;
 		double imagePlaneDistance = 1.0;
 		double imagePlaneWidth = 0.0;
 		double imagePlaneHeight = 0.0;
+
+		Vector3 right;
+		Vector3 up;
+		Vector3 forward;
+		Vector3 imagePlaneCenter;
 
 		Vector3 velocity;
 		Vector3 smoothVelocity;

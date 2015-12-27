@@ -284,3 +284,18 @@ bool Camera::getRay(const Vector2& pixelCoordinate, Ray& ray) const
 	ray.precalculate();
 	return true;
 }
+
+Vector3 Camera::getRight() const
+{
+	return right;
+}
+
+Vector3 Camera::getUp() const
+{
+	return up;
+}
+
+Vector3 Camera::getForward() const
+{
+	return forward;
+}

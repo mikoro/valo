@@ -23,7 +23,7 @@ namespace Raycer
 		Color getColor(const Vector2& texcoord, const Vector3& position) const override;
 		double getValue(const Vector2& texcoord, const Vector3& position) const override;
 		
-		uint32_t seed = 1;
+		uint64_t seed = 1;
 		Vector3 scale = Vector3(10.0, 10.0, 10.0);
 		Color baseColor = Color(1.0, 1.0, 1.0);
 		bool isFbm = false;

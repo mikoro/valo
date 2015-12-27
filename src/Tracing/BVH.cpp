@@ -177,7 +177,7 @@ void BVH::build(const std::vector<Triangle>& triangles, const BVHBuildInfo& buil
 		stackptr++;
 	}
 
-	hasBeenBuilt = true;
+	bvhHasBeenBuilt = true;
 
 	orderedTriangleIds.clear();
 
@@ -198,6 +198,11 @@ void BVH::restore(const Scene& scene)
 		orderedTriangles.push_back(scene.trianglesMap.at(triangleId));
 
 	return;
+}
+
+bool BVH::hasBeenBuilt() const
+{
+	return bvhHasBeenBuilt;
 }
 
 void BVH::calculateSplit(uint64_t& axis, double& splitPoint, const AABB& nodeAABB, const BVHBuildInfo& buildInfo, const BVHBuildEntry& buildEntry, Random& random)
