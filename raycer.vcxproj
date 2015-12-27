@@ -358,8 +358,6 @@
   <ItemGroup>
     <None Include="data\shaders\film.frag" />
     <None Include="data\shaders\film.vert" />
-    <None Include="data\shaders\text.frag" />
-    <None Include="data\shaders\text.vert" />
     <None Include="src\Math\Polynomial.inl" />
     <None Include="src\Rendering\Color.inl" />
     <None Include="src\Rendering\Image.inl" />

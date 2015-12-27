@@ -29,7 +29,7 @@ void FilmRenderer::initialize()
 
 	resampleProgramId = GLHelper::buildProgram("data/shaders/film.vert", "data/shaders/film.frag");
 
-	resampleTextureUniformId = glGetUniformLocation(resampleProgramId, "texture0");
+	resampleTextureUniformId = glGetUniformLocation(resampleProgramId, "tex0");
 	resampleTextureWidthUniformId = glGetUniformLocation(resampleProgramId, "textureWidth");
 	resampleTextureHeightUniformId = glGetUniformLocation(resampleProgramId, "textureHeight");
 	resampleTexelWidthUniformId = glGetUniformLocation(resampleProgramId, "texelWidth");

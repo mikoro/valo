@@ -545,12 +545,6 @@
     <None Include="data\shaders\film.vert">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="data\shaders\text.frag">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="data\shaders\text.vert">
-      <Filter>Shaders</Filter>
-    </None>
     <None Include="src\Rendering\Color.inl">
       <Filter>Rendering</Filter>
     </None>

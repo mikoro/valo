@@ -11,16 +11,17 @@ Digital Image Processing: PIKS Inside
 Reconstruction Filters in Computer Graphics (Don P. Mitchell, Arun N. Netravali)
 */
 
-in vec2 vTexcoord;
-out vec4 fColor;
+in vec2 texcoordVarying;
 
-uniform sampler2D texture0;
+out vec4 color;
+
+uniform sampler2D tex0;
 uniform float textureWidth;
 uniform float textureHeight;
 uniform float texelWidth;
 uniform float texelHeight;
 
-#define INTERPOLATION_FUNCTION mitchell
+#define FILTER_FUNCTION mitchell
 
 float box(float x)
 {
@@ -46,25 +47,12 @@ float bell(float x)
 		return 0.0f;
 }
 
-// cubic bspline
-//#define B 1.0f
-//#define C 0.0f
-
-// Catmull-Rom spline
-//#define B 0.0f
-//#define C 0.5f
-
-// good compromise
-#define B (1.0f / 3.0f)
-#define C (1.0f / 3.0f)
-
-// suppresse postaliasing patterns
-//#define B (3.0f / 2.0f)
-//#define C (-1.0f / 4.0f)
-
 float mitchell(float x)
 {
 	x = abs(x);
+
+	const float B = 1.0f / 3.0f;
+	const float C = 1.0f / 3.0f;
 	
 	if (x < 1.0f)
 		return ((12.0f - 9.0f * B - 6.0f * C) * (x * x * x) + (-18.0f + 12.0f * B + 6.0f * C) * (x * x) + (6.0f - 2.0f * B)) * (1.0f / 6.0f);
@@ -88,8 +76,8 @@ float lanczos(float x)
 void main()
 {
 	// coordinates on the sampled texture [0 .. width/height]
-	float tx = vTexcoord.x * textureWidth;
-	float ty = vTexcoord.y * textureHeight;
+	float tx = texcoordVarying.x * textureWidth;
+	float ty = texcoordVarying.y * textureHeight;
 	
 	// texel centered coordinates on the sampled texture [0 .. 1]
 	float ctx = (floor(tx) + 0.5f) / textureWidth;
@@ -100,8 +88,8 @@ void main()
 	float ax = fract(tx);
 	float ay = fract(ty);
 	
-	vec4 combinedColor = vec4(0.0f, 0.0f, 0.0f, 0.0f);
-	vec4 normalization = vec4(0.0f, 0.0f, 0.0f, 0.0f);
+	vec4 cumulativeColor = vec4(0.0f, 0.0f, 0.0f, 0.0f);
+	vec4 cumulativeFilterWeight = vec4(0.0f, 0.0f, 0.0f, 0.0f);
 	
 	for(int x = -1; x <= 2; x++)
 	{
@@ -113,18 +101,18 @@ void main()
 			vec2 offset = vec2(ofx, ofy);
 			
 			// evaluate the texel color
-			vec4 c = texture(texture0, center + offset);
+			vec4 c = texture(tex0, center + offset);
 			
-			// evaluate the interpolation function
+			// evaluate the filter weight
 			// argument will be in range [-2.0 .. 2.0]
-			float fx = INTERPOLATION_FUNCTION(float(x) - ax);
-			float fy = INTERPOLATION_FUNCTION((float(y) - ay));
-			vec4 f = vec4(fx, fx, fx, fx) * vec4(fy, fy, fy, fy);
+			float wx = FILTER_FUNCTION(float(x) - ax);
+			float wy = FILTER_FUNCTION((float(y) - ay));
+			vec4 w = vec4(wx, wx, wx, wx) * vec4(wy, wy, wy, wy);
 			
-			combinedColor += c * f;
-			normalization += f;
+			cumulativeColor += c * w;
+			cumulativeFilterWeight += w;
 		}
 	}
 	
-	fColor = (combinedColor / normalization);
+	color = cumulativeColor / cumulativeFilterWeight;
 }

@@ -1,12 +1,12 @@
 #version 330
 
-layout(location = 0) in vec2 aPosition;
-layout(location = 1) in vec2 aTexcoord;
+layout(location = 0) in vec2 position;
+layout(location = 1) in vec2 texcoord;
 
-out vec2 vTexcoord;
+out vec2 texcoordVarying;
 
 void main()
 {
-	vTexcoord = aTexcoord;
-	gl_Position = vec4(aPosition, 0.0f, 1.0f);
+	texcoordVarying = texcoord;
+	gl_Position = vec4(position, 0.0f, 1.0f);
 }
