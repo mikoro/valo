@@ -24,22 +24,14 @@ Color PreviewTracer::trace(const Scene& scene, const Ray& ray, Random& random)
 
 	const Material* material = intersection.material;
 
-	bool hasReflectance = !material->reflectance.isZero() || (material->reflectanceMapTexture != nullptr);
-
-	if (hasReflectance)
-	{
+	if (material->reflectanceMapTexture != nullptr)
+		finalColor = material->reflectanceMapTexture->getColor(intersection.texcoord, intersection.position) * material->reflectanceMapTexture->intensity;
+	else if (material->diffuseMapTexture != nullptr)
+		finalColor = material->diffuseMapTexture->getColor(intersection.texcoord, intersection.position) * material->diffuseMapTexture->intensity;
+	else if (!material->reflectance.isZero())
 		finalColor = material->reflectance;
-
-		if (material->reflectanceMapTexture != nullptr)
-			finalColor = material->reflectanceMapTexture->getColor(intersection.texcoord, intersection.position) * material->reflectanceMapTexture->intensity;
-	}
-	else
-	{
+	else if (!material->diffuseReflectance.isZero())
 		finalColor = material->diffuseReflectance;
-
-		if (material->diffuseMapTexture != nullptr)
-			finalColor = material->diffuseMapTexture->getColor(intersection.texcoord, intersection.position) * material->diffuseMapTexture->intensity;
-	}
 
 	return finalColor * std::abs(ray.direction.dot(intersection.normal));
 }
