@@ -299,6 +299,12 @@
     <ClCompile Include="src\External\stb.cpp">
       <Filter>External</Filter>
     </ClCompile>
+    <ClCompile Include="src\Scenes\TestScene2.cpp">
+      <Filter>Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Scenes\TestScene3.cpp">
+      <Filter>Scenes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Utils\FpsCounter.h">

@@ -47,8 +47,10 @@ namespace Raycer
 		bool intersect(const Ray& ray, Intersection& intersection) const;
 
 		static Scene createTestScene1();
+		static Scene createTestScene2();
+		static Scene createTestScene3();
 
-		static const uint64_t TEST_SCENE_COUNT = 1;
+		static const uint64_t TEST_SCENE_COUNT = 3;
 
 		struct General
 		{

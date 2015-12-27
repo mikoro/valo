@@ -21,7 +21,7 @@ namespace Raycer
 		bool emissive = false;
 		bool skipLighting = false;
 		bool nonShadowing = false;
-		bool normalInterpolation = false;
+		bool normalInterpolation = true;
 		bool autoInvertNormal = true;
 		bool invertNormal = false;
 		bool fresnelReflection = false;

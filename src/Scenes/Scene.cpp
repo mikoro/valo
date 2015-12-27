@@ -29,6 +29,8 @@ Scene Scene::createTestScene(uint64_t number)
 	switch (number)
 	{
 		case 1: return createTestScene1();
+		case 2: return createTestScene2();
+		case 3: return createTestScene3();
 		default: throw std::runtime_error("Unknown test scene number");
 	}
 }
