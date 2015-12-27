@@ -258,7 +258,15 @@ void DefaultState::render(double timeStep, double interpolation)
 	Tracer* tracer = tracers[scene.general.tracerType].get();
 
 	if (scene.camera.isMoving() && settings.interactive.usePreviewWhileMoving)
+	{
 		tracer = tracers[TracerType::PREVIEW].get();
+		usedPreviewModeWhileMoving = true;
+	}
+	else if (usedPreviewModeWhileMoving)
+	{
+		film.clear();
+		usedPreviewModeWhileMoving = false;
+	}
 
 	tracer->run(state, interrupted);
 
