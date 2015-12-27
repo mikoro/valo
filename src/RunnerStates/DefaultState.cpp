@@ -220,6 +220,9 @@ void DefaultState::update(double timeStep)
 		scene.tonemapping.key = std::max(0.0, scene.tonemapping.key);
 	}
 
+	if (windowRunner.keyWasPressed(GLFW_KEY_M))
+		settings.camera.enableMovement = !settings.camera.enableMovement;
+
 	scene.camera.update(timeStep);
 }
 

@@ -32,6 +32,8 @@ namespace Raycer
 		Timer();
 
 		void restart();
+
+		double getElapsedMilliseconds() const;
 		TimerData getElapsed() const;
 		
 		void setTargetValue(double value);

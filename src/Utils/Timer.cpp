@@ -28,6 +28,13 @@ void Timer::restart()
 	remainingMillisecondsAverage.setAverage(0.0);
 }
 
+double Timer::getElapsedMilliseconds() const
+{
+	auto elapsedTime = sc::high_resolution_clock::now() - startTime;
+	uint64_t totalNanoseconds = sc::duration_cast<sc::nanoseconds>(elapsedTime).count();
+	return totalNanoseconds / 1000000.0;
+}
+
 TimerData Timer::getElapsed() const
 {
 	auto elapsedTime = sc::high_resolution_clock::now() - startTime;

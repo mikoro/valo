@@ -11,6 +11,7 @@
 #include "App.h"
 #include "Utils/Log.h"
 #include "Utils/Random.h"
+#include "Utils/Timer.h"
 #include "Math/Vector3.h"
 
 using namespace Raycer;
@@ -76,8 +77,7 @@ void BVH::build(const std::vector<Triangle>& triangles, const BVHBuildInfo& buil
 
 	log.logInfo("Building BVH (triangles: %d)", triangles.size());
 
-	auto startTime = std::chrono::high_resolution_clock::now();
-
+	Timer timer;
 	Random random;
 
 	BVHBuildEntry stack[128];
@@ -184,10 +184,7 @@ void BVH::build(const std::vector<Triangle>& triangles, const BVHBuildInfo& buil
 	for (const Triangle* triangle : orderedTriangles)
 		orderedTriangleIds.push_back(triangle->id);
 
-	auto elapsedTime = std::chrono::high_resolution_clock::now() - startTime;
-	auto milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(elapsedTime).count();
-
-	log.logInfo("BVH building finished (time: %d ms, nodes: %d, leafs: %d)", milliseconds, nodeCount, leafCount);
+	log.logInfo("BVH building finished (time: %.2f ms, nodes: %d, leafs: %d)", timer.getElapsedMilliseconds(), nodeCount, leafCount);
 }
 
 void BVH::restore(const Scene& scene)

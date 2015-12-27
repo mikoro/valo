@@ -7,6 +7,7 @@
 #include "App.h"
 #include "Utils/Log.h"
 #include "Utils/StringUtils.h"
+#include "Utils/Timer.h"
 #include "Math/Vector2.h"
 #include "Math/Vector3.h"
 #include "Rendering/Color.h"
@@ -399,8 +400,7 @@ ModelLoaderResult ModelLoader::load(const ModelLoaderInfo& info)
 
 	log.logInfo("Reading OBJ file (%s)", info.modelFilePath);
 
-	auto startTime = std::chrono::high_resolution_clock::now();
-
+	Timer timer;
 	ModelLoaderResult result;
 
 	uint64_t currentId = info.idStartOffset;
@@ -494,10 +494,7 @@ ModelLoaderResult ModelLoader::load(const ModelLoaderInfo& info)
 
 	fclose(file);
 
-	auto elapsedTime = std::chrono::high_resolution_clock::now() - startTime;
-	auto milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(elapsedTime).count();
-
-	log.logInfo("OBJ file reading finished (time: %d ms, triangles: %s, materials: %s, textures: %s)", milliseconds, result.triangles.size(), result.materials.size(), result.textures.size());
+	log.logInfo("OBJ file reading finished (time: %.2f ms, triangles: %s, materials: %s, textures: %s)", timer.getElapsedMilliseconds(), result.triangles.size(), result.materials.size(), result.textures.size());
 
 	return result;
 }

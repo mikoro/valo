@@ -18,6 +18,7 @@
 #include "App.h"
 #include "Utils/Log.h"
 #include "Utils/StringUtils.h"
+#include "Utils/Timer.h"
 
 using namespace Raycer;
 
@@ -155,7 +156,7 @@ void Scene::initialize()
 	Log& log = App::getLog();
 	log.logInfo("Initializing scene");
 
-	auto startTime = std::chrono::high_resolution_clock::now();
+	Timer timer;
 
 	// MODELS
 
@@ -275,10 +276,7 @@ void Scene::initialize()
 	else
 		bvh.build(triangles, bvhBuildInfo);
 
-	auto elapsedTime = std::chrono::high_resolution_clock::now() - startTime;
-	auto milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(elapsedTime).count();
-
-	log.logInfo("Scene initialization finished (time: %d ms)", milliseconds);
+	log.logInfo("Scene initialization finished (time: %.2f ms)", timer.getElapsedMilliseconds());
 }
 
 bool Scene::intersect(const Ray& ray, Intersection& intersection) const
