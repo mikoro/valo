@@ -35,6 +35,13 @@ double Timer::getElapsedMilliseconds() const
 	return totalNanoseconds / 1000000.0;
 }
 
+double Timer::getElapsedSeconds() const
+{
+	auto elapsedTime = sc::high_resolution_clock::now() - startTime;
+	uint64_t totalMilliseconds = sc::duration_cast<sc::milliseconds>(elapsedTime).count();
+	return totalMilliseconds / 1000.0;
+}
+
 TimerData Timer::getElapsed() const
 {
 	auto elapsedTime = sc::high_resolution_clock::now() - startTime;

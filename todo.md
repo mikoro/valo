@@ -9,6 +9,7 @@ textures
  - EWA texture filtering
 
 misc
+ - clean up shaders
  - add possibility to save and restore film state
  - film state and output image periodic saving
  - move image pool to scene and add serialization

@@ -6,19 +6,18 @@
 
 #include "tinyformat/tinyformat.h"
 
-#include "cereal/cereal.hpp"
-#include "cereal/archives/json.hpp"
-#include "cereal/archives/xml.hpp"
-#include "cereal/archives/binary.hpp"
-#include "cereal/types/vector.hpp"
-#include "cereal/types/string.hpp"
-
 #include "Scenes/Scene.h"
 #include "Textures/Texture.h"
 #include "App.h"
 #include "Utils/Log.h"
 #include "Utils/StringUtils.h"
 #include "Utils/Timer.h"
+
+#include "cereal/archives/json.hpp"
+#include "cereal/archives/xml.hpp"
+#include "cereal/archives/binary.hpp"
+#include "cereal/types/vector.hpp"
+#include "cereal/types/string.hpp"
 
 using namespace Raycer;
 

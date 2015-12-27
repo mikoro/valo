@@ -31,7 +31,7 @@ namespace Raycer
 
 		void load(uint64_t width, uint64_t height, float* rgbaData);
 		void load(const std::string& fileName);
-		void save(const std::string& fileName) const;
+		void save(const std::string& fileName, bool writeToLog = true) const;
 		void resize(uint64_t length);
 		void resize(uint64_t width, uint64_t height);
 		void setPixel(uint64_t x, uint64_t y, const ColorType<T>& color);

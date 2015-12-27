@@ -49,6 +49,10 @@ namespace Raycer
 			uint64_t height;
 			std::string fileName;
 			bool autoView;
+			bool autoWrite;
+			double autoWriteInterval;
+			uint64_t autoWriteCount;
+			std::string autoWriteFileName;
 		} image;
 
 		struct Window
@@ -59,6 +63,16 @@ namespace Raycer
 			bool enableVsync;
 			bool hideCursor;
 		} window;
+
+		struct Film
+		{
+			bool restoreFromFile;
+			std::string restoreFileName;
+			bool autoWrite;
+			double autoWriteInterval;
+			uint64_t autoWriteCount;
+			std::string autoWriteFileName;
+		} film;
 
 		struct Camera
 		{

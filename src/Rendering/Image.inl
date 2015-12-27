@@ -108,9 +108,10 @@ namespace Raycer
 	}
 
 	template <typename T>
-	void ImageType<T>::save(const std::string& fileName) const
+	void ImageType<T>::save(const std::string& fileName, bool writeToLog) const
 	{
-		App::getLog().logInfo("Saving image to %s", fileName);
+		if (writeToLog)
+			App::getLog().logInfo("Saving image to %s", fileName);
 
 		int32_t result = 0;
 

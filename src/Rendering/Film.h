@@ -6,6 +6,8 @@
 #include <memory>
 #include <vector>
 
+#include "cereal/cereal.hpp"
+
 #include "Rendering/Color.h"
 #include "Rendering/Image.h"
 #include "Tonemappers/Tonemapper.h"
@@ -18,6 +20,13 @@ namespace Raycer
 	{
 		Color cumulativeColor = Color(0.0, 0.0, 0.0, 0.0);
 		double cumulativeFilterWeight = 0.0;
+
+		template <class Archive>
+		void serialize(Archive& ar)
+		{
+			ar(CEREAL_NVP(cumulativeColor),
+				CEREAL_NVP(cumulativeFilterWeight));
+		}
 	};
 
 	class Film
@@ -32,8 +41,8 @@ namespace Raycer
 		void addSample(uint64_t x, uint64_t y, const Color& color, double filterWeight);
 		void addSample(uint64_t index, const Color& color, double filterWeight);
 		void increaseSamplesPerPixelCount(uint64_t count);
-		void load(const std::string& filePath);
-		void save(const std::string& filePath) const;
+		void load(const std::string& fileName);
+		void save(const std::string& fileName, bool writeToLog = true) const;
 		
 		void generateOutputImage(const Scene& scene);
 		const Image& getOutputImage() const;
@@ -54,5 +63,16 @@ namespace Raycer
 		Image outputImage;
 
 		std::map<TonemapperType, std::unique_ptr<Tonemapper>> tonemappers;
+
+		friend class cereal::access;
+
+		template <class Archive>
+		void serialize(Archive& ar)
+		{
+			ar(CEREAL_NVP(width),
+				CEREAL_NVP(height),
+				CEREAL_NVP(samplesPerPixelCount),
+				CEREAL_NVP(filmPixels));
+		}
 	};
 }

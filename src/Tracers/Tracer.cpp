@@ -80,54 +80,68 @@ void Tracer::run(TracerState& state, std::atomic<bool>& interrupted)
 	std::mutex ompThreadExceptionMutex;
 	std::exception_ptr ompThreadException = nullptr;
 
-	const bool isPreviewTracer = (dynamic_cast<PreviewTracer*>(this) != nullptr);
+	imageAutoWriteTimer.restart();
+	filmAutoWriteTimer.restart();
 
-	#pragma omp parallel for schedule(dynamic, 1000)
-	for (int64_t pixelIndex = 0; pixelIndex < int64_t(state.pixelCount); ++pixelIndex)
+	for (uint64_t i = 0; i < scene.sampling.pixelSampleCount && !interrupted; ++i)
 	{
-		try
+		#pragma omp parallel for schedule(dynamic, 1000)
+		for (int64_t pixelIndex = 0; pixelIndex < int64_t(state.pixelCount); ++pixelIndex)
 		{
-			if (interrupted)
-				continue;
-
-			uint64_t offsetPixelIndex = uint64_t(pixelIndex) + state.pixelStartOffset;
-			double x = double(offsetPixelIndex % state.filmWidth);
-			double y = double(offsetPixelIndex / state.filmWidth);
-			Vector2 pixelCoordinate = Vector2(x, y);
-			Random& random = randoms[omp_get_thread_num()];
-
-			if (isPreviewTracer)
+			try
 			{
-				Ray ray;
-				Color pixelColor = scene.general.backgroundColor;
+				if (interrupted)
+					continue;
 
-				if (scene.camera.getRay(pixelCoordinate, ray))
-					pixelColor = trace(scene, ray, random);
+				uint64_t offsetPixelIndex = uint64_t(pixelIndex) + state.pixelStartOffset;
+				double x = double(offsetPixelIndex % state.filmWidth);
+				double y = double(offsetPixelIndex / state.filmWidth);
+				Vector2 pixelCoordinate = Vector2(x, y);
+				Random& random = randoms[omp_get_thread_num()];
 
-				film.addSample(uint64_t(pixelIndex), pixelColor, 1.0);
+				generateMultiSamples(scene, film, pixelCoordinate, uint64_t(pixelIndex), random);
+
+				if ((pixelIndex + 1) % 100 == 0)
+					state.pixelsProcessed += (100 / scene.sampling.pixelSampleCount);
 			}
-			else
+			catch (...)
 			{
-				for (uint64_t i = 0; i < scene.sampling.pixelSampleCount; ++i)
-					generateMultiSamples(scene, film, pixelCoordinate, uint64_t(pixelIndex), random);
-			}
+				std::lock_guard<std::mutex> lock(ompThreadExceptionMutex);
 
-			if ((pixelIndex + 1) % 100 == 0)
-				state.pixelsProcessed += 100;
+				if (ompThreadException == nullptr)
+					ompThreadException = std::current_exception();
+
+				interrupted = true;
+			}
 		}
-		catch (...)
+
+		if (ompThreadException != nullptr)
+			std::rethrow_exception(ompThreadException);
+
+		if (!settings.interactive.enabled)
 		{
-			std::lock_guard<std::mutex> lock(ompThreadExceptionMutex);
+			if (settings.image.autoWrite && imageAutoWriteTimer.getElapsedSeconds() > settings.image.autoWriteInterval)
+			{
+				film.generateOutputImage(scene);
+				film.getOutputImage().save(tfm::format(settings.image.autoWriteFileName.c_str(), imageAutoWriteNumber), false);
 
-			if (ompThreadException == nullptr)
-				ompThreadException = std::current_exception();
+				if (++imageAutoWriteNumber > settings.image.autoWriteCount)
+					imageAutoWriteNumber = 1;
 
-			interrupted = true;
+				imageAutoWriteTimer.restart();
+			}
+
+			if (settings.film.autoWrite && filmAutoWriteTimer.getElapsedSeconds() > settings.film.autoWriteInterval)
+			{
+				film.save(tfm::format(settings.film.autoWriteFileName.c_str(), filmAutoWriteNumber), false);
+
+				if (++filmAutoWriteNumber > settings.film.autoWriteCount)
+					filmAutoWriteNumber = 1;
+
+				filmAutoWriteTimer.restart();
+			}
 		}
 	}
-
-	if (ompThreadException != nullptr)
-		std::rethrow_exception(ompThreadException);
 
 	if (!interrupted)
 		state.pixelsProcessed = state.pixelCount;

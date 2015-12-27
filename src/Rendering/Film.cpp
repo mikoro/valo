@@ -12,6 +12,10 @@
 #include "App.h"
 #include "Utils/Log.h"
 
+#include "cereal/archives/binary.hpp"
+#include "cereal/types/vector.hpp"
+#include "cereal/types/string.hpp"
+
 using namespace Raycer;
 
 Film::Film()
@@ -64,14 +68,41 @@ void Film::increaseSamplesPerPixelCount(uint64_t count)
 	samplesPerPixelCount += count;
 }
 
-void Film::load(const std::string& filePath)
+void Film::load(const std::string& fileName)
 {
-	(void)filePath;
+	App::getLog().logInfo("Loading film data from %s", fileName);
+
+	std::ifstream file(fileName, std::ios::binary);
+
+	if (!file.good())
+		throw std::runtime_error("Could not open the film data file for loading");
+	
+	// force scope
+	{
+		cereal::BinaryInputArchive archive(file);
+		archive(*this);
+	}
+	
+	file.close();
 }
 
-void Film::save(const std::string& filePath) const
+void Film::save(const std::string& fileName, bool writeToLog) const
 {
-	(void)filePath;
+	if (writeToLog)
+		App::getLog().logInfo("Saving film data to %s", fileName);
+
+	std::ofstream file(fileName, std::ios::binary);
+
+	if (!file.good())
+		throw std::runtime_error("Could not open the film data file for saving");
+	
+	// force scope
+	{
+		cereal::BinaryOutputArchive archive(file);
+		archive(cereal::make_nvp("film", *this));
+	}
+	
+	file.close();
 }
 
 void Film::generateOutputImage(const Scene& scene)

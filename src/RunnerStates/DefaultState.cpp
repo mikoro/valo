@@ -39,6 +39,9 @@ void DefaultState::initialize()
 	filmRenderer.initialize();
 	windowResized(windowRunner.getWindowWidth(), windowRunner.getWindowHeight());
 
+	if (settings.film.restoreFromFile)
+		film.load(settings.film.restoreFileName);
+
 	scene.initialize();
 
 	infoPanel.initialize();
@@ -145,32 +148,19 @@ void DefaultState::update(double timeStep)
 			scene.tonemapping.type = TonemapperType::PASSTHROUGH;
 	}
 
-	if (windowRunner.keyWasPressed(GLFW_KEY_F7))
-	{
-		if (windowRunner.keyIsDown(GLFW_KEY_LEFT_CONTROL))
-		{
-			if (windowRunner.keyIsDown(GLFW_KEY_LEFT_SHIFT))
-				scene.saveToFile("scene.bin");
-			else
-				scene.saveToFile("scene.json");
-		}
-		else
-			scene.saveToFile("scene.xml");
-	}
-
-	if (windowRunner.keyWasPressed(GLFW_KEY_F8))
+	if (windowRunner.keyWasPressed(GLFW_KEY_F6))
 	{
 		windowRunner.pause();
-		scene.saveToFile("scene.bin");
+		scene.saveToFile("temp_scene.bin");
 
 #ifdef _WIN32
-		ShellExecuteA(nullptr, "open", "raycer.exe", "--scene.fileName scene.bin --general.interactive 0 --scene.enableTestScenes 0 --image.autoView 1", nullptr, SW_SHOWNORMAL);
+		ShellExecuteA(nullptr, "open", "raycer.exe", "--scene.fileName temp_scene.bin --general.interactive 0 --scene.enableTestScenes 0 --image.autoView 1", nullptr, SW_SHOWNORMAL);
 #else
 		int32_t pid = fork();
 
 		if (pid == 0)
 		{
-			char* arg[] = { (char*)"raycer", (char*)"--scene.fileName scene.bin", (char*)"--general.interactive 0", (char*)"--scene.enableTestScenes 0", (char*)"--image.autoView 1", (char*)nullptr };
+			char* arg[] = { (char*)"raycer", (char*)"--scene.fileName temp_scene.bin", (char*)"--general.interactive 0", (char*)"--scene.enableTestScenes 0", (char*)"--image.autoView 1", (char*)nullptr };
 
 			if (execvp(arg[0], arg) == -1)
 				App::getLog().logWarning("Could not launch external rendering (%d) (try adding raycer to PATH)", errno);
@@ -222,6 +212,33 @@ void DefaultState::update(double timeStep)
 
 	if (windowRunner.keyWasPressed(GLFW_KEY_M))
 		settings.camera.enableMovement = !settings.camera.enableMovement;
+
+	if (windowRunner.keyIsDown(GLFW_KEY_LEFT_CONTROL) || windowRunner.keyIsDown(GLFW_KEY_RIGHT_CONTROL))
+	{
+		if (windowRunner.keyWasPressed(GLFW_KEY_1))
+			scene.saveToFile("temp_scene.xml");
+
+		if (windowRunner.keyWasPressed(GLFW_KEY_2))
+			scene.saveToFile("temp_scene.json");
+
+		if (windowRunner.keyWasPressed(GLFW_KEY_3))
+			scene.saveToFile("temp_scene.bin");
+
+		if (windowRunner.keyWasPressed(GLFW_KEY_4))
+		{
+			film.generateOutputImage(scene);
+			film.getOutputImage().save("temp_result.png");
+		}
+
+		if (windowRunner.keyWasPressed(GLFW_KEY_5))
+		{
+			film.generateOutputImage(scene);
+			film.getOutputImage().save("temp_result.hdr");
+		}
+
+		if (windowRunner.keyWasPressed(GLFW_KEY_6))
+			film.save("temp_film.bin");
+	}
 
 	scene.camera.update(timeStep);
 }

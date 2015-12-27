@@ -11,6 +11,7 @@
 #include "Filters/Filter.h"
 #include "Rendering/Color.h"
 #include "Utils/Random.h"
+#include "Utils/Timer.h"
 
 namespace Raycer
 {
@@ -47,5 +48,11 @@ namespace Raycer
 		Color generateCameraSamples(const Scene& scene, const Vector2& pixelCoordinate, double time, Random& random);
 		
 		std::vector<Random> randoms;
+
+		Timer imageAutoWriteTimer;
+		Timer filmAutoWriteTimer;
+
+		uint64_t imageAutoWriteNumber = 1;
+		uint64_t filmAutoWriteNumber = 1;
 	};
 }

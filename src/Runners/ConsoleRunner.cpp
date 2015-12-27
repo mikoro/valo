@@ -41,6 +41,9 @@ int ConsoleRunner::run()
 	Film film;
 	film.resize(settings.image.width, settings.image.height);
 
+	if (settings.film.restoreFromFile)
+		film.load(settings.film.restoreFileName);
+
 	TracerState state;
 	state.scene = &scene;
 	state.film = &film;
