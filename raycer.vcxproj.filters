@@ -284,20 +284,20 @@
     <ClCompile Include="src\Utils\Settings.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
-    <ClCompile Include="src\External\gl3w.c">
-      <Filter>External</Filter>
-    </ClCompile>
-    <ClCompile Include="src\External\stb.c">
-      <Filter>External</Filter>
-    </ClCompile>
     <ClCompile Include="src\Rendering\InfoPanel.cpp">
       <Filter>Rendering</Filter>
     </ClCompile>
-    <ClCompile Include="src\External\nanovg.c">
-      <Filter>External</Filter>
-    </ClCompile>
     <ClCompile Include="src\Utils\Random.cpp">
       <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="src\External\gl3w.cpp">
+      <Filter>External</Filter>
+    </ClCompile>
+    <ClCompile Include="src\External\nanovg.cpp">
+      <Filter>External</Filter>
+    </ClCompile>
+    <ClCompile Include="src\External\stb.cpp">
+      <Filter>External</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

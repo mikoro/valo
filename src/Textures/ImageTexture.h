@@ -10,6 +10,7 @@
 
 namespace Raycer
 {
+	class Scene;
 	class Vector2;
 	class Vector3;
 
@@ -17,14 +18,11 @@ namespace Raycer
 	{
 	public:
 
-		void initialize() override;
+		void initialize(Scene& scene) override;
 
 		Color getColor(const Vector2& texcoord, const Vector3& position) const override;
 		double getValue(const Vector2& texcoord, const Vector3& position) const override;
 		
-		const Imagef* getImage() const;
-		uint64_t getImagePoolIndex() const;
-
 		std::string imageFilePath;
 		bool applyGamma = false;
 

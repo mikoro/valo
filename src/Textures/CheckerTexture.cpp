@@ -10,8 +10,9 @@
 
 using namespace Raycer;
 
-void CheckerTexture::initialize()
+void CheckerTexture::initialize(Scene& scene)
 {
+	(void)scene;
 }
 
 Color CheckerTexture::getColor(const Vector2& texcoord, const Vector3& position) const

@@ -10,8 +10,9 @@
 
 using namespace Raycer;
 
-void ColorTexture::initialize()
+void ColorTexture::initialize(Scene& scene)
 {
+	(void)scene;
 }
 
 Color ColorTexture::getColor(const Vector2& texcoord, const Vector3& position) const

@@ -23,6 +23,7 @@
 #include "Filters/Filter.h"
 #include "Tonemappers/Tonemapper.h"
 #include "Rendering/Color.h"
+#include "Rendering/ImagePool.h"
 #include "Utils/ModelLoader.h"
 
 namespace Raycer
@@ -184,11 +185,12 @@ namespace Raycer
 			}
 
 		} lights;
-
+		
 		std::vector<ModelLoaderInfo> models;
 		BVHBuildInfo bvhBuildInfo;
 		BVH bvh;
 		std::vector<Triangle> triangles;
+		ImagePool imagePool;
 
 		std::map<uint64_t, Triangle*> trianglesMap;
 		std::map<uint64_t, Material*> materialsMap;
@@ -213,7 +215,8 @@ namespace Raycer
 				CEREAL_NVP(models),
 				CEREAL_NVP(bvhBuildInfo),
 				CEREAL_NVP(bvh),
-				CEREAL_NVP(triangles));
+				CEREAL_NVP(triangles),
+				CEREAL_NVP(imagePool));
 		}
 	};
 }

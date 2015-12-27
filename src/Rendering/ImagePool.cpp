@@ -8,11 +8,12 @@
 
 using namespace Raycer;
 
-std::map<std::string, uint64_t> ImagePool::imageIndexMap = std::map<std::string, uint64_t>();
-std::vector<Imagef> ImagePool::images = std::vector<Imagef>();
-bool ImagePool::initialized = false;
+namespace
+{
+	const uint64_t MAX_IMAGES = 1000;
+}
 
-const Imagef* ImagePool::loadImage(const std::string& fileName, bool applyGamma)
+const Imagef* ImagePool::getImage(const std::string& fileName, bool applyGamma)
 {
 	if (!initialized)
 	{
@@ -39,7 +40,10 @@ const Imagef* ImagePool::loadImage(const std::string& fileName, bool applyGamma)
 
 uint64_t ImagePool::getImageIndex(const std::string& fileName)
 {
-	return imageIndexMap[fileName];
+	if (imageIndexMap.count(fileName))
+		return imageIndexMap[fileName];
+	else
+		throw std::runtime_error("Image index requested for non-existing image");
 }
 
 const std::vector<Imagef>& ImagePool::getImages()

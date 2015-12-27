@@ -28,7 +28,8 @@ void ReinhardTonemapper::apply(const Scene& scene, const Image& inputImage, Imag
 	const int64_t pixelCount = int64_t(inputPixelData.size());
 	double luminanceLogSum = 0.0;
 	double maxLuminance = 1.0;
-	double maxLuminancePrivate;
+	double maxLuminancePrivate = 0.0;
+	(void)maxLuminancePrivate; // vs2015 compilation warning fix
 
 	#pragma omp parallel reduction(+:luminanceLogSum) private(maxLuminancePrivate)
 	{

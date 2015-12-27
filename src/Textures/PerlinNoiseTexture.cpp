@@ -10,8 +10,10 @@
 
 using namespace Raycer;
 
-void PerlinNoiseTexture::initialize()
+void PerlinNoiseTexture::initialize(Scene& scene)
 {
+	(void)scene;
+
 	perlinNoise.initialize(seed);
 }
 

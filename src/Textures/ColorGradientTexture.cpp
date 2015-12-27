@@ -10,8 +10,9 @@
 
 using namespace Raycer;
 
-void ColorGradientTexture::initialize()
+void ColorGradientTexture::initialize(Scene& scene)
 {
+	(void)scene;
 }
 
 Color ColorGradientTexture::getColor(const Vector2& texcoord, const Vector3& position) const

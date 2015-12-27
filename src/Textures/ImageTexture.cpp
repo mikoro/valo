@@ -8,12 +8,13 @@
 #include "Math/Vector3.h"
 #include "Rendering/Color.h"
 #include "Rendering/ImagePool.h"
+#include "Scenes/Scene.h"
 
 using namespace Raycer;
 
-void ImageTexture::initialize()
+void ImageTexture::initialize(Scene& scene)
 {
-	image = ImagePool::loadImage(imageFilePath, applyGamma);
+	image = scene.imagePool.getImage(imageFilePath, applyGamma);
 }
 
 Color ImageTexture::getColor(const Vector2& texcoord, const Vector3& position) const
@@ -28,14 +29,4 @@ double ImageTexture::getValue(const Vector2& texcoord, const Vector3& position) 
 	(void)position;
 
 	return double(image->getPixelBilinear(texcoord.x, texcoord.y).r);
-}
-
-const Imagef* ImageTexture::getImage() const
-{
-	return image;
-}
-
-uint64_t ImageTexture::getImagePoolIndex() const
-{
-	return ImagePool::getImageIndex(imageFilePath);
 }

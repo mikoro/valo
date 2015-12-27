@@ -6,6 +6,7 @@
 /ipch
 *.sdf
 *.opensdf
+*.opendb
 *.suo
 *.user
 *.log

@@ -90,8 +90,6 @@ void DefaultState::update(double timeStep)
 
 		if (previousTestSceneNumber != currentTestSceneNumber)
 		{
-			ImagePool::clear();
-
 			try
 			{
 				scene = Scene::createTestScene(currentTestSceneNumber);

@@ -9,6 +9,7 @@
 
 namespace Raycer
 {
+	class Scene;
 	class Vector2;
 	class Vector3;
 
@@ -18,7 +19,7 @@ namespace Raycer
 
 		virtual ~Texture() {}
 
-		virtual void initialize() = 0;
+		virtual void initialize(Scene& scene) = 0;
 
 		virtual Color getColor(const Vector2& texcoord, const Vector3& position) const = 0;
 		virtual double getValue(const Vector2& texcoord, const Vector3& position) const = 0;

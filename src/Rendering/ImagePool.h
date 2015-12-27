@@ -6,13 +6,9 @@
 #include <map>
 #include <vector>
 
+#include "cereal/cereal.hpp"
+
 #include "Rendering/Image.h"
-
-/*
-
-ImagePool is used by ImageTextures to prevent loading the same file twice to the memory.
-
-*/
 
 namespace Raycer
 {
@@ -20,17 +16,25 @@ namespace Raycer
 	{
 	public:
 
-		static const Imagef* loadImage(const std::string& fileName, bool applyGamma);
-		static uint64_t getImageIndex(const std::string& fileName);
-		static const std::vector<Imagef>& getImages();
-		static void clear();
+		const Imagef* getImage(const std::string& fileName, bool applyGamma);
+		uint64_t getImageIndex(const std::string& fileName);
+		const std::vector<Imagef>& getImages();
+		void clear();
 
 	private:
 
-		static std::map<std::string, uint64_t> imageIndexMap;
-		static std::vector<Imagef> images;
-		static bool initialized;
+		bool initialized = false;
+		std::map<std::string, uint64_t> imageIndexMap;
+		std::vector<Imagef> images;
 
-		static const uint64_t MAX_IMAGES = 1000;
+		friend class cereal::access;
+
+		template <class Archive>
+		void serialize(Archive& ar)
+		{
+			ar(CEREAL_NVP(initialized),
+				CEREAL_NVP(imageIndexMap),
+				CEREAL_NVP(images));
+		}
 	};
 }

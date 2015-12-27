@@ -12,13 +12,15 @@
 
 namespace Raycer
 {
+	class Scene;
 	class Vector2;
+	class Vector3;
 
 	class PerlinNoiseTexture : public Texture
 	{
 	public:
 
-		void initialize() override;
+		void initialize(Scene& scene) override;
 
 		Color getColor(const Vector2& texcoord, const Vector3& position) const override;
 		double getValue(const Vector2& texcoord, const Vector3& position) const override;
