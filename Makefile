@@ -12,19 +12,13 @@ TARGET = raycer
 
 # linux
 ifneq "$(findstring linux,$(UNAME))" ""
-	LDFLAGS += -Lplatform/linux/lib -lstdc++ -ldl -lm -lpthread -lGL -lglfw -lfreetype -lfreetype-gl -lboost_system -lboost_filesystem -lboost_program_options
+	LDFLAGS += -Lplatform/linux/lib -lstdc++ -ldl -lm -lpthread -lGL -lglfw -lboost_system -lboost_filesystem -lboost_program_options
 endif
 
 # mac
 ifneq "$(findstring darwin,$(UNAME))" ""
 	CFLAGS += -isystem /opt/local/include -isystem /opt/local/include/libomp -mmacosx-version-min=10.9
-	LDFLAGS += -L/opt/local/lib -L/opt/local/lib/libomp -Lplatform/mac/lib -framework Cocoa -framework OpenGL -framework IOKit -framework CoreVideo -lstdc++ -lglfw -lfreetype -lfreetype-gl -lboost_system-mt -lboost_filesystem-mt -lboost_program_options-mt
-endif
-
-# travis-ci environment
-ifeq "$(TRAVIS)" "true"
-	CFLAGS += -isystem /var/tmp/travis/include -DRUN_UNIT_TESTS -D__extern_always_inline=inline
-	LDFLAGS += -L/var/tmp/travis/lib
+	LDFLAGS += -L/opt/local/lib -L/opt/local/lib/libomp -Lplatform/mac/lib -framework Cocoa -framework OpenGL -framework IOKit -framework CoreVideo -lstdc++ -lglfw -lboost_system-mt -lboost_filesystem-mt -lboost_program_options-mt
 endif
 
 default: raycer

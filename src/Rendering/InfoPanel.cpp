@@ -7,8 +7,6 @@
 #include "nanovg/nanovg.h"
 #include "nanovg/nanovg_gl.h"
 
-#include "glfw/glfw3.h"
-
 #include "Rendering/InfoPanel.h"
 #include "Rendering/Film.h"
 #include "Runners/WindowRunner.h"
