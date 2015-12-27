@@ -23,7 +23,7 @@ m[row][column]
 
 R = [1 0 0] (x, right)
 U = [0 1 0] (y, up)
-F = [0 0 1] (z, forward, out of monitor, right-handed coordinate system)
+F = [0 0 1] (z, forward)
 T = translation
 
 */

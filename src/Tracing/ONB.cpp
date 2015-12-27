@@ -8,7 +8,7 @@
 
 using namespace Raycer;
 
-const ONB ONB::UP = ONB(Vector3(1.0, 0.0, 0.0), Vector3(0.0, 0.0, -1.0), Vector3(0.0, 1.0, 0.0));
+const ONB ONB::UP = ONB(Vector3(-1.0, 0.0, 0.0), Vector3(0.0, 0.0, -1.0), Vector3(0.0, 1.0, 0.0));
 
 ONB::ONB()
 {
@@ -31,8 +31,8 @@ ONB ONB::transformed(const Matrix4x4& tranformation) const
 
 ONB ONB::fromNormal(const Vector3& normal, const Vector3& up)
 {
-	Vector3 u = up.cross(normal).normalized();
-	Vector3 v = normal.cross(u).normalized();
+	Vector3 u = normal.cross(up).normalized();
+	Vector3 v = u.cross(normal).normalized();
 	Vector3 w = normal;
 
 	return ONB(u, v, w);

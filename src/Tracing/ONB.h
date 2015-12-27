@@ -8,7 +8,10 @@
 /*
 
 OrthoNormal Basis
-right-handed coordinate system
+
+left-handed coordinate system
+-z is towards the monitor
+
 u = right
 v = up
 w = forward (normal)

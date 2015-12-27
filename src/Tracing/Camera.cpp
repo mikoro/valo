@@ -112,9 +112,9 @@ void Camera::update(double timeStep)
 
 	if (windowRunner.mouseIsDown(GLFW_MOUSE_BUTTON_LEFT) || settings.camera.freeLook)
 	{
-		smoothAngularAcceleration.y += mouseInfo.deltaX * settings.camera.mouseSpeed;
+		smoothAngularAcceleration.y -= mouseInfo.deltaX * settings.camera.mouseSpeed;
 		smoothAngularAcceleration.x += mouseInfo.deltaY * settings.camera.mouseSpeed;
-		angularVelocity.y = mouseInfo.deltaX * settings.camera.mouseSpeed;
+		angularVelocity.y = -mouseInfo.deltaX * settings.camera.mouseSpeed;
 		angularVelocity.x = mouseInfo.deltaY * settings.camera.mouseSpeed;
 	}
 
