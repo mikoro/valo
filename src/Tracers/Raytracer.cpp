@@ -110,8 +110,9 @@ Color Raytracer::calculateReflectedColor(const Scene& scene, const Ray& ray, con
 	Ray reflectedRay;
 	Intersection reflectedIntersection;
 
-	reflectedRay.origin = intersection.position + reflectionDirection * scene.general.rayStartOffset;
+	reflectedRay.origin = intersection.position;
 	reflectedRay.direction = reflectionDirection;
+	reflectedRay.minDistance = scene.general.rayMinDistance;
 	reflectedRay.precalculate();
 
 	reflectedColor = traceRecursive(scene, reflectedRay, reflectedIntersection, iteration + 1, random) * rayReflectance;
@@ -149,8 +150,9 @@ Color Raytracer::calculateTransmittedColor(const Scene& scene, const Ray& ray, c
 	Ray transmittedRay;
 	Intersection transmittedIntersection;
 
-	transmittedRay.origin = intersection.position + transmissionDirection * scene.general.rayStartOffset;
+	transmittedRay.origin = intersection.position;
 	transmittedRay.direction = transmissionDirection;
+	transmittedRay.minDistance = scene.general.rayMinDistance;
 	transmittedRay.precalculate();
 
 	transmittedColor = traceRecursive(scene, transmittedRay, transmittedIntersection, iteration + 1, random) * rayTransmittance;
@@ -244,10 +246,11 @@ double Raytracer::calculateShadowAmount(const Scene& scene, const Ray& ray, cons
 	Ray shadowRay;
 	Intersection shadowIntersection;
 
-	shadowRay.origin = intersection.position + directionToLight * scene.general.rayStartOffset;
+	shadowRay.origin = intersection.position;
 	shadowRay.direction = directionToLight;
 	shadowRay.isShadowRay = true;
 	shadowRay.fastOcclusion = true;
+	shadowRay.minDistance = scene.general.rayMinDistance;
 	shadowRay.maxDistance = std::numeric_limits<double>::max();
 	shadowRay.time = ray.time;
 	shadowRay.precalculate();
@@ -267,10 +270,11 @@ double Raytracer::calculateShadowAmount(const Scene& scene, const Ray& ray, cons
 		Ray shadowRay;
 		Intersection shadowIntersection;
 
-		shadowRay.origin = intersection.position + directionToLight * scene.general.rayStartOffset;
+		shadowRay.origin = intersection.position;
 		shadowRay.direction = directionToLight;
 		shadowRay.isShadowRay = true;
 		shadowRay.fastOcclusion = true;
+		shadowRay.minDistance = scene.general.rayMinDistance;
 		shadowRay.maxDistance = (light.position - intersection.position).length();
 		shadowRay.time = ray.time;
 		shadowRay.precalculate();
@@ -301,10 +305,11 @@ double Raytracer::calculateShadowAmount(const Scene& scene, const Ray& ray, cons
 			Ray shadowRay;
 			Intersection shadowIntersection;
 
-			shadowRay.origin = intersection.position + newDirectionToLight * scene.general.rayStartOffset;
+			shadowRay.origin = intersection.position;
 			shadowRay.direction = newDirectionToLight;
 			shadowRay.isShadowRay = true;
 			shadowRay.fastOcclusion = true;
+			shadowRay.minDistance = scene.general.rayMinDistance;
 			shadowRay.maxDistance = (newLightPosition - intersection.position).length();
 			shadowRay.time = ray.time;
 			shadowRay.precalculate();

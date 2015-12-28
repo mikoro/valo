@@ -19,7 +19,7 @@ namespace Raycer
 		Vector3 direction;
 		Vector3 inverseDirection;
 
-		double minDistance = std::numeric_limits<double>::lowest();
+		double minDistance = 0.0;
 		double maxDistance = std::numeric_limits<double>::max();
 
 		double time = 0.0;

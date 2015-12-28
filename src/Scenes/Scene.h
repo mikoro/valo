@@ -55,7 +55,7 @@ namespace Raycer
 		struct General
 		{
 			TracerType tracerType = TracerType::RAY;
-			double rayStartOffset = 0.00001;
+			double rayMinDistance = 0.00000000001;
 			Color backgroundColor = Color(0.0, 0.0, 0.0);
 			Color offLensColor = Color(0.0, 0.0, 0.0);
 			bool enableNormalMapping = true;
@@ -64,7 +64,7 @@ namespace Raycer
 			void serialize(Archive& ar)
 			{
 				ar(CEREAL_NVP(tracerType),
-					CEREAL_NVP(rayStartOffset),
+					CEREAL_NVP(rayMinDistance),
 					CEREAL_NVP(backgroundColor),
 					CEREAL_NVP(offLensColor),
 					CEREAL_NVP(enableNormalMapping));

@@ -9,8 +9,6 @@ textures
  - EWA texture filtering
 
 misc
- - move image pool to scene and add serialization
- - move rayStartOffset to minDistance
  - add material inheritance
  - add light inheritance
  - add spline curve class
@@ -18,6 +16,5 @@ misc
  - primitive and primitive group with transform
  - add BVH -> QBVH conversion
  - implement QBVH travelsal and SIMD triangle intersect with ispc
- - replace private constructors with =deleted
  - add scope exit to obj loader and consolerunner text color
  - replace align macro with alignas

@@ -42,8 +42,9 @@ Color Pathtracer::traceRecursive(const Scene& scene, const Ray& ray, uint64_t it
 	Vector3 newDirection = sampler->getHemisphereSample(intersection.onb, 1.0, 0, 0, 1, 1, 0, random);
 
 	Ray newRay;
-	newRay.origin = intersection.position + newDirection * scene.general.rayStartOffset;
+	newRay.origin = intersection.position;
 	newRay.direction = newDirection;
+	newRay.minDistance = scene.general.rayMinDistance;
 	newRay.precalculate();
 
 	Color reflectance = material->diffuseReflectance;
