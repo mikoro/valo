@@ -50,7 +50,7 @@ Color Pathtracer::traceRecursive(const Scene& scene, const Ray& ray, uint64_t it
 	Color reflectance = material->diffuseReflectance;
 
 	if (material->diffuseMapTexture != nullptr)
-		reflectance = material->diffuseMapTexture->getColor(intersection.texcoord, intersection.position) * material->diffuseMapTexture->intensity;
+		reflectance = material->diffuseMapTexture->getColor(intersection.texcoord, intersection.position);
 
 	double alpha = std::abs(newDirection.dot(intersection.normal));
 	Color brdf = 2.0 * reflectance * alpha;

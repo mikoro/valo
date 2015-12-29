@@ -21,12 +21,12 @@ Color ImageTexture::getColor(const Vector2& texcoord, const Vector3& position) c
 {
 	(void)position;
 
-	return image->getPixelBilinear(texcoord.x, texcoord.y).toColor();
+	return image->getPixelBilinear(texcoord.x, texcoord.y).toColor() * intensity;
 }
 
 double ImageTexture::getValue(const Vector2& texcoord, const Vector3& position) const
 {
 	(void)position;
 
-	return double(image->getPixelBilinear(texcoord.x, texcoord.y).r);
+	return double(image->getPixelBilinear(texcoord.x, texcoord.y).r) * intensity;
 }

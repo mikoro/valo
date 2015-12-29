@@ -22,16 +22,16 @@ Color CheckerTexture::getColor(const Vector2& texcoord, const Vector3& position)
 	if (stripeMode)
 	{
 		if (texcoord.x < stripeWidth || texcoord.y < stripeWidth || texcoord.x > (1.0 - stripeWidth) || texcoord.y > (1.0 - stripeWidth))
-			return color1;
+			return color1 * intensity;
 		else
-			return color2;
+			return color2 * intensity;
 	}
 	else
 	{
 		if (texcoord.x < 0.5)
-			return (texcoord.y < 0.5) ? color1 : color2;
+			return ((texcoord.y < 0.5) ? color1 : color2) * intensity;
 		else
-			return (texcoord.y < 0.5) ? color2 : color1;
+			return ((texcoord.y < 0.5) ? color2 : color1) * intensity;
 	}
 }
 

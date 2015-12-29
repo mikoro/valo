@@ -20,7 +20,7 @@ Color ColorTexture::getColor(const Vector2& texcoord, const Vector3& position) c
 	(void)texcoord;
 	(void)position;
 
-	return color;
+	return color * intensity;
 }
 
 double ColorTexture::getValue(const Vector2& texcoord, const Vector3& position) const

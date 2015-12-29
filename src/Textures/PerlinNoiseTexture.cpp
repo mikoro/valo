@@ -19,9 +19,7 @@ void PerlinNoiseTexture::initialize(Scene& scene)
 
 Color PerlinNoiseTexture::getColor(const Vector2& texcoord, const Vector3& position) const
 {
-	double n = getValue(texcoord, position);
-
-	return baseColor * n;
+	return baseColor * getValue(texcoord, position);
 }
 
 double PerlinNoiseTexture::getValue(const Vector2& texcoord, const Vector3& position) const
@@ -29,7 +27,7 @@ double PerlinNoiseTexture::getValue(const Vector2& texcoord, const Vector3& posi
 	(void)texcoord;
 
 	if (isFbm)
-		return perlinNoise.getFbmNoise(octaves, lacunarity, persistence, position.x * scale.x, position.y * scale.y, position.z * scale.z);
+		return perlinNoise.getFbmNoise(octaves, lacunarity, persistence, position.x * scale.x, position.y * scale.y, position.z * scale.z) * intensity;
 	else
-		return perlinNoise.getNoise(position.x * scale.x, position.y * scale.y, position.z * scale.z);
+		return perlinNoise.getNoise(position.x * scale.x, position.y * scale.y, position.z * scale.z) * intensity;
 }

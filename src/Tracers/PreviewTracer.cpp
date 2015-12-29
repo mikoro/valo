@@ -25,9 +25,9 @@ Color PreviewTracer::trace(const Scene& scene, const Ray& ray, Random& random)
 	const Material* material = intersection.material;
 
 	if (material->reflectanceMapTexture != nullptr)
-		finalColor = material->reflectanceMapTexture->getColor(intersection.texcoord, intersection.position) * material->reflectanceMapTexture->intensity;
+		finalColor = material->reflectanceMapTexture->getColor(intersection.texcoord, intersection.position);
 	else if (material->diffuseMapTexture != nullptr)
-		finalColor = material->diffuseMapTexture->getColor(intersection.texcoord, intersection.position) * material->diffuseMapTexture->intensity;
+		finalColor = material->diffuseMapTexture->getColor(intersection.texcoord, intersection.position);
 	else if (!material->reflectance.isZero())
 		finalColor = material->reflectance;
 	else if (!material->diffuseReflectance.isZero())

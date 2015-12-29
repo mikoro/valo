@@ -27,7 +27,7 @@ Color ColorGradientTexture::getColor(const Vector2& texcoord, const Vector3& pos
 	if (hasVerticalColorGradient)
 		gradientColor += verticalColorGradient.getColor(texcoord.y) * verticalIntensity;
 
-	return gradientColor;
+	return gradientColor * intensity;
 }
 
 double ColorGradientTexture::getValue(const Vector2& texcoord, const Vector3& position) const
