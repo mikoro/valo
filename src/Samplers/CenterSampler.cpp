@@ -8,7 +8,7 @@
 
 using namespace Raycer;
 
-double CenterSampler::getSample1D(uint64_t x, uint64_t n, uint64_t permutation, Random& random)
+double CenterSampler::getSample(uint64_t x, uint64_t n, uint64_t permutation, Random& random)
 {
 	(void)x;
 	(void)n;
@@ -20,7 +20,7 @@ double CenterSampler::getSample1D(uint64_t x, uint64_t n, uint64_t permutation, 
 	return 0.5;
 }
 
-Vector2 CenterSampler::getSample2D(uint64_t x, uint64_t y, uint64_t nx, uint64_t ny, uint64_t permutation, Random& random)
+Vector2 CenterSampler::getSquareSample(uint64_t x, uint64_t y, uint64_t nx, uint64_t ny, uint64_t permutation, Random& random)
 {
 	(void)x;
 	(void)y;

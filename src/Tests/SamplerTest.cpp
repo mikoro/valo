@@ -1,4 +1,4 @@
-// Copyright © 2015 Mikko Ronkainen <firstname@mikkoronkainen.com>
+﻿// Copyright © 2015 Mikko Ronkainen <firstname@mikkoronkainen.com>
 // License: MIT, see the LICENSE file.
 
 #include "Precompiled.h"
@@ -56,7 +56,7 @@ TEST_CASE("Sampler functionality", "[sampler]")
 
 		double sample1D;
 
-		while (sampler.second->getNextSample1D(sample1D))
+		while (sampler.second->getNextSample(sample1D))
 		{
 			sample1D *= size.x;
 			image1.setPixel(uint64_t(sample1D + 0.5), uint64_t(size.y / 2.0 + 0.5), Color(255, 255, 255));
@@ -64,7 +64,7 @@ TEST_CASE("Sampler functionality", "[sampler]")
 
 		Vector2 sample2D;
 
-		while (sampler.second->getNextSample2D(sample2D))
+		while (sampler.second->getNextSquareSample(sample2D))
 		{
 			sample2D *= size;
 			image2.setPixel(uint64_t(sample2D.x + 0.5), uint64_t(sample2D.y + 0.5), Color(255, 255, 255));

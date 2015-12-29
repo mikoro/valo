@@ -30,9 +30,8 @@ namespace Raycer
 
 		virtual ~Sampler() {}
 
-		virtual double getSample1D(uint64_t x, uint64_t n, uint64_t permutation, Random& random) = 0;
-		virtual Vector2 getSample2D(uint64_t x, uint64_t y, uint64_t nx, uint64_t ny, uint64_t permutation, Random& random) = 0;
-
+		virtual double getSample(uint64_t x, uint64_t n, uint64_t permutation, Random& random) = 0;
+		virtual Vector2 getSquareSample(uint64_t x, uint64_t y, uint64_t nx, uint64_t ny, uint64_t permutation, Random& random) = 0;
 		Vector2 getDiscSample(uint64_t x, uint64_t y, uint64_t nx, uint64_t ny, uint64_t permutation, Random& random);
 		Vector3 getCosineHemisphereSample(const ONB& onb, uint64_t x, uint64_t y, uint64_t nx, uint64_t ny, uint64_t permutation, Random& random);
 		Vector3 getUniformHemisphereSample(const ONB& onb, uint64_t x, uint64_t y, uint64_t nx, uint64_t ny, uint64_t permutation, Random& random);
@@ -40,8 +39,8 @@ namespace Raycer
 		virtual void generateSamples1D(uint64_t sampleCount, Random& random);
 		virtual void generateSamples2D(uint64_t sampleCountSqrt, Random& random);
 
-		bool getNextSample1D(double& result);
-		bool getNextSample2D(Vector2& result);
+		bool getNextSample(double& result);
+		bool getNextSquareSample(Vector2& result);
 		bool getNextDiscSample(Vector2& result);
 		bool getNextCosineHemisphereSample(const ONB& onb, Vector3& result);
 		bool getNextUniformHemisphereSample(const ONB& onb, Vector3& result);

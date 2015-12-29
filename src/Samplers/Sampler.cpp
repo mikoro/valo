@@ -1,4 +1,4 @@
-// Copyright © 2015 Mikko Ronkainen <firstname@mikkoronkainen.com>
+﻿// Copyright © 2015 Mikko Ronkainen <firstname@mikkoronkainen.com>
 // License: MIT, see the LICENSE file.
 
 #include "Precompiled.h"
@@ -102,7 +102,7 @@ namespace
 
 Vector2 Sampler::getDiscSample(uint64_t x, uint64_t y, uint64_t nx, uint64_t ny, uint64_t permutation, Random& random)
 {
-	return mapSquareToDisc(getSample2D(x, y, nx, ny, permutation, random));
+	return mapSquareToDisc(getSquareSample(x, y, nx, ny, permutation, random));
 }
 
 Vector3 Sampler::getCosineHemisphereSample(const ONB& onb, uint64_t x, uint64_t y, uint64_t nx, uint64_t ny, uint64_t permutation, Random& random)
@@ -121,7 +121,7 @@ void Sampler::generateSamples1D(uint64_t sampleCount, Random& random)
 	uint64_t permutation = random.getUint64();
 
 	for (uint64_t i = 0; i < sampleCount; ++i)
-		samples1D[i] = getSample1D(i, sampleCount, permutation, random);
+		samples1D[i] = getSample(i, sampleCount, permutation, random);
 
 	nextSampleIndex1D = 0;
 }
@@ -135,14 +135,14 @@ void Sampler::generateSamples2D(uint64_t sampleCountSqrt, Random& random)
 	{
 		for (uint64_t x = 0; x < sampleCountSqrt; ++x)
 		{
-			samples2D[y * sampleCountSqrt + x] = getSample2D(x, y, sampleCountSqrt, sampleCountSqrt, permutation, random);
+			samples2D[y * sampleCountSqrt + x] = getSquareSample(x, y, sampleCountSqrt, sampleCountSqrt, permutation, random);
 		}
 	}
 
 	nextSampleIndex2D = 0;
 }
 
-bool Sampler::getNextSample1D(double& result)
+bool Sampler::getNextSample(double& result)
 {
 	if (nextSampleIndex1D >= samples1D.size())
 	{
@@ -154,7 +154,7 @@ bool Sampler::getNextSample1D(double& result)
 	return true;
 }
 
-bool Sampler::getNextSample2D(Vector2& result)
+bool Sampler::getNextSquareSample(Vector2& result)
 {
 	if (nextSampleIndex2D >= samples2D.size())
 	{
@@ -186,7 +186,7 @@ bool Sampler::getNextCosineHemisphereSample(const ONB& onb, Vector3& result)
 		return false;
 	}
 
-	result = mapDiscToCosineHemisphere(onb, samples2D[nextSampleIndex2D++]);
+	result = mapDiscToCosineHemisphere(onb, mapSquareToDisc(samples2D[nextSampleIndex2D++]));
 	return true;
 }
 
@@ -198,7 +198,7 @@ bool Sampler::getNextUniformHemisphereSample(const ONB& onb, Vector3& result)
 		return false;
 	}
 
-	result = mapDiscToUniformHemisphere(onb, samples2D[nextSampleIndex2D++]);
+	result = mapDiscToUniformHemisphere(onb, mapSquareToDisc(samples2D[nextSampleIndex2D++]));
 	return true;
 }
 

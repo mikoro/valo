@@ -46,7 +46,7 @@ namespace
 	}
 }
 
-double CMJSampler::getSample1D(uint64_t x, uint64_t n, uint64_t permutation, Random& random)
+double CMJSampler::getSample(uint64_t x, uint64_t n, uint64_t permutation, Random& random)
 {
 	(void)x;
 	(void)n;
@@ -58,7 +58,7 @@ double CMJSampler::getSample1D(uint64_t x, uint64_t n, uint64_t permutation, Ran
 	return 0.0;
 }
 
-Vector2 CMJSampler::getSample2D(uint64_t x, uint64_t y, uint64_t nx, uint64_t ny, uint64_t permutation, Random& random)
+Vector2 CMJSampler::getSquareSample(uint64_t x, uint64_t y, uint64_t nx, uint64_t ny, uint64_t permutation, Random& random)
 {
 	(void)permutation;
 

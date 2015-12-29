@@ -1,4 +1,4 @@
-// Copyright © 2015 Mikko Ronkainen <firstname@mikkoronkainen.com>
+﻿// Copyright © 2015 Mikko Ronkainen <firstname@mikkoronkainen.com>
 // License: MIT, see the LICENSE file.
 
 #include "Precompiled.h"
@@ -169,7 +169,7 @@ void Tracer::generateMultiSamples(const Scene& scene, Film& film, const Vector2&
 	{
 		for (uint64_t x = 0; x < n; ++x)
 		{
-			Vector2 sampleOffset = sampler->getSample2D(x, y, n, n, permutation, random);
+			Vector2 sampleOffset = sampler->getSquareSample(x, y, n, n, permutation, random);
 			sampleOffset = (sampleOffset - Vector2(0.5, 0.5)) * 2.0 * filter->getRadius();
 			Color sampledPixelColor = generateTimeSamples(scene, pixelCoordinate + sampleOffset, random);
 			film.addSample(pixelIndex, sampledPixelColor, filter->getWeight(sampleOffset));
@@ -190,7 +190,7 @@ Color Tracer::generateTimeSamples(const Scene& scene, const Vector2& pixelCoordi
 	uint64_t n = scene.sampling.timeSampleCount;
 
 	for (uint64_t i = 0; i < n; ++i)
-		sampledPixelColor += generateCameraSamples(scene, pixelCoordinate, sampler->getSample1D(i, n, 0, random), random);
+		sampledPixelColor += generateCameraSamples(scene, pixelCoordinate, sampler->getSample(i, n, 0, random), random);
 
 	return sampledPixelColor / double(n);
 }
@@ -233,7 +233,7 @@ Color Tracer::generateCameraSamples(const Scene& scene, const Vector2& pixelCoor
 			Ray primaryRay;
 			primaryRay.time = time;
 
-			Vector2 jitter = (sampler->getSample2D(x, y, n, n, permutation, random) - Vector2(0.5, 0.5)) * 2.0;
+			Vector2 jitter = (sampler->getSquareSample(x, y, n, n, permutation, random) - Vector2(0.5, 0.5)) * 2.0;
 			isValidRay = scene.camera.getRay(pixelCoordinate + jitter, primaryRay);
 
 			if (!isValidRay)

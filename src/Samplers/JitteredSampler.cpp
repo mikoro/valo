@@ -8,7 +8,7 @@
 
 using namespace Raycer;
 
-double JitteredSampler::getSample1D(uint64_t x, uint64_t n, uint64_t permutation, Random& random)
+double JitteredSampler::getSample(uint64_t x, uint64_t n, uint64_t permutation, Random& random)
 {
 	(void)permutation;
 
@@ -17,7 +17,7 @@ double JitteredSampler::getSample1D(uint64_t x, uint64_t n, uint64_t permutation
 	return (double(x) + random.getDouble()) / double(n);
 }
 
-Vector2 JitteredSampler::getSample2D(uint64_t x, uint64_t y, uint64_t nx, uint64_t ny, uint64_t permutation, Random& random)
+Vector2 JitteredSampler::getSquareSample(uint64_t x, uint64_t y, uint64_t nx, uint64_t ny, uint64_t permutation, Random& random)
 {
 	(void)permutation;
 
