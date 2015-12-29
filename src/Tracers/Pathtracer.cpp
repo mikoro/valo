@@ -21,52 +21,23 @@ Color Pathtracer::traceRecursive(const Scene& scene, const Ray& ray, Random& ran
 	scene.intersect(ray, intersection);
 
 	if (!intersection.wasFound)
-		return Color(0.0, 0.0 ,0.0);
+		return Color(0.0, 0.0, 0.0);
 
 	Material* material = intersection.material;
-
-	Sampler* sampler = samplers[SamplerType::RANDOM].get();
-	Vector3 newDirection = sampler->getUniformHemisphereSample(intersection.onb, 0, 0, 1, 1, 0, random);
-
-	Ray newRay;
-	newRay.origin = intersection.position;
-	newRay.direction = newDirection;
-	newRay.minDistance = scene.general.rayMinDistance;
-	newRay.precalculate();
 
 	Color emittance = material->getEmittance(intersection);
-	Color reflectance = material->getEmittance(intersection);
-	double cosine = newDirection.dot(intersection.normal);
 
-	return emittance + reflectance * cosine * traceRecursive(scene, newRay, random);
-}
-
-/*
-Color Pathtracer::traceRecursive(const Scene& scene, const Ray& ray, uint64_t iteration, Random& random)
-{
-	if (iteration >= scene.pathtracing.maxPathLength)
-		return Color::BLACK;
-
-	Intersection intersection;
-	scene.intersect(ray, intersection);
-
-	if (!intersection.wasFound)
-		return Color::BLACK;
-
-	Material* material = intersection.material;
-
-	/*if (material->emissive)
-	{
-		Color emittance = material->emittance;
-
-		if (material->emittanceMapTexture != nullptr)
-			emittance = material->emittanceMapTexture->getColor(intersection.texcoord, intersection.position) * material->emittanceMapTexture->intensity;
-
+	if (random.getDouble() < scene.pathtracing.terminationProbability)
 		return emittance;
-	}#1#
 
-	Sampler* sampler = samplers[SamplerType::RANDOM].get();
-	Vector3 newDirection = sampler->getHemisphereSample(intersection.onb, 1.0, 0, 0, 1, 1, 0, random);
+	Vector3 newDirection;
+	double pdf;
+
+	material->getSample(intersection, sampler, random, newDirection, pdf);
+
+	Color reflectance = material->getReflectance(intersection) / M_PI;
+	double brdf = material->getBrdf(intersection, newDirection);
+	double cosine = newDirection.dot(intersection.normal);
 
 	Ray newRay;
 	newRay.origin = intersection.position;
@@ -74,15 +45,5 @@ Color Pathtracer::traceRecursive(const Scene& scene, const Ray& ray, uint64_t it
 	newRay.minDistance = scene.general.rayMinDistance;
 	newRay.precalculate();
 
-	Color reflectance = material->diffuseReflectance;
-
-	if (material->diffuseMapTexture != nullptr)
-		reflectance = material->diffuseMapTexture->getColor(intersection.texcoord, intersection.position);
-
-	double alpha = std::abs(newDirection.dot(intersection.normal));
-	Color brdf = 2.0 * reflectance * alpha;
-	Color reflected = traceRecursive(scene, newRay, iteration + 1, random);
-
-	return brdf * reflected;
+	return emittance + brdf * reflectance * cosine * traceRecursive(scene, newRay, random) / pdf / scene.pathtracing.terminationProbability;
 }
-*/

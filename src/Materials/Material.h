@@ -14,6 +14,7 @@ namespace Raycer
 	class Intersection;
 	class Light;
 	class Random;
+	class RandomSampler;
 	class Vector3;
 	class Texture;
 
@@ -26,8 +27,8 @@ namespace Raycer
 		virtual ~Material() {}
 
 		virtual Color getColor(const Scene& scene, const Intersection& intersection, const Light& light, Random& random) = 0;
-		virtual Vector3 getDirection(const Intersection& intersection, Random& random) = 0;
-		virtual double getBrdf(const Vector3& in, const Vector3& normal, const Vector3& out) = 0;
+		virtual void getSample(const Intersection& intersection, RandomSampler& sampler, Random& random, Vector3& newDirection, double& pdf) = 0;
+		virtual double getBrdf(const Intersection& intersection, const Vector3& newDirection) = 0;
 		virtual Color getReflectance(const Intersection& intersection);
 		virtual Color getEmittance(const Intersection& intersection);
 		virtual Color getAmbientReflectance(const Intersection& intersection);

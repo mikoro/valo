@@ -92,12 +92,12 @@ namespace Raycer
 
 		struct Pathtracer
 		{
-			uint64_t maxPathLength = 3;
+			double terminationProbability = 0.5;
 
 			template <class Archive>
 			void serialize(Archive& ar)
 			{
-				ar(CEREAL_NVP(maxPathLength));
+				ar(CEREAL_NVP(terminationProbability));
 			}
 
 		} pathtracing;

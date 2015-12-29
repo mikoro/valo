@@ -1,4 +1,4 @@
-// Copyright © 2015 Mikko Ronkainen <firstname@mikkoronkainen.com>
+﻿// Copyright © 2015 Mikko Ronkainen <firstname@mikkoronkainen.com>
 // License: MIT, see the LICENSE file.
 
 #pragma once
@@ -19,8 +19,8 @@ namespace Raycer
 	public:
 		
 		Color getColor(const Scene& scene, const Intersection& intersection, const Light& light, Random& random) override;
-		Vector3 getDirection(const Intersection& intersection, Random& random) override;
-		double getBrdf(const Vector3& in, const Vector3& normal, const Vector3& out) override;
+		void getSample(const Intersection& intersection, RandomSampler& sampler, Random& random, Vector3& newDirection, double& pdf) override;
+		double getBrdf(const Intersection& intersection, const Vector3& newDirection) override;
 
 	private:
 

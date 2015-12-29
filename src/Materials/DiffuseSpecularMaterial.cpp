@@ -6,6 +6,7 @@
 #include "Materials/DiffuseSpecularMaterial.h"
 #include "Scenes/Scene.h"
 #include "Tracing/Intersection.h"
+#include "Samplers/RandomSampler.h"
 
 using namespace Raycer;
 
@@ -36,19 +37,16 @@ Color DiffuseSpecularMaterial::getColor(const Scene& scene, const Intersection& 
 	return finalColor;
 }
 
-Vector3 DiffuseSpecularMaterial::getDirection(const Intersection& intersection, Random& random)
+void DiffuseSpecularMaterial::getSample(const Intersection& intersection, RandomSampler& sampler, Random& random, Vector3& newDirection, double& pdf)
 {
-	(void)intersection;
-	(void)random;
-
-	return Vector3();
+	newDirection = sampler.getUniformHemisphereSample(intersection.onb, 0, 0, 0, 0, 0, random);
+	pdf = intersection.normal.dot(newDirection) / M_PI;
 }
 
-double DiffuseSpecularMaterial::getBrdf(const Vector3& in, const Vector3& normal, const Vector3& out)
+double DiffuseSpecularMaterial::getBrdf(const Intersection& intersection, const Vector3& newDirection)
 {
-	(void)in;
-	(void)normal;
-	(void)out;
+	(void)intersection;
+	(void)newDirection;
 
-	return 0.0;
+	return 1.0;
 }

@@ -4,6 +4,7 @@
 #pragma once
 
 #include "Tracers/Tracer.h"
+#include "Samplers/RandomSampler.h"
 
 namespace Raycer
 {
@@ -19,5 +20,7 @@ namespace Raycer
 	private:
 
 		Color traceRecursive(const Scene& scene, const Ray& ray, Random& random);
+
+		RandomSampler sampler;
 	};
 }
