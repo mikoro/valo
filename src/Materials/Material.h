@@ -10,15 +10,32 @@
 
 namespace Raycer
 {
+	class Scene;
+	struct Intersection;
+	class Light;
+	class Random;
+	class Vector3;
 	class Texture;
+
+	enum class MaterialType { DIFFUSE, DIFFUSE_SPECULAR };
 
 	class Material
 	{
 	public:
 
+		virtual ~Material() {}
+
+		virtual Color getColor(const Scene& scene, const Intersection& intersection, const Light& light, Random& random) = 0;
+		virtual Vector3 getDirection(const Intersection& intersection, Random& random) = 0;
+		virtual double getBrdf(const Vector3& in, const Vector3& normal, const Vector3& out) = 0;
+		virtual Color getReflectance(const Intersection& intersection);
+		virtual Color getEmittance(const Intersection& intersection);
+		virtual Color getAmbientReflectance(const Intersection& intersection);
+		virtual Color getDiffuseReflectance(const Intersection& intersection);
+		virtual Color getSpecularReflectance(const Intersection& intersection);
+
 		uint64_t id = 0;
 
-		bool emissive = false;
 		bool skipLighting = false;
 		bool nonShadowing = false;
 		bool normalInterpolation = true;
@@ -68,7 +85,6 @@ namespace Raycer
 		void serialize(Archive& ar)
 		{
 			ar(CEREAL_NVP(id),
-				CEREAL_NVP(emissive),
 				CEREAL_NVP(skipLighting),
 				CEREAL_NVP(nonShadowing),
 				CEREAL_NVP(normalInterpolation),

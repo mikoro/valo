@@ -16,8 +16,12 @@
 #include "Textures/CheckerTexture.h"
 #include "Textures/ImageTexture.h"
 #include "Textures/PerlinNoiseTexture.h"
-#include "Tracing/Material.h"
-#include "Tracing/Lights.h"
+#include "Lights/AmbientLight.h"
+#include "Lights/DirectionalLight.h"
+#include "Lights/PointLight.h"
+#include "Lights/AreaPointLight.h"
+#include "Materials/DiffuseMaterial.h"
+#include "Materials/DiffuseSpecularMaterial.h"
 #include "Tracers/Tracer.h"
 #include "Samplers/Sampler.h"
 #include "Filters/Filter.h"
@@ -51,6 +55,8 @@ namespace Raycer
 		static Scene createTestScene3();
 
 		static const uint64_t TEST_SCENE_COUNT = 3;
+
+		Camera camera;
 
 		struct General
 		{
@@ -148,7 +154,23 @@ namespace Raycer
 
 		} tonemapping;
 
-		Camera camera;
+		struct Lights
+		{
+			std::vector<AmbientLight> ambientLights;
+			std::vector<DirectionalLight> directionalLights;
+			std::vector<PointLight> pointLights;
+			std::vector<AreaPointLight> areaPointLights;
+
+			template <class Archive>
+			void serialize(Archive& ar)
+			{
+				ar(CEREAL_NVP(ambientLights),
+					CEREAL_NVP(directionalLights),
+					CEREAL_NVP(pointLights),
+					CEREAL_NVP(areaPointLights));
+			}
+
+		} lights;
 
 		struct Textures
 		{
@@ -170,33 +192,33 @@ namespace Raycer
 
 		} textures;
 
-		std::vector<Material> materials;
-
-		struct Lights
+		struct Materials
 		{
-			AmbientLight ambientLight;
-			std::vector<DirectionalLight> directionalLights;
-			std::vector<PointLight> pointLights;
+			std::vector<DiffuseMaterial> diffuseMaterials;
+			std::vector<DiffuseSpecularMaterial> diffuseSpecularMaterials;
 
 			template <class Archive>
 			void serialize(Archive& ar)
 			{
-				ar(CEREAL_NVP(ambientLight),
-					CEREAL_NVP(directionalLights),
-					CEREAL_NVP(pointLights));
+				ar(CEREAL_NVP(diffuseMaterials),
+					CEREAL_NVP(diffuseSpecularMaterials));
 			}
 
-		} lights;
-		
+		} materials;
+
 		std::vector<ModelLoaderInfo> models;
 		BVHBuildInfo bvhBuildInfo;
 		BVH bvh;
 		std::vector<Triangle> triangles;
 		ImagePool imagePool;
 
-		std::map<uint64_t, Triangle*> trianglesMap;
-		std::map<uint64_t, Material*> materialsMap;
+		std::vector<Light*> lightsList;
+		std::vector<Texture*> texturesList;
+		std::vector<Material*> materialsList;
+		
 		std::map<uint64_t, Texture*> texturesMap;
+		std::map<uint64_t, Material*> materialsMap;
+		std::map<uint64_t, Triangle*> trianglesMap;
 
 	private:
 
@@ -205,15 +227,15 @@ namespace Raycer
 		template <class Archive>
 		void serialize(Archive& ar)
 		{
-			ar(CEREAL_NVP(general),
+			ar(CEREAL_NVP(camera),
+				CEREAL_NVP(general),
 				CEREAL_NVP(raytracing),
 				CEREAL_NVP(pathtracing),
 				CEREAL_NVP(sampling),
 				CEREAL_NVP(tonemapping),
-				CEREAL_NVP(camera),
+				CEREAL_NVP(lights),
 				CEREAL_NVP(textures),
 				CEREAL_NVP(materials),
-				CEREAL_NVP(lights),
 				CEREAL_NVP(models),
 				CEREAL_NVP(bvhBuildInfo),
 				CEREAL_NVP(bvh),

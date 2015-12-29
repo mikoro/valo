@@ -49,6 +49,12 @@
     <Filter Include="External">
       <UniqueIdentifier>{b2657f2b-747d-4206-a809-796eb405a2cd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Lights">
+      <UniqueIdentifier>{165e6c60-f790-4749-84d2-b925eda17f33}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Materials">
+      <UniqueIdentifier>{82801c5f-bc8e-4e1d-99b5-03528d39c996}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Utils\FpsCounter.cpp">
@@ -305,6 +311,27 @@
     <ClCompile Include="src\Scenes\TestScene3.cpp">
       <Filter>Scenes</Filter>
     </ClCompile>
+    <ClCompile Include="src\Lights\AmbientLight.cpp">
+      <Filter>Lights</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Lights\DirectionalLight.cpp">
+      <Filter>Lights</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Lights\PointLight.cpp">
+      <Filter>Lights</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Materials\Material.cpp">
+      <Filter>Materials</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Materials\DiffuseMaterial.cpp">
+      <Filter>Materials</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Materials\DiffuseSpecularMaterial.cpp">
+      <Filter>Materials</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Lights\AreaPointLight.cpp">
+      <Filter>Lights</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Utils\FpsCounter.h">
@@ -400,12 +427,6 @@
       <Filter>Tracing</Filter>
     </ClInclude>
     <ClInclude Include="src\Tracing\Intersection.h">
-      <Filter>Tracing</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Tracing\Lights.h">
-      <Filter>Tracing</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Tracing\Material.h">
       <Filter>Tracing</Filter>
     </ClInclude>
     <ClInclude Include="src\Tracing\Ray.h">
@@ -531,6 +552,30 @@
     </ClInclude>
     <ClInclude Include="src\Utils\Random.h">
       <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Lights\AmbientLight.h">
+      <Filter>Lights</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Lights\Light.h">
+      <Filter>Lights</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Lights\DirectionalLight.h">
+      <Filter>Lights</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Lights\PointLight.h">
+      <Filter>Lights</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Materials\Material.h">
+      <Filter>Materials</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Materials\DiffuseMaterial.h">
+      <Filter>Materials</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Materials\DiffuseSpecularMaterial.h">
+      <Filter>Materials</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Lights\AreaPointLight.h">
+      <Filter>Lights</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

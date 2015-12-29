@@ -42,7 +42,7 @@ namespace
 		if (!file.good())
 			throw std::runtime_error("Could not open the MTL file");
 
-		Material currentMaterial;
+		DiffuseSpecularMaterial currentMaterial;
 		bool materialPending = false;
 
 		std::string line;
@@ -62,11 +62,11 @@ namespace
 			if (part == "newmtl") // new material
 			{
 				if (materialPending)
-					result.materials.push_back(currentMaterial);
+					result.diffuseSpecularMaterials.push_back(currentMaterial);
 
 				materialPending = true;
 
-				currentMaterial = Material();
+				currentMaterial = DiffuseSpecularMaterial();
 				currentMaterial.id = ++currentId;
 
 				StringUtils::readUntilSpace(line, lineIndex, currentMaterialName);
@@ -158,16 +158,12 @@ namespace
 				currentMaterial.emittance.r = readDouble(line, lineIndex, part);
 				currentMaterial.emittance.g = readDouble(line, lineIndex, part);
 				currentMaterial.emittance.b = readDouble(line, lineIndex, part);
-
-				if (!currentMaterial.emittance.isZero())
-					currentMaterial.emissive = true;
 			}
 			else if ((part == "emittanceMap" || part == "map_Ke") && currentMaterial.emittanceMapTextureId == 0)
 			{
 				ImageTexture imageTexture;
 				imageTexture.id = ++currentId;
 				currentMaterial.emittanceMapTextureId = imageTexture.id;
-				currentMaterial.emissive = true;
 
 				StringUtils::readUntilSpace(line, lineIndex, part);
 				imageTexture.imageFilePath = getAbsolutePath(objFileDirectory, part);
@@ -264,7 +260,7 @@ namespace
 		file.close();
 
 		if (materialPending)
-			result.materials.push_back(currentMaterial);
+			result.diffuseSpecularMaterials.push_back(currentMaterial);
 	}
 
 	void processFace(const std::string& line, std::vector<Vector3>& vertices, std::vector<Vector3>& normals, std::vector<Vector2>& texcoords, ModelLoaderResult& result, uint64_t& currentId, uint64_t currentMaterialId)
@@ -494,7 +490,7 @@ ModelLoaderResult ModelLoader::load(const ModelLoaderInfo& info)
 
 	fclose(file);
 
-	log.logInfo("OBJ file reading finished (time: %.2f ms, triangles: %s, materials: %s, textures: %s)", timer.getElapsedMilliseconds(), result.triangles.size(), result.materials.size(), result.textures.size());
+	log.logInfo("OBJ file reading finished (time: %.2f ms, triangles: %s, materials: %s, textures: %s)", timer.getElapsedMilliseconds(), result.triangles.size(), result.diffuseSpecularMaterials.size(), result.textures.size());
 
 	return result;
 }

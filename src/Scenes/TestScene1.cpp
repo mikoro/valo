@@ -13,6 +13,7 @@ Scene Scene::createTestScene1()
 
 	scene.sampling.pixelSampleCount = 1;
 	scene.general.tracerType = TracerType::RAY;
+	scene.general.rayMinDistance = 0.00001;
 
 	scene.camera.position = Vector3(0.0, 1.0, 3.5);
 
@@ -21,17 +22,34 @@ Scene Scene::createTestScene1()
 
 	scene.models.push_back(model);
 	
-	scene.lights.ambientLight.color = Color(1.0, 1.0, 1.0);
-	scene.lights.ambientLight.intensity = 0.01;
+	AmbientLight ambientLight;
+	ambientLight.color = Color(1.0, 1.0, 1.0) * 0.01;
+	ambientLight.occlusion = false;
+	ambientLight.maxSampleDistance = 0.2;
+	ambientLight.sampleCountSqrt = 4;
+	ambientLight.sampleDistribution = 1.0;
+
+	scene.lights.ambientLights.push_back(ambientLight);
+
+	DirectionalLight directionalLight;
+	directionalLight.color = Color(1.0, 1.0, 1.0) * 0.2;
+	directionalLight.direction = EulerAngle(-30.0, 50.0, 0.0).getDirection();
+
+	//scene.lights.directionalLights.push_back(directionalLight);
 
 	PointLight pointLight;
-	pointLight.color = Color(1.0, 0.71, 0.24);
-	pointLight.intensity = 1.0;
+	pointLight.color = Color(1.0, 0.71, 0.24) * 0.5;
 	pointLight.position = Vector3(0.0, 1.9, 0.0);
-	pointLight.maxDistance = 3.0;
-	pointLight.attenuation = 1.0;
 
 	scene.lights.pointLights.push_back(pointLight);
+
+	AreaPointLight areaLight;
+	areaLight.color = Color(1.0, 0.71, 0.24) * 0.5;
+	areaLight.position = Vector3(0.0, 1.9, 0.0);
+	areaLight.radius = 0.2;
+	areaLight.sampleCountSqrt = 4;
+
+	//scene.lights.areaPointLights.push_back(areaLight);
 
 	return scene;
 }

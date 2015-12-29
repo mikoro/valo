@@ -22,15 +22,9 @@ Scene Scene::createTestScene2()
 
 	scene.models.push_back(model);
 	
-	scene.lights.ambientLight.color = Color(1.0, 1.0, 1.0);
-	scene.lights.ambientLight.intensity = 0.1;
-
 	PointLight pointLight;
-	pointLight.color = Color(1.0, 1.0, 1.0);
-	pointLight.intensity = 1.0;
+	pointLight.color = Color(1.0, 1.0, 1.0) * 2.0;
 	pointLight.position = Vector3(-0.64, 1.09, -0.34);
-	pointLight.maxDistance = 5.0;
-	pointLight.attenuation = 1.0;
 
 	scene.lights.pointLights.push_back(pointLight);
 

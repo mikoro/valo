@@ -169,8 +169,8 @@ void Scene::initialize()
 		for (const Triangle& triangle : result.triangles)
 			triangles.push_back(triangle);
 
-		for (const Material& material : result.materials)
-			materials.push_back(material);
+		for (const DiffuseSpecularMaterial& material : result.diffuseSpecularMaterials)
+			materials.diffuseSpecularMaterials.push_back(material);
 
 		for (const ImageTexture& imageTexture : result.textures)
 			textures.imageTextures.push_back(imageTexture);
@@ -178,9 +178,21 @@ void Scene::initialize()
 
 	models.clear();
 
-	// TEXTURE POINTERS
+	// LIGHT POINTERS
 
-	std::vector<Texture*> texturesList;
+	for (AmbientLight& light : lights.ambientLights)
+		lightsList.push_back(&light);
+
+	for (DirectionalLight& light : lights.directionalLights)
+		lightsList.push_back(&light);
+
+	for (PointLight& light : lights.pointLights)
+		lightsList.push_back(&light);
+
+	for (AreaPointLight& light : lights.areaPointLights)
+		lightsList.push_back(&light);
+
+	// TEXTURE POINTERS
 
 	for (ColorTexture& texture : textures.colorTextures)
 		texturesList.push_back(&texture);
@@ -197,18 +209,15 @@ void Scene::initialize()
 	for (PerlinNoiseTexture& texture : textures.perlinNoiseTextures)
 		texturesList.push_back(&texture);
 
+	// MATERIAL POINTERS
+
+	for (DiffuseMaterial& material : materials.diffuseMaterials)
+		materialsList.push_back(&material);
+
+	for (DiffuseSpecularMaterial& material : materials.diffuseSpecularMaterials)
+		materialsList.push_back(&material);
+
 	// POINTER MAP GENERATION
-
-	for (Material& material : materials)
-	{
-		if (material.id == 0)
-			throw std::runtime_error(tfm::format("A material must have a non-zero id"));
-
-		if (materialsMap.count(material.id))
-			throw std::runtime_error(tfm::format("A duplicate material id was found (id: %s)", material.id));
-
-		materialsMap[material.id] = &material;
-	}
 
 	for (Texture* texture : texturesList)
 	{
@@ -219,6 +228,17 @@ void Scene::initialize()
 			throw std::runtime_error(tfm::format("A duplicate texture id was found (id: %s, type: %s)", texture->id, typeid(*texture).name()));
 
 		texturesMap[texture->id] = texture;
+	}
+
+	for (Material* material : materialsList)
+	{
+		if (material->id == 0)
+			throw std::runtime_error(tfm::format("A material must have a non-zero id"));
+
+		if (materialsMap.count(material->id))
+			throw std::runtime_error(tfm::format("A duplicate material id was found (id: %s)", material->id));
+
+		materialsMap[material->id] = material;
 	}
 
 	for (Triangle& triangle : triangles)
@@ -241,28 +261,34 @@ void Scene::initialize()
 
 	// POINTER SETTING
 
-	for (Material& material : materials)
+	for (Material* material : materialsList)
 	{
-		if (texturesMap.count(material.ambientMapTextureId))
-			material.ambientMapTexture = texturesMap[material.ambientMapTextureId];
+		if (texturesMap.count(material->reflectanceMapTextureId))
+			material->reflectanceMapTexture = texturesMap[material->reflectanceMapTextureId];
 
-		if (texturesMap.count(material.diffuseMapTextureId))
-			material.diffuseMapTexture = texturesMap[material.diffuseMapTextureId];
+		if (texturesMap.count(material->emittanceMapTextureId))
+			material->emittanceMapTexture = texturesMap[material->emittanceMapTextureId];
 
-		if (texturesMap.count(material.specularMapTextureId))
-			material.specularMapTexture = texturesMap[material.specularMapTextureId];
+		if (texturesMap.count(material->ambientMapTextureId))
+			material->ambientMapTexture = texturesMap[material->ambientMapTextureId];
 
-		if (texturesMap.count(material.emittanceMapTextureId))
-			material.emittanceMapTexture = texturesMap[material.emittanceMapTextureId];
+		if (texturesMap.count(material->diffuseMapTextureId))
+			material->diffuseMapTexture = texturesMap[material->diffuseMapTextureId];
 
-		if (texturesMap.count(material.normalMapTextureId))
-			material.normalMapTexture = texturesMap[material.normalMapTextureId];
+		if (texturesMap.count(material->specularMapTextureId))
+			material->specularMapTexture = texturesMap[material->specularMapTextureId];
 
-		if (texturesMap.count(material.maskMapTextureId))
-			material.maskMapTexture = texturesMap[material.maskMapTextureId];
+		if (texturesMap.count(material->normalMapTextureId))
+			material->normalMapTexture = texturesMap[material->normalMapTextureId];
+
+		if (texturesMap.count(material->maskMapTextureId))
+			material->maskMapTexture = texturesMap[material->maskMapTextureId];
 	}
 
 	// INITIALIZATION
+
+	for (Light* light : lightsList)
+		light->initialize();
 
 	for (Texture* texture : texturesList)
 		texture->initialize(*this);

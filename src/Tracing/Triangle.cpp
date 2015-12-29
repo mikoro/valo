@@ -6,8 +6,8 @@
 #include "Tracing/Triangle.h"
 #include "Tracing/Ray.h"
 #include "Tracing/Intersection.h"
-#include "Tracing/Material.h"
 #include "Tracing/ONB.h"
+#include "Materials/Material.h"
 #include "Textures/Texture.h"
 
 using namespace Raycer;
@@ -113,6 +113,7 @@ bool Triangle::intersect(const Ray& ray, Intersection& intersection) const
 	intersection.position = ip;
 	intersection.normal = finalNormal;
 	intersection.texcoord = texcoord;
+	intersection.rayDirection = ray.direction;
 	intersection.onb = ONB(tangent, bitangent, finalNormal);
 	intersection.material = material;
 

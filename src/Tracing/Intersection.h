@@ -20,6 +20,7 @@ namespace Raycer
 		Vector3 position;
 		Vector3 normal;
 		Vector2 texcoord;
+		Vector3 rayDirection;
 		ONB onb;
 		Material* material = nullptr;
 	};

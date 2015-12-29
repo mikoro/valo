@@ -14,7 +14,7 @@ Color PreviewTracer::trace(const Scene& scene, const Ray& ray, Random& random)
 {
 	(void)random;
 
-	Color finalColor = Color::BLACK;
+	Color finalColor = scene.general.backgroundColor;
 	Intersection intersection;
 
 	scene.intersect(ray, intersection);

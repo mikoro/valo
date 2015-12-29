@@ -9,7 +9,7 @@
 
 #include "Tracing/Triangle.h"
 #include "Textures/ImageTexture.h"
-#include "Tracing/Material.h"
+#include "Materials/DiffuseSpecularMaterial.h"
 #include "Math/Vector3.h"
 #include "Math/EulerAngle.h"
 
@@ -39,7 +39,7 @@ namespace Raycer
 	struct ModelLoaderResult
 	{
 		std::vector<Triangle> triangles;
-		std::vector<Material> materials;
+		std::vector<DiffuseSpecularMaterial> diffuseSpecularMaterials;
 		std::vector<ImageTexture> textures;
 	};
 

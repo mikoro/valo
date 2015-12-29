@@ -19,9 +19,8 @@ Scene Scene::createTestScene3()
 
 	// BOUNDING SPHERE MODEL //
 
-	Material sphereMaterial;
+	DiffuseSpecularMaterial sphereMaterial;
 	sphereMaterial.id = 1;
-	sphereMaterial.emissive = true;
 	sphereMaterial.diffuseReflectance = Color(1.0, 1.0, 1.0);
 	sphereMaterial.emittance = Color(1.0, 1.0, 1.0) * 8.0;
 	sphereMaterial.skipLighting = true;
@@ -33,7 +32,7 @@ Scene Scene::createTestScene3()
 	model.idStartOffset = 1;
 	model.scale = Vector3(1000.0, 1000.0, 1000.0);
 
-	scene.materials.push_back(sphereMaterial);
+	scene.materials.diffuseSpecularMaterials.push_back(sphereMaterial);
 	scene.models.push_back(model);
 
 	// SPONZA MODEL //
@@ -45,15 +44,9 @@ Scene Scene::createTestScene3()
 
 	scene.models.push_back(model);
 	
-	scene.lights.ambientLight.color = Color(1.0, 1.0, 1.0);
-	scene.lights.ambientLight.intensity = 0.1;
-
 	PointLight pointLight;
-	pointLight.color = Color(1.0, 1.0, 1.0);
-	pointLight.intensity = 1.5;
+	pointLight.color = Color(1.0, 1.0, 1.0) * 5.0;
 	pointLight.position = Vector3(5.0, 8.0, 0.0);
-	pointLight.maxDistance = 100.0;
-	pointLight.attenuation = 1.0;
 
 	scene.lights.pointLights.push_back(pointLight);
 

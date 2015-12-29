@@ -9,8 +9,6 @@ textures
  - EWA texture filtering
 
 misc
- - add material inheritance
- - add light inheritance
  - add spline curve class
  - add general transform class (translation with spline curves etc.)
  - primitive and primitive group with transform
