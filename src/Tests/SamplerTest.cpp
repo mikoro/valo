@@ -46,7 +46,8 @@ TEST_CASE("Sampler functionality", "[sampler]")
 		Image image2(100, 100);
 		Image image3(100, 100);
 		
-		std::ofstream file(tfm::format("sampler_%s_hemisphere.txt", sampler.first));
+		std::ofstream file1(tfm::format("sampler_%s_cosine_hemisphere.txt", sampler.first));
+		std::ofstream file2(tfm::format("sampler_%s_uniform_hemisphere.txt", sampler.first));
 
 		Random random;
 
@@ -77,14 +78,18 @@ TEST_CASE("Sampler functionality", "[sampler]")
 
 		Vector3 sample3D;
 		
-		while (sampler.second->getNextHemisphereSample(ONB::UP, 1000.0, sample3D))
-			file << tfm::format("%f %f %f\n", sample3D.x, sample3D.y, sample3D.z);
+		while (sampler.second->getNextCosineHemisphereSample(ONB::UP, sample3D))
+			file1 << tfm::format("%f %f %f\n", sample3D.x, sample3D.y, sample3D.z);
+
+		while (sampler.second->getNextUniformHemisphereSample(ONB::UP, sample3D))
+			file2 << tfm::format("%f %f %f\n", sample3D.x, sample3D.y, sample3D.z);
 
 		image1.save(tfm::format("sampler_%s_1D.png", sampler.first));
 		image2.save(tfm::format("sampler_%s_2D.png", sampler.first));
 		image3.save(tfm::format("sampler_%s_disc.png", sampler.first));
 
-		file.close();
+		file1.close();
+		file2.close();
 	}
 }
 

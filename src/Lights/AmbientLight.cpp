@@ -33,7 +33,7 @@ Color AmbientLight::getColor(const Scene& scene, const Intersection& intersectio
 	{
 		for (uint64_t x = 0; x < n; ++x)
 		{
-			Vector3 sampleDirection = sampler->getHemisphereSample(intersection.onb, sampleDistribution, x, y, n, n, permutation, random);
+			Vector3 sampleDirection = sampler->getUniformHemisphereSample(intersection.onb, x, y, n, n, permutation, random);
 
 			Ray sampleRay;
 			Intersection sampleIntersection;

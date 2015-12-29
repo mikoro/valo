@@ -32,47 +32,87 @@ std::unique_ptr<Sampler> Sampler::getSampler(SamplerType type)
 
 namespace
 {
-	Vector2 mapToDisc(const Vector2& point)
+	// concentric square -> disc mapping
+	Vector2 mapSquareToDisc(const Vector2& point)
 	{
-		Vector2 result;
+		double phi, r;
+		double a = 2.0 * point.x - 1.0;
+		double b = 2.0 * point.y - 1.0;
 
-		// square to disc polar mapping
-		double theta = 2.0 * M_PI * point.x;
-		double r = sqrt(point.y);
+		if (a > -b)
+		{
+			if (a > b)
+			{
+				r = a;
+				phi = (M_PI / 4.0) * (b / a);
+			}
+			else
+			{
+				r = b;
+				phi = (M_PI / 4.0) * (2.0 - (a / b));
+			}
+		}
+		else
+		{
+			if (a < b)
+			{
+				r = -a;
+				phi = (M_PI / 4.0) * (4.0 + (b / a));
+			}
+			else
+			{
+				r = -b;
 
-		result.x = r * cos(theta);
-		result.y = r * sin(theta);
+				if (b != 0.0)
+					phi = (M_PI / 4.0) * (6.0 - (a / b));
+				else
+					phi = 0.0;
+			}
+		}
 
-		return result;
+		double u = r * cos(phi);
+		double v = r * sin(phi);
+
+		return Vector2(u, v);
 	}
 
-	Vector3 mapToHemisphere(const ONB& onb, double distribution, const Vector2& point)
+	Vector3 mapDiscToCosineHemisphere(const ONB& onb, const Vector2& point)
 	{
-		// square to hemisphere mapping with cosine distribution
-		double phi = 2.0 * M_PI * point.x;
-		double cos_phi = cos(phi);
-		double sin_phi = sin(phi);
-		double cos_theta = pow(1.0 - point.y, 1.0 / (distribution + 1.0));
-		double sin_theta = sqrt(1.0 - cos_theta * cos_theta);
+		double r2 = point.x * point.x + point.y * point.y;
 
-		double u = sin_theta * cos_phi;
-		double v = sin_theta * sin_phi;
-		double w = cos_theta;
+		double x = point.x;
+		double y = point.y;
+		double z = sqrt(1.0 - r2);
 
-		return u * onb.u + v * onb.v + w * onb.w;
+		return x * onb.u + y * onb.v + z * onb.w;
+	}
+
+	Vector3 mapDiscToUniformHemisphere(const ONB& onb, const Vector2& point)
+	{
+		double r2 = point.x * point.x + point.y * point.y;
+		double a = sqrt(2.0 - r2);
+
+		double x = point.x * a;
+		double y = point.y * a;
+		double z = 1.0 - r2;
+
+		return x * onb.u + y * onb.v + z * onb.w;
 	}
 }
 
 Vector2 Sampler::getDiscSample(uint64_t x, uint64_t y, uint64_t nx, uint64_t ny, uint64_t permutation, Random& random)
 {
-	Vector2 point = getSample2D(x, y, nx, ny, permutation, random);
-	return mapToDisc(point);
+	return mapSquareToDisc(getSample2D(x, y, nx, ny, permutation, random));
 }
 
-Vector3 Sampler::getHemisphereSample(const ONB& onb, double distribution, uint64_t x, uint64_t y, uint64_t nx, uint64_t ny, uint64_t permutation, Random& random)
+Vector3 Sampler::getCosineHemisphereSample(const ONB& onb, uint64_t x, uint64_t y, uint64_t nx, uint64_t ny, uint64_t permutation, Random& random)
 {
-	Vector2 point = getSample2D(x, y, nx, ny, permutation, random);
-	return mapToHemisphere(onb, distribution, point);
+	return mapDiscToCosineHemisphere(onb, getDiscSample(x, y, nx, ny, permutation, random));
+}
+
+Vector3 Sampler::getUniformHemisphereSample(const ONB& onb, uint64_t x, uint64_t y, uint64_t nx, uint64_t ny, uint64_t permutation, Random& random)
+{
+	return mapDiscToUniformHemisphere(onb, getDiscSample(x, y, nx, ny, permutation, random));
 }
 
 void Sampler::generateSamples1D(uint64_t sampleCount, Random& random)
@@ -134,11 +174,11 @@ bool Sampler::getNextDiscSample(Vector2& result)
 		return false;
 	}
 
-	result = mapToDisc(samples2D[nextSampleIndex2D++]);
+	result = mapSquareToDisc(samples2D[nextSampleIndex2D++]);
 	return true;
 }
 
-bool Sampler::getNextHemisphereSample(const ONB& onb, double distribution, Vector3& result)
+bool Sampler::getNextCosineHemisphereSample(const ONB& onb, Vector3& result)
 {
 	if (nextSampleIndex2D >= samples2D.size())
 	{
@@ -146,7 +186,19 @@ bool Sampler::getNextHemisphereSample(const ONB& onb, double distribution, Vecto
 		return false;
 	}
 
-	result = mapToHemisphere(onb, distribution, samples2D[nextSampleIndex2D++]);
+	result = mapDiscToCosineHemisphere(onb, samples2D[nextSampleIndex2D++]);
+	return true;
+}
+
+bool Sampler::getNextUniformHemisphereSample(const ONB& onb, Vector3& result)
+{
+	if (nextSampleIndex2D >= samples2D.size())
+	{
+		nextSampleIndex2D = 0;
+		return false;
+	}
+
+	result = mapDiscToUniformHemisphere(onb, samples2D[nextSampleIndex2D++]);
 	return true;
 }
 

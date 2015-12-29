@@ -18,6 +18,6 @@ namespace Raycer
 
 	private:
 
-		Color traceRecursive(const Scene& scene, const Ray& ray, uint64_t iteration, Random& random);
+		Color traceRecursive(const Scene& scene, const Ray& ray, Random& random);
 	};
 }

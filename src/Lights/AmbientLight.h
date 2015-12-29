@@ -33,7 +33,6 @@ namespace Raycer
 		SamplerType samplerType = SamplerType::CMJ;
 		uint64_t sampleCountSqrt = 3;
 		double maxSampleDistance = 1.0;
-		double sampleDistribution = 1.0;
 
 	private:
 
@@ -48,8 +47,7 @@ namespace Raycer
 				CEREAL_NVP(occlusion),
 				CEREAL_NVP(samplerType),
 				CEREAL_NVP(sampleCountSqrt),
-				CEREAL_NVP(maxSampleDistance),
-				CEREAL_NVP(sampleDistribution));
+				CEREAL_NVP(maxSampleDistance));
 		}
 	};
 }

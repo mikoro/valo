@@ -12,9 +12,36 @@ using namespace Raycer;
 
 Color Pathtracer::trace(const Scene& scene, const Ray& ray, Random& random)
 {
-	return traceRecursive(scene, ray, 0, random);
+	return traceRecursive(scene, ray, random);
 }
 
+Color Pathtracer::traceRecursive(const Scene& scene, const Ray& ray, Random& random)
+{
+	Intersection intersection;
+	scene.intersect(ray, intersection);
+
+	if (!intersection.wasFound)
+		return Color(0.0, 0.0 ,0.0);
+
+	Material* material = intersection.material;
+
+	Sampler* sampler = samplers[SamplerType::RANDOM].get();
+	Vector3 newDirection = sampler->getUniformHemisphereSample(intersection.onb, 0, 0, 1, 1, 0, random);
+
+	Ray newRay;
+	newRay.origin = intersection.position;
+	newRay.direction = newDirection;
+	newRay.minDistance = scene.general.rayMinDistance;
+	newRay.precalculate();
+
+	Color emittance = material->getEmittance(intersection);
+	Color reflectance = material->getEmittance(intersection);
+	double cosine = newDirection.dot(intersection.normal);
+
+	return emittance + reflectance * cosine * traceRecursive(scene, newRay, random);
+}
+
+/*
 Color Pathtracer::traceRecursive(const Scene& scene, const Ray& ray, uint64_t iteration, Random& random)
 {
 	if (iteration >= scene.pathtracing.maxPathLength)
@@ -36,7 +63,7 @@ Color Pathtracer::traceRecursive(const Scene& scene, const Ray& ray, uint64_t it
 			emittance = material->emittanceMapTexture->getColor(intersection.texcoord, intersection.position) * material->emittanceMapTexture->intensity;
 
 		return emittance;
-	}*/
+	}#1#
 
 	Sampler* sampler = samplers[SamplerType::RANDOM].get();
 	Vector3 newDirection = sampler->getHemisphereSample(intersection.onb, 1.0, 0, 0, 1, 1, 0, random);
@@ -58,3 +85,4 @@ Color Pathtracer::traceRecursive(const Scene& scene, const Ray& ray, uint64_t it
 
 	return brdf * reflected;
 }
+*/

@@ -27,7 +27,6 @@ Scene Scene::createTestScene1()
 	ambientLight.occlusion = false;
 	ambientLight.maxSampleDistance = 0.2;
 	ambientLight.sampleCountSqrt = 4;
-	ambientLight.sampleDistribution = 1.0;
 
 	scene.lights.ambientLights.push_back(ambientLight);
 
