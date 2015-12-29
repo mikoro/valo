@@ -13,8 +13,10 @@ namespace Raycer
 {
 	class Material;
 
-	struct Intersection
+	class Intersection
 	{
+	public:
+
 		bool wasFound = false;
 		double distance = std::numeric_limits<double>::max();
 		Vector3 position;

@@ -10,7 +10,7 @@ namespace Raycer
 	class Scene;
 	class Vector3;
 	class Ray;
-	struct Intersection;
+	class Intersection;
 
 	class Raytracer : public Tracer
 	{

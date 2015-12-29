@@ -11,7 +11,7 @@
 namespace Raycer
 {
 	class Scene;
-	struct Intersection;
+	class Intersection;
 	class Light;
 	class Random;
 	class Vector3;

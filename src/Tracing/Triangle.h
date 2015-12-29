@@ -12,7 +12,7 @@
 namespace Raycer
 {
 	class Ray;
-	struct Intersection;
+	class Intersection;
 	class Material;
 
 	class Triangle

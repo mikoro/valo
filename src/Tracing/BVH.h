@@ -58,7 +58,7 @@ namespace Raycer
 	};
 
 	class Ray;
-	struct Intersection;
+	class Intersection;
 	class Triangle;
 	class Scene;
 	class Random;
