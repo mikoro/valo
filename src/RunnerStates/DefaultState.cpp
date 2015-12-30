@@ -248,19 +248,23 @@ void DefaultState::render(double timeStep, double interpolation)
 
 	Settings& settings = App::getSettings();
 
-	TracerState state;
-	state.scene = &scene;
-	state.film = &film;
-	state.filmWidth = film.getWidth();
-	state.filmHeight = film.getHeight();
-	state.pixelStartOffset = 0;
-	state.pixelCount = state.filmWidth * state.filmHeight;
-
-	if (scene.general.tracerType == TracerType::RAY
-		|| scene.general.tracerType == TracerType::PREVIEW
-		|| (scene.general.tracerType == TracerType::PATH && scene.camera.isMoving()))
+	if (scene.general.tracerType == TracerType::RAY ||
+		scene.general.tracerType == TracerType::PREVIEW ||
+		(scene.general.tracerType == TracerType::PATH && scene.camera.isMoving()) ||
+		filmNeedsClearing)
 	{
 		film.clear();
+		filmNeedsClearing = false;
+	}
+
+	Tracer* tracer = tracers[scene.general.tracerType].get();
+
+	if (scene.general.tracerType == TracerType::PATH &&
+		settings.interactive.usePreviewWhileMoving &&
+		scene.camera.isMoving())
+	{
+		tracer = tracers[TracerType::PREVIEW].get();
+		filmNeedsClearing = true;
 	}
 
 	uint64_t samplesPerPixel =
@@ -272,19 +276,14 @@ void DefaultState::render(double timeStep, double interpolation)
 
 	film.increaseSamplesPerPixelCount(samplesPerPixel);
 
-	Tracer* tracer = tracers[scene.general.tracerType].get();
-
-	if (scene.camera.isMoving() && settings.interactive.usePreviewWhileMoving)
-	{
-		tracer = tracers[TracerType::PREVIEW].get();
-		usedPreviewModeWhileMoving = true;
-	}
-	else if (usedPreviewModeWhileMoving)
-	{
-		film.clear();
-		usedPreviewModeWhileMoving = false;
-	}
-
+	TracerState state;
+	state.scene = &scene;
+	state.film = &film;
+	state.filmWidth = film.getWidth();
+	state.filmHeight = film.getHeight();
+	state.pixelStartOffset = 0;
+	state.pixelCount = state.filmWidth * state.filmHeight;
+	
 	tracer->run(state, interrupted);
 
 	film.generateOutputImage(scene);

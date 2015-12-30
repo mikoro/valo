@@ -36,6 +36,8 @@ namespace Raycer
 		virtual Color getDiffuseReflectance(const Intersection& intersection);
 		virtual Color getSpecularReflectance(const Intersection& intersection);
 
+		virtual bool isEmissive();
+
 		uint64_t id = 0;
 
 		bool skipLighting = false;

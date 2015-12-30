@@ -206,6 +206,7 @@ namespace Raycer
 		BVHBuildInfo bvhBuildInfo;
 		BVH bvh;
 		std::vector<Triangle> triangles;
+		std::vector<Triangle*> emissiveTriangles;
 		ImagePool imagePool;
 
 		std::vector<Light*> lightsList;

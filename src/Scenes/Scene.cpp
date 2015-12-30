@@ -257,6 +257,9 @@ void Scene::initialize()
 			throw std::runtime_error(tfm::format("A triangle has a non-existent material id (%d)", triangle.materialId));
 
 		triangle.initialize();
+
+		if (triangle.material->isEmissive())
+			emissiveTriangles.push_back(&triangle);
 	}
 
 	// POINTER SETTING

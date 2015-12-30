@@ -44,6 +44,6 @@ namespace Raycer
 
 		std::atomic<bool> interrupted;
 		uint64_t currentTestSceneNumber = 1;
-		bool usedPreviewModeWhileMoving = false;
+		bool filmNeedsClearing = false;
 	};
 }

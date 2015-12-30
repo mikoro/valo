@@ -48,3 +48,13 @@ Color Material::getSpecularReflectance(const Intersection& intersection)
 	else
 		return specularReflectance;
 }
+
+bool Material::isEmissive()
+{
+	if (emittanceMapTexture != nullptr)
+		return true;
+	else if (!emittance.isZero())
+		return true;
+	else
+		return false;
+}
