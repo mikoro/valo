@@ -39,14 +39,13 @@ Color DiffuseSpecularMaterial::getColor(const Scene& scene, const Intersection& 
 
 void DiffuseSpecularMaterial::getSample(const Intersection& intersection, RandomSampler& sampler, Random& random, Vector3& newDirection, double& pdf)
 {
-	newDirection = sampler.getUniformHemisphereSample(intersection.onb, 0, 0, 0, 0, 0, random);
+	newDirection = sampler.getCosineHemisphereSample(intersection.onb, 0, 0, 0, 0, 0, random);
 	pdf = intersection.normal.dot(newDirection) / M_PI;
 }
 
-double DiffuseSpecularMaterial::getBrdf(const Intersection& intersection, const Vector3& newDirection)
+Color DiffuseSpecularMaterial::getBrdf(const Intersection& intersection, const Vector3& newDirection)
 {
-	(void)intersection;
 	(void)newDirection;
 
-	return 1.0;
+	return getReflectance(intersection) / M_PI;
 }

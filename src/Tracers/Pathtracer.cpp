@@ -35,8 +35,7 @@ Color Pathtracer::traceRecursive(const Scene& scene, const Ray& ray, Random& ran
 
 	material->getSample(intersection, sampler, random, newDirection, pdf);
 
-	Color reflectance = material->getReflectance(intersection) / M_PI;
-	double brdf = material->getBrdf(intersection, newDirection);
+	Color brdf = material->getBrdf(intersection, newDirection);
 	double cosine = newDirection.dot(intersection.normal);
 
 	Ray newRay;
@@ -45,5 +44,5 @@ Color Pathtracer::traceRecursive(const Scene& scene, const Ray& ray, Random& ran
 	newRay.minDistance = scene.general.rayMinDistance;
 	newRay.precalculate();
 
-	return emittance + brdf * reflectance * cosine * traceRecursive(scene, newRay, random) / pdf / scene.pathtracing.terminationProbability;
+	return emittance + brdf * cosine * traceRecursive(scene, newRay, random) / pdf / scene.pathtracing.terminationProbability;
 }

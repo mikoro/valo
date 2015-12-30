@@ -20,7 +20,7 @@ namespace Raycer
 		
 		Color getColor(const Scene& scene, const Intersection& intersection, const Light& light, Random& random) override;
 		void getSample(const Intersection& intersection, RandomSampler& sampler, Random& random, Vector3& newDirection, double& pdf) override;
-		double getBrdf(const Intersection& intersection, const Vector3& newDirection) override;
+		Color getBrdf(const Intersection& intersection, const Vector3& newDirection) override;
 
 	private:
 
