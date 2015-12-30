@@ -22,12 +22,12 @@ namespace Raycer
 
 	private:
 
-		void printProgress(const TimerData& elapsed, const TimerData& remaining);
+		void printProgress(const TimerData& elapsed, const TimerData& remaining, uint64_t pixelSamples);
 		
 		std::atomic<bool> interrupted;
 
 		Timer timer;
 
-		MovingAverage pixelsPerSecondAverage;
+		MovingAverage samplesPerSecondAverage;
 	};
 }

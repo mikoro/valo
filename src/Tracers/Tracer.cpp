@@ -83,6 +83,12 @@ void Tracer::run(TracerState& state, std::atomic<bool>& interrupted)
 	imageAutoWriteTimer.restart();
 	filmAutoWriteTimer.restart();
 
+	uint64_t samplesPerPixel =
+		scene.sampling.multiSampleCountSqrt *
+		scene.sampling.multiSampleCountSqrt *
+		scene.sampling.cameraSampleCountSqrt *
+		scene.sampling.cameraSampleCountSqrt;
+
 	for (uint64_t i = 0; i < scene.sampling.pixelSampleCount && !interrupted; ++i)
 	{
 		#pragma omp parallel for schedule(dynamic, 1000)
@@ -102,7 +108,7 @@ void Tracer::run(TracerState& state, std::atomic<bool>& interrupted)
 				generateMultiSamples(scene, film, pixelCoordinate, uint64_t(pixelIndex), random);
 
 				if ((pixelIndex + 1) % 100 == 0)
-					state.pixelsProcessed += (100 / scene.sampling.pixelSampleCount);
+					state.totalSamples += 100 * samplesPerPixel;
 			}
 			catch (...)
 			{
@@ -117,6 +123,8 @@ void Tracer::run(TracerState& state, std::atomic<bool>& interrupted)
 
 		if (ompThreadException != nullptr)
 			std::rethrow_exception(ompThreadException);
+
+		++state.pixelSamples;
 
 		if (!settings.interactive.enabled)
 		{
@@ -144,7 +152,7 @@ void Tracer::run(TracerState& state, std::atomic<bool>& interrupted)
 	}
 
 	if (!interrupted)
-		state.pixelsProcessed = state.pixelCount;
+		state.totalSamples = state.pixelCount * scene.sampling.pixelSampleCount * samplesPerPixel;
 }
 
 void Tracer::generateMultiSamples(const Scene& scene, Film& film, const Vector2& pixelCoordinate, uint64_t pixelIndex, Random& random)
