@@ -28,7 +28,7 @@ namespace Raycer
 		void reset();
 		bool isMoving() const;
 
-		bool getRay(const Vector2& pixelCoordinate, Ray& ray) const;
+		Ray getRay(const Vector2& pixelCoordinate, bool& isOffLens) const;
 
 		Vector3 getRight() const;
 		Vector3 getUp() const;

@@ -106,11 +106,9 @@ namespace Raycer
 		{
 			uint64_t pixelSampleCount = 1;
 			uint64_t multiSampleCountSqrt = 1;
-			uint64_t timeSampleCount = 1;
 			uint64_t cameraSampleCountSqrt = 1;
 			SamplerType multiSamplerType = SamplerType::CMJ;
 			FilterType multiSamplerFilterType = FilterType::MITCHELL;
-			SamplerType timeSamplerType = SamplerType::JITTERED;
 			SamplerType cameraSamplerType = SamplerType::CMJ;
 
 			template <class Archive>
@@ -118,11 +116,9 @@ namespace Raycer
 			{
 				ar(CEREAL_NVP(pixelSampleCount),
 					CEREAL_NVP(multiSampleCountSqrt),
-					CEREAL_NVP(timeSampleCount),
 					CEREAL_NVP(cameraSampleCountSqrt),
 					CEREAL_NVP(multiSamplerType),
 					CEREAL_NVP(multiSamplerFilterType),
-					CEREAL_NVP(timeSamplerType),
 					CEREAL_NVP(cameraSamplerType));
 			}
 

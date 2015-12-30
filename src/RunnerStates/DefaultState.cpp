@@ -267,7 +267,6 @@ void DefaultState::render(double timeStep, double interpolation)
 		scene.sampling.pixelSampleCount
 		* scene.sampling.multiSampleCountSqrt
 		* scene.sampling.multiSampleCountSqrt
-		* scene.sampling.timeSampleCount
 		* scene.sampling.cameraSampleCountSqrt
 		* scene.sampling.cameraSampleCountSqrt;
 

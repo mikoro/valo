@@ -226,8 +226,11 @@ bool Camera::isMoving() const
 	return cameraIsMoving;
 }
 
-bool Camera::getRay(const Vector2& pixelCoordinate, Ray& ray) const
+Ray Camera::getRay(const Vector2& pixelCoordinate, bool& isOffLens) const
 {
+	Ray ray;
+	isOffLens = false;
+
 	switch (projectionType)
 	{
 		case CameraProjectionType::PERSPECTIVE:
@@ -264,7 +267,7 @@ bool Camera::getRay(const Vector2& pixelCoordinate, Ray& ray) const
 			double r = sqrt(dx * dx + dy * dy);
 
 			if (r > 1.0)
-				return false;
+				isOffLens = true;
 
 			double phi = atan2(dy, dx);
 			double theta = r * (MathUtils::degToRad(fishEyeAngle) / 2.0);
@@ -282,7 +285,7 @@ bool Camera::getRay(const Vector2& pixelCoordinate, Ray& ray) const
 	}
 
 	ray.precalculate();
-	return true;
+	return ray;
 }
 
 Vector3 Camera::getRight() const

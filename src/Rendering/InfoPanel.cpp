@@ -197,7 +197,6 @@ void InfoPanel::renderFull(const Scene& scene, const Film& film)
 		* scene.sampling.pixelSampleCount
 		* scene.sampling.multiSampleCountSqrt
 		* scene.sampling.multiSampleCountSqrt
-		* scene.sampling.timeSampleCount
 		* scene.sampling.cameraSampleCountSqrt
 		* scene.sampling.cameraSampleCountSqrt) * fpsCounter.getFps();
 

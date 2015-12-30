@@ -44,8 +44,7 @@ namespace Raycer
 	private:
 
 		void generateMultiSamples(const Scene& scene, Film& film, const Vector2& pixelCoordinate, uint64_t pixelIndex, Random& random);
-		Color generateTimeSamples(const Scene& scene, const Vector2& pixelCoordinate, Random& random);
-		Color generateCameraSamples(const Scene& scene, const Vector2& pixelCoordinate, double time, Random& random);
+		Color generateCameraSamples(const Scene& scene, const Vector2& pixelCoordinate, Random& random);
 		
 		std::vector<Random> randoms;
 

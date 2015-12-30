@@ -153,9 +153,8 @@ void Tracer::generateMultiSamples(const Scene& scene, Film& film, const Vector2&
 
 	if (scene.sampling.multiSampleCountSqrt == 1)
 	{
-		Color pixelColor = generateTimeSamples(scene, pixelCoordinate, random);
+		Color pixelColor = generateCameraSamples(scene, pixelCoordinate, random);
 		film.addSample(pixelIndex, pixelColor, 1.0);
-
 		return;
 	}
 	
@@ -171,84 +170,46 @@ void Tracer::generateMultiSamples(const Scene& scene, Film& film, const Vector2&
 		{
 			Vector2 sampleOffset = sampler->getSquareSample(x, y, n, n, permutation, random);
 			sampleOffset = (sampleOffset - Vector2(0.5, 0.5)) * 2.0 * filter->getRadius();
-			Color sampledPixelColor = generateTimeSamples(scene, pixelCoordinate + sampleOffset, random);
+			Color sampledPixelColor = generateCameraSamples(scene, pixelCoordinate + sampleOffset, random);
 			film.addSample(pixelIndex, sampledPixelColor, filter->getWeight(sampleOffset));
 		}
 	}
 }
 
-Color Tracer::generateTimeSamples(const Scene& scene, const Vector2& pixelCoordinate, Random& random)
-{
-	assert(scene.sampling.timeSampleCount >= 1);
-
-	if (scene.sampling.timeSampleCount == 1)
-		return generateCameraSamples(scene, pixelCoordinate, 0.0, random);
-
-	Sampler* sampler = samplers[scene.sampling.timeSamplerType].get();
-
-	Color sampledPixelColor;
-	uint64_t n = scene.sampling.timeSampleCount;
-
-	for (uint64_t i = 0; i < n; ++i)
-		sampledPixelColor += generateCameraSamples(scene, pixelCoordinate, sampler->getSample(i, n, 0, random), random);
-
-	return sampledPixelColor / double(n);
-}
-
-Color Tracer::generateCameraSamples(const Scene& scene, const Vector2& pixelCoordinate, double time, Random& random)
+Color Tracer::generateCameraSamples(const Scene& scene, const Vector2& pixelCoordinate, Random& random)
 {
 	assert(scene.sampling.cameraSampleCountSqrt >= 1);
 
-	Ray ray;
-	ray.time = time;
+	bool isOffLens;
+	Ray ray = scene.camera.getRay(pixelCoordinate, isOffLens);
 
-	bool isValidRay = scene.camera.getRay(pixelCoordinate, ray);
+	if (isOffLens)
+		return scene.general.offLensColor;
 
 	if (scene.sampling.cameraSampleCountSqrt == 1)
-	{
-		if (isValidRay)
-			return trace(scene, ray, random);
-		else
-			return scene.general.offLensColor;
-	}
-
-	Sampler* sampler = samplers[scene.sampling.cameraSamplerType].get();
-
-	uint64_t permutation = random.getUint64();
-
-	double apertureSize = scene.camera.apertureSize;
-	double focalDistance = scene.camera.focalDistance;
+		return trace(scene, ray, random);
 
 	Vector3 cameraPosition = scene.camera.position;
 	Vector3 cameraRight = scene.camera.getRight();
 	Vector3 cameraUp = scene.camera.getUp();
+	Vector3 focalPoint = ray.origin + ray.direction * scene.camera.focalDistance;
+
+	Sampler* sampler = samplers[scene.sampling.cameraSamplerType].get();
+
+	uint64_t permutation = random.getUint64();
+	uint64_t n = scene.sampling.cameraSampleCountSqrt;
 
 	Color sampledPixelColor;
-	uint64_t n = scene.sampling.cameraSampleCountSqrt;
 
 	for (uint64_t y = 0; y < n; ++y)
 	{
 		for (uint64_t x = 0; x < n; ++x)
 		{
-			Ray primaryRay;
-			primaryRay.time = time;
-
-			Vector2 jitter = (sampler->getSquareSample(x, y, n, n, permutation, random) - Vector2(0.5, 0.5)) * 2.0;
-			isValidRay = scene.camera.getRay(pixelCoordinate + jitter, primaryRay);
-
-			if (!isValidRay)
-			{
-				sampledPixelColor += scene.general.offLensColor;
-				continue;
-			}
-
-			Vector3 focalPoint = primaryRay.origin + primaryRay.direction * focalDistance;
 			Vector2 discCoordinate = sampler->getDiscSample(x, y, n, n, permutation, random);
 
 			Ray sampleRay;
-			sampleRay.origin = cameraPosition + ((discCoordinate.x * apertureSize) * cameraRight + (discCoordinate.y * apertureSize) * cameraUp);
+			sampleRay.origin = cameraPosition + ((discCoordinate.x * scene.camera.apertureSize) * cameraRight + (discCoordinate.y * scene.camera.apertureSize) * cameraUp);
 			sampleRay.direction = (focalPoint - sampleRay.origin).normalized();
-			sampleRay.time = time;
 			sampleRay.precalculate();
 
 			sampledPixelColor += trace(scene, sampleRay, random);
