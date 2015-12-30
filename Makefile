@@ -12,13 +12,13 @@ TARGET = raycer
 
 # linux
 ifneq "$(findstring linux,$(UNAME))" ""
-	LDFLAGS += -Lplatform/linux/lib -lstdc++ -ldl -lm -lpthread -lGL -lglfw -lboost_system -lboost_filesystem -lboost_program_options
+	LDFLAGS += -lstdc++ -ldl -lm -lpthread -lGL -lglfw -lboost_system -lboost_filesystem -lboost_program_options
 endif
 
 # mac
 ifneq "$(findstring darwin,$(UNAME))" ""
 	CFLAGS += -isystem /opt/local/include -isystem /opt/local/include/libomp -mmacosx-version-min=10.9
-	LDFLAGS += -L/opt/local/lib -L/opt/local/lib/libomp -Lplatform/mac/lib -framework Cocoa -framework OpenGL -framework IOKit -framework CoreVideo -lstdc++ -lglfw -lboost_system-mt -lboost_filesystem-mt -lboost_program_options-mt
+	LDFLAGS += -L/opt/local/lib -L/opt/local/lib/libomp -framework Cocoa -framework OpenGL -framework IOKit -framework CoreVideo -lstdc++ -lglfw -lboost_system-mt -lboost_filesystem-mt -lboost_program_options-mt
 endif
 
 default: raycer

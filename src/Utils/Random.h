@@ -33,8 +33,8 @@ namespace Raycer
 		Vector3 getVector3();
 
 		typedef uint64_t result_type;
-		static result_type min();
-		static result_type max();
+		constexpr static result_type min() { return 0; }
+		constexpr static result_type max() { return std::numeric_limits<uint64_t>::max(); }
 		result_type operator()();
 
 	private:

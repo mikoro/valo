@@ -83,16 +83,6 @@ Vector3 Random::getVector3()
 	return v;
 }
 
-Random::result_type Random::min()
-{
-	return 0;
-}
-
-Random::result_type Random::max()
-{
-	return std::numeric_limits<uint64_t>::max();
-}
-
 Random::result_type Random::operator()()
 {
 	return std::uniform_int_distribution<uint64_t>(0, std::numeric_limits<uint64_t>::max())(generator);
