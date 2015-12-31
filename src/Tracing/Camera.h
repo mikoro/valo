@@ -29,7 +29,7 @@ namespace Raycer
 		bool isMoving() const;
 		void saveState(const std::string& fileName) const;
 
-		Ray getRay(const Vector2& pixelCoordinate, bool& isOffLens) const;
+		Ray getRay(const Vector2& pixel, bool& isOffLens) const;
 
 		Vector3 getRight() const;
 		Vector3 getUp() const;

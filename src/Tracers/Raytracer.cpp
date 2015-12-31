@@ -10,14 +10,106 @@
 #include "Textures/Texture.h"
 #include "Math/Vector3.h"
 #include "Rendering/Color.h"
+#include "Rendering/Film.h"
 #include "Tracing/ONB.h"
 
 using namespace Raycer;
 
-Color Raytracer::trace(const Scene& scene, const Ray& ray, Random& random)
+uint64_t Raytracer::getPixelSampleCount(const Scene& scene) const
 {
-	Intersection intersection;
-	return traceRecursive(scene, ray, intersection, 0, random);
+	(void)scene;
+
+	return 1;
+}
+
+uint64_t Raytracer::getSamplesPerPixel(const Scene& scene) const
+{
+	return scene.raytracing.multiSampleCountSqrt *
+		scene.raytracing.multiSampleCountSqrt *
+		scene.raytracing.cameraSampleCountSqrt *
+		scene.raytracing.cameraSampleCountSqrt;
+}
+
+void Raytracer::trace(const Scene& scene, Film& film, const Vector2& pixelCenter, uint64_t pixelIndex, Random& random)
+{
+	generateMultiSamples(scene, film, pixelCenter, pixelIndex, random);
+}
+
+void Raytracer::generateMultiSamples(const Scene& scene, Film& film, const Vector2& pixelCenter, uint64_t pixelIndex, Random& random)
+{
+	assert(scene.raytracing.multiSampleCountSqrt >= 1);
+
+	if (scene.raytracing.multiSampleCountSqrt == 1)
+	{
+		Color pixelColor = generateCameraSamples(scene, pixelCenter, random);
+		film.addSample(pixelIndex, pixelColor, 1.0);
+		return;
+	}
+
+	Sampler* sampler = samplers[scene.raytracing.multiSamplerType].get();
+	Filter* filter = filters[scene.raytracing.multiSamplerFilterType].get();
+
+	uint64_t permutation = random.getUint64();
+	uint64_t n = scene.raytracing.multiSampleCountSqrt;
+
+	for (uint64_t y = 0; y < n; ++y)
+	{
+		for (uint64_t x = 0; x < n; ++x)
+		{
+			Vector2 sampleOffset = sampler->getSquareSample(x, y, n, n, permutation, random);
+			sampleOffset = (sampleOffset - Vector2(0.5, 0.5)) * 2.0 * filter->getRadius();
+			Color sampledPixelColor = generateCameraSamples(scene, pixelCenter + sampleOffset, random);
+			film.addSample(pixelIndex, sampledPixelColor, filter->getWeight(sampleOffset));
+		}
+	}
+}
+
+Color Raytracer::generateCameraSamples(const Scene& scene, const Vector2& pixelCenter, Random& random)
+{
+	assert(scene.raytracing.cameraSampleCountSqrt >= 1);
+
+	bool isOffLens;
+	Ray ray = scene.camera.getRay(pixelCenter, isOffLens);
+
+	if (isOffLens)
+		return scene.general.offLensColor;
+
+	if (scene.raytracing.cameraSampleCountSqrt == 1)
+	{
+		Intersection intersection;
+		return traceRecursive(scene, ray, intersection, 0, random);
+	}
+
+	Vector3 cameraPosition = scene.camera.position;
+	Vector3 cameraRight = scene.camera.getRight();
+	Vector3 cameraUp = scene.camera.getUp();
+	Vector3 focalPoint = ray.origin + ray.direction * scene.camera.focalDistance;
+
+	Sampler* sampler = samplers[scene.raytracing.cameraSamplerType].get();
+
+	uint64_t permutation = random.getUint64();
+	uint64_t n = scene.raytracing.cameraSampleCountSqrt;
+
+	Color sampledPixelColor;
+
+	for (uint64_t y = 0; y < n; ++y)
+	{
+		for (uint64_t x = 0; x < n; ++x)
+		{
+			Vector2 discCoordinate = sampler->getDiscSample(x, y, n, n, permutation, random);
+
+			Ray sampleRay;
+			Intersection sampleIntersection;
+
+			sampleRay.origin = cameraPosition + ((discCoordinate.x * scene.camera.apertureSize) * cameraRight + (discCoordinate.y * scene.camera.apertureSize) * cameraUp);
+			sampleRay.direction = (focalPoint - sampleRay.origin).normalized();
+			sampleRay.precalculate();
+
+			sampledPixelColor += traceRecursive(scene, ray, sampleIntersection, 0, random);
+		}
+	}
+
+	return sampledPixelColor / (double(n) * double(n));
 }
 
 Color Raytracer::traceRecursive(const Scene& scene, const Ray& ray, Intersection& intersection, uint64_t iteration, Random& random)
@@ -41,10 +133,10 @@ Color Raytracer::traceRecursive(const Scene& scene, const Ray& ray, Intersection
 
 	Color reflectedColor, transmittedColor;
 
-	if (rayReflectance > 0.0 && iteration < scene.raytracing.maxRayIterations)
+	if (rayReflectance > 0.0 && iteration < scene.raytracing.maxIterationDepth)
 		reflectedColor = calculateReflectedColor(scene, intersection, rayReflectance, iteration, random);
 
-	if (rayTransmittance > 0.0 && iteration < scene.raytracing.maxRayIterations)
+	if (rayTransmittance > 0.0 && iteration < scene.raytracing.maxIterationDepth)
 		transmittedColor = calculateTransmittedColor(scene, intersection, rayTransmittance, iteration, random);
 
 	Color materialColor = calculateMaterialColor(scene, intersection, random);

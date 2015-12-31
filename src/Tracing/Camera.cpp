@@ -250,7 +250,7 @@ void Camera::saveState(const std::string& fileName) const
 	file.close();
 }
 
-Ray Camera::getRay(const Vector2& pixelCoordinate, bool& isOffLens) const
+Ray Camera::getRay(const Vector2& pixel, bool& isOffLens) const
 {
 	Ray ray;
 	isOffLens = false;
@@ -259,8 +259,8 @@ Ray Camera::getRay(const Vector2& pixelCoordinate, bool& isOffLens) const
 	{
 		case CameraProjectionType::PERSPECTIVE:
 		{
-			double dx = (pixelCoordinate.x / imagePlaneWidth) - 0.5;
-			double dy = (pixelCoordinate.y / imagePlaneHeight) - 0.5;
+			double dx = (pixel.x / imagePlaneWidth) - 0.5;
+			double dy = (pixel.y / imagePlaneHeight) - 0.5;
 
 			Vector3 imagePlanePixelPosition = imagePlaneCenter + (dx * right) + (dy * aspectRatio * up);
 
@@ -271,8 +271,8 @@ Ray Camera::getRay(const Vector2& pixelCoordinate, bool& isOffLens) const
 
 		case CameraProjectionType::ORTHOGRAPHIC:
 		{
-			double dx = (pixelCoordinate.x / imagePlaneWidth) - 0.5;
-			double dy = (pixelCoordinate.y / imagePlaneHeight) - 0.5;
+			double dx = (pixel.x / imagePlaneWidth) - 0.5;
+			double dy = (pixel.y / imagePlaneHeight) - 0.5;
 
 			ray.origin = position + (dx * orthoSize * right) + (dy * orthoSize * aspectRatio * up);
 			ray.direction = forward;
@@ -282,8 +282,8 @@ Ray Camera::getRay(const Vector2& pixelCoordinate, bool& isOffLens) const
 		// http://paulbourke.net/dome/fisheye/
 		case CameraProjectionType::FISHEYE:
 		{
-			double dx = (pixelCoordinate.x / imagePlaneWidth) * 2.0 - 1.0;
-			double dy = (pixelCoordinate.y / imagePlaneHeight) * 2.0 - 1.0;
+			double dx = (pixel.x / imagePlaneWidth) * 2.0 - 1.0;
+			double dy = (pixel.y / imagePlaneHeight) * 2.0 - 1.0;
 
 			dx /= std::min(1.0, aspectRatio);
 			dy *= std::max(1.0, aspectRatio);

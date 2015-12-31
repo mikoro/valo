@@ -9,7 +9,6 @@
 
 #include "Samplers/Sampler.h"
 #include "Filters/Filter.h"
-#include "Rendering/Color.h"
 #include "Utils/Random.h"
 #include "Utils/Timer.h"
 
@@ -32,19 +31,19 @@ namespace Raycer
 
 		void run(TracerState& state, std::atomic<bool>& interrupted);
 
+		virtual uint64_t getPixelSampleCount(const Scene& scene) const = 0;
+		virtual uint64_t getSamplesPerPixel(const Scene& scene) const = 0;
+
 		static std::unique_ptr<Tracer> getTracer(TracerType type);
 
 	protected:
 
-		virtual Color trace(const Scene& scene, const Ray& ray, Random& random) = 0;
+		virtual void trace(const Scene& scene, Film& film, const Vector2& pixelCenter, uint64_t pixelIndex, Random& random) = 0;
 
 		std::map<SamplerType, std::unique_ptr<Sampler>> samplers;
 		std::map<FilterType, std::unique_ptr<Filter>> filters;
 
 	private:
-
-		void generateMultiSamples(const Scene& scene, Film& film, const Vector2& pixelCoordinate, uint64_t pixelIndex, Random& random);
-		Color generateCameraSamples(const Scene& scene, const Vector2& pixelCoordinate, Random& random);
 		
 		std::vector<Random> randoms;
 

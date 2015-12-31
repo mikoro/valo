@@ -11,7 +11,6 @@ Scene Scene::createTestScene2()
 {
 	Scene scene;
 
-	scene.sampling.pixelSampleCount = 1;
 	scene.general.tracerType = TracerType::RAY;
 
 	scene.camera.position = Vector3(3.14, 0.82, 2.50);

@@ -76,11 +76,14 @@ void ConsoleRunner::run(TracerState& state)
 	std::atomic<bool> renderThreadFinished(false);
 	std::exception_ptr renderThreadException = nullptr;
 
+	Scene& scene = *state.scene;
+	auto tracer = Tracer::getTracer(state.scene->general.tracerType);
+
 	auto renderThreadFunction = [&]()
 	{
 		try
 		{
-			Tracer::getTracer(state.scene->general.tracerType)->run(state, interrupted);
+			tracer->run(state, interrupted);
 		}
 		catch (...)
 		{
@@ -92,11 +95,8 @@ void ConsoleRunner::run(TracerState& state)
 
 	uint64_t totalSamples =
 		state.pixelCount *
-		state.scene->sampling.pixelSampleCount *
-		state.scene->sampling.multiSampleCountSqrt *
-		state.scene->sampling.multiSampleCountSqrt *
-		state.scene->sampling.cameraSampleCountSqrt *
-		state.scene->sampling.cameraSampleCountSqrt;
+		tracer->getPixelSampleCount(scene) *
+		tracer->getSamplesPerPixel(scene);
 
 	SysUtils::setConsoleTextColor(ConsoleTextColor::WHITE_ON_BLACK);
 
@@ -107,7 +107,7 @@ void ConsoleRunner::run(TracerState& state)
 		state.pixelStartOffset,
 		state.pixelCount,
 		StringUtils::humanizeNumber(double(totalSamples)),
-		state.scene->sampling.pixelSampleCount
+		tracer->getPixelSampleCount(scene)
 		);
 
 	timer.setTargetValue(double(totalSamples));

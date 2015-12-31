@@ -7,12 +7,49 @@
 #include "Scenes/Scene.h"
 #include "Tracing/Ray.h"
 #include "Tracing/Intersection.h"
+#include "Rendering/Film.h"
 
 using namespace Raycer;
 
-Color Pathtracer::trace(const Scene& scene, const Ray& ray, Random& random)
+uint64_t Pathtracer::getPixelSampleCount(const Scene& scene) const
 {
-	return traceRecursive(scene, ray, random);
+	return scene.pathtracing.pixelSampleCount;
+}
+
+uint64_t Pathtracer::getSamplesPerPixel(const Scene& scene) const
+{
+	(void)scene;
+
+	return 1;
+}
+
+void Pathtracer::trace(const Scene& scene, Film& film, const Vector2& pixelCenter, uint64_t pixelIndex, Random& random)
+{
+	Vector2 offsetPixel = pixelCenter;
+	double filterWeight = 1.0;
+
+	if (scene.pathtracing.enableMultiSampling)
+	{
+		Filter* filter = filters[scene.pathtracing.multiSamplerFilterType].get();
+
+		Vector2 pixelOffset = sampler.getSquareSample(0, 0, 0, 0, 0, random);
+		pixelOffset = (pixelOffset - Vector2(0.5, 0.5)) * 2.0 * filter->getRadius();
+
+		filterWeight = filter->getWeight(pixelOffset);
+		offsetPixel = pixelCenter + pixelOffset;
+	}
+
+	bool isOffLens;
+	Ray ray = scene.camera.getRay(offsetPixel, isOffLens);
+
+	if (isOffLens)
+	{
+		film.addSample(pixelIndex, scene.general.offLensColor, filterWeight);
+		return;
+	}
+
+	Color color = traceRecursive(scene, ray, random);
+	film.addSample(pixelIndex, color, filterWeight);
 }
 
 Color Pathtracer::traceRecursive(const Scene& scene, const Ray& ray, Random& random)

@@ -80,31 +80,7 @@ namespace Raycer
 
 		struct Raytracer
 		{
-			uint64_t maxRayIterations = 3;
-
-			template <class Archive>
-			void serialize(Archive& ar)
-			{
-				ar(CEREAL_NVP(maxRayIterations));
-			}
-
-		} raytracing;
-
-		struct Pathtracer
-		{
-			double terminationProbability = 0.5;
-
-			template <class Archive>
-			void serialize(Archive& ar)
-			{
-				ar(CEREAL_NVP(terminationProbability));
-			}
-
-		} pathtracing;
-
-		struct Sampling
-		{
-			uint64_t pixelSampleCount = 1;
+			uint64_t maxIterationDepth = 3;
 			uint64_t multiSampleCountSqrt = 1;
 			uint64_t cameraSampleCountSqrt = 1;
 			SamplerType multiSamplerType = SamplerType::CMJ;
@@ -114,7 +90,7 @@ namespace Raycer
 			template <class Archive>
 			void serialize(Archive& ar)
 			{
-				ar(CEREAL_NVP(pixelSampleCount),
+				ar(CEREAL_NVP(maxIterationDepth),
 					CEREAL_NVP(multiSampleCountSqrt),
 					CEREAL_NVP(cameraSampleCountSqrt),
 					CEREAL_NVP(multiSamplerType),
@@ -122,7 +98,29 @@ namespace Raycer
 					CEREAL_NVP(cameraSamplerType));
 			}
 
-		} sampling;
+		} raytracing;
+
+		struct Pathtracer
+		{
+			uint64_t pixelSampleCount = 1;
+			uint64_t minPathLength = 3;
+			double terminationProbability = 0.5;
+			bool enableMultiSampling = false;
+			bool enableCameraSampling = false;
+			FilterType multiSamplerFilterType = FilterType::MITCHELL;
+
+			template <class Archive>
+			void serialize(Archive& ar)
+			{
+				ar(CEREAL_NVP(pixelSampleCount),
+					CEREAL_NVP(minPathLength),
+					CEREAL_NVP(terminationProbability),
+					CEREAL_NVP(enableMultiSampling),
+					CEREAL_NVP(enableCameraSampling),
+					CEREAL_NVP(multiSamplerFilterType));
+			}
+
+		} pathtracing;
 
 		struct Tonemapper
 		{
@@ -228,7 +226,6 @@ namespace Raycer
 				CEREAL_NVP(general),
 				CEREAL_NVP(raytracing),
 				CEREAL_NVP(pathtracing),
-				CEREAL_NVP(sampling),
 				CEREAL_NVP(tonemapping),
 				CEREAL_NVP(lights),
 				CEREAL_NVP(textures),

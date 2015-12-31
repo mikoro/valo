@@ -270,13 +270,7 @@ void DefaultState::render(double timeStep, double interpolation)
 		filmNeedsClearing = true;
 	}
 
-	uint64_t samplesPerPixel =
-		scene.sampling.pixelSampleCount
-		* scene.sampling.multiSampleCountSqrt
-		* scene.sampling.multiSampleCountSqrt
-		* scene.sampling.cameraSampleCountSqrt
-		* scene.sampling.cameraSampleCountSqrt;
-
+	uint64_t samplesPerPixel = tracer->getPixelSampleCount(scene) * tracer->getSamplesPerPixel(scene);
 	film.increaseSamplesPerPixelCount(samplesPerPixel);
 
 	TracerState state;

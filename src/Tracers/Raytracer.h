@@ -14,11 +14,19 @@ namespace Raycer
 
 	class Raytracer : public Tracer
 	{
+	public:
+
+		uint64_t getPixelSampleCount(const Scene& scene) const override;
+		uint64_t getSamplesPerPixel(const Scene& scene) const override;
+
 	protected:
 
-		Color trace(const Scene& scene, const Ray& ray, Random& random) override;
+		void trace(const Scene& scene, Film& film, const Vector2& pixelCenter, uint64_t pixelIndex, Random& random) override;
 
 	private:
+
+		void generateMultiSamples(const Scene& scene, Film& film, const Vector2& pixelCenter, uint64_t pixelIndex, Random& random);
+		Color generateCameraSamples(const Scene& scene, const Vector2& pixelCenter, Random& random);
 
 		Color traceRecursive(const Scene& scene, const Ray& ray, Intersection& intersection, uint64_t iteration, Random& random);
 

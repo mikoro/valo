@@ -13,9 +13,14 @@ namespace Raycer
 	
 	class Pathtracer : public Tracer
 	{
+	public:
+
+		uint64_t getPixelSampleCount(const Scene& scene) const override;
+		uint64_t getSamplesPerPixel(const Scene& scene) const override;
+
 	protected:
 
-		Color trace(const Scene& scene, const Ray& ray, Random& random) override;
+		void trace(const Scene& scene, Film& film, const Vector2& pixelCenter, uint64_t pixelIndex, Random& random) override;
 
 	private:
 

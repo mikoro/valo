@@ -8,8 +8,6 @@
 #include "Tracers/Pathtracer.h"
 #include "Tracers/PreviewTracer.h"
 #include "Scenes/Scene.h"
-#include "Tracing/Ray.h"
-#include "Rendering/Color.h"
 #include "App.h"
 #include "Utils/Settings.h"
 #include "TracerState.h"
@@ -67,8 +65,7 @@ void Tracer::run(TracerState& state, std::atomic<bool>& interrupted)
 	uint64_t maxThreads = std::max(1, omp_get_max_threads());
 
 	assert(maxThreads >= 1);
-	assert(scene.sampling.pixelSampleCount >= 1);
-
+	
 	if (maxThreads != randoms.size())
 	{
 		randoms.resize(maxThreads);
@@ -77,19 +74,16 @@ void Tracer::run(TracerState& state, std::atomic<bool>& interrupted)
 			random.initialize();
 	}
 
-	std::mutex ompThreadExceptionMutex;
-	std::exception_ptr ompThreadException = nullptr;
-
 	imageAutoWriteTimer.restart();
 	filmAutoWriteTimer.restart();
 
-	uint64_t samplesPerPixel =
-		scene.sampling.multiSampleCountSqrt *
-		scene.sampling.multiSampleCountSqrt *
-		scene.sampling.cameraSampleCountSqrt *
-		scene.sampling.cameraSampleCountSqrt;
+	std::mutex ompThreadExceptionMutex;
+	std::exception_ptr ompThreadException = nullptr;
 
-	for (uint64_t i = 0; i < scene.sampling.pixelSampleCount && !interrupted; ++i)
+	uint64_t pixelSampleCount = getPixelSampleCount(scene);
+	uint64_t samplesPerPixel = getSamplesPerPixel(scene);
+
+	for (uint64_t i = 0; i < pixelSampleCount && !interrupted; ++i)
 	{
 		#pragma omp parallel for schedule(dynamic, 1000)
 		for (int64_t pixelIndex = 0; pixelIndex < int64_t(state.pixelCount); ++pixelIndex)
@@ -102,10 +96,10 @@ void Tracer::run(TracerState& state, std::atomic<bool>& interrupted)
 				uint64_t offsetPixelIndex = uint64_t(pixelIndex) + state.pixelStartOffset;
 				double x = double(offsetPixelIndex % state.filmWidth);
 				double y = double(offsetPixelIndex / state.filmWidth);
-				Vector2 pixelCoordinate = Vector2(x, y);
+				Vector2 pixelCenter = Vector2(x, y);
 				Random& random = randoms[omp_get_thread_num()];
 
-				generateMultiSamples(scene, film, pixelCoordinate, uint64_t(pixelIndex), random);
+				trace(scene, film, pixelCenter, pixelIndex, random);
 
 				if ((pixelIndex + 1) % 100 == 0)
 					state.totalSamples += 100 * samplesPerPixel;
@@ -152,77 +146,5 @@ void Tracer::run(TracerState& state, std::atomic<bool>& interrupted)
 	}
 
 	if (!interrupted)
-		state.totalSamples = state.pixelCount * scene.sampling.pixelSampleCount * samplesPerPixel;
-}
-
-void Tracer::generateMultiSamples(const Scene& scene, Film& film, const Vector2& pixelCoordinate, uint64_t pixelIndex, Random& random)
-{
-	assert(scene.sampling.multiSampleCountSqrt >= 1);
-
-	if (scene.sampling.multiSampleCountSqrt == 1)
-	{
-		Color pixelColor = generateCameraSamples(scene, pixelCoordinate, random);
-		film.addSample(pixelIndex, pixelColor, 1.0);
-		return;
-	}
-	
-	Sampler* sampler = samplers[scene.sampling.multiSamplerType].get();
-	Filter* filter = filters[scene.sampling.multiSamplerFilterType].get();
-
-	uint64_t permutation = random.getUint64();
-	uint64_t n = scene.sampling.multiSampleCountSqrt;
-
-	for (uint64_t y = 0; y < n; ++y)
-	{
-		for (uint64_t x = 0; x < n; ++x)
-		{
-			Vector2 sampleOffset = sampler->getSquareSample(x, y, n, n, permutation, random);
-			sampleOffset = (sampleOffset - Vector2(0.5, 0.5)) * 2.0 * filter->getRadius();
-			Color sampledPixelColor = generateCameraSamples(scene, pixelCoordinate + sampleOffset, random);
-			film.addSample(pixelIndex, sampledPixelColor, filter->getWeight(sampleOffset));
-		}
-	}
-}
-
-Color Tracer::generateCameraSamples(const Scene& scene, const Vector2& pixelCoordinate, Random& random)
-{
-	assert(scene.sampling.cameraSampleCountSqrt >= 1);
-
-	bool isOffLens;
-	Ray ray = scene.camera.getRay(pixelCoordinate, isOffLens);
-
-	if (isOffLens)
-		return scene.general.offLensColor;
-
-	if (scene.sampling.cameraSampleCountSqrt == 1)
-		return trace(scene, ray, random);
-
-	Vector3 cameraPosition = scene.camera.position;
-	Vector3 cameraRight = scene.camera.getRight();
-	Vector3 cameraUp = scene.camera.getUp();
-	Vector3 focalPoint = ray.origin + ray.direction * scene.camera.focalDistance;
-
-	Sampler* sampler = samplers[scene.sampling.cameraSamplerType].get();
-
-	uint64_t permutation = random.getUint64();
-	uint64_t n = scene.sampling.cameraSampleCountSqrt;
-
-	Color sampledPixelColor;
-
-	for (uint64_t y = 0; y < n; ++y)
-	{
-		for (uint64_t x = 0; x < n; ++x)
-		{
-			Vector2 discCoordinate = sampler->getDiscSample(x, y, n, n, permutation, random);
-
-			Ray sampleRay;
-			sampleRay.origin = cameraPosition + ((discCoordinate.x * scene.camera.apertureSize) * cameraRight + (discCoordinate.y * scene.camera.apertureSize) * cameraUp);
-			sampleRay.direction = (focalPoint - sampleRay.origin).normalized();
-			sampleRay.precalculate();
-
-			sampledPixelColor += trace(scene, sampleRay, random);
-		}
-	}
-
-	return sampledPixelColor / (double(n) * double(n));
+		state.totalSamples = state.pixelCount * pixelSampleCount * samplesPerPixel;
 }
