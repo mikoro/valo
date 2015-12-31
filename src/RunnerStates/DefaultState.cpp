@@ -223,18 +223,21 @@ void DefaultState::update(double timeStep)
 			scene.saveToFile("temp_scene.bin");
 
 		if (windowRunner.keyWasPressed(GLFW_KEY_4))
+			scene.camera.saveState("camera.txt");
+
+		if (windowRunner.keyWasPressed(GLFW_KEY_5))
 		{
 			film.generateOutputImage(scene);
 			film.getOutputImage().save("temp_result.png");
 		}
 
-		if (windowRunner.keyWasPressed(GLFW_KEY_5))
+		if (windowRunner.keyWasPressed(GLFW_KEY_6))
 		{
 			film.generateOutputImage(scene);
 			film.getOutputImage().save("temp_result.hdr");
 		}
 
-		if (windowRunner.keyWasPressed(GLFW_KEY_6))
+		if (windowRunner.keyWasPressed(GLFW_KEY_7))
 			film.save("temp_film.bin");
 	}
 

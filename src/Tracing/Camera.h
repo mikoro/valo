@@ -27,6 +27,7 @@ namespace Raycer
 		void update(double timeStep);
 		void reset();
 		bool isMoving() const;
+		void saveState(const std::string& fileName) const;
 
 		Ray getRay(const Vector2& pixelCoordinate, bool& isOffLens) const;
 

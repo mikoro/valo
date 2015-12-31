@@ -7,6 +7,7 @@
 #include "Tracing/Ray.h"
 #include "Tracing/Intersection.h"
 #include "App.h"
+#include "Utils/Log.h"
 #include "Utils/Settings.h"
 #include "Math/MathUtils.h"
 #include "Math/Vector2.h"
@@ -224,6 +225,29 @@ void Camera::update(double timeStep)
 bool Camera::isMoving() const
 {
 	return cameraIsMoving;
+}
+
+void Camera::saveState(const std::string& fileName) const
+{
+	App::getLog().logInfo("Saving camera state to %s", fileName);
+
+	std::ofstream file(fileName);
+
+	if (!file.is_open())
+		throw std::runtime_error("Could not open file for writing camera state");
+
+	file << tfm::format("x = %f", position.x) << std::endl;
+	file << tfm::format("y = %f", position.y) << std::endl;
+	file << tfm::format("z = %f", position.z) << std::endl;
+	file << std::endl;
+	file << tfm::format("pitch = %f", orientation.pitch) << std::endl;
+	file << tfm::format("yaw = %f", orientation.yaw) << std::endl;
+	file << tfm::format("roll = %f", orientation.roll) << std::endl;
+	file << std::endl;
+	file << tfm::format("scene.camera.position = Vector3(%.4f, %.4f, %.4f);", position.x, position.y, position.z) << std::endl;
+	file << tfm::format("scene.camera.orientation = EulerAngle(%.4f, %.4f, %.4f);", orientation.pitch, orientation.yaw, orientation.roll) << std::endl;
+
+	file.close();
 }
 
 Ray Camera::getRay(const Vector2& pixelCoordinate, bool& isOffLens) const
