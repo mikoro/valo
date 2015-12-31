@@ -16,6 +16,8 @@ TEST_CASE("TestScenes functionality", "[testscenes]")
 	std::vector<Scene> scenes;
 
 	scenes.push_back(Scene::createTestScene1());
+	scenes.push_back(Scene::createTestScene2());
+	scenes.push_back(Scene::createTestScene3());
 
 	uint64_t sceneCount = 0;
 

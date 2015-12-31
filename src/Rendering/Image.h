@@ -20,6 +20,8 @@ Origin (0, 0) is at the bottom left corner.
 
 namespace Raycer
 {
+	class Filter;
+
 	template <typename T>
 	class ImageType
 	{
@@ -44,7 +46,7 @@ namespace Raycer
 		void applyFastGamma(double gamma);
 		void swapComponents();
 		void flip();
-		void fillTestPattern();
+		void fillWithTestPattern();
 
 		template <typename U>
 		void read(const ImageType<U>& other);
@@ -57,6 +59,7 @@ namespace Raycer
 		ColorType<T> getPixel(uint64_t index) const;
 		ColorType<T> getPixelNearest(double u, double v) const;
 		ColorType<T> getPixelBilinear(double u, double v) const;
+		ColorType<T> getPixelBicubic(double u, double v, Filter* filter) const;
 
 		using vector = std::vector<ColorType<T>, boost::alignment::aligned_allocator<ColorType<T>, CACHE_LINE_SIZE>>;
 

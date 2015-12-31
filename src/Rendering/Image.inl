@@ -8,6 +8,7 @@
 #include "Utils/Log.h"
 #include "Utils/StringUtils.h"
 #include "Math/MathUtils.h"
+#include "Filters/Filter.h"
 
 namespace Raycer
 {
@@ -122,7 +123,7 @@ namespace Raycer
 			for (uint64_t y = 0; y < height; ++y)
 			{
 				for (uint64_t x = 0; x < width; ++x)
-					saveData[(height - 1 - y) * width + x] = pixelData[y * width + x].getAbgrValue(); // flip vertically
+					saveData[(height - 1 - y) * width + x] = pixelData[y * width + x].clamped().getAbgrValue(); // flip vertically
 			}
 
 			if (StringUtils::endsWith(fileName, ".png"))
@@ -244,7 +245,7 @@ namespace Raycer
 	}
 
 	template <typename T>
-	void ImageType<T>::fillTestPattern()
+	void ImageType<T>::fillWithTestPattern()
 	{
 		for (uint64_t y = 0; y < height; ++y)
 		{
@@ -308,7 +309,7 @@ namespace Raycer
 	template <typename T>
 	ColorType<T> ImageType<T>::getPixel(uint64_t index) const
 	{
-		assert(index < width * height);
+		assert(index < length);
 		return pixelData[index];
 	}
 
@@ -324,24 +325,82 @@ namespace Raycer
 	template <typename T>
 	ColorType<T> ImageType<T>::getPixelBilinear(double u, double v) const
 	{
-		double dx = u * double(width - 1) - 0.5;
-		double dy = v * double(height - 1) - 0.5;
-		uint64_t ix = uint64_t(dx);
-		uint64_t iy = uint64_t(dy);
-		double tx2 = dx - double(ix);
-		double ty2 = dy - double(iy);
+		double x = u * double(width - 1);
+		double y = v * double(height - 1);
+
+		uint64_t ix = uint64_t(x);
+		uint64_t iy = uint64_t(y);
+
+		double tx2 = x - double(ix);
+		double ty2 = y - double(iy);
+
 		tx2 = MathUtils::smoothstep(tx2);
 		ty2 = MathUtils::smoothstep(ty2);
+
 		double tx1 = 1.0 - tx2;
 		double ty1 = 1.0 - ty2;
 
+		uint64_t ix1 = ix + 1;
+		uint64_t iy1 = iy + 1;
+
+		if (ix1 > width - 1)
+			ix1 = width - 1;
+
+		if (iy1 > height - 1)
+			iy1 = height - 1;
+
 		ColorType<T> c11 = getPixel(ix, iy);
-		ColorType<T> c21 = getPixel(ix + 1, iy);
-		ColorType<T> c12 = getPixel(ix, iy + 1);
-		ColorType<T> c22 = getPixel(ix + 1, iy + 1);
+		ColorType<T> c21 = getPixel(ix1, iy);
+		ColorType<T> c12 = getPixel(ix, iy1);
+		ColorType<T> c22 = getPixel(ix1, iy1);
 
 		// bilinear interpolation
 		return (T(tx1) * c11 + T(tx2) * c21) * T(ty1) + (T(tx1) * c12 + T(tx2) * c22) * T(ty2);
+	}
+
+	template <typename T>
+	ColorType<T> ImageType<T>::getPixelBicubic(double u, double v, Filter* filter) const
+	{
+		double x = u * double(width - 1);
+		double y = v * double(height - 1);
+
+		int64_t ix = int64_t(x);
+		int64_t iy = int64_t(y);
+
+		double fx = x - double(ix);
+		double fy = y - double(iy);
+
+		ColorType<T> cumulativeColor;
+		double cumulativeFilterWeight = 0.0;
+
+		for (int64_t oy = -1; oy <= 2; oy++)
+		{
+			for (int64_t ox = -1; ox <= 2; ox++)
+			{
+				int64_t sx = ix + ox;
+				int64_t sy = iy + oy;
+
+				if (sx < 0)
+					sx = 0;
+
+				if (sx > int64_t(width - 1))
+					sx = int64_t(width - 1);
+
+				if (sy < 0)
+					sy = 0;
+
+				if (sy > int64_t(height - 1))
+					sy = int64_t(height - 1);
+
+				ColorType<T> color = getPixel(uint64_t(sx), uint64_t(sy));
+				double filterWeight = filter->getWeight(double(ox) - fx, double(oy) - fy);
+
+				cumulativeColor += color * T(filterWeight);
+				cumulativeFilterWeight += filterWeight;
+			}
+		}
+
+		return cumulativeColor / cumulativeFilterWeight;
 	}
 
 	template <typename T>
