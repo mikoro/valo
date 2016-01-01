@@ -48,11 +48,11 @@ void Pathtracer::trace(const Scene& scene, Film& film, const Vector2& pixelCente
 		return;
 	}
 
-	Color color = traceRecursive(scene, ray, random);
+	Color color = traceRecursive(scene, ray, random, 0);
 	film.addSample(pixelIndex, color, filterWeight);
 }
 
-Color Pathtracer::traceRecursive(const Scene& scene, const Ray& ray, Random& random)
+Color Pathtracer::traceRecursive(const Scene& scene, const Ray& ray, Random& random, uint64_t iteration)
 {
 	Intersection intersection;
 	scene.intersect(ray, intersection);
@@ -63,23 +63,26 @@ Color Pathtracer::traceRecursive(const Scene& scene, const Ray& ray, Random& ran
 	Material* material = intersection.material;
 
 	Color emittance = material->getEmittance(intersection);
+	double terminationProbability = 1.0;
 
-	if (random.getDouble() < scene.pathtracing.terminationProbability)
-		return emittance;
+	if (iteration >= scene.pathtracing.minPathLength)
+	{
+		terminationProbability = scene.pathtracing.terminationProbability;
 
-	Vector3 newDirection;
-	double pdf;
+		if (random.getDouble() < terminationProbability)
+			return emittance;
+	}
+	
+	Vector3 reflectionDirection = material->getNewDirection(intersection, sampler, random);
+	Color reflectionBrdf = material->getBrdf(intersection, reflectionDirection);
+	double reflectionPdf = material->getPdf(intersection, reflectionDirection);
+	double reflectionCosine = reflectionDirection.dot(intersection.normal);
 
-	material->getSample(intersection, sampler, random, newDirection, pdf);
+	Ray reflectedRay;
+	reflectedRay.origin = intersection.position;
+	reflectedRay.direction = reflectionDirection;
+	reflectedRay.minDistance = scene.general.rayMinDistance;
+	reflectedRay.precalculate();
 
-	Color brdf = material->getBrdf(intersection, newDirection);
-	double cosine = newDirection.dot(intersection.normal);
-
-	Ray newRay;
-	newRay.origin = intersection.position;
-	newRay.direction = newDirection;
-	newRay.minDistance = scene.general.rayMinDistance;
-	newRay.precalculate();
-
-	return emittance + brdf * cosine * traceRecursive(scene, newRay, random) / pdf / scene.pathtracing.terminationProbability;
+	return emittance + reflectionBrdf * reflectionCosine * traceRecursive(scene, reflectedRay, random, iteration + 1) / reflectionPdf / terminationProbability;
 }

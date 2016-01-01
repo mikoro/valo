@@ -17,10 +17,12 @@ namespace Raycer
 	class DiffuseSpecularMaterial : public Material
 	{
 	public:
-		
+
 		Color getColor(const Scene& scene, const Intersection& intersection, const Light& light, Random& random) override;
-		void getSample(const Intersection& intersection, RandomSampler& sampler, Random& random, Vector3& newDirection, double& pdf) override;
-		Color getBrdf(const Intersection& intersection, const Vector3& newDirection) override;
+		
+		Vector3 getNewDirection(const Intersection& intersection, RandomSampler& sampler, Random& random) override;
+		double getPdf(const Intersection& intersection, const Vector3& out) override;
+		Color getBrdf(const Intersection& intersection, const Vector3& out) override;
 
 	private:
 

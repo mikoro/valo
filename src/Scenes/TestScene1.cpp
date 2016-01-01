@@ -12,6 +12,8 @@ Scene Scene::createTestScene1()
 	Scene scene;
 
 	scene.general.tracerType = TracerType::PATH;
+	scene.pathtracing.enableMultiSampling = false;
+	scene.pathtracing.terminationProbability = 0.5;
 
 	scene.camera.position = Vector3(0.0, 1.0, 3.5);
 

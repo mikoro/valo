@@ -28,15 +28,19 @@ Color DiffuseMaterial::getColor(const Scene& scene, const Intersection& intersec
 	return finalColor;
 }
 
-void DiffuseMaterial::getSample(const Intersection& intersection, RandomSampler& sampler, Random& random, Vector3& newDirection, double& pdf)
+Vector3 DiffuseMaterial::getNewDirection(const Intersection& intersection, RandomSampler& sampler, Random& random)
 {
-	newDirection = sampler.getCosineHemisphereSample(intersection.onb, 0, 0, 0, 0, 0, random);
-	pdf = 0.5 * (1.0 / M_PI) + 0.5 * (intersection.normal.dot(newDirection) / M_PI);
+	return sampler.getCosineHemisphereSample(intersection.onb, 0, 0, 0, 0, 0, random);
 }
 
-Color DiffuseMaterial::getBrdf(const Intersection& intersection, const Vector3& newDirection)
+double DiffuseMaterial::getPdf(const Intersection& intersection, const Vector3& out)
 {
-	(void)newDirection;
+	return 0.5 * (1.0 / M_PI) + 0.5 * (intersection.normal.dot(out) / M_PI);
+}
+
+Color DiffuseMaterial::getBrdf(const Intersection& intersection, const Vector3& out)
+{
+	(void)out;
 
 	return getReflectance(intersection) / M_PI;
 }
