@@ -12,7 +12,7 @@ namespace Raycer
 
 	struct TracerState
 	{
-		TracerState() : totalSamples(0), pixelSamples(0) {};
+		TracerState() : processedSampleCount(0), processedPixelCount(0), pixelSampleCount(0), totalPathCount(0) {};
 
 		Scene* scene = nullptr;
 		Film* film = nullptr;
@@ -22,7 +22,9 @@ namespace Raycer
 		uint64_t pixelStartOffset = 0;
 		uint64_t pixelCount = 0;
 
-		std::atomic<uint64_t> totalSamples;
-		std::atomic<uint64_t> pixelSamples;
+		std::atomic<uint64_t> processedSampleCount;
+		std::atomic<uint64_t> processedPixelCount;
+		std::atomic<uint64_t> pixelSampleCount;
+		std::atomic<uint64_t> totalPathCount;
 	};
 }

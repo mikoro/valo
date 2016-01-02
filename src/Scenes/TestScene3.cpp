@@ -12,8 +12,11 @@ Scene Scene::createTestScene3()
 	Scene scene;
 
 	scene.general.tracerType = TracerType::PATH;
-	scene.pathtracing.pixelSampleCount = 100000;
 	scene.pathtracing.enableMultiSampling = true;
+	scene.pathtracing.terminationProbability = 0.5;
+	scene.pathtracing.multiSamplerFilterType = FilterType::TENT;
+	scene.pathtracing.minPathLength = 3;
+	scene.pathtracing.pixelSampleCount = 1;
 
 	scene.camera.position = Vector3(8.92, 0.68, -2.02);
 	scene.camera.orientation = EulerAngle(6.66, 111.11, 0.0);

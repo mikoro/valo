@@ -21,7 +21,7 @@ namespace Raycer
 
 	protected:
 
-		void trace(const Scene& scene, Film& film, const Vector2& pixelCenter, uint64_t pixelIndex, Random& random) override;
+		void trace(const Scene& scene, Film& film, const Vector2& pixelCenter, uint64_t pixelIndex, Random& random, uint64_t& pathCount) override;
 
 	private:
 

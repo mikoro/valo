@@ -9,8 +9,7 @@ namespace Raycer
 {
 	enum class InfoPanelState { OFF, FPS, FULL };
 
-	class Scene;
-	class Film;
+	struct TracerState;
 
 	class InfoPanel
 	{
@@ -19,7 +18,7 @@ namespace Raycer
 		~InfoPanel();
 
 		void initialize();
-		void render(const Scene& scene, const Film& film);
+		void render(const TracerState& state);
 
 		void setState(InfoPanelState state);
 		void selectNextState();
@@ -27,7 +26,7 @@ namespace Raycer
 	private:
 
 		void renderFps();
-		void renderFull(const Scene& scene, const Film& film);
+		void renderFull(const TracerState& state);
 
 		NVGcontext* context = nullptr;
 		InfoPanelState currentState = InfoPanelState::OFF;

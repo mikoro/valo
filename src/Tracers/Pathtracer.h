@@ -21,13 +21,13 @@ namespace Raycer
 
 	protected:
 
-		void trace(const Scene& scene, Film& film, const Vector2& pixelCenter, uint64_t pixelIndex, Random& random) override;
+		void trace(const Scene& scene, Film& film, const Vector2& pixelCenter, uint64_t pixelIndex, Random& random, uint64_t& pathCount) override;
 
 	private:
 
-		Color traceRecursive(const Scene& scene, const Ray& ray, Random& random, uint64_t depth, bool shouldAddEmittance);
-		Color calculateDirectLight(const Scene& scene, const Intersection& intersection, Random& random, bool& directLightWasFound);
-		Color calculateIndirectLight(const Scene& scene, const Intersection& intersection, Random& random, uint64_t depth, bool shouldAddEmittance);
+		Color traceRecursive(const Scene& scene, const Ray& ray, Random& random, uint64_t depth, uint64_t& pathCount);
+		Color calculateDirectLight(const Scene& scene, const Intersection& intersection, Random& random);
+		Color calculateIndirectLight(const Scene& scene, const Intersection& intersection, Random& random, uint64_t depth, uint64_t& pathCount);
 
 		RandomSampler sampler;
 	};

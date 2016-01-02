@@ -13,6 +13,7 @@
 #include "Scenes/Scene.h"
 #include "Utils/Settings.h"
 #include "Utils/StringUtils.h"
+#include "Tracers/TracerState.h"
 #include "App.h"
 
 using namespace Raycer;
@@ -36,7 +37,7 @@ void InfoPanel::initialize()
 	nvgCreateFont(context, "mono", "data/fonts/RobotoMono-Regular.ttf");
 }
 
-void InfoPanel::render(const Scene& scene, const Film& film)
+void InfoPanel::render(const TracerState& state)
 {
 	if (currentState == InfoPanelState::OFF)
 		return;
@@ -54,7 +55,7 @@ void InfoPanel::render(const Scene& scene, const Film& film)
 	if (currentState == InfoPanelState::FPS)
 		renderFps();
 	else if (currentState == InfoPanelState::FULL)
-		renderFull(scene, film);
+		renderFull(state);
 
 	nvgEndFrame(context);
 }
@@ -115,11 +116,13 @@ void InfoPanel::renderFps()
 	nvgText(context, currentX, currentY, fpsString.c_str(), nullptr);
 }
 
-void InfoPanel::renderFull(const Scene& scene, const Film& film)
+void InfoPanel::renderFull(const TracerState& state)
 {
 	Settings& settings = App::getSettings();
 	WindowRunner& windowRunner = App::getWindowRunner();
 	const FpsCounter& fpsCounter = windowRunner.getFpsCounter();
+	const Scene& scene = *state.scene;
+	const Film& film = *state.film;
 
 	nvgBeginPath(context);
 
@@ -185,21 +188,22 @@ void InfoPanel::renderFull(const Scene& scene, const Film& film)
 	nvgText(context, currentX, currentY, tfm::format("Window: %dx%d (%dx%d)", tempWindowWidth, tempWindowHeight, tempFramebufferWidth, tempFramebufferHeight).c_str(), nullptr);
 	currentY += lineSpacing;
 
-	nvgText(context, currentX, currentY, tfm::format("Film: %dx%d (%.2fx)", film.getWidth(), film.getWidth(), settings.interactive.renderScale).c_str(), nullptr);
+	double totalPixels = double(film.getWidth() * film.getWidth());
+
+	nvgText(context, currentX, currentY, tfm::format("Film: %dx%d (%.2fx) (%s)", film.getWidth(), film.getWidth(), settings.interactive.renderScale, StringUtils::humanizeNumber(totalPixels)).c_str(), nullptr);
 	currentY += lineSpacing;
 
-	double pixelsPerSecond = double(film.getWidth() * film.getWidth()) * fpsCounter.getFps();
+	double pixelsPerSecond = totalPixels * fpsCounter.getFps();
 
 	nvgText(context, currentX, currentY, tfm::format("Pixels/s: %s", StringUtils::humanizeNumber(pixelsPerSecond)).c_str(), nullptr);
 	currentY += lineSpacing;
 
-	// TODO: fix
-	double pixelSamplesPerSecond = 0.0;
+	double pathsPerSecond = double(state.totalPathCount) * fpsCounter.getFps();
 
-	nvgText(context, currentX, currentY, tfm::format("Pixel samples/s: %s", StringUtils::humanizeNumber(pixelSamplesPerSecond)).c_str(), nullptr);
+	nvgText(context, currentX, currentY, tfm::format("Paths/s: %s", StringUtils::humanizeNumber(pathsPerSecond)).c_str(), nullptr);
 	currentY += lineSpacing;
 
-	nvgText(context, currentX, currentY, tfm::format("Samples/pixel: %d", film.getSamplesPerPixelCount()).c_str(), nullptr);
+	nvgText(context, currentX, currentY, tfm::format("Pixel samples: %d", film.getPixelSamples()).c_str(), nullptr);
 	currentY += lineSpacing;
 
 	nvgText(context, currentX, currentY, tfm::format("Moving: %s", scene.camera.isMoving()).c_str(), nullptr);

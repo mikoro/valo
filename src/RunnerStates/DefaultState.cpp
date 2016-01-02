@@ -271,7 +271,7 @@ void DefaultState::render(double timeStep, double interpolation)
 	}
 
 	uint64_t samplesPerPixel = tracer->getPixelSampleCount(scene) * tracer->getSamplesPerPixel(scene);
-	film.increaseSamplesPerPixelCount(samplesPerPixel);
+	film.increasePixelSamples(samplesPerPixel);
 
 	TracerState state;
 	state.scene = &scene;
@@ -286,7 +286,7 @@ void DefaultState::render(double timeStep, double interpolation)
 	film.generateOutputImage(scene);
 	filmRenderer.uploadFilmData(film);
 	filmRenderer.render();
-	infoPanel.render(scene, film);
+	infoPanel.render(state);
 }
 
 void DefaultState::windowResized(uint64_t width, uint64_t height)

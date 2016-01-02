@@ -23,7 +23,7 @@ uint64_t Pathtracer::getSamplesPerPixel(const Scene& scene) const
 	return 1;
 }
 
-void Pathtracer::trace(const Scene& scene, Film& film, const Vector2& pixelCenter, uint64_t pixelIndex, Random& random)
+void Pathtracer::trace(const Scene& scene, Film& film, const Vector2& pixelCenter, uint64_t pixelIndex, Random& random, uint64_t& pathCount)
 {
 	Vector2 offsetPixel = pixelCenter;
 	double filterWeight = 1.0;
@@ -48,12 +48,14 @@ void Pathtracer::trace(const Scene& scene, Film& film, const Vector2& pixelCente
 		return;
 	}
 
-	Color finalColor = traceRecursive(scene, ray, random, 0, true);
+	Color finalColor = traceRecursive(scene, ray, random, 0, pathCount);
 	film.addSample(pixelIndex, finalColor, filterWeight);
 }
 
-Color Pathtracer::traceRecursive(const Scene& scene, const Ray& ray, Random& random, uint64_t depth, bool shouldAddEmittance)
+Color Pathtracer::traceRecursive(const Scene& scene, const Ray& ray, Random& random, uint64_t depth, uint64_t& pathCount)
 {
+	++pathCount;
+
 	Intersection intersection;
 	scene.intersect(ray, intersection);
 
@@ -63,20 +65,17 @@ Color Pathtracer::traceRecursive(const Scene& scene, const Ray& ray, Random& ran
 	Color emittedLight(0.0, 0.0, 0.0);
 	Color directLight(0.0, 0.0, 0.0);
 	Color indirectLight(0.0, 0.0, 0.0);
-	
-	if (!intersection.isBehind && shouldAddEmittance)
+
+	if (depth == 0 && !intersection.isBehind && intersection.material->isEmissive())
 		emittedLight = intersection.material->getEmittance(intersection);
-
-	bool directLightWasFound = false;
-	directLight = calculateDirectLight(scene, intersection, random, directLightWasFound);
-
-	shouldAddEmittance = !directLightWasFound;
-	indirectLight = calculateIndirectLight(scene, intersection, random, depth, shouldAddEmittance);
+	
+	directLight = calculateDirectLight(scene, intersection, random);
+	indirectLight = calculateIndirectLight(scene, intersection, random, depth, pathCount);
 	
 	return emittedLight + directLight + indirectLight;
 }
 
-Color Pathtracer::calculateDirectLight(const Scene& scene, const Intersection& intersection, Random& random, bool& directLightWasFound)
+Color Pathtracer::calculateDirectLight(const Scene& scene, const Intersection& intersection, Random& random)
 {
 	uint64_t emitterCount = scene.emissiveTriangles.size();
 
@@ -94,6 +93,8 @@ Color Pathtracer::calculateDirectLight(const Scene& scene, const Intersection& i
 	shadowRay.direction = intersectionToEmitter / emitterDistance;
 	shadowRay.minDistance = scene.general.rayMinDistance;
 	shadowRay.maxDistance = emitterDistance - scene.general.rayMinDistance;
+	shadowRay.isShadowRay = true;
+	shadowRay.fastOcclusion = true;
 	shadowRay.precalculate();
 
 	Intersection shadowIntersection;
@@ -114,12 +115,10 @@ Color Pathtracer::calculateDirectLight(const Scene& scene, const Intersection& i
 	Color emittance = emitter->material->getEmittance(emitterIntersection);
 	Color intersectionBrdf = intersection.material->getBrdf(intersection, shadowRay.direction);
 	
-	directLightWasFound = true;
-
 	return emittance * intersectionBrdf * cosine1 * cosine2 * (1.0 / emitterDistance2) / (probability1 * probability2);
 }
 
-Color Pathtracer::calculateIndirectLight(const Scene& scene, const Intersection& intersection, Random& random, uint64_t depth, bool shouldAddEmittance)
+Color Pathtracer::calculateIndirectLight(const Scene& scene, const Intersection& intersection, Random& random, uint64_t depth, uint64_t& pathCount)
 {
 	double terminationProbability = 1.0;
 
@@ -142,5 +141,5 @@ Color Pathtracer::calculateIndirectLight(const Scene& scene, const Intersection&
 	sampleRay.minDistance = scene.general.rayMinDistance;
 	sampleRay.precalculate();
 
-	return sampleBrdf * sampleCosine * (traceRecursive(scene, sampleRay, random, depth + 1, shouldAddEmittance) / sampleProbability) / terminationProbability;
+	return sampleBrdf * sampleCosine * (traceRecursive(scene, sampleRay, random, depth + 1, pathCount) / sampleProbability) / terminationProbability;
 }

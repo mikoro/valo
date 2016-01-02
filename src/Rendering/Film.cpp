@@ -44,7 +44,7 @@ void Film::resize(uint64_t length)
 void Film::clear()
 {
 	std::memset(&filmPixels[0], 0, filmPixels.size() * sizeof(FilmPixel));
-	samplesPerPixelCount = 0;
+	pixelSamples = 0;
 }
 
 void Film::addSample(uint64_t x, uint64_t y, const Color& color, double filterWeight)
@@ -59,9 +59,9 @@ void Film::addSample(uint64_t index, const Color& color, double filterWeight)
 	filmPixel.cumulativeFilterWeight += filterWeight;
 }
 
-void Film::increaseSamplesPerPixelCount(uint64_t count)
+void Film::increasePixelSamples(uint64_t count)
 {
-	samplesPerPixelCount += count;
+	pixelSamples += count;
 }
 
 void Film::load(const std::string& fileName)
@@ -126,7 +126,7 @@ uint64_t Film::getHeight() const
 	return height;
 }
 
-uint64_t Film::getSamplesPerPixelCount() const
+uint64_t Film::getPixelSamples() const
 {
-	return samplesPerPixelCount;
+	return pixelSamples;
 }

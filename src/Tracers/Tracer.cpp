@@ -85,7 +85,9 @@ void Tracer::run(TracerState& state, std::atomic<bool>& interrupted)
 
 	for (uint64_t i = 0; i < pixelSampleCount && !interrupted; ++i)
 	{
-		#pragma omp parallel for schedule(dynamic, 1000)
+		uint64_t pathCount = 0;
+
+		#pragma omp parallel for schedule(dynamic, 1000) reduction(+:pathCount)
 		for (int64_t pixelIndex = 0; pixelIndex < int64_t(state.pixelCount); ++pixelIndex)
 		{
 			try
@@ -99,10 +101,15 @@ void Tracer::run(TracerState& state, std::atomic<bool>& interrupted)
 				Vector2 pixelCenter = Vector2(x, y);
 				Random& random = randoms[omp_get_thread_num()];
 
-				trace(scene, film, pixelCenter, pixelIndex, random);
+				trace(scene, film, pixelCenter, pixelIndex, random, pathCount);
 
 				if ((pixelIndex + 1) % 100 == 0)
-					state.totalSamples += 100 * samplesPerPixel;
+				{
+					state.processedSampleCount += 100 * samplesPerPixel;
+					state.processedPixelCount += 100;
+					state.totalPathCount += pathCount;
+					pathCount = 0;
+				}
 			}
 			catch (...)
 			{
@@ -118,7 +125,8 @@ void Tracer::run(TracerState& state, std::atomic<bool>& interrupted)
 		if (ompThreadException != nullptr)
 			std::rethrow_exception(ompThreadException);
 
-		++state.pixelSamples;
+		state.pixelSampleCount += 1;
+		state.totalPathCount += pathCount;
 
 		if (!settings.interactive.enabled)
 		{
@@ -146,5 +154,8 @@ void Tracer::run(TracerState& state, std::atomic<bool>& interrupted)
 	}
 
 	if (!interrupted)
-		state.totalSamples = state.pixelCount * pixelSampleCount * samplesPerPixel;
+	{
+		state.processedSampleCount = state.pixelCount * pixelSampleCount * samplesPerPixel;
+		state.processedPixelCount = state.pixelCount;
+	}
 }

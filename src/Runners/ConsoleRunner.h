@@ -29,5 +29,7 @@ namespace Raycer
 		Timer timer;
 
 		MovingAverage samplesPerSecondAverage;
+		MovingAverage pixelsPerSecondAverage;
+		MovingAverage pathsPerSecondAverage;
 	};
 }

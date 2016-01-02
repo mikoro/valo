@@ -30,8 +30,10 @@ uint64_t Raytracer::getSamplesPerPixel(const Scene& scene) const
 		scene.raytracing.cameraSampleCountSqrt;
 }
 
-void Raytracer::trace(const Scene& scene, Film& film, const Vector2& pixelCenter, uint64_t pixelIndex, Random& random)
+void Raytracer::trace(const Scene& scene, Film& film, const Vector2& pixelCenter, uint64_t pixelIndex, Random& random, uint64_t& pathCount)
 {
+	(void)pathCount;
+
 	generateMultiSamples(scene, film, pixelCenter, pixelIndex, random);
 }
 
