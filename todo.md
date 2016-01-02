@@ -1,5 +1,4 @@
 pathtracer
- - direct light sampling
  - more materials
  - import brdf from file
 
@@ -13,6 +12,7 @@ gpu
  - implement cuda pathtracer
 
 misc
+ - fix light cosine factors
  - add spline curve class
  - add transform class
  - add transform to camera

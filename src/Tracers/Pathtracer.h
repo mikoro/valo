@@ -26,6 +26,7 @@ namespace Raycer
 	private:
 
 		Color traceRecursive(const Scene& scene, const Ray& ray, Random& random, uint64_t depth, uint64_t& pathCount);
+		void calculateNormalMapping(Intersection& intersection);
 		Color calculateDirectLight(const Scene& scene, const Intersection& intersection, Random& random);
 		Color calculateIndirectLight(const Scene& scene, const Intersection& intersection, Random& random, uint64_t depth, uint64_t& pathCount);
 

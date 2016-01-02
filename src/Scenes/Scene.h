@@ -61,7 +61,7 @@ namespace Raycer
 		struct General
 		{
 			TracerType tracerType = TracerType::RAY;
-			double rayMinDistance = 0.00000000001;
+			double rayMinDistance = 0.0000001;
 			Color backgroundColor = Color(0.0, 0.0, 0.0);
 			Color offLensColor = Color(0.0, 0.0, 0.0);
 			bool enableNormalMapping = true;

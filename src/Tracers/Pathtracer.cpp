@@ -66,13 +66,24 @@ Color Pathtracer::traceRecursive(const Scene& scene, const Ray& ray, Random& ran
 	Color directLight(0.0, 0.0, 0.0);
 	Color indirectLight(0.0, 0.0, 0.0);
 
+	if (scene.general.enableNormalMapping && intersection.material->normalMapTexture != nullptr)
+		calculateNormalMapping(intersection);
+
 	if (depth == 0 && !intersection.isBehind && intersection.material->isEmissive())
 		emittedLight = intersection.material->getEmittance(intersection);
 	
 	directLight = calculateDirectLight(scene, intersection, random);
 	indirectLight = calculateIndirectLight(scene, intersection, random, depth, pathCount);
-	
+
 	return emittedLight + directLight + indirectLight;
+}
+
+void Pathtracer::calculateNormalMapping(Intersection& intersection)
+{
+	Color normalColor = intersection.material->normalMapTexture->getColor(intersection.texcoord, intersection.position);
+	Vector3 normal(normalColor.r * 2.0 - 1.0, normalColor.g * 2.0 - 1.0, normalColor.b);
+	Vector3 mappedNormal = intersection.onb.u * normal.x + intersection.onb.v * normal.y + intersection.onb.w * normal.z;
+	intersection.normal = mappedNormal.normalized();
 }
 
 Color Pathtracer::calculateDirectLight(const Scene& scene, const Intersection& intersection, Random& random)

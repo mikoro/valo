@@ -11,32 +11,36 @@ Scene Scene::createTestScene3()
 {
 	Scene scene;
 
+	Color skyColor(182, 126, 91);
+
 	scene.general.tracerType = TracerType::PATH;
 	scene.pathtracing.enableMultiSampling = true;
-	scene.pathtracing.terminationProbability = 0.5;
 	scene.pathtracing.multiSamplerFilterType = FilterType::TENT;
 	scene.pathtracing.minPathLength = 3;
+	scene.pathtracing.terminationProbability = 0.5;
 	scene.pathtracing.pixelSampleCount = 1;
 
 	scene.camera.position = Vector3(8.92, 0.68, -2.02);
 	scene.camera.orientation = EulerAngle(6.66, 111.11, 0.0);
 
-	// BOUNDING SPHERE MODEL //
+	// PLANE MODEL //
 
-	DiffuseSpecularMaterial sphereMaterial;
-	sphereMaterial.id = 1;
-	sphereMaterial.diffuseReflectance = Color(1.0, 1.0, 1.0);
-	sphereMaterial.emittance = Color(1.0, 1.0, 1.0) * 8.0;
-	sphereMaterial.invertNormal = true;
-	sphereMaterial.skipLighting = true;
+	DiffuseSpecularMaterial planeMaterial;
+	planeMaterial.id = 1;
+	planeMaterial.diffuseReflectance = skyColor;
+	planeMaterial.emittance = skyColor * 20.0;
+	planeMaterial.invertNormal = false;
+	planeMaterial.skipLighting = true;
 
 	ModelLoaderInfo model;
-	model.modelFilePath = "data/models/sphere.obj";
-	model.defaultMaterialId = sphereMaterial.id;
+	model.modelFilePath = "data/models/plane.obj";
+	model.defaultMaterialId = planeMaterial.id;
 	model.idStartOffset = 1;
-	model.scale = Vector3(1000.0, 1000.0, 1000.0);
+	model.scale = Vector3(1.0, 1.0, 1.0) * 20.0;
+	model.translate = Vector3(0.0, 20.0, 0.0);
+	model.rotate = EulerAngle(180.0, 0.0, 0.0);
 
-	scene.materials.diffuseSpecularMaterials.push_back(sphereMaterial);
+	scene.materials.diffuseSpecularMaterials.push_back(planeMaterial);
 	scene.models.push_back(model);
 
 	// SPONZA MODEL //
@@ -49,8 +53,8 @@ Scene Scene::createTestScene3()
 	scene.models.push_back(model);
 	
 	PointLight pointLight;
-	pointLight.color = Color(1.0, 1.0, 1.0) * 5.0;
-	pointLight.position = Vector3(5.0, 8.0, 0.0);
+	pointLight.color = skyColor * 100.0;
+	pointLight.position = Vector3(0.0, 18.0, 0.0);
 
 	scene.lights.pointLights.push_back(pointLight);
 
