@@ -11,9 +11,9 @@ Scene Scene::createTestScene1()
 {
 	Scene scene;
 
-	scene.general.tracerType = TracerType::PATH;
+	scene.general.tracerType = TracerType::RAY;
 	scene.pathtracing.enableMultiSampling = true;
-	scene.pathtracing.multiSamplerFilterType = FilterType::TENT;
+	scene.pathtracing.multiSamplerFilterType = FilterType::MITCHELL;
 	scene.pathtracing.minPathLength = 3;
 	scene.pathtracing.terminationProbability = 0.5;
 	scene.pathtracing.pixelSampleCount = 1;
@@ -41,13 +41,13 @@ Scene Scene::createTestScene1()
 
 	PointLight pointLight;
 	pointLight.color = Color(1.0, 0.71, 0.24) * 0.5;
-	pointLight.position = Vector3(0.0, 1.9, 0.0);
+	pointLight.position = Vector3(0.0, 1.7, 0.0);
 
 	scene.lights.pointLights.push_back(pointLight);
 
 	AreaPointLight areaLight;
 	areaLight.color = Color(1.0, 0.71, 0.24) * 0.5;
-	areaLight.position = Vector3(0.0, 1.9, 0.0);
+	areaLight.position = Vector3(0.0, 1.7, 0.0);
 	areaLight.radius = 0.2;
 	areaLight.sampleCountSqrt = 4;
 

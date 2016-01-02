@@ -23,7 +23,9 @@ Color DirectionalLight::getColor(const Scene& scene, const Intersection& interse
 {
 	(void)random;
 
-	if (intersection.normal.dot(direction) > 0.0)
+	double cosine = intersection.normal.dot(-direction);
+
+	if (cosine < 0.0)
 		return Color(0.0, 0.0, 0.0);
 
 	Ray shadowRay;
@@ -40,7 +42,7 @@ Color DirectionalLight::getColor(const Scene& scene, const Intersection& interse
 	if (scene.intersect(shadowRay, shadowIntersection))
 		return Color(0.0, 0.0, 0.0);
 
-	return color;
+	return cosine * color;
 }
 
 Vector3 DirectionalLight::getDirection(const Intersection& intersection) const

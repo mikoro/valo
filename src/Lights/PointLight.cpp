@@ -24,10 +24,12 @@ Color PointLight::getColor(const Scene& scene, const Intersection& intersection,
 	(void)random;
 
 	Vector3 intersectionToLight = position - intersection.position;
-	Vector3 directionToLight = intersectionToLight.normalized();
 	double distance2 = intersectionToLight.lengthSquared();
+	double distance = std::sqrt(distance2);
+	Vector3 directionToLight = intersectionToLight / distance;
+	double cosine = intersection.normal.dot(directionToLight);
 
-	if (intersection.normal.dot(-directionToLight) > 0.0)
+	if (cosine < 0.0)
 		return Color(0.0, 0.0, 0.0);
 
 	Ray shadowRay;
@@ -38,13 +40,13 @@ Color PointLight::getColor(const Scene& scene, const Intersection& intersection,
 	shadowRay.isShadowRay = true;
 	shadowRay.fastOcclusion = true;
 	shadowRay.minDistance = scene.general.rayMinDistance;
-	shadowRay.maxDistance = std::sqrt(distance2);
+	shadowRay.maxDistance = distance;
 	shadowRay.precalculate();
 
 	if (scene.intersect(shadowRay, shadowIntersection))
 		return Color(0.0, 0.0, 0.0);
 
-	return color / distance2;
+	return cosine * color / distance2;
 }
 
 Vector3 PointLight::getDirection(const Intersection& intersection) const
