@@ -28,12 +28,12 @@ Color DiffuseMaterial::getColor(const Scene& scene, const Intersection& intersec
 	return finalColor;
 }
 
-Vector3 DiffuseMaterial::getNewDirection(const Intersection& intersection, RandomSampler& sampler, Random& random)
+Vector3 DiffuseMaterial::getSampleDirection(const Intersection& intersection, RandomSampler& sampler, Random& random)
 {
 	return sampler.getCosineHemisphereSample(intersection.onb, 0, 0, 0, 0, 0, random);
 }
 
-double DiffuseMaterial::getPdf(const Intersection& intersection, const Vector3& out)
+double DiffuseMaterial::getDirectionProbability(const Intersection& intersection, const Vector3& out)
 {
 	return 0.5 * (1.0 / M_PI) + 0.5 * (intersection.normal.dot(out) / M_PI);
 }

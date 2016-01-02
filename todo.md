@@ -8,11 +8,17 @@ textures
  - ray differentials
  - EWA texture filtering
 
+gpu
+ - implement cuda raytracer
+ - implement cuda pathtracer
+
 misc
- - add flag to combine multisamples with neighbours
  - add spline curve class
- - add general transform class (translation with spline curves etc.)
+ - add transform class
+ - add transform to camera
+ - add primitive abstraction
  - primitive and primitive group with transform
+ - implement video rendering
  - add BVH -> QBVH conversion
  - implement QBVH travelsal and SIMD triangle intersect with ispc
  - add scope exit to obj loader and consolerunner text color

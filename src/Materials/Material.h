@@ -28,8 +28,8 @@ namespace Raycer
 
 		virtual Color getColor(const Scene& scene, const Intersection& intersection, const Light& light, Random& random) = 0;
 
-		virtual Vector3 getNewDirection(const Intersection& intersection, RandomSampler& sampler, Random& random) = 0;
-		virtual double getPdf(const Intersection& intersection, const Vector3& out) = 0;
+		virtual Vector3 getSampleDirection(const Intersection& intersection, RandomSampler& sampler, Random& random) = 0;
+		virtual double getDirectionProbability(const Intersection& intersection, const Vector3& out) = 0;
 		virtual Color getBrdf(const Intersection& intersection, const Vector3& out) = 0;
 
 		virtual Color getReflectance(const Intersection& intersection);

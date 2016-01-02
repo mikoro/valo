@@ -14,6 +14,7 @@ namespace Raycer
 	class Ray;
 	class Intersection;
 	class Material;
+	class Random;
 
 	class Triangle
 	{
@@ -22,6 +23,8 @@ namespace Raycer
 		void initialize();
 		bool intersect(const Ray& ray, Intersection& intersection) const;
 		AABB getAABB() const;
+		double getArea() const;
+		Intersection getRandomIntersection(Random& random) const;
 
 		uint64_t id = 0;
 		uint64_t materialId = 0;
@@ -34,6 +37,7 @@ namespace Raycer
 		Vector3 bitangent;
 
 		AABB aabb;
+		double area = 1.0;
 
 		Material* material = nullptr;
 

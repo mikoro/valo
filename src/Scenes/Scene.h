@@ -78,7 +78,7 @@ namespace Raycer
 
 		} general;
 
-		struct Raytracer
+		struct Raytracing
 		{
 			uint64_t maxIterationDepth = 3;
 			uint64_t multiSampleCountSqrt = 1;
@@ -100,13 +100,15 @@ namespace Raycer
 
 		} raytracing;
 
-		struct Pathtracer
+		struct Pathtracing
 		{
 			uint64_t pixelSampleCount = 1;
 			uint64_t minPathLength = 3;
 			double terminationProbability = 0.5;
 			bool enableMultiSampling = false;
 			bool enableCameraSampling = false;
+			bool enableDirectLighting = true;
+			bool enableIndirectLighting = true;
 			FilterType multiSamplerFilterType = FilterType::MITCHELL;
 
 			template <class Archive>
@@ -117,12 +119,14 @@ namespace Raycer
 					CEREAL_NVP(terminationProbability),
 					CEREAL_NVP(enableMultiSampling),
 					CEREAL_NVP(enableCameraSampling),
+					CEREAL_NVP(enableDirectLighting),
+					CEREAL_NVP(enableIndirectLighting),
 					CEREAL_NVP(multiSamplerFilterType));
 			}
 
 		} pathtracing;
 
-		struct Tonemapper
+		struct Tonemapping
 		{
 			TonemapperType type = TonemapperType::LINEAR;
 			bool applyGamma = true;

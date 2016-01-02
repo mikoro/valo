@@ -11,7 +11,9 @@ Scene Scene::createTestScene3()
 {
 	Scene scene;
 
-	scene.general.tracerType = TracerType::RAY;
+	scene.general.tracerType = TracerType::PATH;
+	scene.pathtracing.pixelSampleCount = 100000;
+	scene.pathtracing.enableMultiSampling = true;
 
 	scene.camera.position = Vector3(8.92, 0.68, -2.02);
 	scene.camera.orientation = EulerAngle(6.66, 111.11, 0.0);
@@ -22,8 +24,8 @@ Scene Scene::createTestScene3()
 	sphereMaterial.id = 1;
 	sphereMaterial.diffuseReflectance = Color(1.0, 1.0, 1.0);
 	sphereMaterial.emittance = Color(1.0, 1.0, 1.0) * 8.0;
+	sphereMaterial.invertNormal = true;
 	sphereMaterial.skipLighting = true;
-	sphereMaterial.nonShadowing = true;
 
 	ModelLoaderInfo model;
 	model.modelFilePath = "data/models/sphere.obj";

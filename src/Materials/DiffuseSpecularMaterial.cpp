@@ -37,12 +37,12 @@ Color DiffuseSpecularMaterial::getColor(const Scene& scene, const Intersection& 
 	return finalColor;
 }
 
-Vector3 DiffuseSpecularMaterial::getNewDirection(const Intersection& intersection, RandomSampler& sampler, Random& random)
+Vector3 DiffuseSpecularMaterial::getSampleDirection(const Intersection& intersection, RandomSampler& sampler, Random& random)
 {
 	return sampler.getCosineHemisphereSample(intersection.onb, 0, 0, 0, 0, 0, random);
 }
 
-double DiffuseSpecularMaterial::getPdf(const Intersection& intersection, const Vector3& out)
+double DiffuseSpecularMaterial::getDirectionProbability(const Intersection& intersection, const Vector3& out)
 {
 	return 0.5 * (1.0 / M_PI) + 0.5 * (intersection.normal.dot(out) / M_PI);
 }

@@ -10,6 +10,7 @@ namespace Raycer
 {
 	struct TracerState;
 	class Ray;
+	class Intersection;
 	
 	class Pathtracer : public Tracer
 	{
@@ -24,7 +25,9 @@ namespace Raycer
 
 	private:
 
-		Color traceRecursive(const Scene& scene, const Ray& ray, Random& random, uint64_t iteration);
+		Color traceRecursive(const Scene& scene, const Ray& ray, Random& random, uint64_t depth, bool shouldAddEmittance);
+		Color calculateDirectLight(const Scene& scene, const Intersection& intersection, Random& random, bool& directLightWasFound);
+		Color calculateIndirectLight(const Scene& scene, const Intersection& intersection, Random& random, uint64_t depth, bool shouldAddEmittance);
 
 		RandomSampler sampler;
 	};

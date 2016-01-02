@@ -9,6 +9,7 @@
 #include "Tracing/ONB.h"
 #include "Materials/Material.h"
 #include "Textures/Texture.h"
+#include "Utils/Random.h"
 
 using namespace Raycer;
 
@@ -19,7 +20,9 @@ void Triangle::initialize()
 	Vector2 t0tot1 = texcoords[1] - texcoords[0];
 	Vector2 t0tot2 = texcoords[2] - texcoords[0];
 
-	normal = v0tov1.cross(v0tov2).normalized();
+	Vector3 cross = v0tov1.cross(v0tov2);
+	normal = cross.normalized();
+	area = 0.5 * cross.length();
 
 	double denominator = t0tot1.x * t0tot2.y - t0tot1.y * t0tot2.x;
 
@@ -88,33 +91,35 @@ bool Triangle::intersect(const Ray& ray, Intersection& intersection) const
 
 	double w = 1.0 - u - v;
 
+	Vector3 intersectionPosition = ray.origin + (t * ray.direction);
 	Vector2 texcoord = (w * texcoords[0] + u * texcoords[1] + v * texcoords[2]) * material->texcoordScale;
-	Vector3 ip = ray.origin + (t * ray.direction);
 
 	texcoord.x = texcoord.x - floor(texcoord.x);
 	texcoord.y = texcoord.y - floor(texcoord.y);
 
 	if (material->maskMapTexture != nullptr)
 	{
-		if (material->maskMapTexture->getValue(texcoord, ip) < 0.5)
+		if (material->maskMapTexture->getValue(texcoord, intersectionPosition) < 0.5)
 			return false;
 	}
 
-	Vector3 finalNormal = material->normalInterpolation ? (w * normals[0] + u * normals[1] + v * normals[2]) : normal;
-
-	if (material->autoInvertNormal && ray.direction.dot(finalNormal) > 0.0)
-		finalNormal = -finalNormal;
+	Vector3 tempNormal = material->normalInterpolation ? (w * normals[0] + u * normals[1] + v * normals[2]) : normal;
 
 	if (material->invertNormal)
-		finalNormal = -finalNormal;
+		tempNormal = -tempNormal;
+
+	intersection.isBehind = ray.direction.dot(tempNormal) > 0.0;
+
+	if (material->autoInvertNormal && intersection.isBehind)
+		tempNormal = -tempNormal;
 
 	intersection.wasFound = true;
 	intersection.distance = t;
-	intersection.position = ip;
-	intersection.normal = finalNormal;
+	intersection.position = intersectionPosition;
+	intersection.normal = tempNormal;
 	intersection.texcoord = texcoord;
 	intersection.rayDirection = ray.direction;
-	intersection.onb = ONB(tangent, bitangent, finalNormal);
+	intersection.onb = ONB(tangent, bitangent, tempNormal);
 	intersection.material = material;
 
 	return true;
@@ -123,4 +128,37 @@ bool Triangle::intersect(const Ray& ray, Intersection& intersection) const
 AABB Triangle::getAABB() const
 {
 	return aabb;
+}
+
+double Triangle::getArea() const
+{
+	return area;
+}
+
+Intersection Triangle::getRandomIntersection(Random& random) const
+{
+	double r1 = random.getDouble();
+	double r2 = random.getDouble();
+	double sr1 = sqrt(r1);
+
+	double u = 1.0 - sr1;
+	double v = r2 * sr1;
+	double w = 1.0 - u - v;
+
+	Vector3 position = u * vertices[0] + v * vertices[1] + w * vertices[2];
+	Vector3 tempNormal = material->normalInterpolation ? (w * normals[0] + u * normals[1] + v * normals[2]) : normal;
+	Vector2 texcoord = (w * texcoords[0] + u * texcoords[1] + v * texcoords[2]) * material->texcoordScale;
+	
+	texcoord.x = texcoord.x - floor(texcoord.x);
+	texcoord.y = texcoord.y - floor(texcoord.y);
+
+	Intersection intersection;
+
+	intersection.position = position;
+	intersection.normal = tempNormal;
+	intersection.texcoord = texcoord;
+	intersection.onb = ONB(tangent, bitangent, tempNormal);
+	intersection.material = material;
+
+	return intersection;
 }

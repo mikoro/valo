@@ -14,8 +14,6 @@ double RandomSampler::getSample(uint64_t x, uint64_t n, uint64_t permutation, Ra
 	(void)n;
 	(void)permutation;
 
-	assert(x < n);
-
 	return random.getDouble();
 }
 
@@ -26,8 +24,6 @@ Vector2 RandomSampler::getSquareSample(uint64_t x, uint64_t y, uint64_t nx, uint
 	(void)nx;
 	(void)ny;
 	(void)permutation;
-
-	assert(x < nx && y < ny);
 
 	return Vector2(random.getDouble(), random.getDouble());
 }

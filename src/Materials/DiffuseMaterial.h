@@ -23,8 +23,8 @@ namespace Raycer
 
 		Color getColor(const Scene& scene, const Intersection& intersection, const Light& light, Random& random) override;
 
-		Vector3 getNewDirection(const Intersection& intersection, RandomSampler& sampler, Random& random) override;
-		double getPdf(const Intersection& intersection, const Vector3& out) override;
+		Vector3 getSampleDirection(const Intersection& intersection, RandomSampler& sampler, Random& random) override;
+		double getDirectionProbability(const Intersection& intersection, const Vector3& out) override;
 		Color getBrdf(const Intersection& intersection, const Vector3& out) override;
 
 	private:

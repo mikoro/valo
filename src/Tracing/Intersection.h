@@ -18,12 +18,17 @@ namespace Raycer
 	public:
 
 		bool wasFound = false;
+		bool isBehind = false;
+
 		double distance = std::numeric_limits<double>::max();
+
 		Vector3 position;
 		Vector3 normal;
 		Vector2 texcoord;
 		Vector3 rayDirection;
+
 		ONB onb;
+
 		Material* material = nullptr;
 	};
 }
