@@ -19,6 +19,9 @@
 #include "Math/Vector2.h"
 #include "Math/Vector3.h"
 #include "Utils/Random.h"
+#include "Tracing/Triangle.h"
+#include "Tracing/Intersection.h"
+#include "Materials/DiffuseSpecularMaterial.h"
 
 using namespace Raycer;
 
@@ -91,6 +94,33 @@ TEST_CASE("Sampler functionality", "[sampler]")
 		file1.close();
 		file2.close();
 	}
+}
+
+TEST_CASE("Triangle sampler functionality", "[sampler]")
+{
+	Triangle triangle;
+	DiffuseSpecularMaterial material;
+
+	triangle.material = &material;
+
+	triangle.vertices[0] = Vector3(0.1, 0.1, 0.0);
+	triangle.vertices[1] = Vector3(0.9, 0.1, 0.0);
+	triangle.vertices[2] = Vector3(0.5, 0.9, 0.0);
+
+	Random random;
+	Image image1(100, 100);
+
+	for (uint64_t i = 0; i < 1000; ++i)
+	{
+		Intersection intersection = triangle.getRandomIntersection(random);
+
+		uint64_t x = uint64_t(intersection.position.x * 99.0 + 0.5);
+		uint64_t y = uint64_t(intersection.position.y * 99.0 + 0.5);
+
+		image1.setPixel(x, y, Color(255, 255, 255));
+	}
+
+	image1.save("sampler_triangle.png");
 }
 
 #endif

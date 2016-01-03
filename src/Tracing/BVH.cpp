@@ -21,69 +21,60 @@ bool BVH::intersect(const Ray& ray, Intersection& intersection) const
 	if (ray.fastOcclusion && intersection.wasFound)
 		return true;
 
-	uint64_t stack[128];
-	uint64_t stackptr = 0;
+	uint64_t stack[64];
+	uint64_t stackIndex = 0;
 	bool wasFound = false;
 
 	// push to stack
-	stack[stackptr] = 0;
-	stackptr++;
+	stack[stackIndex] = 0;
+	stackIndex++;
 
-	while (stackptr > 0)
+	while (stackIndex > 0)
 	{
 		// pop from stack
-		stackptr--;
-		uint64_t index = stack[stackptr];
-		const BVHNode& node = nodes[index];
+		stackIndex--;
+		uint64_t nodeIndex = stack[stackIndex];
+		const BVHNode& node = nodes[nodeIndex];
 
-		// leaf node -> intersect with all its primitives
-		if (node.rightOffset == 0)
+		if (node.aabb.intersects(ray))
 		{
-			for (uint64_t i = 0; i < node.primitiveCount; ++i)
+			// leaf node
+			if (node.rightOffset == 0)
 			{
-				if (orderedTriangles[node.startOffset + i]->intersect(ray, intersection))
+				for (uint64_t i = 0; i < node.primitiveCount; ++i)
 				{
-					if (ray.fastOcclusion)
-						return true;
+					if (orderedTriangles[node.startOffset + i]->intersect(ray, intersection))
+					{
+						if (ray.fastOcclusion)
+							return true;
 
-					wasFound = true;
+						wasFound = true;
+					}
 				}
 			}
-		}
-		else // travel down the tree
-		{
-			if (ray.directionIsNegative[node.splitAxis])
+			else // travel down the tree
 			{
-				// seems to perform better like this (inverted logic?)
+				if (ray.directionIsNegative[node.splitAxis])
+				{
+					// seems to perform better like this (inverted logic?)
 
-				// left child
-				if (nodes[index + 1].aabb.intersects(ray))
-				{
-					stack[stackptr] = index + 1;
-					stackptr++;
-				}
+					// left child
+					stack[stackIndex] = nodeIndex + 1;
+					stackIndex++;
 
-				// right child
-				if (nodes[index + uint64_t(node.rightOffset)].aabb.intersects(ray))
-				{
-					stack[stackptr] = index + uint64_t(node.rightOffset);
-					stackptr++;
+					// right child
+					stack[stackIndex] = nodeIndex + uint64_t(node.rightOffset);
+					stackIndex++;
 				}
-			}
-			else
-			{
-				// right child
-				if (nodes[index + uint64_t(node.rightOffset)].aabb.intersects(ray))
+				else
 				{
-					stack[stackptr] = index + uint64_t(node.rightOffset);
-					stackptr++;
-				}
+					// right child
+					stack[stackIndex] = nodeIndex + uint64_t(node.rightOffset);
+					stackIndex++;
 
-				// left child
-				if (nodes[index + 1].aabb.intersects(ray))
-				{
-					stack[stackptr] = index + 1;
-					stackptr++;
+					// left child
+					stack[stackIndex] = nodeIndex + 1;
+					stackIndex++;
 				}
 			}
 		}
