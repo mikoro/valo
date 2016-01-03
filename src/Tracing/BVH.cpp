@@ -16,7 +16,7 @@
 
 using namespace Raycer;
 
-bool BVH::intersect(const Ray& ray, Intersection& intersection) const
+bool BVH::intersect(const std::vector<Triangle>& triangles, const Ray& ray, Intersection& intersection) const
 {
 	if (ray.fastOcclusion && intersection.wasFound)
 		return true;
@@ -43,7 +43,7 @@ bool BVH::intersect(const Ray& ray, Intersection& intersection) const
 			{
 				for (uint64_t i = 0; i < node.primitiveCount; ++i)
 				{
-					if (orderedTriangles[node.startOffset + i]->intersect(ray, intersection))
+					if (triangles[node.startOffset + i].intersect(ray, intersection))
 					{
 						if (ray.fastOcclusion)
 							return true;
@@ -83,7 +83,7 @@ bool BVH::intersect(const Ray& ray, Intersection& intersection) const
 	return wasFound;
 }
 
-void BVH::build(const std::vector<Triangle>& triangles, const BVHBuildInfo& buildInfo)
+void BVH::build(std::vector<Triangle>& triangles, const BVHBuildInfo& buildInfo)
 {
 	Log& log = App::getLog();
 
@@ -93,13 +93,7 @@ void BVH::build(const std::vector<Triangle>& triangles, const BVHBuildInfo& buil
 	Random random;
 
 	BVHBuildEntry stack[128];
-	orderedTriangles.clear();
 	nodes.clear();
-
-	orderedTriangles.reserve(triangles.size());
-
-	for (const Triangle& triangle : triangles)
-		orderedTriangles.push_back(&triangle);
 
 	uint64_t stackptr = 0;
 	uint64_t nodeCount = 0;
@@ -110,7 +104,7 @@ void BVH::build(const std::vector<Triangle>& triangles, const BVHBuildInfo& buil
 
 	// push to stack
 	stack[stackptr].start = 0;
-	stack[stackptr].end = orderedTriangles.size();
+	stack[stackptr].end = triangles.size();
 	stack[stackptr].parent = ROOT;
 	stackptr++;
 
@@ -128,7 +122,7 @@ void BVH::build(const std::vector<Triangle>& triangles, const BVHBuildInfo& buil
 		node.splitAxis = 0;
 
 		for (uint64_t i = buildEntry.start; i < buildEntry.end; ++i)
-			node.aabb.expand(orderedTriangles[i]->getAABB());
+			node.aabb.expand(triangles[i].getAABB());
 
 		// leaf node indicated by rightOffset == 0
 		if (node.primitiveCount <= buildInfo.maxLeafSize)
@@ -157,9 +151,9 @@ void BVH::build(const std::vector<Triangle>& triangles, const BVHBuildInfo& buil
 		actualNodeCount++;
 
 		if (buildInfo.useSAH)
-			calculateSAHSplit(node.splitAxis, splitPoint, node.aabb, buildInfo, buildEntry);
+			calculateSAHSplit(triangles, node.splitAxis, splitPoint, node.aabb, buildInfo, buildEntry);
 		else
-			calculateSplit(node.splitAxis, splitPoint, node.aabb, buildInfo, buildEntry, random);
+			calculateSplit(triangles, node.splitAxis, splitPoint, node.aabb, buildInfo, buildEntry, random);
 
 		nodes.push_back(node);
 
@@ -168,9 +162,9 @@ void BVH::build(const std::vector<Triangle>& triangles, const BVHBuildInfo& buil
 		// partition primitive range by the split point
 		for (uint64_t i = buildEntry.start; i < buildEntry.end; ++i)
 		{
-			if (orderedTriangles[i]->getAABB().getCenter().get(node.splitAxis) <= splitPoint)
+			if (triangles[i].getAABB().getCenter().get(node.splitAxis) <= splitPoint)
 			{
-				std::swap(orderedTriangles[i], orderedTriangles[middle]);
+				std::swap(triangles[i], triangles[middle]);
 				middle++;
 			}
 		}
@@ -194,22 +188,7 @@ void BVH::build(const std::vector<Triangle>& triangles, const BVHBuildInfo& buil
 
 	bvhHasBeenBuilt = true;
 
-	orderedTriangleIds.clear();
-
-	for (const Triangle* triangle : orderedTriangles)
-		orderedTriangleIds.push_back(triangle->id);
-
 	log.logInfo("BVH building finished (time: %.2f ms, nodes: %d, leafs: %d)", timer.getElapsedMilliseconds(), nodeCount, leafCount);
-}
-
-void BVH::restore(const Scene& scene)
-{
-	orderedTriangles.clear();
-
-	for (uint64_t triangleId : orderedTriangleIds)
-		orderedTriangles.push_back(scene.trianglesMap.at(triangleId));
-
-	return;
 }
 
 bool BVH::hasBeenBuilt() const
@@ -217,7 +196,7 @@ bool BVH::hasBeenBuilt() const
 	return bvhHasBeenBuilt;
 }
 
-void BVH::calculateSplit(uint64_t& splitAxis, double& splitPoint, const AABB& nodeAABB, const BVHBuildInfo& buildInfo, const BVHBuildEntry& buildEntry, Random& random)
+void BVH::calculateSplit(const std::vector<Triangle>& triangles, uint64_t& splitAxis, double& splitPoint, const AABB& nodeAABB, const BVHBuildInfo& buildInfo, const BVHBuildEntry& buildEntry, Random& random)
 {
 	if (buildInfo.axisSelection == BVHAxisSelection::LARGEST)
 		splitAxis = nodeAABB.getLargestAxis();
@@ -229,21 +208,21 @@ void BVH::calculateSplit(uint64_t& splitAxis, double& splitPoint, const AABB& no
 	if (buildInfo.axisSplit == BVHAxisSplit::MIDDLE)
 		splitPoint = nodeAABB.getCenter().get(splitAxis);
 	else if (buildInfo.axisSplit == BVHAxisSplit::MEDIAN)
-		splitPoint = calculateMedianPoint(splitAxis, buildEntry);
+		splitPoint = calculateMedianPoint(triangles, splitAxis, buildEntry);
 	else if (buildInfo.axisSplit == BVHAxisSplit::RANDOM)
 		splitPoint = random.getDouble(nodeAABB.getMin().get(splitAxis), nodeAABB.getMax().get(splitAxis));
 	else
 		throw std::runtime_error("Unknown BVH axis split");
 }
 
-void BVH::calculateSAHSplit(uint64_t& splitAxis, double& splitPoint, const AABB& nodeAABB, const BVHBuildInfo& buildInfo, const BVHBuildEntry& buildEntry)
+void BVH::calculateSAHSplit(const std::vector<Triangle>& triangles, uint64_t& splitAxis, double& splitPoint, const AABB& nodeAABB, const BVHBuildInfo& buildInfo, const BVHBuildEntry& buildEntry)
 {
 	double lowestScore = std::numeric_limits<double>::max();
 
 	for (uint64_t tempAxis = 0; tempAxis <= 2; ++tempAxis)
 	{
 		double tempSplitPoint = nodeAABB.getCenter().get(tempAxis);
-		double score = calculateSAHScore(tempAxis, tempSplitPoint, nodeAABB, buildEntry);
+		double score = calculateSAHScore(triangles, tempAxis, tempSplitPoint, nodeAABB, buildEntry);
 
 		if (score < lowestScore)
 		{
@@ -252,8 +231,8 @@ void BVH::calculateSAHSplit(uint64_t& splitAxis, double& splitPoint, const AABB&
 			lowestScore = score;
 		}
 
-		tempSplitPoint = calculateMedianPoint(tempAxis, buildEntry);
-		score = calculateSAHScore(tempAxis, tempSplitPoint, nodeAABB, buildEntry);
+		tempSplitPoint = calculateMedianPoint(triangles, tempAxis, buildEntry);
+		score = calculateSAHScore(triangles, tempAxis, tempSplitPoint, nodeAABB, buildEntry);
 
 		if (score < lowestScore)
 		{
@@ -270,7 +249,7 @@ void BVH::calculateSAHSplit(uint64_t& splitAxis, double& splitPoint, const AABB&
 			for (uint64_t i = 0; i < buildInfo.regularSAHSplits - 1; ++i)
 			{
 				tempSplitPoint += step;
-				score = calculateSAHScore(tempAxis, tempSplitPoint, nodeAABB, buildEntry);
+				score = calculateSAHScore(triangles, tempAxis, tempSplitPoint, nodeAABB, buildEntry);
 
 				if (score < lowestScore)
 				{
@@ -283,7 +262,7 @@ void BVH::calculateSAHSplit(uint64_t& splitAxis, double& splitPoint, const AABB&
 	}
 }
 
-double BVH::calculateSAHScore(uint64_t splitAxis, double splitPoint, const AABB& nodeAABB, const BVHBuildEntry& buildEntry)
+double BVH::calculateSAHScore(const std::vector<Triangle>& triangles, uint64_t splitAxis, double splitPoint, const AABB& nodeAABB, const BVHBuildEntry& buildEntry)
 {
 	assert(buildEntry.end != buildEntry.start);
 
@@ -293,16 +272,16 @@ double BVH::calculateSAHScore(uint64_t splitAxis, double splitPoint, const AABB&
 
 	for (uint64_t i = buildEntry.start; i < buildEntry.end; ++i)
 	{
-		AABB primitiveAABB = orderedTriangles[i]->getAABB();
+		AABB triangleAABB = triangles[i].getAABB();
 
-		if (primitiveAABB.getCenter().get(splitAxis) <= splitPoint)
+		if (triangleAABB.getCenter().get(splitAxis) <= splitPoint)
 		{
-			leftAABB.expand(primitiveAABB);
+			leftAABB.expand(triangleAABB);
 			leftCount++;
 		}
 		else
 		{
-			rightAABB.expand(primitiveAABB);
+			rightAABB.expand(triangleAABB);
 			rightCount++;
 		}
 	}
@@ -318,12 +297,12 @@ double BVH::calculateSAHScore(uint64_t splitAxis, double splitPoint, const AABB&
 	return score;
 }
 
-double BVH::calculateMedianPoint(uint64_t splitAxis, const BVHBuildEntry& buildEntry)
+double BVH::calculateMedianPoint(const std::vector<Triangle>& triangles, uint64_t splitAxis, const BVHBuildEntry& buildEntry)
 {
 	std::vector<double> centerPoints;
 
 	for (uint64_t i = buildEntry.start; i < buildEntry.end; ++i)
-		centerPoints.push_back(orderedTriangles[i]->getAABB().getCenter().get(splitAxis));
+		centerPoints.push_back(triangles[i].getAABB().getCenter().get(splitAxis));
 
 	std::sort(centerPoints.begin(), centerPoints.end());
 	uint64_t size = centerPoints.size();

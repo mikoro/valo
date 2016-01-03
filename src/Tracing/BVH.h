@@ -69,33 +69,27 @@ namespace Raycer
 	{
 	public:
 
-		bool intersect(const Ray& ray, Intersection& intersection) const;
-		
-		void build(const std::vector<Triangle>& triangles, const BVHBuildInfo& buildInfo);
-		void restore(const Scene& scene);
-
+		bool intersect(const std::vector<Triangle>& triangles, const Ray& ray, Intersection& intersection) const;
+		void build(std::vector<Triangle>& triangles, const BVHBuildInfo& buildInfo);
 		bool hasBeenBuilt() const;
 
 	private:
 
-		void calculateSplit(uint64_t& splitAxis, double& splitPoint, const AABB& nodeAABB, const BVHBuildInfo& buildInfo, const BVHBuildEntry& buildEntry, Random& random);
-		void calculateSAHSplit(uint64_t& splitAxis, double& splitPoint, const AABB& nodeAABB, const BVHBuildInfo& buildInfo, const BVHBuildEntry& buildEntry);
-		double calculateSAHScore(uint64_t splitAxis, double splitPoint, const AABB& nodeAABB, const BVHBuildEntry& buildEntry);
-		double calculateMedianPoint(uint64_t splitAxis, const BVHBuildEntry& buildEntry);
+		void calculateSplit(const std::vector<Triangle>& triangles, uint64_t& splitAxis, double& splitPoint, const AABB& nodeAABB, const BVHBuildInfo& buildInfo, const BVHBuildEntry& buildEntry, Random& random);
+		void calculateSAHSplit(const std::vector<Triangle>& triangles, uint64_t& splitAxis, double& splitPoint, const AABB& nodeAABB, const BVHBuildInfo& buildInfo, const BVHBuildEntry& buildEntry);
+		double calculateSAHScore(const std::vector<Triangle>& triangles, uint64_t splitAxis, double splitPoint, const AABB& nodeAABB, const BVHBuildEntry& buildEntry);
+		double calculateMedianPoint(const std::vector<Triangle>& triangles, uint64_t splitAxis, const BVHBuildEntry& buildEntry);
 
 		bool bvhHasBeenBuilt = false;
 		std::vector<BVHNode> nodes;
-		std::vector<uint64_t> orderedTriangleIds;
-		std::vector<const Triangle*> orderedTriangles;
-
+		
 		friend class cereal::access;
 
 		template <class Archive>
 		void serialize(Archive& ar)
 		{
 			ar(CEREAL_NVP(bvhHasBeenBuilt),
-				CEREAL_NVP(nodes),
-				CEREAL_NVP(orderedTriangleIds));
+				CEREAL_NVP(nodes));
 		}
 	};
 }

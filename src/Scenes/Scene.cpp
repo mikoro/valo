@@ -295,9 +295,7 @@ void Scene::initialize()
 
 	// BVH BUILD
 
-	if (bvh.hasBeenBuilt())
-		bvh.restore(*this);
-	else
+	if (!bvh.hasBeenBuilt())
 		bvh.build(triangles, bvhBuildInfo);
 
 	log.logInfo("Scene initialization finished (time: %.2f ms)", timer.getElapsedMilliseconds());
@@ -305,5 +303,5 @@ void Scene::initialize()
 
 bool Scene::intersect(const Ray& ray, Intersection& intersection) const
 {
-	return bvh.intersect(ray, intersection);
+	return bvh.intersect(triangles, ray, intersection);
 }
