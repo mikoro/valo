@@ -10,9 +10,9 @@
 #include "Tracing/Camera.h"
 #include "Tracers/TracerState.h"
 #include "Tracers/Raytracer.h"
-#include "Tracers/Pathtracer.h"
+#include "Tracers/PathtracerRecursive.h"
+#include "Tracers/PathtracerIterative.h"
 #include "Tracers/PreviewTracer.h"
-#include "Rendering/ImagePool.h"
 #include "Runners/WindowRunner.h"
 
 using namespace Raycer;
@@ -20,7 +20,8 @@ using namespace Raycer;
 DefaultState::DefaultState() : interrupted(false)
 {
 	tracers[TracerType::RAY] = std::make_unique<Raytracer>();
-	tracers[TracerType::PATH] = std::make_unique<Pathtracer>();
+	tracers[TracerType::PATH_RECURSIVE] = std::make_unique<PathtracerRecursive>();
+	tracers[TracerType::PATH_ITERATIVE] = std::make_unique<PathtracerIterative>();
 	tracers[TracerType::PREVIEW] = std::make_unique<PreviewTracer>();
 }
 
@@ -124,8 +125,8 @@ void DefaultState::update(double timeStep)
 		else
 		{
 			if (scene.general.tracerType == TracerType::RAY)
-				scene.general.tracerType = TracerType::PATH;
-			else if (scene.general.tracerType == TracerType::PATH)
+				scene.general.tracerType = TracerType::PATH_ITERATIVE;
+			else if (scene.general.tracerType == TracerType::PATH_ITERATIVE)
 				scene.general.tracerType = TracerType::PREVIEW;
 			else if (scene.general.tracerType == TracerType::PREVIEW)
 				scene.general.tracerType = TracerType::RAY;
@@ -253,7 +254,7 @@ void DefaultState::render(double timeStep, double interpolation)
 
 	if (scene.general.tracerType == TracerType::RAY ||
 		scene.general.tracerType == TracerType::PREVIEW ||
-		(scene.general.tracerType == TracerType::PATH && scene.camera.isMoving()) ||
+		((scene.general.tracerType == TracerType::PATH_RECURSIVE || scene.general.tracerType == TracerType::PATH_ITERATIVE) && scene.camera.isMoving()) ||
 		filmNeedsClearing)
 	{
 		film.clear();
@@ -262,7 +263,7 @@ void DefaultState::render(double timeStep, double interpolation)
 
 	Tracer* tracer = tracers[scene.general.tracerType].get();
 
-	if (scene.general.tracerType == TracerType::PATH &&
+	if ((scene.general.tracerType == TracerType::PATH_RECURSIVE || scene.general.tracerType == TracerType::PATH_ITERATIVE) &&
 		settings.interactive.usePreviewWhileMoving &&
 		scene.camera.isMoving())
 	{

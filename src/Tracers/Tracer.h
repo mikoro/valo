@@ -19,8 +19,9 @@ namespace Raycer
 	class Film;
 	class Ray;
 	class Vector2;
+	class Intersection;
 
-	enum class TracerType { RAY, PATH, PREVIEW };
+	enum class TracerType { RAY, PATH_RECURSIVE, PATH_ITERATIVE, PREVIEW };
 
 	class Tracer
 	{
@@ -39,6 +40,9 @@ namespace Raycer
 	protected:
 
 		virtual void trace(const Scene& scene, Film& film, const Vector2& pixelCenter, uint64_t pixelIndex, Random& random, uint64_t& pathCount) = 0;
+
+		static void calculateNormalMapping(Intersection& intersection);
+		static Color calculateDirectLight(const Scene& scene, const Intersection& intersection, Random& random);
 
 		std::map<SamplerType, std::unique_ptr<Sampler>> samplers;
 		std::map<FilterType, std::unique_ptr<Filter>> filters;

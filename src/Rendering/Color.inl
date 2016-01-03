@@ -108,6 +108,13 @@ namespace Raycer
 	}
 
 	template <typename T>
+	ColorType<T>& ColorType<T>::operator*=(const ColorType<T>& c)
+	{
+		*this = *this * c;
+		return *this;
+	}
+
+	template <typename T>
 	ColorType<T>& ColorType<T>::operator*=(T s)
 	{
 		*this = *this * s;

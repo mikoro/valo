@@ -259,7 +259,8 @@
     <ClCompile Include="src\Tonemappers\ReinhardTonemapper.cpp" />
     <ClCompile Include="src\Tonemappers\SimpleTonemapper.cpp" />
     <ClCompile Include="src\Tonemappers\Tonemapper.cpp" />
-    <ClCompile Include="src\Tracers\Pathtracer.cpp" />
+    <ClCompile Include="src\Tracers\PathtracerIterative.cpp" />
+    <ClCompile Include="src\Tracers\PathtracerRecursive.cpp" />
     <ClCompile Include="src\Tracers\PreviewTracer.cpp" />
     <ClCompile Include="src\Tracers\Raytracer.cpp" />
     <ClCompile Include="src\Tracers\Tracer.cpp" />
@@ -342,7 +343,8 @@
     <ClInclude Include="src\Tonemappers\ReinhardTonemapper.h" />
     <ClInclude Include="src\Tonemappers\SimpleTonemapper.h" />
     <ClInclude Include="src\Tonemappers\Tonemapper.h" />
-    <ClInclude Include="src\Tracers\Pathtracer.h" />
+    <ClInclude Include="src\Tracers\PathtracerIterative.h" />
+    <ClInclude Include="src\Tracers\PathtracerRecursive.h" />
     <ClInclude Include="src\Tracers\PreviewTracer.h" />
     <ClInclude Include="src\Tracers\Raytracer.h" />
     <ClInclude Include="src\Tracers\Tracer.h" />

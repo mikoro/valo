@@ -146,14 +146,6 @@ Color Raytracer::traceRecursive(const Scene& scene, const Ray& ray, Intersection
 	return materialColor + reflectedColor + transmittedColor;
 }
 
-void Raytracer::calculateNormalMapping(Intersection& intersection)
-{
-	Color normalColor = intersection.material->normalMapTexture->getColor(intersection.texcoord, intersection.position);
-	Vector3 normal(normalColor.r * 2.0 - 1.0, normalColor.g * 2.0 - 1.0, normalColor.b);
-	Vector3 mappedNormal = intersection.onb.u * normal.x + intersection.onb.v * normal.y + intersection.onb.w * normal.z;
-	intersection.normal = mappedNormal.normalized();
-}
-
 void Raytracer::calculateRayReflectanceAndTransmittance(const Intersection& intersection, double& rayReflectance, double& rayTransmittance)
 {
 	Material* material = intersection.material;

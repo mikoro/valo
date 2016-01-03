@@ -17,6 +17,7 @@ namespace Raycer
 
 		ColorType<T>& operator+=(const ColorType<T>& c);
 		ColorType<T>& operator-=(const ColorType<T>& c);
+		ColorType<T>& operator*=(const ColorType<T>& c);
 		ColorType<T>& operator*=(T s);
 		ColorType<T>& operator/=(T s);
 

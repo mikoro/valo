@@ -5,7 +5,8 @@
 
 #include "Tracers/Tracer.h"
 #include "Tracers/Raytracer.h"
-#include "Tracers/Pathtracer.h"
+#include "Tracers/PathtracerRecursive.h"
+#include "Tracers/PathtracerIterative.h"
 #include "Tracers/PreviewTracer.h"
 #include "Scenes/Scene.h"
 #include "App.h"
@@ -24,19 +25,10 @@
 #include "Filters/GaussianFilter.h"
 #include "Filters/MitchellFilter.h"
 #include "Filters/LanczosSincFilter.h"
+#include "Tracing/Intersection.h"
+#include "Tracing/Ray.h"
 
 using namespace Raycer;
-
-std::unique_ptr<Tracer> Tracer::getTracer(TracerType type)
-{
-	switch (type)
-	{
-		case TracerType::RAY: return std::make_unique<Raytracer>();
-		case TracerType::PATH: return std::make_unique<Pathtracer>();
-		case TracerType::PREVIEW: return std::make_unique<PreviewTracer>();
-		default: throw std::runtime_error("Invalid tracer type");
-	}
-}
 
 Tracer::Tracer()
 {
@@ -158,4 +150,67 @@ void Tracer::run(TracerState& state, std::atomic<bool>& interrupted)
 		state.processedSampleCount = state.pixelCount * pixelSampleCount * samplesPerPixel;
 		state.processedPixelCount = state.pixelCount;
 	}
+}
+
+std::unique_ptr<Tracer> Tracer::getTracer(TracerType type)
+{
+	switch (type)
+	{
+		case TracerType::RAY: return std::make_unique<Raytracer>();
+		case TracerType::PATH_RECURSIVE: return std::make_unique<PathtracerRecursive>();
+		case TracerType::PATH_ITERATIVE: return std::make_unique<PathtracerIterative>();
+		case TracerType::PREVIEW: return std::make_unique<PreviewTracer>();
+		default: throw std::runtime_error("Invalid tracer type");
+	}
+}
+
+void Tracer::calculateNormalMapping(Intersection& intersection)
+{
+	Color normalColor = intersection.material->normalMapTexture->getColor(intersection.texcoord, intersection.position);
+	Vector3 normal(normalColor.r * 2.0 - 1.0, normalColor.g * 2.0 - 1.0, normalColor.b);
+	Vector3 mappedNormal = intersection.onb.u * normal.x + intersection.onb.v * normal.y + intersection.onb.w * normal.z;
+	intersection.normal = mappedNormal.normalized();
+}
+
+Color Tracer::calculateDirectLight(const Scene& scene, const Intersection& intersection, Random& random)
+{
+	uint64_t emitterCount = scene.emissiveTriangles.size();
+
+	if (emitterCount == 0)
+		return Color(0.0, 0.0, 0.0);
+
+	Triangle* emitter = scene.emissiveTriangles[random.getUint64(0, emitterCount - 1)];
+	Intersection emitterIntersection = emitter->getRandomIntersection(random);
+	Vector3 intersectionToEmitter = emitterIntersection.position - intersection.position;
+	double emitterDistance2 = intersectionToEmitter.lengthSquared();
+	double emitterDistance = sqrt(emitterDistance2);
+
+	Ray shadowRay;
+	shadowRay.origin = intersection.position;
+	shadowRay.direction = intersectionToEmitter / emitterDistance;
+	shadowRay.minDistance = scene.general.rayMinDistance;
+	shadowRay.maxDistance = emitterDistance - scene.general.rayMinDistance;
+	shadowRay.isShadowRay = true;
+	shadowRay.fastOcclusion = true;
+	shadowRay.precalculate();
+
+	Intersection shadowIntersection;
+	scene.intersect(shadowRay, shadowIntersection);
+
+	if (shadowIntersection.wasFound)
+		return Color(0.0, 0.0, 0.0);
+
+	double cosine1 = intersection.normal.dot(shadowRay.direction);
+	double cosine2 = shadowRay.direction.dot(-emitter->normal);
+
+	if (cosine1 < 0.0 || cosine2 < 0.0)
+		return Color(0.0, 0.0, 0.0);
+
+	double probability1 = 1.0 / double(emitterCount);
+	double probability2 = 1.0 / emitter->getArea();
+
+	Color emittance = emitter->material->getEmittance(emitterIntersection);
+	Color intersectionBrdf = intersection.material->getBrdf(intersection, shadowRay.direction);
+
+	return emittance * intersectionBrdf * cosine1 * cosine2 * (1.0 / emitterDistance2) / (probability1 * probability2);
 }
