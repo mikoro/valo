@@ -13,7 +13,6 @@ namespace Raycer
 	class Ray;
 	class Vector2;
 	class Scene;
-	class Primitive;
 	class ONB;
 
 	enum class CameraProjectionType { PERSPECTIVE, ORTHOGRAPHIC, FISHEYE };

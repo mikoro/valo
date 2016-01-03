@@ -32,8 +32,6 @@
 
 namespace Raycer
 {
-	class Primitive;
-
 	class Scene
 	{
 	public:

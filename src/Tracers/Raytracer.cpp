@@ -197,7 +197,7 @@ Color Raytracer::calculateReflectedColor(const Scene& scene, const Intersection&
 
 	reflectedColor = traceRecursive(scene, reflectedRay, reflectedIntersection, iteration + 1, random) * rayReflectance;
 
-	// only attenuate if ray has traveled inside a primitive
+	// only attenuate if ray has traveled inside
 	if (!isOutside && reflectedIntersection.wasFound && material->attenuating)
 	{
 		double a = exp(-material->attenuationFactor * reflectedIntersection.distance);
@@ -237,7 +237,7 @@ Color Raytracer::calculateTransmittedColor(const Scene& scene, const Intersectio
 
 	transmittedColor = traceRecursive(scene, transmittedRay, transmittedIntersection, iteration + 1, random) * rayTransmittance;
 
-	// only attenuate if ray has traveled inside a primitive
+	// only attenuate if ray has traveled inside
 	if (isOutside && transmittedIntersection.wasFound && material->attenuating)
 	{
 		double a = exp(-material->attenuationFactor * transmittedIntersection.distance);

@@ -40,7 +40,7 @@ bool BVH::intersect(const std::vector<Triangle>& triangles, const Ray& ray, Inte
 			// leaf node
 			if (node.rightOffset == 0)
 			{
-				for (uint64_t i = 0; i < node.primitiveCount; ++i)
+				for (uint64_t i = 0; i < node.triangleCount; ++i)
 				{
 					if (triangles[node.startOffset + i].intersect(ray, intersection))
 					{
@@ -117,14 +117,14 @@ void BVH::build(std::vector<Triangle>& triangles, const BVHBuildInfo& buildInfo)
 		BVHBuildEntry buildEntry = stack[stackptr];
 		node.rightOffset = UNVISITED;
 		node.startOffset = buildEntry.start;
-		node.primitiveCount = buildEntry.end - buildEntry.start;
+		node.triangleCount = buildEntry.end - buildEntry.start;
 		node.splitAxis = 0;
 
 		for (uint64_t i = buildEntry.start; i < buildEntry.end; ++i)
 			node.aabb.expand(triangles[i].getAABB());
 
 		// leaf node indicated by rightOffset == 0
-		if (node.primitiveCount <= buildInfo.maxLeafSize)
+		if (node.triangleCount <= buildInfo.maxLeafSize)
 		{
 			node.rightOffset = 0;
 			leafCount++;
@@ -158,7 +158,7 @@ void BVH::build(std::vector<Triangle>& triangles, const BVHBuildInfo& buildInfo)
 
 		uint64_t middle = buildEntry.start;
 
-		// partition primitive range by the split point
+		// partition triangle range by the split point
 		for (uint64_t i = buildEntry.start; i < buildEntry.end; ++i)
 		{
 			if (triangles[i].getAABB().getCenter().get(node.splitAxis) <= splitPoint)

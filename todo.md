@@ -1,4 +1,5 @@
 pathtracer
+ - flat pathtracer
  - more materials
  - import brdf from file
 
@@ -12,12 +13,11 @@ gpu
  - implement cuda pathtracer
 
 misc
- - fix light cosine factors
- - add spline curve class
- - add transform class
+ - spline curve class
+ - transform class
+ - triangle group
  - add transform to camera
- - add primitive abstraction
- - primitive and primitive group with transform
+ - add transform to triangle group
  - implement video rendering
  - add BVH -> QBVH conversion
  - implement QBVH travelsal and SIMD triangle intersect with ispc

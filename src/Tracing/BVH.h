@@ -38,7 +38,7 @@ namespace Raycer
 		AABB aabb;
 		int64_t rightOffset;
 		uint64_t startOffset;
-		uint64_t primitiveCount;
+		uint64_t triangleCount;
 		uint64_t splitAxis;
 
 		template <class Archive>
@@ -47,7 +47,7 @@ namespace Raycer
 			ar(CEREAL_NVP(aabb),
 				CEREAL_NVP(rightOffset),
 				CEREAL_NVP(startOffset),
-				CEREAL_NVP(primitiveCount),
+				CEREAL_NVP(triangleCount),
 				CEREAL_NVP(splitAxis));
 		}
 	};
