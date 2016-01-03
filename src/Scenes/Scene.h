@@ -214,10 +214,6 @@ namespace Raycer
 		std::vector<Light*> lightsList;
 		std::vector<Texture*> texturesList;
 		std::vector<Material*> materialsList;
-		
-		std::map<uint64_t, Texture*> texturesMap;
-		std::map<uint64_t, Material*> materialsMap;
-		std::map<uint64_t, Triangle*> trianglesMap;
 
 	private:
 

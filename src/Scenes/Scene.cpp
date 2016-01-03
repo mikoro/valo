@@ -210,7 +210,11 @@ void Scene::initialize()
 	for (DiffuseSpecularMaterial& material : materials.diffuseSpecularMaterials)
 		materialsList.push_back(&material);
 
-	// POINTER MAP GENERATION
+	// POINTER MAP GENERATION + POINTER SETTING
+
+	std::map<uint64_t, Texture*> texturesMap;
+	std::map<uint64_t, Material*> materialsMap;
+	std::map<uint64_t, bool> trianglesMap;
 
 	for (Texture* texture : texturesList)
 	{
@@ -232,33 +236,7 @@ void Scene::initialize()
 			throw std::runtime_error(tfm::format("A duplicate material id was found (id: %s)", material->id));
 
 		materialsMap[material->id] = material;
-	}
 
-	for (Triangle& triangle : triangles)
-	{
-		if (triangle.id == 0)
-			throw std::runtime_error(tfm::format("A triangle must have a non-zero id"));
-
-		if (trianglesMap.count(triangle.id))
-			throw std::runtime_error(tfm::format("A duplicate triangle id was found (id: %s)", triangle.id));
-
-		trianglesMap[triangle.id] = &triangle;
-
-		if (materialsMap.count(triangle.materialId))
-			triangle.material = materialsMap[triangle.materialId];
-		else
-			throw std::runtime_error(tfm::format("A triangle has a non-existent material id (%d)", triangle.materialId));
-
-		triangle.initialize();
-
-		if (triangle.material->isEmissive())
-			emissiveTriangles.push_back(&triangle);
-	}
-
-	// POINTER SETTING
-
-	for (Material* material : materialsList)
-	{
 		if (texturesMap.count(material->reflectanceMapTextureId))
 			material->reflectanceMapTexture = texturesMap[material->reflectanceMapTextureId];
 
@@ -281,13 +259,31 @@ void Scene::initialize()
 			material->maskMapTexture = texturesMap[material->maskMapTextureId];
 	}
 
+	for (Triangle& triangle : triangles)
+	{
+		if (triangle.id == 0)
+			throw std::runtime_error(tfm::format("A triangle must have a non-zero id"));
+
+		if (trianglesMap.count(triangle.id))
+			throw std::runtime_error(tfm::format("A duplicate triangle id was found (id: %s)", triangle.id));
+
+		trianglesMap[triangle.id] = true;
+
+		if (materialsMap.count(triangle.materialId))
+			triangle.material = materialsMap[triangle.materialId];
+		else
+			throw std::runtime_error(tfm::format("A triangle has a non-existent material id (%d)", triangle.materialId));
+
+		triangle.initialize();
+	}
+
 	// INITIALIZATION
 
 	for (Light* light : lightsList)
 		light->initialize();
 
 	for (Texture* texture : texturesList)
-		texture->initialize(*this);
+		texture->initialize(*this);	
 
 	// CAMERA
 
@@ -298,6 +294,12 @@ void Scene::initialize()
 	if (!bvh.hasBeenBuilt())
 		bvh.build(triangles, bvhBuildInfo);
 
+	for (Triangle& triangle : triangles)
+	{
+		if (triangle.material->isEmissive())
+			emissiveTriangles.push_back(&triangle);
+	}
+	
 	log.logInfo("Scene initialization finished (time: %.2f ms)", timer.getElapsedMilliseconds());
 }
 
