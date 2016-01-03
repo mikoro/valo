@@ -55,28 +55,33 @@ AABB AABB::createFromVertices(const Vector3& v0, const Vector3& v1, const Vector
 // http://tavianator.com/fast-branchless-raybounding-box-intersections-part-2-nans/
 bool AABB::intersects(const Ray& ray) const
 {
-	double tx0 = (min.x - ray.origin.x) * ray.inverseDirection.x;
-	double tx1 = (max.x - ray.origin.x) * ray.inverseDirection.x;
+	double tmin = ((&min)[ray.directionIsNegative[0]].x - ray.origin.x) * ray.inverseDirection.x;
+	double tmax = ((&min)[1 - ray.directionIsNegative[0]].x - ray.origin.x) * ray.inverseDirection.x;
+	double tymin = ((&min)[ray.directionIsNegative[1]].y - ray.origin.y) * ray.inverseDirection.y;
+	double tymax = ((&min)[1 - ray.directionIsNegative[1]].y - ray.origin.y) * ray.inverseDirection.y;
 
-	double tmin = std::min(tx0, tx1);
-	double tmax = std::max(tx0, tx1);
-
-	double ty0 = (min.y - ray.origin.y) * ray.inverseDirection.y;
-	double ty1 = (max.y - ray.origin.y) * ray.inverseDirection.y;
-
-	tmin = std::max(tmin, std::min(ty0, ty1));
-	tmax = std::min(tmax, std::max(ty0, ty1));
-
-	double tz0 = (min.z - ray.origin.z) * ray.inverseDirection.z;
-	double tz1 = (max.z - ray.origin.z) * ray.inverseDirection.z;
-
-	tmin = std::max(tmin, std::min(tz0, tz1));
-	tmax = std::min(tmax, std::max(tz0, tz1));
-
-	if (tmax < std::max(tmin, 0.0))
+	if (tmin > tymax || tymin > tmax)
 		return false;
 
-	return true;
+	if (tymin > tmin)
+		tmin = tymin;
+
+	if (tymax < tmax)
+		tmax = tymax;
+
+	double tzmin = ((&min)[ray.directionIsNegative[2]].z - ray.origin.z) * ray.inverseDirection.z;
+	double tzmax = ((&min)[1 - ray.directionIsNegative[2]].z - ray.origin.z) * ray.inverseDirection.z;
+
+	if (tmin > tzmax || tzmin > tmax)
+		return false;
+
+	if (tzmin > tmin)
+		tmin = tzmin;
+
+	if (tzmax < tmax)
+		tmax = tzmax;
+
+	return (tmin < ray.maxDistance) && (tmax > ray.minDistance);
 }
 
 void AABB::expand(const AABB& other)

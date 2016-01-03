@@ -39,6 +39,7 @@ namespace Raycer
 		int64_t rightOffset;
 		uint64_t startOffset;
 		uint64_t primitiveCount;
+		uint64_t splitAxis;
 
 		template <class Archive>
 		void serialize(Archive& ar)
@@ -46,7 +47,8 @@ namespace Raycer
 			ar(CEREAL_NVP(aabb),
 				CEREAL_NVP(rightOffset),
 				CEREAL_NVP(startOffset),
-				CEREAL_NVP(primitiveCount));
+				CEREAL_NVP(primitiveCount),
+				CEREAL_NVP(splitAxis));
 		}
 	};
 
@@ -76,10 +78,10 @@ namespace Raycer
 
 	private:
 
-		void calculateSplit(uint64_t& axis, double& splitPoint, const AABB& nodeAABB, const BVHBuildInfo& buildInfo, const BVHBuildEntry& buildEntry, Random& random);
-		void calculateSAHSplit(uint64_t& axis, double& splitPoint, const AABB& nodeAABB, const BVHBuildInfo& buildInfo, const BVHBuildEntry& buildEntry);
-		double calculateSAHScore(uint64_t axis, double splitPoint, const AABB& nodeAABB, const BVHBuildEntry& buildEntry);
-		double calculateMedianPoint(uint64_t axis, const BVHBuildEntry& buildEntry);
+		void calculateSplit(uint64_t& splitAxis, double& splitPoint, const AABB& nodeAABB, const BVHBuildInfo& buildInfo, const BVHBuildEntry& buildEntry, Random& random);
+		void calculateSAHSplit(uint64_t& splitAxis, double& splitPoint, const AABB& nodeAABB, const BVHBuildInfo& buildInfo, const BVHBuildEntry& buildEntry);
+		double calculateSAHScore(uint64_t splitAxis, double splitPoint, const AABB& nodeAABB, const BVHBuildEntry& buildEntry);
+		double calculateMedianPoint(uint64_t splitAxis, const BVHBuildEntry& buildEntry);
 
 		bool bvhHasBeenBuilt = false;
 		std::vector<BVHNode> nodes;
