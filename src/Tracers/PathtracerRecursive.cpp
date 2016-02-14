@@ -80,7 +80,7 @@ Color PathtracerRecursive::traceRecursive(const Scene& scene, const Ray& ray, Ra
 
 Color PathtracerRecursive::calculateIndirectLight(const Scene& scene, const Intersection& intersection, Random& random, uint64_t depth, uint64_t& pathCount)
 {
-	double terminationProbability = 1.0;
+	double terminationProbability = 0.0;
 
 	if (depth >= scene.pathtracing.minPathLength)
 	{
@@ -101,5 +101,5 @@ Color PathtracerRecursive::calculateIndirectLight(const Scene& scene, const Inte
 	sampleRay.minDistance = scene.general.rayMinDistance;
 	sampleRay.precalculate();
 
-	return sampleBrdf * sampleCosine * traceRecursive(scene, sampleRay, random, depth + 1, pathCount) / sampleProbability / terminationProbability;
+	return sampleBrdf * sampleCosine * traceRecursive(scene, sampleRay, random, depth + 1, pathCount) / sampleProbability / (1.0 - terminationProbability);
 }

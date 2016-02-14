@@ -184,10 +184,11 @@ Color Tracer::calculateDirectLight(const Scene& scene, const Intersection& inter
 	Vector3 intersectionToEmitter = emitterIntersection.position - intersection.position;
 	double emitterDistance2 = intersectionToEmitter.lengthSquared();
 	double emitterDistance = sqrt(emitterDistance2);
+	Vector3 sampleDirection = intersectionToEmitter / emitterDistance;
 
 	Ray shadowRay;
 	shadowRay.origin = intersection.position;
-	shadowRay.direction = intersectionToEmitter / emitterDistance;
+	shadowRay.direction = sampleDirection;
 	shadowRay.minDistance = scene.general.rayMinDistance;
 	shadowRay.maxDistance = emitterDistance - scene.general.rayMinDistance;
 	shadowRay.isShadowRay = true;
@@ -200,17 +201,22 @@ Color Tracer::calculateDirectLight(const Scene& scene, const Intersection& inter
 	if (shadowIntersection.wasFound)
 		return Color(0.0, 0.0, 0.0);
 
-	double cosine1 = intersection.normal.dot(shadowRay.direction);
-	double cosine2 = shadowRay.direction.dot(-emitter->normal);
+	double cosine1 = intersection.normal.dot(sampleDirection);
+	double cosine2 = sampleDirection.dot(-emitter->normal);
 
 	if (cosine1 < 0.0 || cosine2 < 0.0)
 		return Color(0.0, 0.0, 0.0);
 
+	double sampleProbability = intersection.material->getDirectionProbability(intersection, sampleDirection);
+
+	if (sampleProbability == 0.0)
+		return Color(0.0, 0.0, 0.0);
+
 	double probability1 = 1.0 / double(emitterCount);
 	double probability2 = 1.0 / emitter->getArea();
-
+	
 	Color emittance = emitter->material->getEmittance(emitterIntersection);
-	Color intersectionBrdf = intersection.material->getBrdf(intersection, shadowRay.direction);
+	Color intersectionBrdf = intersection.material->getBrdf(intersection, sampleDirection);
 
-	return emittance * intersectionBrdf * cosine1 * cosine2 * (1.0 / emitterDistance2) / (probability1 * probability2);
+	return emittance * intersectionBrdf * cosine1 * cosine2 * (1.0 / emitterDistance2) / (probability1 * probability2) / sampleProbability;
 }

@@ -125,6 +125,8 @@ void DefaultState::update(double timeStep)
 		else
 		{
 			if (scene.general.tracerType == TracerType::RAY)
+				scene.general.tracerType = TracerType::PATH_RECURSIVE;
+			else if (scene.general.tracerType == TracerType::PATH_RECURSIVE)
 				scene.general.tracerType = TracerType::PATH_ITERATIVE;
 			else if (scene.general.tracerType == TracerType::PATH_ITERATIVE)
 				scene.general.tracerType = TracerType::PREVIEW;

@@ -35,7 +35,7 @@ Vector3 DiffuseMaterial::getSampleDirection(const Intersection& intersection, Ra
 
 double DiffuseMaterial::getDirectionProbability(const Intersection& intersection, const Vector3& out)
 {
-	return 0.5 * (1.0 / M_PI) + 0.5 * (intersection.normal.dot(out) / M_PI);
+	return intersection.normal.dot(out) / M_PI;
 }
 
 Color DiffuseMaterial::getBrdf(const Intersection& intersection, const Vector3& out)
