@@ -21,18 +21,18 @@ namespace Raycer
 
 	protected:
 
-		void trace(const Scene& scene, Film& film, const Vector2& pixelCenter, uint64_t pixelIndex, Random& random, uint64_t& pathCount) override;
+		void trace(const Scene& scene, Film& film, const Vector2& pixelCenter, uint64_t pixelIndex, Random& random, uint64_t& rayCount, uint64_t& pathCount) override;
 
 	private:
 
-		void generateMultiSamples(const Scene& scene, Film& film, const Vector2& pixelCenter, uint64_t pixelIndex, Random& random);
-		Color generateCameraSamples(const Scene& scene, const Vector2& pixelCenter, Random& random);
+		void generateMultiSamples(const Scene& scene, Film& film, const Vector2& pixelCenter, uint64_t pixelIndex, Random& random, uint64_t& rayCount);
+		Color generateCameraSamples(const Scene& scene, const Vector2& pixelCenter, Random& random, uint64_t& rayCount);
 
-		Color traceRecursive(const Scene& scene, const Ray& ray, Intersection& intersection, uint64_t iteration, Random& random);
+		Color traceRecursive(const Scene& scene, const Ray& ray, Intersection& intersection, uint64_t iteration, Random& random, uint64_t& rayCount);
 
 		void calculateRayReflectanceAndTransmittance(const Intersection& intersection, double& rayReflectance, double& rayTransmittance);
-		Color calculateReflectedColor(const Scene& scene, const Intersection& intersection, double rayReflectance, uint64_t iteration, Random& random);
-		Color calculateTransmittedColor(const Scene& scene, const Intersection& intersection, double rayTransmittance, uint64_t iteration, Random& random);
+		Color calculateReflectedColor(const Scene& scene, const Intersection& intersection, double rayReflectance, uint64_t iteration, Random& random, uint64_t& rayCount);
+		Color calculateTransmittedColor(const Scene& scene, const Intersection& intersection, double rayTransmittance, uint64_t iteration, Random& random, uint64_t& rayCount);
 		Color calculateMaterialColor(const Scene& scene, const Intersection& intersection, Random& random);
 	};
 }

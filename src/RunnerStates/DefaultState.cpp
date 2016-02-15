@@ -198,15 +198,17 @@ void DefaultState::update(double timeStep)
 	if (windowRunner.keyIsDown(GLFW_KEY_LEFT_CONTROL) || windowRunner.keyIsDown(GLFW_KEY_RIGHT_CONTROL))
 	{
 		if (windowRunner.keyIsDown(GLFW_KEY_PAGE_DOWN))
-		{
 			scene.tonemapping.exposure -= 2.0 * timeStep;
-			scene.tonemapping.key -= 0.5 * timeStep;
-		}
 		else if (windowRunner.keyIsDown(GLFW_KEY_PAGE_UP))
-		{
 			scene.tonemapping.exposure += 2.0 * timeStep;
-			scene.tonemapping.key += 0.5 * timeStep;
-		}
+	}
+
+	if (windowRunner.keyIsDown(GLFW_KEY_LEFT_SHIFT) || windowRunner.keyIsDown(GLFW_KEY_RIGHT_SHIFT))
+	{
+		if (windowRunner.keyIsDown(GLFW_KEY_PAGE_DOWN))
+			scene.tonemapping.key -= 0.1 * timeStep;
+		else if (windowRunner.keyIsDown(GLFW_KEY_PAGE_UP))
+			scene.tonemapping.key += 0.1 * timeStep;
 
 		scene.tonemapping.key = std::max(0.0, scene.tonemapping.key);
 	}
@@ -274,15 +276,15 @@ void DefaultState::render(double timeStep, double interpolation)
 	}
 
 	uint64_t samplesPerPixel = tracer->getPixelSampleCount(scene) * tracer->getSamplesPerPixel(scene);
-	film.increasePixelSamples(samplesPerPixel);
+	film.increasePixelSampleCount(samplesPerPixel);
 
 	TracerState state;
 	state.scene = &scene;
 	state.film = &film;
 	state.filmWidth = film.getWidth();
 	state.filmHeight = film.getHeight();
-	state.pixelStartOffset = 0;
-	state.pixelCount = state.filmWidth * state.filmHeight;
+	state.filmPixelOffset = 0;
+	state.filmPixelCount = state.filmWidth * state.filmHeight;
 	
 	tracer->run(state, interrupted);
 

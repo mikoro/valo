@@ -77,29 +77,33 @@ void Tracer::run(TracerState& state, std::atomic<bool>& interrupted)
 
 	for (uint64_t i = 0; i < pixelSampleCount && !interrupted; ++i)
 	{
+		uint64_t rayCount = 0;
 		uint64_t pathCount = 0;
 
-		#pragma omp parallel for schedule(dynamic, 1000) reduction(+:pathCount)
-		for (int64_t pixelIndex = 0; pixelIndex < int64_t(state.pixelCount); ++pixelIndex)
+		#pragma omp parallel for schedule(dynamic, 1000) reduction(+:rayCount) reduction(+:pathCount)
+		for (int64_t pixelIndex = 0; pixelIndex < int64_t(state.filmPixelCount); ++pixelIndex)
 		{
 			try
 			{
 				if (interrupted)
 					continue;
 
-				uint64_t offsetPixelIndex = uint64_t(pixelIndex) + state.pixelStartOffset;
+				uint64_t offsetPixelIndex = uint64_t(pixelIndex) + state.filmPixelOffset;
 				double x = double(offsetPixelIndex % state.filmWidth);
 				double y = double(offsetPixelIndex / state.filmWidth);
 				Vector2 pixelCenter = Vector2(x, y);
 				Random& random = randoms[omp_get_thread_num()];
 
-				trace(scene, film, pixelCenter, pixelIndex, random, pathCount);
+				trace(scene, film, pixelCenter, pixelIndex, random, rayCount, pathCount);
 
 				if ((pixelIndex + 1) % 100 == 0)
 				{
-					state.processedSampleCount += 100 * samplesPerPixel;
-					state.processedPixelCount += 100;
-					state.totalPathCount += pathCount;
+					state.sampleCount += 100 * samplesPerPixel;
+					state.pixelCount += 100;
+					state.rayCount += rayCount;
+					state.pathCount += pathCount;
+
+					rayCount = 0;
 					pathCount = 0;
 				}
 			}
@@ -117,8 +121,9 @@ void Tracer::run(TracerState& state, std::atomic<bool>& interrupted)
 		if (ompThreadException != nullptr)
 			std::rethrow_exception(ompThreadException);
 
-		state.pixelSampleCount += 1;
-		state.totalPathCount += pathCount;
+		++state.pixelSampleCount;
+		state.rayCount += rayCount;
+		state.pathCount += pathCount;
 
 		if (!settings.interactive.enabled)
 		{
@@ -147,8 +152,8 @@ void Tracer::run(TracerState& state, std::atomic<bool>& interrupted)
 
 	if (!interrupted)
 	{
-		state.processedSampleCount = state.pixelCount * pixelSampleCount * samplesPerPixel;
-		state.processedPixelCount = state.pixelCount;
+		state.sampleCount = state.filmPixelCount * pixelSampleCount * samplesPerPixel;
+		state.pixelCount = state.filmPixelCount;
 	}
 }
 
@@ -207,16 +212,11 @@ Color Tracer::calculateDirectLight(const Scene& scene, const Intersection& inter
 	if (cosine1 < 0.0 || cosine2 < 0.0)
 		return Color(0.0, 0.0, 0.0);
 
-	double sampleProbability = intersection.material->getDirectionProbability(intersection, sampleDirection);
-
-	if (sampleProbability == 0.0)
-		return Color(0.0, 0.0, 0.0);
-
 	double probability1 = 1.0 / double(emitterCount);
 	double probability2 = 1.0 / emitter->getArea();
 	
 	Color emittance = emitter->material->getEmittance(emitterIntersection);
 	Color intersectionBrdf = intersection.material->getBrdf(intersection, sampleDirection);
 
-	return emittance * intersectionBrdf * cosine1 * cosine2 * (1.0 / emitterDistance2) / (probability1 * probability2) / sampleProbability;
+	return emittance * intersectionBrdf * cosine1 * cosine2 * (1.0 / emitterDistance2) / (probability1 * probability2);
 }

@@ -20,12 +20,16 @@ using namespace std::chrono;
 int ConsoleRunner::run()
 {
 	Settings& settings = App::getSettings();
+	Log& log = App::getLog();
+
+	Timer totalElapsedTimer;
 
 	interrupted = false;
 
 	samplesPerSecondAverage.setAlpha(0.05);
-	samplesPerSecondAverage.setAverage(0.0);
-	timer.setAveragingAlpha(0.05);
+	pixelsPerSecondAverage.setAlpha(0.05);
+	raysPerSecondAverage.setAlpha(0.05);
+	pathsPerSecondAverage.setAlpha(0.05);
 
 	Scene scene;
 
@@ -49,10 +53,12 @@ int ConsoleRunner::run()
 	state.film = &film;
 	state.filmWidth = settings.image.width;
 	state.filmHeight = settings.image.height;
-	state.pixelStartOffset = 0;
-	state.pixelCount = state.filmWidth * state.filmHeight;
+	state.filmPixelOffset = 0;
+	state.filmPixelCount = state.filmWidth * state.filmHeight;
 
 	run(state);
+
+	log.logInfo("Total elapsed time: %s", totalElapsedTimer.getElapsed().getString(true));
 
 	if (!interrupted)
 	{
@@ -94,42 +100,45 @@ void ConsoleRunner::run(TracerState& state)
 	};
 
 	uint64_t totalSamples =
-		state.pixelCount *
+		state.filmPixelCount *
 		tracer->getPixelSampleCount(scene) *
 		tracer->getSamplesPerPixel(scene);
 
 	SysUtils::setConsoleTextColor(ConsoleTextColor::WHITE_ON_BLACK);
 
-	std::cout << tfm::format("\nTracing started (threads: %d, dimensions: %dx%d, offset: %d, pixels: %d, total samples: %s, pixel samples: %d)\n\n",
+	std::cout << tfm::format("\nTracing started (threads: %d, dimensions: %dx%d, offset: %d, pixels: %d, samples: %s, pixel samples: %d)\n\n",
 		settings.general.maxThreadCount,
 		state.filmWidth,
 		state.filmHeight,
-		state.pixelStartOffset,
-		state.pixelCount,
+		state.filmPixelOffset,
+		state.filmPixelCount,
 		StringUtils::humanizeNumber(double(totalSamples)),
 		tracer->getPixelSampleCount(scene)
 		);
 
-	timer.setTargetValue(double(totalSamples));
-	timer.restart();
+	Timer elapsedTimer;
+	elapsedTimer.setAveragingAlpha(0.05);
+	elapsedTimer.setTargetValue(double(totalSamples));
+	elapsedTimer.restart();
 
 	std::thread renderThread(renderThreadFunction);
 
 	while (!renderThreadFinished)
 	{
-		timer.updateCurrentValue(double(state.processedSampleCount));
+		elapsedTimer.updateCurrentValue(double(state.sampleCount));
 
-		auto elapsed = timer.getElapsed();
-		auto remaining = timer.getRemaining();
+		auto elapsed = elapsedTimer.getElapsed();
+		auto remaining = elapsedTimer.getRemaining();
 
 		if (elapsed.totalMilliseconds > 0)
 		{
-			samplesPerSecondAverage.addMeasurement(double(state.processedSampleCount) / (double(elapsed.totalMilliseconds) / 1000.0));
-			pixelsPerSecondAverage.addMeasurement(double(state.processedPixelCount) / (double(elapsed.totalMilliseconds) / 1000.0));
-			pathsPerSecondAverage.addMeasurement(double(state.totalPathCount) / (double(elapsed.totalMilliseconds) / 1000.0));
+			samplesPerSecondAverage.addMeasurement(double(state.sampleCount) / (double(elapsed.totalMilliseconds) / 1000.0));
+			pixelsPerSecondAverage.addMeasurement(double(state.pixelCount) / (double(elapsed.totalMilliseconds) / 1000.0));
+			raysPerSecondAverage.addMeasurement(double(state.rayCount) / (double(elapsed.totalMilliseconds) / 1000.0));
+			pathsPerSecondAverage.addMeasurement(double(state.pathCount) / (double(elapsed.totalMilliseconds) / 1000.0));
 		}
 
-		printProgress(elapsed, remaining, state.pixelSampleCount);
+		printProgress(elapsedTimer.getPercentage(), elapsed, remaining, state.pixelSampleCount);
 		std::this_thread::sleep_for(std::chrono::milliseconds(100));
 	}
 
@@ -138,22 +147,33 @@ void ConsoleRunner::run(TracerState& state)
 	if (renderThreadException != nullptr)
 		std::rethrow_exception(renderThreadException);
 
-	timer.updateCurrentValue(double(state.processedSampleCount));
+	elapsedTimer.updateCurrentValue(double(state.sampleCount));
 
-	auto elapsed = timer.getElapsed();
-	auto remaining = timer.getRemaining();
+	auto elapsed = elapsedTimer.getElapsed();
+	auto remaining = elapsedTimer.getRemaining();
 
-	printProgress(elapsed, remaining, state.pixelSampleCount);
+	printProgress(elapsedTimer.getPercentage(), elapsed, remaining, state.pixelSampleCount);
 
 	double totalSamplesPerSecond = 0.0;
+	double totalPixelsPerSecond = 0.0;
+	double totalRaysPerSecond = 0.0;
+	double totalPathsPerSecond = 0.0;
 
 	if (elapsed.totalMilliseconds > 0)
-		totalSamplesPerSecond = double(state.processedSampleCount) / (double(elapsed.totalMilliseconds) / 1000.0);
+	{
+		totalSamplesPerSecond = double(state.sampleCount) / (double(elapsed.totalMilliseconds) / 1000.0);
+		totalPixelsPerSecond = double(state.pixelCount) / (double(elapsed.totalMilliseconds) / 1000.0);
+		totalRaysPerSecond = double(state.rayCount) / (double(elapsed.totalMilliseconds) / 1000.0);
+		totalPathsPerSecond = double(state.pathCount) / (double(elapsed.totalMilliseconds) / 1000.0);
+	}
 
-	std::cout << tfm::format("\n\nTracing %s (time: %s, samples/s: %f)\n\n",
+	std::cout << tfm::format("\n\nTracing %s (time: %s, samples/s: %s, pixels/s: %s, rays/s: %s, paths/s: %s)\n\n",
 		interrupted ? "interrupted" : "finished",
 		elapsed.getString(true),
-		StringUtils::humanizeNumber(totalSamplesPerSecond));
+		StringUtils::humanizeNumber(totalSamplesPerSecond),
+		StringUtils::humanizeNumber(totalPixelsPerSecond),
+		StringUtils::humanizeNumber(totalRaysPerSecond),
+		StringUtils::humanizeNumber(totalPathsPerSecond));
 
 	SysUtils::setConsoleTextColor(ConsoleTextColor::DEFAULT);
 	state.film->generateOutputImage(*state.scene);
@@ -164,9 +184,9 @@ void ConsoleRunner::interrupt()
 	interrupted = true;
 }
 
-void ConsoleRunner::printProgress(const TimerData& elapsed, const TimerData& remaining, uint64_t pixelSamples)
+void ConsoleRunner::printProgress(double percentage_, const TimerData& elapsed, const TimerData& remaining, uint64_t pixelSamples)
 {
-	uint64_t percentage = uint64_t(timer.getPercentage() + 0.5);
+	uint64_t percentage = uint64_t(percentage_ + 0.5);
 	uint64_t barCount = percentage / 4;
 
     tfm::printf("[");
@@ -188,6 +208,7 @@ void ConsoleRunner::printProgress(const TimerData& elapsed, const TimerData& rem
     tfm::printf("Remaining: %s | ", remaining.getString());
 	tfm::printf("Samples/s: %s | ", StringUtils::humanizeNumber(samplesPerSecondAverage.getAverage()));
 	tfm::printf("Pixels/s: %s | ", StringUtils::humanizeNumber(pixelsPerSecondAverage.getAverage()));
+	tfm::printf("Rays/s: %s | ", StringUtils::humanizeNumber(raysPerSecondAverage.getAverage()));
 	tfm::printf("Paths/s: %s | ", StringUtils::humanizeNumber(pathsPerSecondAverage.getAverage()));
 	tfm::printf("Pixel samples: %d", pixelSamples);
     tfm::printf("          \r");

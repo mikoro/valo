@@ -25,10 +25,12 @@ uint64_t PreviewTracer::getSamplesPerPixel(const Scene& scene) const
 	return 1;
 }
 
-void PreviewTracer::trace(const Scene& scene, Film& film, const Vector2& pixelCenter, uint64_t pixelIndex, Random& random, uint64_t& pathCount)
+void PreviewTracer::trace(const Scene& scene, Film& film, const Vector2& pixelCenter, uint64_t pixelIndex, Random& random, uint64_t& rayCount, uint64_t& pathCount)
 {
 	(void)random;
-	(void)pathCount;
+
+	++rayCount;
+	pathCount = 0;
 
 	bool isOffLens;
 	Ray ray = scene.camera.getRay(pixelCenter, isOffLens);

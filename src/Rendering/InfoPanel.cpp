@@ -95,8 +95,8 @@ void InfoPanel::renderFps()
 	float charWidth = (bounds[2] - bounds[0]) / 11.0f;
 	float panelWidth = fpsString.length() * charWidth;
 	float panelHeight = bounds[3] - bounds[1];
-	float currentX = charWidth / 2.0f;
-	float currentY = -bounds[1];
+	float currentX = charWidth / 2.0f + 2.0f;
+	float currentY = -bounds[1] + 2.0f;
 
 	float rounding = 5.0f;
 	float strokeWidth = 2.0f;
@@ -135,8 +135,8 @@ void InfoPanel::renderFull(const TracerState& state)
 	float bounds[4];
 	nvgTextBounds(context, 0.0f, 0.0f, "1234567890.", nullptr, bounds);
 	float charWidth = (bounds[2] - bounds[0]) / 11.0f;
-	float panelWidth = 33 * charWidth;
-	float panelHeight = 14 * lineSpacing + lineSpacing / 2.0f;
+	float panelWidth = 34 * charWidth;
+	float panelHeight = 18 * lineSpacing + lineSpacing / 2.0f;
 	float currentX = charWidth / 2.0f + 4.0f;
 	float currentY = -bounds[1] + 4.0f;
 
@@ -172,11 +172,20 @@ void InfoPanel::renderFull(const TracerState& state)
 	nvgText(context, currentX, currentY, tfm::format("Rotation: (%.2f, %.2f, %.2f)", scene.camera.orientation.pitch, scene.camera.orientation.yaw, scene.camera.orientation.roll).c_str(), nullptr);
 	currentY += lineSpacing;
 
-	int64_t scaledMouseX = windowRunner.getMouseInfo().scaledX;
-	int64_t scaledMouseY = windowRunner.getMouseInfo().scaledY;
-	int64_t scaledMouseIndex = scaledMouseY * film.getWidth() + scaledMouseX;
+	int64_t filmMouseX = std::max(int64_t(0), std::min(windowRunner.getMouseInfo().scaledX, int64_t(film.getWidth() - 1)));
+	int64_t filmMouseY = std::max(int64_t(0), std::min(windowRunner.getMouseInfo().scaledY, int64_t(film.getHeight() - 1)));;
+	int64_t filmMouseIndex = filmMouseY * film.getWidth() + filmMouseX;
 
-	nvgText(context, currentX, currentY, tfm::format("Mouse: (%d, %d, %d)", scaledMouseX, scaledMouseY, scaledMouseIndex).c_str(), nullptr);
+	nvgText(context, currentX, currentY, tfm::format("Mouse: (%d, %d, %d)", filmMouseX, filmMouseY, filmMouseIndex).c_str(), nullptr);
+	currentY += lineSpacing;
+
+	Color linearColor = film.getLinearColor(filmMouseX, filmMouseY);
+	Color outputColor = film.getOutputColor(filmMouseX, filmMouseY);
+
+	nvgText(context, currentX, currentY, tfm::format("Pixel lin: (%.2f, %.2f, %.2f)", linearColor.r, linearColor.g, linearColor.b).c_str(), nullptr);
+	currentY += lineSpacing;
+
+	nvgText(context, currentX, currentY, tfm::format("Pixel out: (%.2f, %.2f, %.2f)", outputColor.r, outputColor.g, outputColor.b).c_str(), nullptr);
 	currentY += lineSpacing;
 
 	int tempWindowWidth, tempWindowHeight, tempFramebufferWidth, tempFramebufferHeight;
@@ -193,17 +202,27 @@ void InfoPanel::renderFull(const TracerState& state)
 	nvgText(context, currentX, currentY, tfm::format("Film: %dx%d (%.2fx) (%s)", film.getWidth(), film.getWidth(), settings.interactive.renderScale, StringUtils::humanizeNumber(totalPixels)).c_str(), nullptr);
 	currentY += lineSpacing;
 
-	double pixelsPerSecond = totalPixels * fpsCounter.getFps();
+	double samplesPerSecond = double(state.sampleCount) * fpsCounter.getFps();
+
+	nvgText(context, currentX, currentY, tfm::format("Samples/s: %s", StringUtils::humanizeNumber(samplesPerSecond)).c_str(), nullptr);
+	currentY += lineSpacing;
+
+	double pixelsPerSecond = double(state.pixelCount) * fpsCounter.getFps();
 
 	nvgText(context, currentX, currentY, tfm::format("Pixels/s: %s", StringUtils::humanizeNumber(pixelsPerSecond)).c_str(), nullptr);
 	currentY += lineSpacing;
 
-	double pathsPerSecond = double(state.totalPathCount) * fpsCounter.getFps();
+	double raysPerSecond = double(state.rayCount) * fpsCounter.getFps();
+
+	nvgText(context, currentX, currentY, tfm::format("Rays/s: %s", StringUtils::humanizeNumber(raysPerSecond)).c_str(), nullptr);
+	currentY += lineSpacing;
+
+	double pathsPerSecond = double(state.pathCount) * fpsCounter.getFps();
 
 	nvgText(context, currentX, currentY, tfm::format("Paths/s: %s", StringUtils::humanizeNumber(pathsPerSecond)).c_str(), nullptr);
 	currentY += lineSpacing;
 
-	nvgText(context, currentX, currentY, tfm::format("Pixel samples: %d", film.getPixelSamples()).c_str(), nullptr);
+	nvgText(context, currentX, currentY, tfm::format("Pixel samples: %d", film.getPixelSampleCount()).c_str(), nullptr);
 	currentY += lineSpacing;
 
 	nvgText(context, currentX, currentY, tfm::format("Moving: %s", scene.camera.isMoving()).c_str(), nullptr);
@@ -234,5 +253,5 @@ void InfoPanel::renderFull(const TracerState& state)
 		default: break;
 	}
 
-	nvgText(context, currentX, currentY, tfm::format("Tonemapper: %s", tonemapperName).c_str(), nullptr);
+	nvgText(context, currentX, currentY, tfm::format("Tonemapper: %s (%.2f/%.2f)", tonemapperName, scene.tonemapping.exposure, scene.tonemapping.key).c_str(), nullptr);
 }

@@ -58,7 +58,8 @@ void Camera::update(double timeStep)
 			projectionType = CameraProjectionType::PERSPECTIVE;
 	}
 
-	if (!windowRunner.keyIsDown(GLFW_KEY_LEFT_CONTROL) && !windowRunner.keyIsDown(GLFW_KEY_RIGHT_CONTROL))
+	if (!windowRunner.keyIsDown(GLFW_KEY_LEFT_CONTROL) && !windowRunner.keyIsDown(GLFW_KEY_RIGHT_CONTROL) &&
+		!windowRunner.keyIsDown(GLFW_KEY_LEFT_SHIFT) && !windowRunner.keyIsDown(GLFW_KEY_RIGHT_SHIFT))
 	{
 		if (windowRunner.keyIsDown(GLFW_KEY_PAGE_DOWN))
 		{

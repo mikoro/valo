@@ -24,8 +24,8 @@ namespace Raycer
 
 		uint64_t filmWidth = 0;
 		uint64_t filmHeight = 0;
-		uint64_t pixelStartOffset = 0;
-		uint64_t pixelCount = 0;
+		uint64_t filmPixelOffset = 0;
+		uint64_t filmPixelCount = 0;
 	};
 
 	class NetworkRunner

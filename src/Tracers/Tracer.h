@@ -39,7 +39,7 @@ namespace Raycer
 
 	protected:
 
-		virtual void trace(const Scene& scene, Film& film, const Vector2& pixelCenter, uint64_t pixelIndex, Random& random, uint64_t& pathCount) = 0;
+		virtual void trace(const Scene& scene, Film& film, const Vector2& pixelCenter, uint64_t pixelIndex, Random& random, uint64_t& rayCount, uint64_t& pathCount) = 0;
 
 		static void calculateNormalMapping(Intersection& intersection);
 		static Color calculateDirectLight(const Scene& scene, const Intersection& intersection, Random& random);

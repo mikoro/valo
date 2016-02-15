@@ -258,7 +258,7 @@ void NetworkRunner::sendJobs()
 			uint64_t pixelStartOffset = i * pixelsPerServer;
 			uint64_t pixelCount = isLastServer ? pixelsForLastServer : pixelsPerServer;
 
-			std::string message = tfm::format("Raycer 1.0.0\nAddress: %s\nPort: %d\nFilmWidth: %d\nFilmHeight: %d\nPixelStartOffset: %d\nPixelCount: %d\n\n%s", localAddress.to_string(), settings.network.localPort, filmWidth, filmHeight, pixelStartOffset, pixelCount, sceneString);
+			std::string message = tfm::format("Raycer 1.0.0\nAddress: %s\nPort: %d\nWidth: %d\nHeight: %d\nOffset: %d\nCount: %d\n\n%s", localAddress.to_string(), settings.network.localPort, filmWidth, filmHeight, pixelStartOffset, pixelCount, sceneString);
 
 			ip::tcp::socket socket(io);
 			socket.connect(serverEndpoints.at(i));
@@ -310,7 +310,7 @@ void NetworkRunner::receiveJobs()
 			std::smatch match;
 			std::istringstream ss;
 
-			if (!std::regex_match(headerString, match, std::regex("^Raycer 1.0.0\nAddress: (.+)\nPort: (.+)\nFilmWidth: (.+)\nFilmHeight: (.+)\nPixelStartOffset: (.+)\nPixelCount: (.+)$")))
+			if (!std::regex_match(headerString, match, std::regex("^Raycer 1.0.0\nAddress: (.+)\nPort: (.+)\nWidth: (.+)\nHeight: (.+)\nOffset: (.+)\nCount: (.+)$")))
 				return;
 
 			std::cout << "\nJob received!\n\n";
@@ -333,11 +333,11 @@ void NetworkRunner::receiveJobs()
 
 			ss.clear();
 			ss.str(match[5]);
-			ss >> job.pixelStartOffset;
+			ss >> job.filmPixelOffset;
 
 			ss.clear();
 			ss.str(match[6]);
-			ss >> job.pixelCount;
+			ss >> job.filmPixelCount;
 
 			job.scene = Scene::loadFromJsonString(bodyString);
 
@@ -405,13 +405,13 @@ void NetworkRunner::handleJobs()
 			state.film = &film;
 			state.filmWidth = job.filmWidth;
 			state.filmHeight = job.filmHeight;
-			state.pixelStartOffset = job.pixelStartOffset;
-			state.pixelCount = job.pixelCount;
+			state.filmPixelOffset = job.filmPixelOffset;
+			state.filmPixelCount = job.filmPixelCount;
 
 			job.scene.initialize();
 			job.scene.camera.setImagePlaneSize(job.filmWidth, job.filmHeight);
 			job.scene.camera.update(0.0);
-			film.resize(state.pixelCount);
+			film.resize(state.filmPixelCount);
 
 			App::getConsoleRunner().run(state);
 			film.generateOutputImage(job.scene);
@@ -419,7 +419,7 @@ void NetworkRunner::handleJobs()
 			std::cout << "Sending results back...\n\n";
 
 			io_service io;
-			std::string message = tfm::format("Raycer 1.0.0\nPixelStartOffset: %d\nPixelCount: %d\n\n", job.pixelStartOffset, job.pixelCount);
+			std::string message = tfm::format("Raycer 1.0.0\nOffset: %d\nCount: %d\n\n", job.filmPixelOffset, job.filmPixelCount);
 
 			for (uint64_t i = 0; i < 60 && !interrupted; ++i)
 			{
@@ -509,7 +509,7 @@ void NetworkRunner::receiveResults()
 			std::smatch match;
 			std::istringstream ss;
 
-			if (!std::regex_match(headerString, match, std::regex("^Raycer 1.0.0\nPixelStartOffset: (.+)\nPixelCount: (.+)$")))
+			if (!std::regex_match(headerString, match, std::regex("^Raycer 1.0.0\nOffset: (.+)\nCount: (.+)$")))
 				return;
 
 			uint64_t pixelStartOffset, pixelCount;

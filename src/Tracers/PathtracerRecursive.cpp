@@ -23,8 +23,10 @@ uint64_t PathtracerRecursive::getSamplesPerPixel(const Scene& scene) const
 	return 1;
 }
 
-void PathtracerRecursive::trace(const Scene& scene, Film& film, const Vector2& pixelCenter, uint64_t pixelIndex, Random& random, uint64_t& pathCount)
+void PathtracerRecursive::trace(const Scene& scene, Film& film, const Vector2& pixelCenter, uint64_t pixelIndex, Random& random, uint64_t& rayCount, uint64_t& pathCount)
 {
+	rayCount = 0;
+
 	Vector2 offsetPixel = pixelCenter;
 	double filterWeight = 1.0;
 

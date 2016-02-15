@@ -40,7 +40,9 @@ namespace Raycer
 		void clear();
 		void addSample(uint64_t x, uint64_t y, const Color& color, double filterWeight);
 		void addSample(uint64_t index, const Color& color, double filterWeight);
-		void increasePixelSamples(uint64_t count);
+		Color getLinearColor(uint64_t x, uint64_t y) const;
+		Color getOutputColor(uint64_t x, uint64_t y) const;
+		void increasePixelSampleCount(uint64_t count);
 		void load(const std::string& fileName);
 		void save(const std::string& fileName, bool writeToLog = true) const;
 		
@@ -49,13 +51,13 @@ namespace Raycer
 
 		uint64_t getWidth() const;
 		uint64_t getHeight() const;
-		uint64_t getPixelSamples() const;
+		uint64_t getPixelSampleCount() const;
 
 	private:
 
 		uint64_t width = 0;
 		uint64_t height = 0;
-		uint64_t pixelSamples = 0;
+		uint64_t pixelSampleCount = 0;
 
 		std::vector<FilmPixel> filmPixels;
 
@@ -71,7 +73,7 @@ namespace Raycer
 		{
 			ar(CEREAL_NVP(width),
 				CEREAL_NVP(height),
-				CEREAL_NVP(pixelSamples),
+				CEREAL_NVP(pixelSampleCount),
 				CEREAL_NVP(filmPixels));
 		}
 	};

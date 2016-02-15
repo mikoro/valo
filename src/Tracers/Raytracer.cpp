@@ -30,20 +30,20 @@ uint64_t Raytracer::getSamplesPerPixel(const Scene& scene) const
 		scene.raytracing.cameraSampleCountSqrt;
 }
 
-void Raytracer::trace(const Scene& scene, Film& film, const Vector2& pixelCenter, uint64_t pixelIndex, Random& random, uint64_t& pathCount)
+void Raytracer::trace(const Scene& scene, Film& film, const Vector2& pixelCenter, uint64_t pixelIndex, Random& random, uint64_t& rayCount, uint64_t& pathCount)
 {
-	(void)pathCount;
+	pathCount = 0;
 
-	generateMultiSamples(scene, film, pixelCenter, pixelIndex, random);
+	generateMultiSamples(scene, film, pixelCenter, pixelIndex, random, rayCount);
 }
 
-void Raytracer::generateMultiSamples(const Scene& scene, Film& film, const Vector2& pixelCenter, uint64_t pixelIndex, Random& random)
+void Raytracer::generateMultiSamples(const Scene& scene, Film& film, const Vector2& pixelCenter, uint64_t pixelIndex, Random& random, uint64_t& rayCount)
 {
 	assert(scene.raytracing.multiSampleCountSqrt >= 1);
 
 	if (scene.raytracing.multiSampleCountSqrt == 1)
 	{
-		Color pixelColor = generateCameraSamples(scene, pixelCenter, random);
+		Color pixelColor = generateCameraSamples(scene, pixelCenter, random, rayCount);
 		film.addSample(pixelIndex, pixelColor, 1.0);
 		return;
 	}
@@ -60,13 +60,13 @@ void Raytracer::generateMultiSamples(const Scene& scene, Film& film, const Vecto
 		{
 			Vector2 sampleOffset = sampler->getSquareSample(x, y, n, n, permutation, random);
 			sampleOffset = (sampleOffset - Vector2(0.5, 0.5)) * 2.0 * filter->getRadius();
-			Color sampledPixelColor = generateCameraSamples(scene, pixelCenter + sampleOffset, random);
+			Color sampledPixelColor = generateCameraSamples(scene, pixelCenter + sampleOffset, random, rayCount);
 			film.addSample(pixelIndex, sampledPixelColor, filter->getWeight(sampleOffset));
 		}
 	}
 }
 
-Color Raytracer::generateCameraSamples(const Scene& scene, const Vector2& pixelCenter, Random& random)
+Color Raytracer::generateCameraSamples(const Scene& scene, const Vector2& pixelCenter, Random& random, uint64_t& rayCount)
 {
 	assert(scene.raytracing.cameraSampleCountSqrt >= 1);
 
@@ -79,7 +79,7 @@ Color Raytracer::generateCameraSamples(const Scene& scene, const Vector2& pixelC
 	if (scene.raytracing.cameraSampleCountSqrt == 1)
 	{
 		Intersection intersection;
-		return traceRecursive(scene, ray, intersection, 0, random);
+		return traceRecursive(scene, ray, intersection, 0, random, rayCount);
 	}
 
 	Vector3 cameraPosition = scene.camera.position;
@@ -107,15 +107,17 @@ Color Raytracer::generateCameraSamples(const Scene& scene, const Vector2& pixelC
 			sampleRay.direction = (focalPoint - sampleRay.origin).normalized();
 			sampleRay.precalculate();
 
-			sampledPixelColor += traceRecursive(scene, ray, sampleIntersection, 0, random);
+			sampledPixelColor += traceRecursive(scene, ray, sampleIntersection, 0, random, rayCount);
 		}
 	}
 
 	return sampledPixelColor / (double(n) * double(n));
 }
 
-Color Raytracer::traceRecursive(const Scene& scene, const Ray& ray, Intersection& intersection, uint64_t iteration, Random& random)
+Color Raytracer::traceRecursive(const Scene& scene, const Ray& ray, Intersection& intersection, uint64_t iteration, Random& random, uint64_t& rayCount)
 {
+	++rayCount;
+
 	scene.intersect(ray, intersection);
 
 	if (!intersection.wasFound)
@@ -136,10 +138,10 @@ Color Raytracer::traceRecursive(const Scene& scene, const Ray& ray, Intersection
 	Color reflectedColor, transmittedColor;
 
 	if (rayReflectance > 0.0 && iteration < scene.raytracing.maxIterationDepth)
-		reflectedColor = calculateReflectedColor(scene, intersection, rayReflectance, iteration, random);
+		reflectedColor = calculateReflectedColor(scene, intersection, rayReflectance, iteration, random, rayCount);
 
 	if (rayTransmittance > 0.0 && iteration < scene.raytracing.maxIterationDepth)
-		transmittedColor = calculateTransmittedColor(scene, intersection, rayTransmittance, iteration, random);
+		transmittedColor = calculateTransmittedColor(scene, intersection, rayTransmittance, iteration, random, rayCount);
 
 	Color materialColor = calculateMaterialColor(scene, intersection, random);
 
@@ -169,7 +171,7 @@ void Raytracer::calculateRayReflectanceAndTransmittance(const Intersection& inte
 	rayTransmittance = material->rayTransmittance * fresnelTransmittance;
 }
 
-Color Raytracer::calculateReflectedColor(const Scene& scene, const Intersection& intersection, double rayReflectance, uint64_t iteration, Random& random)
+Color Raytracer::calculateReflectedColor(const Scene& scene, const Intersection& intersection, double rayReflectance, uint64_t iteration, Random& random, uint64_t& rayCount)
 {
 	Material* material = intersection.material;
 
@@ -187,7 +189,7 @@ Color Raytracer::calculateReflectedColor(const Scene& scene, const Intersection&
 	reflectedRay.minDistance = scene.general.rayMinDistance;
 	reflectedRay.precalculate();
 
-	reflectedColor = traceRecursive(scene, reflectedRay, reflectedIntersection, iteration + 1, random) * rayReflectance;
+	reflectedColor = traceRecursive(scene, reflectedRay, reflectedIntersection, iteration + 1, random, rayCount) * rayReflectance;
 
 	// only attenuate if ray has traveled inside
 	if (!isOutside && reflectedIntersection.wasFound && material->attenuating)
@@ -199,7 +201,7 @@ Color Raytracer::calculateReflectedColor(const Scene& scene, const Intersection&
 	return reflectedColor;
 }
 
-Color Raytracer::calculateTransmittedColor(const Scene& scene, const Intersection& intersection, double rayTransmittance, uint64_t iteration, Random& random)
+Color Raytracer::calculateTransmittedColor(const Scene& scene, const Intersection& intersection, double rayTransmittance, uint64_t iteration, Random& random, uint64_t& rayCount)
 {
 	Material* material = intersection.material;
 
@@ -227,7 +229,7 @@ Color Raytracer::calculateTransmittedColor(const Scene& scene, const Intersectio
 	transmittedRay.minDistance = scene.general.rayMinDistance;
 	transmittedRay.precalculate();
 
-	transmittedColor = traceRecursive(scene, transmittedRay, transmittedIntersection, iteration + 1, random) * rayTransmittance;
+	transmittedColor = traceRecursive(scene, transmittedRay, transmittedIntersection, iteration + 1, random, rayCount) * rayTransmittance;
 
 	// only attenuate if ray has traveled inside
 	if (isOutside && transmittedIntersection.wasFound && material->attenuating)
