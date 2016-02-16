@@ -22,15 +22,10 @@ namespace Raycer
 
 	private:
 
-		void runBuild(TracerState& state);
-		void runTracing(TracerState& state);
-
-		void printBuildProgress(double percentage, const TimerData& elapsed, const TimerData& remaining);
-		void printTracingProgress(double percentage, const TimerData& elapsed, const TimerData& remaining, uint64_t pixelSamples);
+		void printProgress(double percentage, const TimerData& elapsed, const TimerData& remaining, uint64_t pixelSamples);
 		
 		std::atomic<bool> interrupted;
 
-		MovingAverage trianglesPerSecondAverage;
 		MovingAverage samplesPerSecondAverage;
 		MovingAverage pixelsPerSecondAverage;
 		MovingAverage raysPerSecondAverage;

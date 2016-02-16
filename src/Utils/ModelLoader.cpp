@@ -490,7 +490,7 @@ ModelLoaderResult ModelLoader::load(const ModelLoaderInfo& info)
 
 	fclose(file);
 
-	log.logInfo("OBJ file reading finished (time: %.2f ms, triangles: %s, materials: %s, textures: %s)", timer.getElapsedMilliseconds(), result.triangles.size(), result.diffuseSpecularMaterials.size(), result.textures.size());
+	log.logInfo("OBJ file reading finished (time: %s, triangles: %s, materials: %s, textures: %s)", timer.getElapsed().getString(true), result.triangles.size(), result.diffuseSpecularMaterials.size(), result.textures.size());
 
 	return result;
 }

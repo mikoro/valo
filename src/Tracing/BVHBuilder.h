@@ -3,10 +3,6 @@
 
 #pragma once
 
-#include <atomic>
-
-#include "Tracing/AABB.h"
-
 namespace Raycer
 {
 	struct BVHBuildInfo
@@ -27,45 +23,18 @@ namespace Raycer
 		int64_t parent;
 	};
 
-	struct BVHNode
-	{
-		AABB aabb;
-		int64_t rightOffset;
-		uint64_t startOffset;
-		uint64_t triangleCount;
-		uint64_t splitAxis;
-		uint8_t leftEnabled;
-		uint8_t rightEnabled;
-
-		template <class Archive>
-		void serialize(Archive& ar)
-		{
-			ar(CEREAL_NVP(aabb),
-				CEREAL_NVP(rightOffset),
-				CEREAL_NVP(startOffset),
-				CEREAL_NVP(triangleCount),
-				CEREAL_NVP(splitAxis),
-				CEREAL_NVP(leftEnabled),
-				CEREAL_NVP(rightEnabled));
-		}
-	};
-
 	class Triangle;
 	class BVH;
+	struct BVHNode;
 
 	class BVHBuilder
 	{
 	public:
 
-		BVHBuilder();
-
-		void build(std::vector<Triangle>& triangles, const BVHBuildInfo& buildInfo, BVH& bvh, std::atomic<bool>& interrupted);
-		uint64_t getProcessedTrianglesCount() const;
+		static void build(std::vector<Triangle>& triangles, const BVHBuildInfo& buildInfo, BVH& bvh);
 
 	private:
 
-		void calculateSplit(std::vector<Triangle>& triangles, BVHNode& node, uint64_t& splitIndex, const BVHBuildEntry& buildEntry);
-
-		std::atomic<uint64_t> processedTrianglesCount;
+		static void calculateSplit(std::vector<Triangle>& triangles, BVHNode& node, uint64_t& splitIndex, const BVHBuildEntry& buildEntry, std::vector<double>& rightScores);
 	};
 }

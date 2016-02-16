@@ -253,7 +253,7 @@ void DefaultState::update(double timeStep)
 		else if (windowRunner.keyWasPressed(GLFW_KEY_RIGHT))
 			scene.bvh.disableLeft();
 		else if (windowRunner.keyWasPressed(GLFW_KEY_UP))
-			scene.bvh.revertDisable();
+			scene.bvh.undoDisable();
 	}
 
 	scene.camera.update(timeStep);

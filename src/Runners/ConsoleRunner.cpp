@@ -26,7 +26,6 @@ int ConsoleRunner::run()
 
 	interrupted = false;
 
-	trianglesPerSecondAverage.setAlpha(0.05);
 	samplesPerSecondAverage.setAlpha(0.05);
 	pixelsPerSecondAverage.setAlpha(0.05);
 	raysPerSecondAverage.setAlpha(0.05);
@@ -77,101 +76,9 @@ int ConsoleRunner::run()
 void ConsoleRunner::run(TracerState& state)
 {
 	interrupted = false;
-	Scene& scene = *state.scene;
 
 	SysUtils::setConsoleTextColor(ConsoleTextColor::WHITE_ON_BLACK);
 
-	if (!scene.bvh.bvhHasBeenBuilt)
-		runBuild(state);
-
-	if (interrupted)
-		return;
-
-	runTracing(state);
-
-	SysUtils::setConsoleTextColor(ConsoleTextColor::DEFAULT);
-
-	state.film->generateOutputImage(*state.scene);
-}
-
-void ConsoleRunner::interrupt()
-{
-	interrupted = true;
-}
-
-void ConsoleRunner::runBuild(TracerState& state)
-{
-	Scene& scene = *state.scene;
-	BVHBuilder bvhBuilder;
-
-	uint64_t totalTriangles = scene.triangles.size();
-
-	std::cout << tfm::format("\nBVH build started (triangles: %s)\n\n",
-		StringUtils::humanizeNumber(double(totalTriangles))
-		);
-
-	Timer buildElapsedTimer;
-	buildElapsedTimer.setAveragingAlpha(0.05);
-	buildElapsedTimer.setTargetValue(double(totalTriangles));
-
-	std::atomic<bool> buildThreadFinished(false);
-	std::exception_ptr buildThreadException = nullptr;
-
-	auto buildThreadFunction = [&]()
-	{
-		try
-		{
-			bvhBuilder.build(scene.triangles, scene.bvhBuildInfo, scene.bvh, interrupted);
-		}
-		catch (...)
-		{
-			buildThreadException = std::current_exception();
-		}
-
-		buildThreadFinished = true;
-	};
-
-	std::thread buildThread(buildThreadFunction);
-
-	while (!buildThreadFinished)
-	{
-		buildElapsedTimer.updateCurrentValue(double(bvhBuilder.getProcessedTrianglesCount()));
-
-		auto elapsed = buildElapsedTimer.getElapsed();
-		auto remaining = buildElapsedTimer.getRemaining();
-
-		if (elapsed.totalMilliseconds > 0)
-			trianglesPerSecondAverage.addMeasurement(double(bvhBuilder.getProcessedTrianglesCount()) / (double(elapsed.totalMilliseconds) / 1000.0));
-
-		printBuildProgress(buildElapsedTimer.getPercentage(), elapsed, remaining);
-		std::this_thread::sleep_for(std::chrono::milliseconds(100));
-	}
-
-	buildThread.join();
-
-	if (buildThreadException != nullptr)
-		std::rethrow_exception(buildThreadException);
-
-	buildElapsedTimer.updateCurrentValue(double(bvhBuilder.getProcessedTrianglesCount()));
-
-	auto elapsed = buildElapsedTimer.getElapsed();
-	auto remaining = buildElapsedTimer.getRemaining();
-
-	printBuildProgress(buildElapsedTimer.getPercentage(), elapsed, remaining);
-
-	double totalTrianglesPerSecond = 0.0;
-
-	if (elapsed.totalMilliseconds > 0)
-		totalTrianglesPerSecond = double(totalTriangles) / (double(elapsed.totalMilliseconds) / 1000.0);
-
-	std::cout << tfm::format("\n\nBVH build %s (time: %s, triangles/s: %s)\n\n",
-		interrupted ? "interrupted" : "finished",
-		elapsed.getString(true),
-		StringUtils::humanizeNumber(totalTrianglesPerSecond));
-}
-
-void ConsoleRunner::runTracing(TracerState& state)
-{
 	Settings& settings = App::getSettings();
 	Scene& scene = *state.scene;
 	auto tracer = Tracer::getTracer(state.scene->general.tracerType);
@@ -229,7 +136,7 @@ void ConsoleRunner::runTracing(TracerState& state)
 			pathsPerSecondAverage.addMeasurement(double(state.pathCount) / (double(elapsed.totalMilliseconds) / 1000.0));
 		}
 
-		printTracingProgress(tracingElapsedTimer.getPercentage(), elapsed, remaining, state.pixelSampleCount);
+		printProgress(tracingElapsedTimer.getPercentage(), elapsed, remaining, state.pixelSampleCount);
 		std::this_thread::sleep_for(std::chrono::milliseconds(100));
 	}
 
@@ -243,7 +150,7 @@ void ConsoleRunner::runTracing(TracerState& state)
 	auto elapsed = tracingElapsedTimer.getElapsed();
 	auto remaining = tracingElapsedTimer.getRemaining();
 
-	printTracingProgress(tracingElapsedTimer.getPercentage(), elapsed, remaining, state.pixelSampleCount);
+	printProgress(tracingElapsedTimer.getPercentage(), elapsed, remaining, state.pixelSampleCount);
 
 	double totalSamplesPerSecond = 0.0;
 	double totalPixelsPerSecond = 0.0;
@@ -265,35 +172,18 @@ void ConsoleRunner::runTracing(TracerState& state)
 		StringUtils::humanizeNumber(totalPixelsPerSecond),
 		StringUtils::humanizeNumber(totalRaysPerSecond),
 		StringUtils::humanizeNumber(totalPathsPerSecond));
+
+	SysUtils::setConsoleTextColor(ConsoleTextColor::DEFAULT);
+
+	state.film->generateOutputImage(*state.scene);
 }
 
-void ConsoleRunner::printBuildProgress(double percentage_, const TimerData& elapsed, const TimerData& remaining)
+void ConsoleRunner::interrupt()
 {
-	uint64_t percentage = uint64_t(percentage_ + 0.5);
-	uint64_t barCount = percentage / 4;
-
-	tfm::printf("[");
-
-	for (uint64_t i = 0; i < barCount; ++i)
-		tfm::printf("=");
-
-	if (barCount < 25)
-	{
-		tfm::printf(">");
-
-		for (uint64_t i = 0; i < (24 - barCount); ++i)
-			tfm::printf(" ");
-	}
-
-	tfm::printf("] ");
-	tfm::printf("%d %% | ", percentage);
-	tfm::printf("Elapsed: %s | ", elapsed.getString());
-	tfm::printf("Remaining: %s | ", remaining.getString());
-	tfm::printf("Triangles/s: %s", StringUtils::humanizeNumber(trianglesPerSecondAverage.getAverage()));
-	tfm::printf("          \r");
+	interrupted = true;
 }
 
-void ConsoleRunner::printTracingProgress(double percentage_, const TimerData& elapsed, const TimerData& remaining, uint64_t pixelSamples)
+void ConsoleRunner::printProgress(double percentage_, const TimerData& elapsed, const TimerData& remaining, uint64_t pixelSamples)
 {
 	uint64_t percentage = uint64_t(percentage_ + 0.5);
 	uint64_t barCount = percentage / 4;

@@ -3,7 +3,6 @@
 
 #pragma once
 
-#include <map>
 #include <vector>
 
 #include "cereal/cereal.hpp"
@@ -11,6 +10,7 @@
 #include "Tracing/Camera.h"
 #include "Tracing/Triangle.h"
 #include "Tracing/BVH.h"
+#include "Tracing/BVHBuilder.h"
 #include "Textures/ColorTexture.h"
 #include "Textures/ColorGradientTexture.h"
 #include "Textures/CheckerTexture.h"

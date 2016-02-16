@@ -6,25 +6,26 @@
 #include "Tracing/BVHBuilder.h"
 #include "Tracing/BVH.h"
 #include "Tracing/Triangle.h"
-#include "Utils/Random.h"
+#include "App.h"
+#include "Utils/Log.h"
 #include "Utils/Timer.h"
 #include "Math/Vector3.h"
 
 using namespace Raycer;
 
-BVHBuilder::BVHBuilder() : processedTrianglesCount(0)
+void BVHBuilder::build(std::vector<Triangle>& triangles, const BVHBuildInfo& buildInfo, BVH& bvh)
 {
-}
+	Log& log = App::getLog();
 
-void BVHBuilder::build(std::vector<Triangle>& triangles, const BVHBuildInfo& buildInfo, BVH& bvh, std::atomic<bool>& interrupted)
-{
+	log.logInfo("BVH building started (triangles: %d)", triangles.size());
+
 	Timer timer;
-	Random random;
-
 	BVHBuildEntry stack[128];
-	bvh.nodes.clear();
-	processedTrianglesCount = 0;
+	std::vector<double> rightScores(triangles.size());
+	uint64_t failedSplitCount = 0;
 
+	bvh.nodes.clear();
+	
 	uint64_t stackptr = 0;
 	uint64_t nodeCount = 0;
 	uint64_t leafCount = 0;
@@ -39,9 +40,6 @@ void BVHBuilder::build(std::vector<Triangle>& triangles, const BVHBuildInfo& bui
 
 	while (stackptr > 0)
 	{
-		if (interrupted)
-			return;
-
 		stackptr--;
 		nodeCount++;
 
@@ -76,18 +74,19 @@ void BVHBuilder::build(std::vector<Triangle>& triangles, const BVHBuildInfo& bui
 		{
 			bvh.nodes.push_back(node);
 			leafCount++;
-			processedTrianglesCount += node.triangleCount;
-
 			continue;
 		}
 
 		uint64_t splitIndex = 0;
-		calculateSplit(triangles, node, splitIndex, buildEntry);
+		calculateSplit(triangles, node, splitIndex, buildEntry, rightScores);
 		bvh.nodes.push_back(node);
 
 		// split failed -> fallback to middle split
 		if (splitIndex <= buildEntry.start || splitIndex >= buildEntry.end)
+		{
 			splitIndex = buildEntry.start + (buildEntry.end - buildEntry.start) / 2;
+			failedSplitCount++;
+		}
 
 		// push right child
 		stack[stackptr].start = splitIndex;
@@ -103,14 +102,11 @@ void BVHBuilder::build(std::vector<Triangle>& triangles, const BVHBuildInfo& bui
 	}
 
 	bvh.bvhHasBeenBuilt = true;
+
+	log.logInfo("BVH building finished (time: %s, nodes: %d, leafs: %d, failed splits: %d)", timer.getElapsed().getString(true), nodeCount, leafCount, failedSplitCount);
 }
 
-uint64_t BVHBuilder::getProcessedTrianglesCount() const
-{
-	return processedTrianglesCount;
-}
-
-void BVHBuilder::calculateSplit(std::vector<Triangle>& triangles, BVHNode& node, uint64_t& splitIndex, const BVHBuildEntry& buildEntry)
+void BVHBuilder::calculateSplit(std::vector<Triangle>& triangles, BVHNode& node, uint64_t& splitIndex, const BVHBuildEntry& buildEntry, std::vector<double>& rightScores)
 {
 	double lowestScore = std::numeric_limits<double>::max();
 	double parentSurfaceArea = node.aabb.getSurfaceArea();
@@ -122,25 +118,26 @@ void BVHBuilder::calculateSplit(std::vector<Triangle>& triangles, BVHNode& node,
 			return t1.getAABB().getCenter().get(axis) < t2.getAABB().getCenter().get(axis);
 		});
 
+		AABB rightAABB;
+		uint64_t rightCount = 0;
+
+		for (int64_t i = buildEntry.end - 1; i >= int64_t(buildEntry.start); --i)
+		{
+			rightAABB.expand(triangles[i].getAABB());
+			rightCount++;
+
+			rightScores[i] = (rightAABB.getSurfaceArea() / parentSurfaceArea) * double(rightCount);
+		}
+
 		AABB leftAABB;
 		uint64_t leftCount = 0;
 
-		for (uint64_t i = buildEntry.start; i < buildEntry.end; ++i)
+		for (uint64_t i = buildEntry.start; i < buildEntry.end - 1; ++i)
 		{
 			leftAABB.expand(triangles[i].getAABB());
 			leftCount++;
 
-			AABB rightAABB;
-			uint64_t rightCount = 0;
-
-			for (uint64_t j = i + 1; j < buildEntry.end; ++j)
-			{
-				rightAABB.expand(triangles[j].getAABB());
-				rightCount++;
-			}
-
-			double score = (leftAABB.getSurfaceArea() / parentSurfaceArea) * double(leftCount);
-			score += (rightAABB.getSurfaceArea() / parentSurfaceArea) * double(rightCount);
+			double score = (leftAABB.getSurfaceArea() / parentSurfaceArea) * double(leftCount) + rightScores[i + 1];
 
 			if (score < lowestScore)
 			{

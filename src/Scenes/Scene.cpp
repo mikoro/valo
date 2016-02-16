@@ -12,6 +12,7 @@
 #include "Utils/Log.h"
 #include "Utils/StringUtils.h"
 #include "Utils/Timer.h"
+#include "Tracing/BVHBuilder.h"
 
 using namespace Raycer;
 
@@ -289,6 +290,13 @@ void Scene::initialize()
 
 	camera.initialize();
 
+	// BVH BUILD
+
+	if (!bvh.bvhHasBeenBuilt)
+		BVHBuilder::build(triangles, bvhBuildInfo, bvh);
+	else
+		log.logInfo("BVH has already been built");
+
 	// EMISSIVE TRIANGLES
 
 	for (Triangle& triangle : triangles)
@@ -297,7 +305,7 @@ void Scene::initialize()
 			emissiveTriangles.push_back(&triangle);
 	}
 	
-	log.logInfo("Scene initialization finished (time: %.2f ms)", timer.getElapsedMilliseconds());
+	log.logInfo("Scene initialization finished (time: %s)", timer.getElapsed().getString(true));
 }
 
 bool Scene::intersect(const Ray& ray, Intersection& intersection) const

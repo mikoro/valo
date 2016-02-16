@@ -109,7 +109,7 @@ void BVH::disableRight()
 	++disableIndex;
 }
 
-void BVH::revertDisable()
+void BVH::undoDisable()
 {
 	if (previousDisableIndices.size() == 0)
 		return;

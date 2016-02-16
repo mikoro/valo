@@ -8,13 +8,35 @@
 #include "cereal/cereal.hpp"
 
 #include "Tracing/AABB.h"
-#include "Tracing/BVHBuilder.h"
 
 namespace Raycer
 {
 	class Triangle;
 	class Ray;
 	class Intersection;
+
+	struct BVHNode
+	{
+		AABB aabb;
+		int64_t rightOffset;
+		uint64_t startOffset;
+		uint64_t triangleCount;
+		uint64_t splitAxis;
+		uint8_t leftEnabled;
+		uint8_t rightEnabled;
+
+		template <class Archive>
+		void serialize(Archive& ar)
+		{
+			ar(CEREAL_NVP(aabb),
+				CEREAL_NVP(rightOffset),
+				CEREAL_NVP(startOffset),
+				CEREAL_NVP(triangleCount),
+				CEREAL_NVP(splitAxis),
+				CEREAL_NVP(leftEnabled),
+				CEREAL_NVP(rightEnabled));
+		}
+	};
 	
 	class BVH
 	{
@@ -24,7 +46,7 @@ namespace Raycer
 
 		void disableLeft();
 		void disableRight();
-		void revertDisable();
+		void undoDisable();
 
 		bool bvhHasBeenBuilt = false;
 		std::vector<BVHNode> nodes;
