@@ -72,9 +72,7 @@ namespace Raycer
 
 	private:
 
-		void calculateSplit(const std::vector<Triangle>& triangles, uint64_t& splitAxis, double& splitPoint, const AABB& nodeAABB, const BVHBuildEntry& buildEntry);
-		double calculateSAH(const std::vector<Triangle>& triangles, uint64_t splitAxis, double splitPoint, const AABB& nodeAABB, const BVHBuildEntry& buildEntry);
-		double calculateMedianPoint(const std::vector<Triangle>& triangles, uint64_t splitAxis, const BVHBuildEntry& buildEntry);
+		void calculateSplit(std::vector<Triangle>& triangles, BVHNode& node, uint64_t& splitIndex, const BVHBuildEntry& buildEntry);
 
 		bool bvhHasBeenBuilt = false;
 		std::vector<BVHNode> nodes;
