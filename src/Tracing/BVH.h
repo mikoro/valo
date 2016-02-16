@@ -11,25 +11,14 @@
 
 namespace Raycer
 {
-	enum class BVHAxisSelection { LARGEST, RANDOM };
-	enum class BVHAxisSplit { MIDDLE, MEDIAN, RANDOM };
-
 	struct BVHBuildInfo
 	{
 		uint64_t maxLeafSize = 5;
-		bool useSAH = true;
-		uint64_t regularSAHSplits = 0;
-		BVHAxisSelection axisSelection = BVHAxisSelection::LARGEST;
-		BVHAxisSplit axisSplit = BVHAxisSplit::MEDIAN;
 
 		template <class Archive>
 		void serialize(Archive& ar)
 		{
-			ar(CEREAL_NVP(maxLeafSize),
-				CEREAL_NVP(useSAH),
-				CEREAL_NVP(regularSAHSplits),
-				CEREAL_NVP(axisSelection),
-				CEREAL_NVP(axisSplit));
+			ar(CEREAL_NVP(maxLeafSize));
 		}
 	};
 
@@ -40,6 +29,8 @@ namespace Raycer
 		uint64_t startOffset;
 		uint64_t triangleCount;
 		uint64_t splitAxis;
+		uint8_t leftEnabled;
+		uint8_t rightEnabled;
 
 		template <class Archive>
 		void serialize(Archive& ar)
@@ -48,7 +39,9 @@ namespace Raycer
 				CEREAL_NVP(rightOffset),
 				CEREAL_NVP(startOffset),
 				CEREAL_NVP(triangleCount),
-				CEREAL_NVP(splitAxis));
+				CEREAL_NVP(splitAxis),
+				CEREAL_NVP(leftEnabled),
+				CEREAL_NVP(rightEnabled));
 		}
 	};
 
@@ -73,15 +66,21 @@ namespace Raycer
 		void build(std::vector<Triangle>& triangles, const BVHBuildInfo& buildInfo);
 		bool hasBeenBuilt() const;
 
+		void disableLeft();
+		void disableRight();
+		void revertDisable();
+
 	private:
 
-		void calculateSplit(const std::vector<Triangle>& triangles, uint64_t& splitAxis, double& splitPoint, const AABB& nodeAABB, const BVHBuildInfo& buildInfo, const BVHBuildEntry& buildEntry, Random& random);
-		void calculateSAHSplit(const std::vector<Triangle>& triangles, uint64_t& splitAxis, double& splitPoint, const AABB& nodeAABB, const BVHBuildInfo& buildInfo, const BVHBuildEntry& buildEntry);
-		double calculateSAHScore(const std::vector<Triangle>& triangles, uint64_t splitAxis, double splitPoint, const AABB& nodeAABB, const BVHBuildEntry& buildEntry);
+		void calculateSplit(const std::vector<Triangle>& triangles, uint64_t& splitAxis, double& splitPoint, const AABB& nodeAABB, const BVHBuildEntry& buildEntry);
+		double calculateSAH(const std::vector<Triangle>& triangles, uint64_t splitAxis, double splitPoint, const AABB& nodeAABB, const BVHBuildEntry& buildEntry);
 		double calculateMedianPoint(const std::vector<Triangle>& triangles, uint64_t splitAxis, const BVHBuildEntry& buildEntry);
 
 		bool bvhHasBeenBuilt = false;
 		std::vector<BVHNode> nodes;
+
+		uint64_t disableIndex = 0;
+		std::vector<uint64_t> previousDisableIndices;
 		
 		friend class cereal::access;
 
@@ -89,7 +88,9 @@ namespace Raycer
 		void serialize(Archive& ar)
 		{
 			ar(CEREAL_NVP(bvhHasBeenBuilt),
-				CEREAL_NVP(nodes));
+				CEREAL_NVP(nodes),
+				CEREAL_NVP(disableIndex),
+				CEREAL_NVP(previousDisableIndices));
 		}
 	};
 }

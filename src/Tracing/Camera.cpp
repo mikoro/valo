@@ -120,28 +120,28 @@ void Camera::update(double timeStep)
 		angularVelocity.x = mouseInfo.deltaY * settings.camera.mouseSpeed;
 	}
 
-	if (windowRunner.keyIsDown(GLFW_KEY_W) || windowRunner.keyIsDown(GLFW_KEY_UP))
+	if (windowRunner.keyIsDown(GLFW_KEY_W))
 	{
 		smoothAcceleration += forward * moveSpeed;
 		velocity = forward * moveSpeed;
 		movementKeyIsPressed = true;
 	}
 
-	if (windowRunner.keyIsDown(GLFW_KEY_S) || windowRunner.keyIsDown(GLFW_KEY_DOWN))
+	if (windowRunner.keyIsDown(GLFW_KEY_S))
 	{
 		smoothAcceleration -= forward * moveSpeed;
 		velocity = -forward * moveSpeed;
 		movementKeyIsPressed = true;
 	}
 
-	if (windowRunner.keyIsDown(GLFW_KEY_D) || windowRunner.keyIsDown(GLFW_KEY_RIGHT))
+	if (windowRunner.keyIsDown(GLFW_KEY_D))
 	{
 		smoothAcceleration += right * moveSpeed;
 		velocity = right * moveSpeed;
 		movementKeyIsPressed = true;
 	}
 
-	if (windowRunner.keyIsDown(GLFW_KEY_A) || windowRunner.keyIsDown(GLFW_KEY_LEFT))
+	if (windowRunner.keyIsDown(GLFW_KEY_A))
 	{
 		smoothAcceleration -= right * moveSpeed;
 		velocity = -right * moveSpeed;

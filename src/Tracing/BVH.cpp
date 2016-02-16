@@ -57,23 +57,35 @@ bool BVH::intersect(const std::vector<Triangle>& triangles, const Ray& ray, Inte
 				{
 					// seems to perform better like this (inverted logic?)
 
-					// left child
-					stack[stackIndex] = nodeIndex + 1;
-					stackIndex++;
-
-					// right child
-					stack[stackIndex] = nodeIndex + uint64_t(node.rightOffset);
-					stackIndex++;
+					if (node.leftEnabled)
+					{
+						// left child
+						stack[stackIndex] = nodeIndex + 1;
+						stackIndex++;
+					}
+					
+					if (node.rightEnabled)
+					{
+						// right child
+						stack[stackIndex] = nodeIndex + uint64_t(node.rightOffset);
+						stackIndex++;
+					}
 				}
 				else
 				{
-					// right child
-					stack[stackIndex] = nodeIndex + uint64_t(node.rightOffset);
-					stackIndex++;
-
-					// left child
-					stack[stackIndex] = nodeIndex + 1;
-					stackIndex++;
+					if (node.rightEnabled)
+					{
+						// right child
+						stack[stackIndex] = nodeIndex + uint64_t(node.rightOffset);
+						stackIndex++;
+					}
+					
+					if (node.leftEnabled)
+					{
+						// left child
+						stack[stackIndex] = nodeIndex + 1;
+						stackIndex++;
+					}
 				}
 			}
 		}
@@ -119,16 +131,15 @@ void BVH::build(std::vector<Triangle>& triangles, const BVHBuildInfo& buildInfo)
 		node.startOffset = buildEntry.start;
 		node.triangleCount = buildEntry.end - buildEntry.start;
 		node.splitAxis = 0;
+		node.leftEnabled = 1;
+		node.rightEnabled = 1;
 
 		for (uint64_t i = buildEntry.start; i < buildEntry.end; ++i)
 			node.aabb.expand(triangles[i].getAABB());
 
 		// leaf node indicated by rightOffset == 0
 		if (node.triangleCount <= buildInfo.maxLeafSize)
-		{
 			node.rightOffset = 0;
-			leafCount++;
-		}
 
 		// update the parent rightOffset when visiting its right child
 		if (buildEntry.parent != ROOT)
@@ -143,18 +154,14 @@ void BVH::build(std::vector<Triangle>& triangles, const BVHBuildInfo& buildInfo)
 		if (node.rightOffset == 0)
 		{
 			nodes.push_back(node);
+			leafCount++;
 			continue;
 		}
 
 		double splitPoint;
-		actualNodeCount++;
-
-		if (buildInfo.useSAH)
-			calculateSAHSplit(triangles, node.splitAxis, splitPoint, node.aabb, buildInfo, buildEntry);
-		else
-			calculateSplit(triangles, node.splitAxis, splitPoint, node.aabb, buildInfo, buildEntry, random);
-
+		calculateSplit(triangles, node.splitAxis, splitPoint, node.aabb, buildEntry);
 		nodes.push_back(node);
+		actualNodeCount++;
 
 		uint64_t middle = buildEntry.start;
 
@@ -187,7 +194,7 @@ void BVH::build(std::vector<Triangle>& triangles, const BVHBuildInfo& buildInfo)
 
 	bvhHasBeenBuilt = true;
 
-	log.logInfo("BVH building finished (time: %.2f ms, nodes: %d, leafs: %d)", timer.getElapsedMilliseconds(), nodeCount, leafCount);
+	log.logInfo("BVH building finished (time: %.2f ms, nodes: %d, leafs: %d)", timer.getElapsedMilliseconds(), actualNodeCount, leafCount);
 }
 
 bool BVH::hasBeenBuilt() const
@@ -195,73 +202,65 @@ bool BVH::hasBeenBuilt() const
 	return bvhHasBeenBuilt;
 }
 
-void BVH::calculateSplit(const std::vector<Triangle>& triangles, uint64_t& splitAxis, double& splitPoint, const AABB& nodeAABB, const BVHBuildInfo& buildInfo, const BVHBuildEntry& buildEntry, Random& random)
+void BVH::disableLeft()
 {
-	if (buildInfo.axisSelection == BVHAxisSelection::LARGEST)
-		splitAxis = nodeAABB.getLargestAxis();
-	else if (buildInfo.axisSelection == BVHAxisSelection::RANDOM)
-		splitAxis = random.getUint64(0, 2);
-	else
-		throw std::runtime_error("Unknown BVH axis selection");
+	if (nodes[disableIndex].rightOffset == 0)
+		return;
 
-	if (buildInfo.axisSplit == BVHAxisSplit::MIDDLE)
-		splitPoint = nodeAABB.getCenter().get(splitAxis);
-	else if (buildInfo.axisSplit == BVHAxisSplit::MEDIAN)
-		splitPoint = calculateMedianPoint(triangles, splitAxis, buildEntry);
-	else if (buildInfo.axisSplit == BVHAxisSplit::RANDOM)
-		splitPoint = random.getDouble(nodeAABB.getMin().get(splitAxis), nodeAABB.getMax().get(splitAxis));
-	else
-		throw std::runtime_error("Unknown BVH axis split");
+	previousDisableIndices.push_back(disableIndex);
+	nodes[disableIndex].leftEnabled = 0;
+	disableIndex += nodes[disableIndex].rightOffset;
 }
 
-void BVH::calculateSAHSplit(const std::vector<Triangle>& triangles, uint64_t& splitAxis, double& splitPoint, const AABB& nodeAABB, const BVHBuildInfo& buildInfo, const BVHBuildEntry& buildEntry)
+void BVH::disableRight()
+{
+	if (nodes[disableIndex].rightOffset == 0)
+		return;
+
+	previousDisableIndices.push_back(disableIndex);
+	nodes[disableIndex].rightEnabled = 0;
+	++disableIndex;
+}
+
+void BVH::revertDisable()
+{
+	if (previousDisableIndices.size() == 0)
+		return;
+
+	disableIndex = previousDisableIndices.back();
+	previousDisableIndices.pop_back();
+
+	nodes[disableIndex].leftEnabled = 1;
+	nodes[disableIndex].rightEnabled = 1;
+}
+
+void BVH::calculateSplit(const std::vector<Triangle>& triangles, uint64_t& splitAxis, double& splitPoint, const AABB& nodeAABB, const BVHBuildEntry& buildEntry)
 {
 	double lowestScore = std::numeric_limits<double>::max();
+	
+	auto checkScore = [&](double score, uint64_t tempAxis, double tempSplitPoint)
+	{
+		if (score < lowestScore)
+		{
+			splitAxis = tempAxis;
+			splitPoint = tempSplitPoint;
+			lowestScore = score;
+		}
+	};
 
 	for (uint64_t tempAxis = 0; tempAxis <= 2; ++tempAxis)
 	{
 		double tempSplitPoint = nodeAABB.getCenter().get(tempAxis);
-		double score = calculateSAHScore(triangles, tempAxis, tempSplitPoint, nodeAABB, buildEntry);
-
-		if (score < lowestScore)
-		{
-			splitAxis = tempAxis;
-			splitPoint = tempSplitPoint;
-			lowestScore = score;
-		}
+		double score = calculateSAH(triangles, tempAxis, tempSplitPoint, nodeAABB, buildEntry);
+		checkScore(score, tempAxis, tempSplitPoint);
 
 		tempSplitPoint = calculateMedianPoint(triangles, tempAxis, buildEntry);
-		score = calculateSAHScore(triangles, tempAxis, tempSplitPoint, nodeAABB, buildEntry);
-
-		if (score < lowestScore)
-		{
-			splitAxis = tempAxis;
-			splitPoint = tempSplitPoint;
-			lowestScore = score;
-		}
-
-		if (buildInfo.regularSAHSplits > 0)
-		{
-			double step = nodeAABB.getExtent().get(tempAxis) / double(buildInfo.regularSAHSplits);
-			tempSplitPoint = nodeAABB.getMin().get(tempAxis);
-
-			for (uint64_t i = 0; i < buildInfo.regularSAHSplits - 1; ++i)
-			{
-				tempSplitPoint += step;
-				score = calculateSAHScore(triangles, tempAxis, tempSplitPoint, nodeAABB, buildEntry);
-
-				if (score < lowestScore)
-				{
-					splitAxis = tempAxis;
-					splitPoint = tempSplitPoint;
-					lowestScore = score;
-				}
-			}
-		}
+		score = calculateSAH(triangles, tempAxis, tempSplitPoint, nodeAABB, buildEntry);
+		checkScore(score, tempAxis, tempSplitPoint);
 	}
 }
 
-double BVH::calculateSAHScore(const std::vector<Triangle>& triangles, uint64_t splitAxis, double splitPoint, const AABB& nodeAABB, const BVHBuildEntry& buildEntry)
+double BVH::calculateSAH(const std::vector<Triangle>& triangles, uint64_t splitAxis, double splitPoint, const AABB& nodeAABB, const BVHBuildEntry& buildEntry)
 {
 	assert(buildEntry.end != buildEntry.start);
 
@@ -285,13 +284,9 @@ double BVH::calculateSAHScore(const std::vector<Triangle>& triangles, uint64_t s
 		}
 	}
 
-	double score = 0.0;
-
-	if (leftCount > 0)
-		score += (leftAABB.getSurfaceArea() / nodeAABB.getSurfaceArea()) * double(leftCount);
-
-	if (rightCount > 0)
-		score += (rightAABB.getSurfaceArea() / nodeAABB.getSurfaceArea()) * double(rightCount);
+	double parentSurfaceArea = nodeAABB.getSurfaceArea();
+	double score = (leftAABB.getSurfaceArea() / parentSurfaceArea) * double(leftCount);
+	score += (rightAABB.getSurfaceArea() / parentSurfaceArea) * double(rightCount);
 
 	return score;
 }

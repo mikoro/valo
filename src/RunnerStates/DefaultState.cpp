@@ -246,6 +246,16 @@ void DefaultState::update(double timeStep)
 			film.save("temp_film.bin");
 	}
 
+	if (windowRunner.keyIsDown(GLFW_KEY_LEFT_CONTROL) || windowRunner.keyIsDown(GLFW_KEY_RIGHT_CONTROL))
+	{
+		if (windowRunner.keyWasPressed(GLFW_KEY_LEFT))
+			scene.bvh.disableRight();
+		else if (windowRunner.keyWasPressed(GLFW_KEY_RIGHT))
+			scene.bvh.disableLeft();
+		else if (windowRunner.keyWasPressed(GLFW_KEY_UP))
+			scene.bvh.revertDisable();
+	}
+
 	scene.camera.update(timeStep);
 }
 
