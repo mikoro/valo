@@ -335,6 +335,9 @@
     <ClCompile Include="src\Tracers\PathtracerIterative.cpp">
       <Filter>Tracers</Filter>
     </ClCompile>
+    <ClCompile Include="src\Tracing\BVHBuilder.cpp">
+      <Filter>Tracing</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Utils\FpsCounter.h">
@@ -582,6 +585,9 @@
     </ClInclude>
     <ClInclude Include="src\Tracers\PathtracerIterative.h">
       <Filter>Tracers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Tracing\BVHBuilder.h">
+      <Filter>Tracing</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

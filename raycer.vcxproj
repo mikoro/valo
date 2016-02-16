@@ -266,6 +266,7 @@
     <ClCompile Include="src\Tracers\Tracer.cpp" />
     <ClCompile Include="src\Tracing\AABB.cpp" />
     <ClCompile Include="src\Tracing\BVH.cpp" />
+    <ClCompile Include="src\Tracing\BVHBuilder.cpp" />
     <ClCompile Include="src\Tracing\Camera.cpp" />
     <ClCompile Include="src\Tracing\ONB.cpp" />
     <ClCompile Include="src\Tracing\Ray.cpp" />
@@ -351,6 +352,7 @@
     <ClInclude Include="src\Tracers\TracerState.h" />
     <ClInclude Include="src\Tracing\AABB.h" />
     <ClInclude Include="src\Tracing\BVH.h" />
+    <ClInclude Include="src\Tracing\BVHBuilder.h" />
     <ClInclude Include="src\Tracing\Camera.h" />
     <ClInclude Include="src\Tracing\Intersection.h" />
     <ClInclude Include="src\Tracing\ONB.h" />

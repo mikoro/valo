@@ -289,10 +289,7 @@ void Scene::initialize()
 
 	camera.initialize();
 
-	// BVH BUILD
-
-	if (!bvh.hasBeenBuilt())
-		bvh.build(triangles, bvhBuildInfo);
+	// EMISSIVE TRIANGLES
 
 	for (Triangle& triangle : triangles)
 	{
