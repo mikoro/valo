@@ -78,7 +78,7 @@ void Image::load(const std::string& fileName)
 				pixelData[pixelIndex].r = loadData[dataIndex];
 				pixelData[pixelIndex].g = loadData[dataIndex + 1];
 				pixelData[pixelIndex].b = loadData[dataIndex + 2];
-				pixelData[pixelIndex].a = 1.0;
+				pixelData[pixelIndex].a = 1.0f;
 			}
 		}
 

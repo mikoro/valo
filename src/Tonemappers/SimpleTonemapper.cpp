@@ -22,7 +22,7 @@ void SimpleTonemapper::apply(const Scene& scene, const Image& inputImage, Image&
 	for (int64_t i = 0; i < int64_t(inputPixelData.size()); ++i)
 	{
 		Color outputColor = inputPixelData.at(i);
-		outputColor *= MathUtils::fastPow(2.0, scene.tonemapping.exposure);
+		outputColor *= MathUtils::fastPow(2.0f, scene.tonemapping.exposure);
 
 		outputColor = outputColor / (Color(1.0f, 1.0f, 1.0f, 1.0f) + outputColor);
 

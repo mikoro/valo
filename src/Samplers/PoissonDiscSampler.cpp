@@ -18,7 +18,7 @@ float PoissonDiscSampler::getSample(uint64_t x, uint64_t n, uint64_t permutation
 
 	assert(x < n);
 
-	return 0.0;
+	return 0.0f;
 }
 
 Vector2 PoissonDiscSampler::getSquareSample(uint64_t x, uint64_t y, uint64_t nx, uint64_t ny, uint64_t permutation, Random& random)

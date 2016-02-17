@@ -22,9 +22,9 @@ namespace Raycer
 
 		void initialize();
 		bool intersect(const Ray& ray, Intersection& intersection) const;
+		Intersection getRandomIntersection(Random& random) const;
 		AABB getAABB() const;
 		float getArea() const;
-		Intersection getRandomIntersection(Random& random) const;
 
 		uint64_t id = 0;
 		uint64_t materialId = 0;
@@ -36,10 +36,9 @@ namespace Raycer
 		Vector3 tangent;
 		Vector3 bitangent;
 		Vector3 center;
-
 		AABB aabb;
 		float area = 1.0f;
-
+		
 		Material* material = nullptr;
 
 	private:

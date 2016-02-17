@@ -63,15 +63,15 @@ namespace
 			{
 				r = -b;
 
-				if (b != 0.0)
+				if (b != 0.0f)
 					phi = (float(M_PI) / 4.0f) * (6.0f - (a / b));
 				else
-					phi = 0.0;
+					phi = 0.0f;
 			}
 		}
 
-		float u = r * cos(phi);
-		float v = r * sin(phi);
+		float u = r * std::cos(phi);
+		float v = r * std::sin(phi);
 
 		return Vector2(u, v);
 	}

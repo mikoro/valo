@@ -410,7 +410,7 @@ void NetworkRunner::handleJobs()
 
 			job.scene.initialize();
 			job.scene.camera.setImagePlaneSize(job.filmWidth, job.filmHeight);
-			job.scene.camera.update(0.0);
+			job.scene.camera.update(0.0f);
 			film.resize(state.filmPixelCount);
 
 			App::getConsoleRunner().run(state);

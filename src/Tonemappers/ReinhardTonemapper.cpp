@@ -14,7 +14,7 @@ using namespace Raycer;
 
 ReinhardTonemapper::ReinhardTonemapper()
 {
-	maxLuminanceAverage.setAverage(1.0);
+	maxLuminanceAverage.setAverage(1.0f);
 }
 
 void ReinhardTonemapper::apply(const Scene& scene, const Image& inputImage, Image& outputImage)

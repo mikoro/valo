@@ -29,8 +29,8 @@ AABB AABB::createFromCenterExtent(const Vector3& center, const Vector3& extent)
 {
 	AABB aabb;
 
-	aabb.min = center - extent / 2.0;
-	aabb.max = center + extent / 2.0;
+	aabb.min = center - extent / 2.0f;
+	aabb.max = center + extent / 2.0f;
 
 	return aabb;
 }

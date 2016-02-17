@@ -126,16 +126,6 @@ bool Triangle::intersect(const Ray& ray, Intersection& intersection) const
 	return true;
 }
 
-AABB Triangle::getAABB() const
-{
-	return aabb;
-}
-
-float Triangle::getArea() const
-{
-	return area;
-}
-
 Intersection Triangle::getRandomIntersection(Random& random) const
 {
 	float r1 = random.getFloat();
@@ -162,4 +152,14 @@ Intersection Triangle::getRandomIntersection(Random& random) const
 	intersection.material = material;
 
 	return intersection;
+}
+
+AABB Triangle::getAABB() const
+{
+	return aabb;
+}
+
+float Triangle::getArea() const
+{
+	return area;
 }

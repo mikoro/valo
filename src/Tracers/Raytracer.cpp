@@ -42,7 +42,7 @@ void Raytracer::generateMultiSamples(const Scene& scene, Film& film, const Vecto
 	if (scene.raytracing.multiSampleCountSqrt == 1)
 	{
 		Color pixelColor = generateCameraSamples(scene, pixelCenter, random, rayCount);
-		film.addSample(pixelIndex, pixelColor, 1.0);
+		film.addSample(pixelIndex, pixelColor, 1.0f);
 		return;
 	}
 
@@ -57,7 +57,7 @@ void Raytracer::generateMultiSamples(const Scene& scene, Film& film, const Vecto
 		for (uint64_t x = 0; x < n; ++x)
 		{
 			Vector2 sampleOffset = sampler->getSquareSample(x, y, n, n, permutation, random);
-			sampleOffset = (sampleOffset - Vector2(0.5, 0.5)) * 2.0 * filter->getRadius();
+			sampleOffset = (sampleOffset - Vector2(0.5f, 0.5f)) * 2.0f * filter->getRadius();
 			Color sampledPixelColor = generateCameraSamples(scene, pixelCenter + sampleOffset, random, rayCount);
 			film.addSample(pixelIndex, sampledPixelColor, filter->getWeight(sampleOffset));
 		}

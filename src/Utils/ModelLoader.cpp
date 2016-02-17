@@ -78,31 +78,31 @@ namespace
 			}
 			else if (part == "skipLighting")
 			{
-				currentMaterial.skipLighting = readFloat(line, lineIndex, part) != 0.0;
+				currentMaterial.skipLighting = readFloat(line, lineIndex, part) != 0.0f;
 			}
 			else if (part == "nonShadowing")
 			{
-				currentMaterial.nonShadowing = readFloat(line, lineIndex, part) != 0.0;
+				currentMaterial.nonShadowing = readFloat(line, lineIndex, part) != 0.0f;
 			}
 			else if (part == "normalInterpolation")
 			{
-				currentMaterial.normalInterpolation = readFloat(line, lineIndex, part) != 0.0;
+				currentMaterial.normalInterpolation = readFloat(line, lineIndex, part) != 0.0f;
 			}
 			else if (part == "autoInvertNormal")
 			{
-				currentMaterial.autoInvertNormal = readFloat(line, lineIndex, part) != 0.0;
+				currentMaterial.autoInvertNormal = readFloat(line, lineIndex, part) != 0.0f;
 			}
 			else if (part == "invertNormal")
 			{
-				currentMaterial.invertNormal = readFloat(line, lineIndex, part) != 0.0;
+				currentMaterial.invertNormal = readFloat(line, lineIndex, part) != 0.0f;
 			}
 			else if (part == "fresnelReflection")
 			{
-				currentMaterial.fresnelReflection = readFloat(line, lineIndex, part) != 0.0;
+				currentMaterial.fresnelReflection = readFloat(line, lineIndex, part) != 0.0f;
 			}
 			else if (part == "attenuating")
 			{
-				currentMaterial.attenuating = readFloat(line, lineIndex, part) != 0.0;
+				currentMaterial.attenuating = readFloat(line, lineIndex, part) != 0.0f;
 			}
 			else if (part == "shininess" || part == "Ns")
 			{

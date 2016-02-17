@@ -47,8 +47,8 @@ namespace Raycer
 
 		std::chrono::high_resolution_clock::time_point startTime;
 
-		float currentValue = 0.0;
-		float targetValue = 0.0;
+		float currentValue = 0.0f;
+		float targetValue = 0.0f;
 
 		MovingAverage remainingMillisecondsAverage;
 	};
