@@ -19,9 +19,9 @@ Color DiffuseMaterial::getColor(const Scene& scene, const Intersection& intersec
 	{
 		Vector3 directionToLight = -light.getDirection(intersection);
 		
-		double diffuseAmount = directionToLight.dot(intersection.normal);
+		float diffuseAmount = directionToLight.dot(intersection.normal);
 
-		if (diffuseAmount > 0.0)
+		if (diffuseAmount > 0.0f)
 			finalColor += lightColor * diffuseAmount * getDiffuseReflectance(intersection);
 	}
 
@@ -33,14 +33,14 @@ Vector3 DiffuseMaterial::getSampleDirection(const Intersection& intersection, Ra
 	return sampler.getCosineHemisphereSample(intersection.onb, 0, 0, 0, 0, 0, random);
 }
 
-double DiffuseMaterial::getDirectionProbability(const Intersection& intersection, const Vector3& out)
+float DiffuseMaterial::getDirectionProbability(const Intersection& intersection, const Vector3& out)
 {
-	return intersection.normal.dot(out) / M_PI;
+	return intersection.normal.dot(out) / float(M_PI);
 }
 
 Color DiffuseMaterial::getBrdf(const Intersection& intersection, const Vector3& out)
 {
 	(void)out;
 
-	return getReflectance(intersection) / M_PI;
+	return getReflectance(intersection) / float(M_PI);
 }

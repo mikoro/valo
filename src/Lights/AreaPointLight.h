@@ -33,7 +33,7 @@ namespace Raycer
 		Vector3 position;
 		SamplerType samplerType = SamplerType::CMJ;
 		uint64_t sampleCountSqrt = 3;
-		double radius = 1.0;
+		float radius = 1.0f;
 
 	private:
 

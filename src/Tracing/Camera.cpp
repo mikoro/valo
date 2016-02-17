@@ -23,24 +23,24 @@ void Camera::initialize()
 
 void Camera::setImagePlaneSize(uint64_t width, uint64_t height)
 {
-	imagePlaneWidth = double(width - 1);
-	imagePlaneHeight = double(height - 1);
-	aspectRatio = double(height) / double(width);
+	imagePlaneWidth = float(width - 1);
+	imagePlaneHeight = float(height - 1);
+	aspectRatio = float(height) / float(width);
 }
 
 void Camera::reset()
 {
 	position = originalPosition;
 	orientation = originalOrientation;
-	velocity = Vector3(0.0, 0.0, 0.0);
-	smoothVelocity = Vector3(0.0, 0.0, 0.0);
-	smoothAcceleration = Vector3(0.0, 0.0, 0.0);
-	angularVelocity = Vector3(0.0, 0.0, 0.0);
-	smoothAngularVelocity = Vector3(0.0, 0.0, 0.0);
-	smoothAngularAcceleration = Vector3(0.0, 0.0, 0.0);
+	velocity = Vector3(0.0f, 0.0f, 0.0f);
+	smoothVelocity = Vector3(0.0f, 0.0f, 0.0f);
+	smoothAcceleration = Vector3(0.0f, 0.0f, 0.0f);
+	angularVelocity = Vector3(0.0f, 0.0f, 0.0f);
+	smoothAngularVelocity = Vector3(0.0f, 0.0f, 0.0f);
+	smoothAngularAcceleration = Vector3(0.0f, 0.0f, 0.0f);
 }
 
-void Camera::update(double timeStep)
+void Camera::update(float timeStep)
 {
 	WindowRunner& windowRunner = App::getWindowRunner();
 	Settings& settings = App::getSettings();
@@ -64,38 +64,38 @@ void Camera::update(double timeStep)
 		if (windowRunner.keyIsDown(GLFW_KEY_PAGE_DOWN))
 		{
 			if (projectionType == CameraProjectionType::PERSPECTIVE)
-				fov -= 50.0 * timeStep;
+				fov -= 50.0f * timeStep;
 			else if (projectionType == CameraProjectionType::ORTHOGRAPHIC)
-				orthoSize -= 10.0 * timeStep;
+				orthoSize -= 10.0f * timeStep;
 			else if (projectionType == CameraProjectionType::FISHEYE)
-				fishEyeAngle -= 50.0 * timeStep;
+				fishEyeAngle -= 50.0f * timeStep;
 		}
 
 		if (windowRunner.keyIsDown(GLFW_KEY_PAGE_UP))
 		{
 			if (projectionType == CameraProjectionType::PERSPECTIVE)
-				fov += 50.0 * timeStep;
+				fov += 50.0f * timeStep;
 			else if (projectionType == CameraProjectionType::ORTHOGRAPHIC)
-				orthoSize += 10.0 * timeStep;
+				orthoSize += 10.0f * timeStep;
 			else if (projectionType == CameraProjectionType::FISHEYE)
-				fishEyeAngle += 50.0 * timeStep;
+				fishEyeAngle += 50.0f * timeStep;
 		}
 	}
 
-	fov = std::max(1.0, std::min(fov, 180.0));
-	orthoSize = std::max(0.0, orthoSize);
-	fishEyeAngle = std::max(1.0, std::min(fishEyeAngle, 360.0));
-	imagePlaneDistance = 0.5 / tan(MathUtils::degToRad(fov / 2.0));
+	fov = std::max(1.0f, std::min(fov, 180.0f));
+	orthoSize = std::max(0.0f, orthoSize);
+	fishEyeAngle = std::max(1.0f, std::min(fishEyeAngle, 360.0f));
+	imagePlaneDistance = 0.5f / std::tan(MathUtils::degToRad(fov / 2.0f));
 
 	// SPEED MODIFIERS //
 
 	if (windowRunner.keyWasPressed(GLFW_KEY_INSERT))
-		cameraMoveSpeedModifier *= 2.0;
+		cameraMoveSpeedModifier *= 2.0f;
 
 	if (windowRunner.keyWasPressed(GLFW_KEY_DELETE))
-		cameraMoveSpeedModifier *= 0.5;
+		cameraMoveSpeedModifier *= 0.5f;
 
-	double moveSpeed = settings.camera.moveSpeed * cameraMoveSpeedModifier;
+	float moveSpeed = settings.camera.moveSpeed * cameraMoveSpeedModifier;
 
 	if (windowRunner.keyIsDown(GLFW_KEY_LEFT_CONTROL) || windowRunner.keyIsDown(GLFW_KEY_RIGHT_CONTROL))
 		moveSpeed *= settings.camera.slowSpeedModifier;
@@ -108,8 +108,8 @@ void Camera::update(double timeStep)
 
 	// ACCELERATIONS AND VELOCITIES //
 
-	velocity = Vector3(0.0, 0.0, 0.0);
-	angularVelocity = Vector3(0.0, 0.0, 0.0);
+	velocity = Vector3(0.0f, 0.0f, 0.0f);
+	angularVelocity = Vector3(0.0f, 0.0f, 0.0f);
 	bool movementKeyIsPressed = false;
 
 	if (windowRunner.mouseIsDown(GLFW_MOUSE_BUTTON_LEFT) || settings.camera.freeLook)
@@ -164,12 +164,12 @@ void Camera::update(double timeStep)
 
 	if (windowRunner.keyIsDown(GLFW_KEY_SPACE) || !settings.camera.enableMovement)
 	{
-		velocity = Vector3(0.0, 0.0, 0.0);
-		smoothVelocity = Vector3(0.0, 0.0, 0.0);
-		smoothAcceleration = Vector3(0.0, 0.0, 0.0);
-		angularVelocity = Vector3(0.0, 0.0, 0.0);
-		smoothAngularVelocity = Vector3(0.0, 0.0, 0.0);
-		smoothAngularAcceleration = Vector3(0.0, 0.0, 0.0);
+		velocity = Vector3(0.0f, 0.0f, 0.0f);
+		smoothVelocity = Vector3(0.0f, 0.0f, 0.0f);
+		smoothAcceleration = Vector3(0.0f, 0.0f, 0.0f);
+		angularVelocity = Vector3(0.0f, 0.0f, 0.0f);
+		smoothAngularVelocity = Vector3(0.0f, 0.0f, 0.0f);
+		smoothAngularAcceleration = Vector3(0.0f, 0.0f, 0.0f);
 	}
 
 	// EULER INTEGRATION //
@@ -198,16 +198,16 @@ void Camera::update(double timeStep)
 
 	// DRAG & AUTO STOP //
 
-	double smoothVelocityLength = smoothVelocity.length();
-	double smoothAngularVelocityLength = smoothAngularVelocity.length();
+	float smoothVelocityLength = smoothVelocity.length();
+	float smoothAngularVelocityLength = smoothAngularVelocity.length();
 
 	if ((smoothVelocityLength < settings.camera.autoStopSpeed * moveSpeed) && !movementKeyIsPressed)
-		smoothVelocity = smoothAcceleration = Vector3(0.0, 0.0, 0.0);
+		smoothVelocity = smoothAcceleration = Vector3(0.0f, 0.0f, 0.0f);
 	else if (!smoothVelocity.isZero())
 		smoothAcceleration = settings.camera.moveDrag * (-smoothVelocity.normalized() * smoothVelocityLength);
 	
 	if (smoothAngularVelocityLength < settings.camera.autoStopSpeed * moveSpeed)
-		smoothAngularVelocity = smoothAngularAcceleration = Vector3(0.0, 0.0, 0.0);
+		smoothAngularVelocity = smoothAngularAcceleration = Vector3(0.0f, 0.0f, 0.0f);
 	else if (!smoothAngularVelocity.isZero())
 		smoothAngularAcceleration = settings.camera.mouseDrag * (-smoothAngularVelocity.normalized() * smoothAngularVelocityLength);
 
@@ -260,8 +260,8 @@ Ray Camera::getRay(const Vector2& pixel, bool& isOffLens) const
 	{
 		case CameraProjectionType::PERSPECTIVE:
 		{
-			double dx = (pixel.x / imagePlaneWidth) - 0.5;
-			double dy = (pixel.y / imagePlaneHeight) - 0.5;
+			float dx = (pixel.x / imagePlaneWidth) - 0.5f;
+			float dy = (pixel.y / imagePlaneHeight) - 0.5f;
 
 			Vector3 imagePlanePixelPosition = imagePlaneCenter + (dx * right) + (dy * aspectRatio * up);
 
@@ -272,8 +272,8 @@ Ray Camera::getRay(const Vector2& pixel, bool& isOffLens) const
 
 		case CameraProjectionType::ORTHOGRAPHIC:
 		{
-			double dx = (pixel.x / imagePlaneWidth) - 0.5;
-			double dy = (pixel.y / imagePlaneHeight) - 0.5;
+			float dx = (pixel.x / imagePlaneWidth) - 0.5f;
+			float dy = (pixel.y / imagePlaneHeight) - 0.5f;
 
 			ray.origin = position + (dx * orthoSize * right) + (dy * orthoSize * aspectRatio * up);
 			ray.direction = forward;
@@ -283,23 +283,23 @@ Ray Camera::getRay(const Vector2& pixel, bool& isOffLens) const
 		// http://paulbourke.net/dome/fisheye/
 		case CameraProjectionType::FISHEYE:
 		{
-			double dx = (pixel.x / imagePlaneWidth) * 2.0 - 1.0;
-			double dy = (pixel.y / imagePlaneHeight) * 2.0 - 1.0;
+			float dx = (pixel.x / imagePlaneWidth) * 2.0f - 1.0f;
+			float dy = (pixel.y / imagePlaneHeight) * 2.0f - 1.0f;
 
-			dx /= std::min(1.0, aspectRatio);
-			dy *= std::max(1.0, aspectRatio);
+			dx /= std::min(1.0f, aspectRatio);
+			dy *= std::max(1.0f, aspectRatio);
 
-			double r = sqrt(dx * dx + dy * dy);
+			float r = sqrt(dx * dx + dy * dy);
 
-			if (r > 1.0)
+			if (r > 1.0f)
 				isOffLens = true;
 
-			double phi = atan2(dy, dx);
-			double theta = r * (MathUtils::degToRad(fishEyeAngle) / 2.0);
+			float phi = std::atan2(dy, dx);
+			float theta = r * (MathUtils::degToRad(fishEyeAngle) / 2.0f);
 
-			double u = sin(theta) * cos(phi);
-			double v = sin(theta) * sin(phi);
-			double w = cos(theta);
+			float u = std::sin(theta) * std::cos(phi);
+			float v = std::sin(theta) * std::sin(phi);
+			float w = std::cos(theta);
 
 			ray.origin = position;
 			ray.direction = u * right + v * up + w * forward;

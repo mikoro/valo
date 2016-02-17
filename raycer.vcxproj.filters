@@ -338,6 +338,12 @@
     <ClCompile Include="src\Tracing\BVHBuilder.cpp">
       <Filter>Tracing</Filter>
     </ClCompile>
+    <ClCompile Include="src\Rendering\Color.cpp">
+      <Filter>Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Rendering\Image.cpp">
+      <Filter>Rendering</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Utils\FpsCounter.h">
@@ -486,16 +492,10 @@
     <ClInclude Include="src\RunnerStates\RunnerState.h">
       <Filter>RunnerStates</Filter>
     </ClInclude>
-    <ClInclude Include="src\Rendering\Color.h">
-      <Filter>Rendering</Filter>
-    </ClInclude>
     <ClInclude Include="src\Rendering\Film.h">
       <Filter>Rendering</Filter>
     </ClInclude>
     <ClInclude Include="src\Rendering\FilmRenderer.h">
-      <Filter>Rendering</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Rendering\Image.h">
       <Filter>Rendering</Filter>
     </ClInclude>
     <ClInclude Include="src\Rendering\ImagePool.h">
@@ -589,6 +589,12 @@
     <ClInclude Include="src\Tracing\BVHBuilder.h">
       <Filter>Tracing</Filter>
     </ClInclude>
+    <ClInclude Include="src\Rendering\Color.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Rendering\Image.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="platform\windows\raycer.rc">
@@ -607,12 +613,6 @@
     </None>
     <None Include="data\shaders\film.vert">
       <Filter>Shaders</Filter>
-    </None>
-    <None Include="src\Rendering\Color.inl">
-      <Filter>Rendering</Filter>
-    </None>
-    <None Include="src\Rendering\Image.inl">
-      <Filter>Rendering</Filter>
     </None>
   </ItemGroup>
 </Project>

@@ -9,7 +9,7 @@
 
 using namespace Raycer;
 
-double PoissonDiscSampler::getSample(uint64_t x, uint64_t n, uint64_t permutation, Random& random)
+float PoissonDiscSampler::getSample(uint64_t x, uint64_t n, uint64_t permutation, Random& random)
 {
 	(void)x;
 	(void)n;
@@ -40,5 +40,5 @@ void PoissonDiscSampler::generateSamples2D(uint64_t sampleCountSqrt, Random& ran
 	(void)random;
 
 	PoissonDisc poissonDisc;
-	samples2D = poissonDisc.generate(sampleCountSqrt, sampleCountSqrt, 1.0 / M_SQRT2, 30, true); // minDistance is just a guess to get about sampleCountSqrt^2 samples
+	samples2D = poissonDisc.generate(sampleCountSqrt, sampleCountSqrt, 1.0f / float(M_SQRT2), 30, true); // minDistance is just a guess to get about sampleCountSqrt^2 samples
 }

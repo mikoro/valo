@@ -22,7 +22,7 @@ namespace Raycer
 
 	private:
 
-		void printProgress(double percentage, const TimerData& elapsed, const TimerData& remaining, uint64_t pixelSamples);
+		void printProgress(float percentage, const TimerData& elapsed, const TimerData& remaining, uint64_t pixelSamples);
 		
 		std::atomic<bool> interrupted;
 

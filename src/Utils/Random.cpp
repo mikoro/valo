@@ -54,10 +54,10 @@ Color Random::getColor(bool randomAlpha)
 {
 	Color c;
 
-	c.r = getDouble();
-	c.g = getDouble();
-	c.b = getDouble();
-	c.a = randomAlpha ? getDouble() : 1.0;
+	c.r = getFloat();
+	c.g = getFloat();
+	c.b = getFloat();
+	c.a = randomAlpha ? getFloat() : 1.0f;
 
 	return c;
 }
@@ -66,8 +66,8 @@ Vector2 Random::getVector2()
 {
 	Vector2 v;
 
-	v.x = getDouble();
-	v.y = getDouble();
+	v.x = getFloat();
+	v.y = getFloat();
 
 	return v;
 }
@@ -76,9 +76,9 @@ Vector3 Random::getVector3()
 {
 	Vector3 v;
 
-	v.x = getDouble();
-	v.y = getDouble();
-	v.z = getDouble();
+	v.x = getFloat();
+	v.y = getFloat();
+	v.z = getFloat();
 
 	return v;
 }

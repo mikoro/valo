@@ -213,8 +213,10 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='DebugTest|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="src\Rendering\Color.cpp" />
     <ClCompile Include="src\Rendering\Film.cpp" />
     <ClCompile Include="src\Rendering\FilmRenderer.cpp" />
+    <ClCompile Include="src\Rendering\Image.cpp" />
     <ClCompile Include="src\Rendering\ImagePool.cpp" />
     <ClCompile Include="src\Rendering\InfoPanel.cpp" />
     <ClCompile Include="src\RunnerStates\DefaultState.cpp" />
@@ -378,8 +380,6 @@
     <None Include="data\shaders\film.frag" />
     <None Include="data\shaders\film.vert" />
     <None Include="src\Math\Polynomial.inl" />
-    <None Include="src\Rendering\Color.inl" />
-    <None Include="src\Rendering\Image.inl" />
     <None Include="src\Utils\Log.inl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -12,13 +12,13 @@ namespace Raycer
 	{
 	public:
 
-		static bool almostZero(double value, double threshold = std::numeric_limits<double>::epsilon() * 4);
-		static bool almostSame(double first, double second, double threshold = std::numeric_limits<double>::epsilon() * 4);
-		static bool almostSame(const std::complex<double>& first, const std::complex<double>& second, double threshold = std::numeric_limits<double>::epsilon() * 4);
-		static double degToRad(double degrees);
-		static double radToDeg(double radians);
-		static double smoothstep(double t);
-		static double smootherstep(double t);
-		static double fastPow(double a, double b);
+		static bool almostZero(float value, float threshold = std::numeric_limits<float>::epsilon() * 4);
+		static bool almostSame(float first, float second, float threshold = std::numeric_limits<float>::epsilon() * 4);
+		static bool almostSame(const std::complex<float>& first, const std::complex<float>& second, float threshold = std::numeric_limits<float>::epsilon() * 4);
+		static float degToRad(float degrees);
+		static float radToDeg(float radians);
+		static float smoothstep(float t);
+		static float smootherstep(float t);
+		static float fastPow(float a, float b);
 	};
 }

@@ -9,36 +9,36 @@ using namespace Raycer;
 
 namespace
 {
-	double calculateWeight(double s)
+	float calculateWeight(float s)
 	{
 		s = std::abs(s);
 
-		if (s < 1.0)
-			return 1.0 - s;
+		if (s < 1.0f)
+			return 1.0f - s;
 		else
-			return 0.0;
+			return 0.0f;
 	}
 }
 
-TentFilter::TentFilter(double radiusX_, double radiusY_)
+TentFilter::TentFilter(float radiusX_, float radiusY_)
 {
 	setRadius(radiusX_, radiusY_);
 }
 
-void TentFilter::setRadius(double radiusX_, double radiusY_)
+void TentFilter::setRadius(float radiusX_, float radiusY_)
 {
 	radiusX = radiusX_;
 	radiusY = radiusY_;
-	radiusXInv = 1.0 / radiusX;
-	radiusYInv = 1.0 / radiusY;
+	radiusXInv = 1.0f / radiusX;
+	radiusYInv = 1.0f / radiusY;
 }
 
-double TentFilter::getWeightX(double x)
+float TentFilter::getWeightX(float x)
 {
 	return calculateWeight(x * radiusXInv) * radiusXInv;
 }
 
-double TentFilter::getWeightY(double y)
+float TentFilter::getWeightY(float y)
 {
 	return calculateWeight(y * radiusYInv) * radiusYInv;
 }

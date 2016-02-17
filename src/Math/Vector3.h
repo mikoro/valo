@@ -13,16 +13,16 @@ namespace Raycer
 	{
 	public:
 
-		explicit Vector3(double x = 0.0, double y = 0.0, double z = 0.0);
+		explicit Vector3(float x = 0.0f, float y = 0.0f, float z = 0.0f);
 		explicit Vector3(const Vector4& v);
 
 		friend Vector3 operator+(const Vector3& v, const Vector3& w);
 		friend Vector3 operator-(const Vector3& v, const Vector3& w);
 		friend Vector3 operator*(const Vector3& v, const Vector3& w);
-		friend Vector3 operator*(const Vector3& v, double s);
-		friend Vector3 operator*(double s, const Vector3& v);
+		friend Vector3 operator*(const Vector3& v, float s);
+		friend Vector3 operator*(float s, const Vector3& v);
 		friend Vector3 operator/(const Vector3& v, const Vector3& w);
-		friend Vector3 operator/(const Vector3& v, double s);
+		friend Vector3 operator/(const Vector3& v, float s);
 		friend Vector3 operator-(const Vector3& v);
 
 		friend bool operator==(const Vector3& v, const Vector3& w);
@@ -33,15 +33,15 @@ namespace Raycer
 		Vector3& operator+=(const Vector3& v);
 		Vector3& operator-=(const Vector3& v);
 		Vector3& operator*=(const Vector3& v);
-		Vector3& operator*=(double s);
+		Vector3& operator*=(float s);
 		Vector3& operator/=(const Vector3& v);
-		Vector3& operator/=(double s);
-		double operator[](uint64_t index) const;
+		Vector3& operator/=(float s);
+		float operator[](uint64_t index) const;
 
-		double getElement(uint64_t index) const;
-		void setElement(uint64_t index, double value);
-		double length() const;
-		double lengthSquared() const;
+		float getElement(uint64_t index) const;
+		void setElement(uint64_t index, float value);
+		float length() const;
+		float lengthSquared() const;
 		void normalize();
 		Vector3 normalized() const;
 		void inverse();
@@ -49,13 +49,13 @@ namespace Raycer
 		bool isZero() const;
 		bool isNan() const;
 		bool isNormal() const;
-		double dot(const Vector3& v) const;
+		float dot(const Vector3& v) const;
 		Vector3 cross(const Vector3& v) const;
 		Vector3 reflect(const Vector3& normal) const;
 		std::string toString() const;
-		Vector4 toVector4(double w = 0.0) const;
+		Vector4 toVector4(float w = 0.0f) const;
 
-		static Vector3 lerp(const Vector3& v1, const Vector3& v2, double t);
+		static Vector3 lerp(const Vector3& v1, const Vector3& v2, float t);
 		static Vector3 abs(const Vector3& v);
 
 		static const Vector3 RIGHT;
@@ -63,9 +63,9 @@ namespace Raycer
 		static const Vector3 FORWARD;
 		static const Vector3 ALMOST_UP;
 
-		double x;
-		double y;
-		double z;
+		float x;
+		float y;
+		float z;
 
 	private:
 

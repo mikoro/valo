@@ -33,7 +33,7 @@ namespace Raycer
 	public:
 
 		void addSegment(const Color& start, const Color& end, uint64_t length);
-		Color getColor(double alpha) const;
+		Color getColor(float alpha) const;
 
 	private:
 

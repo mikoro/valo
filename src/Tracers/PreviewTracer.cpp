@@ -37,7 +37,7 @@ void PreviewTracer::trace(const Scene& scene, Film& film, const Vector2& pixelCe
 
 	if (isOffLens)
 	{
-		film.addSample(pixelIndex, scene.general.offLensColor, 1.0);
+		film.addSample(pixelIndex, scene.general.offLensColor, 1.0f);
 		return;
 	}
 
@@ -46,7 +46,7 @@ void PreviewTracer::trace(const Scene& scene, Film& film, const Vector2& pixelCe
 
 	if (!intersection.wasFound)
 	{
-		film.addSample(pixelIndex, scene.general.backgroundColor, 1.0);
+		film.addSample(pixelIndex, scene.general.backgroundColor, 1.0f);
 		return;
 	}
 
@@ -63,5 +63,5 @@ void PreviewTracer::trace(const Scene& scene, Film& film, const Vector2& pixelCe
 		color = material->diffuseReflectance;
 
 	color *= std::abs(ray.direction.dot(intersection.normal));
-	film.addSample(pixelIndex, color, 1.0);
+	film.addSample(pixelIndex, color, 1.0f);
 }

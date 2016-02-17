@@ -5,8 +5,6 @@
 
 #include <GL/glcorearb.h>
 
-#include "Rendering/Image.h"
-
 namespace Raycer
 {
 	class Film;
@@ -24,8 +22,6 @@ namespace Raycer
 		GLuint getFilmTextureId() const;
 
 	private:
-
-		Imagef filmData;
 
 		uint64_t filmWidth = 0;
 		uint64_t filmHeight = 0;

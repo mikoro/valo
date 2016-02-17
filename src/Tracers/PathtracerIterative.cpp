@@ -28,14 +28,14 @@ void PathtracerIterative::trace(const Scene& scene, Film& film, const Vector2& p
 	rayCount = 0;
 
 	Vector2 offsetPixel = pixelCenter;
-	double filterWeight = 1.0;
+	float filterWeight = 1.0f;
 
 	if (scene.pathtracing.enableMultiSampling)
 	{
 		Filter* filter = filters[scene.pathtracing.multiSamplerFilterType].get();
 
 		Vector2 pixelOffset = sampler.getSquareSample(0, 0, 0, 0, 0, random);
-		pixelOffset = (pixelOffset - Vector2(0.5, 0.5)) * 2.0 * filter->getRadius();
+		pixelOffset = (pixelOffset - Vector2(0.5f, 0.5f)) * 2.0f * filter->getRadius();
 
 		filterWeight = filter->getWeight(pixelOffset);
 		offsetPixel = pixelCenter + pixelOffset;
@@ -50,9 +50,9 @@ void PathtracerIterative::trace(const Scene& scene, Film& film, const Vector2& p
 		return;
 	}
 
-	Color color(0.0, 0.0, 0.0);
-	Color sampleBrdf(1.0, 1.0, 1.0);
-	double sampleProbability = 1.0;
+	Color color(0.0f, 0.0f, 0.0f);
+	Color sampleBrdf(1.0f, 1.0f, 1.0f);
+	float sampleProbability = 1.0f;
 	uint64_t depth = 0;
 
 	while (true)
@@ -68,21 +68,21 @@ void PathtracerIterative::trace(const Scene& scene, Film& film, const Vector2& p
 		if (scene.general.enableNormalMapping && intersection.material->normalMapTexture != nullptr)
 			calculateNormalMapping(intersection);
 
-		Color emittedLight(0.0, 0.0, 0.0);
-		Color directLight(0.0, 0.0, 0.0);
+		Color emittedLight(0.0f, 0.0f, 0.0f);
+		Color directLight(0.0f, 0.0f, 0.0f);
 
 		if (depth == 0 && !intersection.isBehind && intersection.material->isEmissive())
 			emittedLight = intersection.material->getEmittance(intersection);
 
 		directLight = calculateDirectLight(scene, intersection, random);
 
-		double terminationProbability = 1.0;
+		float terminationProbability = 1.0f;
 
 		if (depth >= scene.pathtracing.minPathLength)
 		{
 			terminationProbability = scene.pathtracing.terminationProbability;
 
-			if (random.getDouble() < terminationProbability)
+			if (random.getFloat() < terminationProbability)
 				break;
 		}
 
@@ -90,7 +90,7 @@ void PathtracerIterative::trace(const Scene& scene, Film& film, const Vector2& p
 
 		Vector3 sampleDirection = intersection.material->getSampleDirection(intersection, sampler, random);
 		sampleProbability *= intersection.material->getDirectionProbability(intersection, sampleDirection);
-		double sampleCosine = sampleDirection.dot(intersection.normal);
+		float sampleCosine = sampleDirection.dot(intersection.normal);
 		sampleBrdf *= intersection.material->getBrdf(intersection, sampleDirection) * sampleCosine;
 
 		ray = Ray();

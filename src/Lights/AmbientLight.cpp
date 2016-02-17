@@ -50,8 +50,8 @@ Color AmbientLight::getColor(const Scene& scene, const Intersection& intersectio
 		}
 	}
 
-	double occlusionAmount = double(occlusionCount) / (double(n) * double(n));
-	return (1.0 - occlusionAmount) * color;
+	float occlusionAmount = float(occlusionCount) / (float(n) * float(n));
+	return (1.0f - occlusionAmount) * color;
 }
 
 Vector3 AmbientLight::getDirection(const Intersection& intersection) const

@@ -8,13 +8,13 @@
 
 using namespace Raycer;
 
-double JitteredSampler::getSample(uint64_t x, uint64_t n, uint64_t permutation, Random& random)
+float JitteredSampler::getSample(uint64_t x, uint64_t n, uint64_t permutation, Random& random)
 {
 	(void)permutation;
 
 	assert(x < n);
 
-	return (double(x) + random.getDouble()) / double(n);
+	return (float(x) + random.getFloat()) / float(n);
 }
 
 Vector2 JitteredSampler::getSquareSample(uint64_t x, uint64_t y, uint64_t nx, uint64_t ny, uint64_t permutation, Random& random)
@@ -25,8 +25,8 @@ Vector2 JitteredSampler::getSquareSample(uint64_t x, uint64_t y, uint64_t nx, ui
 
 	Vector2 result;
 
-	result.x = (double(x) + random.getDouble()) / double(nx);
-	result.y = (double(y) + random.getDouble()) / double(ny);
+	result.x = (float(x) + random.getFloat()) / float(nx);
+	result.y = (float(y) + random.getFloat()) / float(ny);
 
 	return result;
 }

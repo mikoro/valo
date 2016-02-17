@@ -20,7 +20,7 @@ namespace Raycer
 		{
 			bool enabled;
 			bool checkGLErrors;
-			double renderScale;
+			float renderScale;
 			uint64_t infoPanelState;
 			uint64_t infoPanelFontSize;
 			bool usePreviewWhileMoving;
@@ -50,7 +50,7 @@ namespace Raycer
 			std::string fileName;
 			bool autoView;
 			bool autoWrite;
-			double autoWriteInterval;
+			float autoWriteInterval;
 			uint64_t autoWriteCount;
 			std::string autoWriteFileName;
 		} image;
@@ -69,7 +69,7 @@ namespace Raycer
 			bool restoreFromFile;
 			std::string restoreFileName;
 			bool autoWrite;
-			double autoWriteInterval;
+			float autoWriteInterval;
 			uint64_t autoWriteCount;
 			std::string autoWriteFileName;
 		} film;
@@ -79,14 +79,14 @@ namespace Raycer
 			bool enableMovement;
 			bool smoothMovement;
 			bool freeLook;
-			double moveSpeed;
-			double mouseSpeed;
-			double moveDrag;
-			double mouseDrag;
-			double autoStopSpeed;
-			double slowSpeedModifier;
-			double fastSpeedModifier;
-			double veryFastSpeedModifier;
+			float moveSpeed;
+			float mouseSpeed;
+			float moveDrag;
+			float mouseDrag;
+			float autoStopSpeed;
+			float slowSpeedModifier;
+			float fastSpeedModifier;
+			float veryFastSpeedModifier;
 		} camera;
 	};
 }

@@ -21,14 +21,14 @@ namespace Raycer
 		void initialize(Scene& scene) override;
 
 		Color getColor(const Vector2& texcoord, const Vector3& position) const override;
-		double getValue(const Vector2& texcoord, const Vector3& position) const override;
+		float getValue(const Vector2& texcoord, const Vector3& position) const override;
 		
 		bool hasHorizontalColorGradient = false;
 		bool hasVerticalColorGradient = false;
 		ColorGradient horizontalColorGradient;
 		ColorGradient verticalColorGradient;
-		double horizontalIntensity = 1.0;
-		double verticalIntensity = 1.0;
+		float horizontalIntensity = 1.0f;
+		float verticalIntensity = 1.0f;
 
 	private:
 

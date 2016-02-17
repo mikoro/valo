@@ -23,10 +23,10 @@ bool AreaPointLight::hasDirection() const
 Color AreaPointLight::getColor(const Scene& scene, const Intersection& intersection, Random& random) const
 {
 	Vector3 intersectionToLight = position - intersection.position;
-	double distance2 = intersectionToLight.lengthSquared();
-	double distance = std::sqrt(distance2);
+	float distance2 = intersectionToLight.lengthSquared();
+	float distance = std::sqrt(distance2);
 	Vector3 directionToLight = intersectionToLight / distance;
-	double cosine = intersection.normal.dot(directionToLight);
+	float cosine = intersection.normal.dot(directionToLight);
 
 	Vector3 lightRight = directionToLight.cross(Vector3::ALMOST_UP).normalized();
 	Vector3 lightUp = lightRight.cross(directionToLight).normalized();
@@ -42,7 +42,7 @@ Color AreaPointLight::getColor(const Scene& scene, const Intersection& intersect
 			Vector2 jitter = sampler->getDiscSample(x, y, n, n, permutation, random) * radius;
 			Vector3 newLightPosition = position + jitter.x * lightRight + jitter.y * lightUp;
 			Vector3 newIntersectionToLight = newLightPosition - intersection.position;
-			double newDistance = newIntersectionToLight.length();
+			float newDistance = newIntersectionToLight.length();
 			Vector3 newDirectionToLight = newIntersectionToLight / newDistance;
 
 			Ray sampleRay;
@@ -61,8 +61,8 @@ Color AreaPointLight::getColor(const Scene& scene, const Intersection& intersect
 		}
 	}
 
-	double occlusionAmount = double(occlusionCount) / (double(n) * double(n));
-	return (1.0 - occlusionAmount) * cosine * color / distance2;
+	float occlusionAmount = float(occlusionCount) / (float(n) * float(n));
+	return (1.0f - occlusionAmount) * cosine * color / distance2;
 }
 
 Vector3 AreaPointLight::getDirection(const Intersection& intersection) const

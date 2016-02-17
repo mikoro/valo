@@ -20,17 +20,17 @@ Color DiffuseSpecularMaterial::getColor(const Scene& scene, const Intersection& 
 		Vector3 directionToLight = -light.getDirection(intersection);
 		Vector3 directionToCamera = -intersection.rayDirection;
 
-		double diffuseAmount = directionToLight.dot(intersection.normal);
+		float diffuseAmount = directionToLight.dot(intersection.normal);
 
-		if (diffuseAmount > 0.0)
+		if (diffuseAmount > 0.0f)
 		{
 			finalColor += lightColor * diffuseAmount * getDiffuseReflectance(intersection);
 
-			Vector3 reflectionDirection = ((2.0 * diffuseAmount * intersection.normal) - directionToLight).normalized();
-			double specularAmount = reflectionDirection.dot(directionToCamera);
+			Vector3 reflectionDirection = ((2.0f * diffuseAmount * intersection.normal) - directionToLight).normalized();
+			float specularAmount = reflectionDirection.dot(directionToCamera);
 
-			if (specularAmount > 0.0)
-				finalColor += lightColor * pow(specularAmount, shininess) * getSpecularReflectance(intersection);
+			if (specularAmount > 0.0f)
+				finalColor += lightColor * std::pow(specularAmount, shininess) * getSpecularReflectance(intersection);
 		}
 	}
 
@@ -42,14 +42,14 @@ Vector3 DiffuseSpecularMaterial::getSampleDirection(const Intersection& intersec
 	return sampler.getCosineHemisphereSample(intersection.onb, 0, 0, 0, 0, 0, random);
 }
 
-double DiffuseSpecularMaterial::getDirectionProbability(const Intersection& intersection, const Vector3& out)
+float DiffuseSpecularMaterial::getDirectionProbability(const Intersection& intersection, const Vector3& out)
 {
-	return intersection.normal.dot(out) / M_PI;
+	return intersection.normal.dot(out) / float(M_PI);
 }
 
 Color DiffuseSpecularMaterial::getBrdf(const Intersection& intersection, const Vector3& out)
 {
 	(void)out;
 
-	return getReflectance(intersection) / M_PI;
+	return getReflectance(intersection) / float(M_PI);
 }

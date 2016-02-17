@@ -18,9 +18,9 @@ namespace Raycer
 	struct ModelLoaderInfo
 	{
 		std::string modelFilePath;
-		Vector3 scale = Vector3(1.0, 1.0, 1.0);
-		EulerAngle rotate = EulerAngle(0.0, 0.0, 0.0);
-		Vector3 translate = Vector3(0.0, 0.0, 0.0);
+		Vector3 scale = Vector3(1.0f, 1.0f, 1.0f);
+		EulerAngle rotate = EulerAngle(0.0f, 0.0f, 0.0f);
+		Vector3 translate = Vector3(0.0f, 0.0f, 0.0f);
 		uint64_t defaultMaterialId = 0;
 		uint64_t idStartOffset = 0;
 		

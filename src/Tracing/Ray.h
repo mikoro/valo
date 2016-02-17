@@ -19,8 +19,8 @@ namespace Raycer
 		Vector3 direction;
 		Vector3 inverseDirection;
 
-		double minDistance = 0.0;
-		double maxDistance = std::numeric_limits<double>::max();
+		float minDistance = 0.0f;
+		float maxDistance = std::numeric_limits<float>::max();
 
 		bool isShadowRay = false;
 		bool fastOcclusion = false;

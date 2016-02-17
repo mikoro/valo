@@ -30,9 +30,9 @@ namespace Raycer
 
 		Color traceRecursive(const Scene& scene, const Ray& ray, Intersection& intersection, uint64_t iteration, Random& random, uint64_t& rayCount);
 
-		void calculateRayReflectanceAndTransmittance(const Intersection& intersection, double& rayReflectance, double& rayTransmittance);
-		Color calculateReflectedColor(const Scene& scene, const Intersection& intersection, double rayReflectance, uint64_t iteration, Random& random, uint64_t& rayCount);
-		Color calculateTransmittedColor(const Scene& scene, const Intersection& intersection, double rayTransmittance, uint64_t iteration, Random& random, uint64_t& rayCount);
+		void calculateRayReflectanceAndTransmittance(const Intersection& intersection, float& rayReflectance, float& rayTransmittance);
+		Color calculateReflectedColor(const Scene& scene, const Intersection& intersection, float rayReflectance, uint64_t iteration, Random& random, uint64_t& rayCount);
+		Color calculateTransmittedColor(const Scene& scene, const Intersection& intersection, float rayTransmittance, uint64_t iteration, Random& random, uint64_t& rayCount);
 		Color calculateMaterialColor(const Scene& scene, const Intersection& intersection, Random& random);
 	};
 }

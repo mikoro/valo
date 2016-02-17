@@ -9,24 +9,24 @@
 
 using namespace Raycer;
 
-AxisAngle::AxisAngle(const Vector3& axis_, double angle_) : axis(axis_), angle(angle_)
+AxisAngle::AxisAngle(const Vector3& axis_, float angle_) : axis(axis_), angle(angle_)
 {
 }
 
 Matrix4x4 AxisAngle::toMatrix4x4() const
 {
-	double x = axis.x;
-	double y = axis.y;
-	double z = axis.z;
-	double c = cos(MathUtils::degToRad(angle));
-	double s = sin(MathUtils::degToRad(angle));
-	double ci = 1.0 - c;
+	float x = axis.x;
+	float y = axis.y;
+	float z = axis.z;
+	float c = cos(MathUtils::degToRad(angle));
+	float s = sin(MathUtils::degToRad(angle));
+	float ci = 1.0f - c;
 
 	Matrix4x4 result(
-		c + x * x * ci, x * y * ci - z * s, x * z * ci + y * s, 0.0,
-		y * x * ci + z * s, c + y * y * ci, y * z * ci - x * s, 0.0,
-		z * x * ci - y * s, z * y * ci + x * s, c + z * z * ci, 0.0,
-		0.0, 0.0, 0.0, 1.0);
+		c + x * x * ci, x * y * ci - z * s, x * z * ci + y * s, 0.0f,
+		y * x * ci + z * s, c + y * y * ci, y * z * ci - x * s, 0.0f,
+		z * x * ci - y * s, z * y * ci + x * s, c + z * z * ci, 0.0f,
+		0.0f, 0.0f, 0.0f, 1.0f);
 
 	return result;
 }

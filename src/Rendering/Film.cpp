@@ -47,12 +47,12 @@ void Film::clear()
 	pixelSampleCount = 0;
 }
 
-void Film::addSample(uint64_t x, uint64_t y, const Color& color, double filterWeight)
+void Film::addSample(uint64_t x, uint64_t y, const Color& color, float filterWeight)
 {
 	addSample(y * width + x, color, filterWeight);
 }
 
-void Film::addSample(uint64_t index, const Color& color, double filterWeight)
+void Film::addSample(uint64_t index, const Color& color, float filterWeight)
 {
 	FilmPixel& filmPixel = filmPixels[index];
 	filmPixel.cumulativeColor += color * filterWeight;

@@ -23,7 +23,7 @@ namespace Raycer
 
 		void initialize();
 		void setImagePlaneSize(uint64_t width, uint64_t height);
-		void update(double timeStep);
+		void update(float timeStep);
 		void reset();
 		bool isMoving() const;
 		void saveState(const std::string& fileName) const;
@@ -38,18 +38,18 @@ namespace Raycer
 		EulerAngle orientation;
 		CameraProjectionType projectionType = CameraProjectionType::PERSPECTIVE;
 
-		double fov = 75.0;
-		double orthoSize = 10.0;
-		double fishEyeAngle = 180.0;
-		double apertureSize = 0.1;
-		double focalDistance = 10.0;
+		float fov = 75.0f;
+		float orthoSize = 10.0f;
+		float fishEyeAngle = 180.0f;
+		float apertureSize = 0.1f;
+		float focalDistance = 10.0f;
 
 	private:
 
-		double aspectRatio = 1.0;
-		double imagePlaneDistance = 1.0;
-		double imagePlaneWidth = 0.0;
-		double imagePlaneHeight = 0.0;
+		float aspectRatio = 1.0f;
+		float imagePlaneDistance = 1.0f;
+		float imagePlaneWidth = 0.0f;
+		float imagePlaneHeight = 0.0f;
 
 		Vector3 right;
 		Vector3 up;
@@ -68,7 +68,7 @@ namespace Raycer
 		Vector3 originalPosition;
 		EulerAngle originalOrientation;
 
-		double cameraMoveSpeedModifier = 1.0;
+		float cameraMoveSpeedModifier = 1.0;
 
 		friend class cereal::access;
 

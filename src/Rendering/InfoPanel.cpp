@@ -172,8 +172,8 @@ void InfoPanel::renderFull(const TracerState& state)
 	nvgText(context, currentX, currentY, tfm::format("Rotation: (%.2f, %.2f, %.2f)", scene.camera.orientation.pitch, scene.camera.orientation.yaw, scene.camera.orientation.roll).c_str(), nullptr);
 	currentY += lineSpacing;
 
-	int64_t filmMouseX = std::max(int64_t(0), std::min(windowRunner.getMouseInfo().scaledX, int64_t(film.getWidth() - 1)));
-	int64_t filmMouseY = std::max(int64_t(0), std::min(windowRunner.getMouseInfo().scaledY, int64_t(film.getHeight() - 1)));;
+	int64_t filmMouseX = std::max(int64_t(0), std::min(windowRunner.getMouseInfo().filmX, int64_t(film.getWidth() - 1)));
+	int64_t filmMouseY = std::max(int64_t(0), std::min(windowRunner.getMouseInfo().filmY, int64_t(film.getHeight() - 1)));;
 	int64_t filmMouseIndex = filmMouseY * film.getWidth() + filmMouseX;
 
 	nvgText(context, currentX, currentY, tfm::format("Mouse: (%d, %d, %d)", filmMouseX, filmMouseY, filmMouseIndex).c_str(), nullptr);
@@ -197,27 +197,27 @@ void InfoPanel::renderFull(const TracerState& state)
 	nvgText(context, currentX, currentY, tfm::format("Window: %dx%d (%dx%d)", tempWindowWidth, tempWindowHeight, tempFramebufferWidth, tempFramebufferHeight).c_str(), nullptr);
 	currentY += lineSpacing;
 
-	double totalPixels = double(film.getWidth() * film.getWidth());
+	float totalPixels = float(film.getWidth() * film.getWidth());
 
 	nvgText(context, currentX, currentY, tfm::format("Film: %dx%d (%.2fx) (%s)", film.getWidth(), film.getWidth(), settings.interactive.renderScale, StringUtils::humanizeNumber(totalPixels)).c_str(), nullptr);
 	currentY += lineSpacing;
 
-	double samplesPerSecond = double(state.sampleCount) * fpsCounter.getFps();
+	float samplesPerSecond = float(state.sampleCount) * fpsCounter.getFps();
 
 	nvgText(context, currentX, currentY, tfm::format("Samples/s: %s", StringUtils::humanizeNumber(samplesPerSecond)).c_str(), nullptr);
 	currentY += lineSpacing;
 
-	double pixelsPerSecond = double(state.pixelCount) * fpsCounter.getFps();
+	float pixelsPerSecond = float(state.pixelCount) * fpsCounter.getFps();
 
 	nvgText(context, currentX, currentY, tfm::format("Pixels/s: %s", StringUtils::humanizeNumber(pixelsPerSecond)).c_str(), nullptr);
 	currentY += lineSpacing;
 
-	double raysPerSecond = double(state.rayCount) * fpsCounter.getFps();
+	float raysPerSecond = float(state.rayCount) * fpsCounter.getFps();
 
 	nvgText(context, currentX, currentY, tfm::format("Rays/s: %s", StringUtils::humanizeNumber(raysPerSecond)).c_str(), nullptr);
 	currentY += lineSpacing;
 
-	double pathsPerSecond = double(state.pathCount) * fpsCounter.getFps();
+	float pathsPerSecond = float(state.pathCount) * fpsCounter.getFps();
 
 	nvgText(context, currentX, currentY, tfm::format("Paths/s: %s", StringUtils::humanizeNumber(pathsPerSecond)).c_str(), nullptr);
 	currentY += lineSpacing;

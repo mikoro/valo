@@ -24,10 +24,10 @@ Color ColorTexture::getColor(const Vector2& texcoord, const Vector3& position) c
 	return color * intensity;
 }
 
-double ColorTexture::getValue(const Vector2& texcoord, const Vector3& position) const
+float ColorTexture::getValue(const Vector2& texcoord, const Vector3& position) const
 {
 	(void)texcoord;
 	(void)position;
 
-	return 0.0;
+	return 0.0f;
 }

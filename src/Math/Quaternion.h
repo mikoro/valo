@@ -22,16 +22,16 @@ namespace Raycer
 	{
 	public:
 
-		explicit Quaternion(double w = 0.0, double x = 0.0, double y = 0.0, double z = 0.0);
+		explicit Quaternion(float w = 0.0f, float x = 0.0f, float y = 0.0f, float z = 0.0f);
 		explicit Quaternion(const AxisAngle& axisAngle);
-		Quaternion(const Vector3& axis, double angle);
+		Quaternion(const Vector3& axis, float angle);
 
 		friend Quaternion operator+(const Quaternion& q1, const Quaternion& q2);
 		friend Quaternion operator-(const Quaternion& q1, const Quaternion& q2);
 		friend Quaternion operator*(const Quaternion& q1, const Quaternion& q2);
-		friend Quaternion operator*(const Quaternion& q, double s);
-		friend Quaternion operator*(double s, const Quaternion& q);
-		friend Quaternion operator/(const Quaternion& q, double s);
+		friend Quaternion operator*(const Quaternion& q, float s);
+		friend Quaternion operator*(float s, const Quaternion& q);
+		friend Quaternion operator/(const Quaternion& q, float s);
 		friend Quaternion operator-(const Quaternion& q);
 
 		friend bool operator==(const Quaternion& q1, const Quaternion& q2);
@@ -40,12 +40,12 @@ namespace Raycer
 		Quaternion& operator+=(const Quaternion& q);
 		Quaternion& operator-=(const Quaternion& q);
 		Quaternion& operator*=(const Quaternion& q);
-		Quaternion& operator*=(double s);
-		Quaternion& operator/=(double s);
+		Quaternion& operator*=(float s);
+		Quaternion& operator/=(float s);
 
 		Vector3 rotate(const Vector3& v) const;
-		double length() const;
-		double lengthSquared() const;
+		float length() const;
+		float lengthSquared() const;
 		void conjugate();
 		Quaternion conjugated() const;
 		void normalize();
@@ -53,17 +53,17 @@ namespace Raycer
 		bool isZero() const;
 		bool isNan() const;
 		bool isNormal() const;
-		double dot(const Quaternion& q) const;
+		float dot(const Quaternion& q) const;
 		AxisAngle toAxisAngle() const;
 		Matrix4x4 toMatrix4x4() const;
 
-		static Quaternion lerp(const Quaternion& q1, const Quaternion& q2, double t);
-		static Quaternion slerp(const Quaternion& q1, const Quaternion& q2, double t);
+		static Quaternion lerp(const Quaternion& q1, const Quaternion& q2, float t);
+		static Quaternion slerp(const Quaternion& q1, const Quaternion& q2, float t);
 
-		double w;
-		double x;
-		double y;
-		double z;
+		float w;
+		float x;
+		float y;
+		float z;
 
 	private:
 

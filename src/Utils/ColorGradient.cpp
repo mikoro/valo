@@ -23,20 +23,20 @@ void ColorGradient::addSegment(const Color& start, const Color& end, uint64_t le
 	totalLength += length;
 }
 
-Color ColorGradient::getColor(double alpha) const
+Color ColorGradient::getColor(float alpha) const
 {
-	assert(alpha >= 0.0 && alpha <= 1.0);
+	assert(alpha >= 0.0f && alpha <= 1.0f);
 
 	Color result;
-	uint64_t index = uint64_t(ceil(alpha * totalLength));
+	uint64_t index = uint64_t(std::ceil(alpha * totalLength));
 
 	for (const ColorGradientSegment& segment : segments)
 	{
 		if (index >= segment.startIndex && index <= segment.endIndex)
 		{
-			double alphaStart = segment.startIndex / double(totalLength);
-			double alphaEnd = segment.endIndex / double(totalLength);
-			double segmentAlpha = (alpha - alphaStart) / (alphaEnd - alphaStart);
+			float alphaStart = segment.startIndex / float(totalLength);
+			float alphaEnd = segment.endIndex / float(totalLength);
+			float segmentAlpha = (alpha - alphaStart) / (alphaEnd - alphaStart);
 
 			result = Color::lerp(segment.startColor, segment.endColor, segmentAlpha);
 

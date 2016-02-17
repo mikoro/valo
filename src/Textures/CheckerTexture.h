@@ -21,12 +21,12 @@ namespace Raycer
 		void initialize(Scene& scene) override;
 
 		Color getColor(const Vector2& texcoord, const Vector3& position) const override;
-		double getValue(const Vector2& texcoord, const Vector3& position) const override;
+		float getValue(const Vector2& texcoord, const Vector3& position) const override;
 		
 		Color color1;
 		Color color2;
 		bool stripeMode = false;
-		double stripeWidth = 0.05;
+		float stripeWidth = 0.05f;
 
 	private:
 

@@ -24,22 +24,22 @@ Timer::Timer()
 void Timer::restart()
 {
 	startTime = sc::high_resolution_clock::now();
-	currentValue = 0.0;
-	remainingMillisecondsAverage.setAverage(0.0);
+	currentValue = 0.0f;
+	remainingMillisecondsAverage.setAverage(0.0f);
 }
 
-double Timer::getElapsedMilliseconds() const
+float Timer::getElapsedMilliseconds() const
 {
 	auto elapsedTime = sc::high_resolution_clock::now() - startTime;
 	uint64_t totalNanoseconds = sc::duration_cast<sc::nanoseconds>(elapsedTime).count();
-	return totalNanoseconds / 1000000.0;
+	return float(totalNanoseconds / 1000000.0);
 }
 
-double Timer::getElapsedSeconds() const
+float Timer::getElapsedSeconds() const
 {
 	auto elapsedTime = sc::high_resolution_clock::now() - startTime;
 	uint64_t totalMilliseconds = sc::duration_cast<sc::milliseconds>(elapsedTime).count();
-	return totalMilliseconds / 1000.0;
+	return float(totalMilliseconds / 1000.0);
 }
 
 TimerData Timer::getElapsed() const
@@ -62,17 +62,17 @@ TimerData Timer::getElapsed() const
 	return timerData;
 }
 
-void Timer::setTargetValue(double value)
+void Timer::setTargetValue(float value)
 {
 	targetValue = value;
 }
 
-void Timer::updateCurrentValue(double value)
+void Timer::updateCurrentValue(float value)
 {
 	currentValue = value;
 }
 
-void Timer::setAveragingAlpha(double alpha)
+void Timer::setAveragingAlpha(float alpha)
 {
 	remainingMillisecondsAverage.setAlpha(alpha);
 }
@@ -81,18 +81,18 @@ TimerData Timer::getRemaining()
 {
 	auto elapsedTime = sc::high_resolution_clock::now() - startTime;
 	uint64_t elapsedMilliseconds = sc::duration_cast<sc::milliseconds>(elapsedTime).count();
-	double millisecondsPerUnit = 0.0;
+	float millisecondsPerUnit = 0.0f;
 
-	if (currentValue > 0.0)
-		millisecondsPerUnit = double(elapsedMilliseconds) / currentValue;
+	if (currentValue > 0.0f)
+		millisecondsPerUnit = float(elapsedMilliseconds) / currentValue;
 
-	double remainingUnits = targetValue - currentValue;
+	float remainingUnits = targetValue - currentValue;
 
-	if (remainingUnits < 0.0)
-		remainingUnits = 0.0;
+	if (remainingUnits < 0.0f)
+		remainingUnits = 0.0f;
 
 	remainingMillisecondsAverage.addMeasurement(remainingUnits * millisecondsPerUnit);
-	uint64_t remainingMilliseconds = uint64_t(remainingMillisecondsAverage.getAverage() + 0.5);
+	uint64_t remainingMilliseconds = uint64_t(remainingMillisecondsAverage.getAverage() + 0.5f);
 
 	TimerData timerData;
 
@@ -110,8 +110,8 @@ TimerData Timer::getRemaining()
 	return timerData;
 }
 
-double Timer::getPercentage() const
+float Timer::getPercentage() const
 {
-	double percentage = (currentValue / targetValue) * 100.0;
-	return std::max(0.0, std::min(100.0, percentage));
+	float percentage = (currentValue / targetValue) * 100.0f;
+	return std::max(0.0f, std::min(100.0f, percentage));
 }

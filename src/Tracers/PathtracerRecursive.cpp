@@ -28,14 +28,14 @@ void PathtracerRecursive::trace(const Scene& scene, Film& film, const Vector2& p
 	rayCount = 0;
 
 	Vector2 offsetPixel = pixelCenter;
-	double filterWeight = 1.0;
+	float filterWeight = 1.0f;
 
 	if (scene.pathtracing.enableMultiSampling)
 	{
 		Filter* filter = filters[scene.pathtracing.multiSamplerFilterType].get();
 
 		Vector2 pixelOffset = sampler.getSquareSample(0, 0, 0, 0, 0, random);
-		pixelOffset = (pixelOffset - Vector2(0.5, 0.5)) * 2.0 * filter->getRadius();
+		pixelOffset = (pixelOffset - Vector2(0.5f, 0.5f)) * 2.0f * filter->getRadius();
 
 		filterWeight = filter->getWeight(pixelOffset);
 		offsetPixel = pixelCenter + pixelOffset;
@@ -62,11 +62,11 @@ Color PathtracerRecursive::traceRecursive(const Scene& scene, const Ray& ray, Ra
 	scene.intersect(ray, intersection);
 
 	if (!intersection.wasFound)
-		return Color(0.0, 0.0, 0.0);
+		return Color(0.0f, 0.0f, 0.0f);
 
-	Color emittedLight(0.0, 0.0, 0.0);
-	Color directLight(0.0, 0.0, 0.0);
-	Color indirectLight(0.0, 0.0, 0.0);
+	Color emittedLight(0.0f, 0.0f, 0.0f);
+	Color directLight(0.0f, 0.0f, 0.0f);
+	Color indirectLight(0.0f, 0.0f, 0.0f);
 
 	if (scene.general.enableNormalMapping && intersection.material->normalMapTexture != nullptr)
 		calculateNormalMapping(intersection);
@@ -82,20 +82,20 @@ Color PathtracerRecursive::traceRecursive(const Scene& scene, const Ray& ray, Ra
 
 Color PathtracerRecursive::calculateIndirectLight(const Scene& scene, const Intersection& intersection, Random& random, uint64_t depth, uint64_t& pathCount)
 {
-	double terminationProbability = 0.0;
+	float terminationProbability = 0.0f;
 
 	if (depth >= scene.pathtracing.minPathLength)
 	{
 		terminationProbability = scene.pathtracing.terminationProbability;
 
-		if (random.getDouble() < terminationProbability)
-			return Color(0.0, 0.0, 0.0);
+		if (random.getFloat() < terminationProbability)
+			return Color(0.0f, 0.0f, 0.0f);
 	}
 
 	Vector3 sampleDirection = intersection.material->getSampleDirection(intersection, sampler, random);
-	double sampleProbability = intersection.material->getDirectionProbability(intersection, sampleDirection);
+	float sampleProbability = intersection.material->getDirectionProbability(intersection, sampleDirection);
 	Color sampleBrdf = intersection.material->getBrdf(intersection, sampleDirection);
-	double sampleCosine = sampleDirection.dot(intersection.normal);
+	float sampleCosine = sampleDirection.dot(intersection.normal);
 
 	Ray sampleRay;
 	sampleRay.origin = intersection.position;
@@ -103,5 +103,5 @@ Color PathtracerRecursive::calculateIndirectLight(const Scene& scene, const Inte
 	sampleRay.minDistance = scene.general.rayMinDistance;
 	sampleRay.precalculate();
 
-	return sampleBrdf * sampleCosine * traceRecursive(scene, sampleRay, random, depth + 1, pathCount) / sampleProbability / (1.0 - terminationProbability);
+	return sampleBrdf * sampleCosine * traceRecursive(scene, sampleRay, random, depth + 1, pathCount) / sampleProbability / (1.0f - terminationProbability);
 }

@@ -8,7 +8,7 @@
 
 using namespace Raycer;
 
-const ONB ONB::UP = ONB(Vector3(-1.0, 0.0, 0.0), Vector3(0.0, 0.0, -1.0), Vector3(0.0, 1.0, 0.0));
+const ONB ONB::UP = ONB(Vector3(-1.0f, 0.0f, 0.0f), Vector3(0.0f, 0.0f, -1.0f), Vector3(0.0f, 1.0f, 0.0f));
 
 ONB::ONB()
 {

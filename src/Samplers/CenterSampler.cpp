@@ -8,7 +8,7 @@
 
 using namespace Raycer;
 
-double CenterSampler::getSample(uint64_t x, uint64_t n, uint64_t permutation, Random& random)
+float CenterSampler::getSample(uint64_t x, uint64_t n, uint64_t permutation, Random& random)
 {
 	(void)x;
 	(void)n;
@@ -17,7 +17,7 @@ double CenterSampler::getSample(uint64_t x, uint64_t n, uint64_t permutation, Ra
 
 	assert(x < n);
 
-	return 0.5;
+	return 0.5f;
 }
 
 Vector2 CenterSampler::getSquareSample(uint64_t x, uint64_t y, uint64_t nx, uint64_t ny, uint64_t permutation, Random& random)
@@ -31,5 +31,5 @@ Vector2 CenterSampler::getSquareSample(uint64_t x, uint64_t y, uint64_t nx, uint
 
 	assert(x < nx && y < ny);
 
-	return Vector2(0.5, 0.5);
+	return Vector2(0.5f, 0.5f);
 }

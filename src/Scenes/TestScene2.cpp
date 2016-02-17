@@ -13,8 +13,8 @@ Scene Scene::createTestScene2()
 
 	scene.general.tracerType = TracerType::RAY;
 
-	scene.camera.position = Vector3(3.14, 0.82, 2.50);
-	scene.camera.orientation = EulerAngle(-10.91, 52.88, 0.0);
+	scene.camera.position = Vector3(3.14f, 0.82f, 2.50f);
+	scene.camera.orientation = EulerAngle(-10.91f, 52.88f, 0.0f);
 
 	ModelLoaderInfo model;
 	model.modelFilePath = "data/models/conference/conference.obj";
@@ -22,8 +22,8 @@ Scene Scene::createTestScene2()
 	scene.models.push_back(model);
 	
 	PointLight pointLight;
-	pointLight.color = Color(1.0, 1.0, 1.0) * 2.0;
-	pointLight.position = Vector3(-0.64, 1.09, -0.34);
+	pointLight.color = Color(1.0f, 1.0f, 1.0f) * 2.0f;
+	pointLight.position = Vector3(-0.64f, 1.09f, -0.34f);
 
 	scene.lights.pointLights.push_back(pointLight);
 

@@ -1,5 +1,5 @@
 // Copyright © 2015 Mikko Ronkainen <firstname@mikkoronkainen.com>
-// License: MIT, see the LICENSE file.
+// License: MIfloat, see the LICENSE file.
 
 #pragma once
 
@@ -7,50 +7,57 @@
 
 namespace Raycer
 {
-	template <typename T>
-	class ColorType
+	class Color
 	{
 	public:
 
-		explicit ColorType(T r = T(0.0), T g = T(0.0), T b = T(0.0), T a = T(1.0));
-		explicit ColorType(int32_t r, int32_t g, int32_t b, int32_t a = 255);
+		explicit Color(float r = 0.0f, float g = 0.0f, float b = 0.0f, float a = 1.0f);
+		explicit Color(int32_t r, int32_t g, int32_t b, int32_t a = 255);
 
-		ColorType<T>& operator+=(const ColorType<T>& c);
-		ColorType<T>& operator-=(const ColorType<T>& c);
-		ColorType<T>& operator*=(const ColorType<T>& c);
-		ColorType<T>& operator*=(T s);
-		ColorType<T>& operator/=(T s);
+		friend Color operator+(const Color& c1, const Color& c2);
+		friend Color operator-(const Color& c1, const Color& c2);
+		friend Color operator*(const Color& c1, const Color& c2);
+		friend Color operator*(const Color& c, float s);
+		friend Color operator*(float s, const Color& c);
+		friend Color operator/(const Color& c1, const Color& c2);
+		friend Color operator/(const Color& c, float s);
+		friend bool operator==(const Color& c1, const Color& c2);
+		friend bool operator!=(const Color& c1, const Color& c2);
+		
+		Color& operator+=(const Color& c);
+		Color& operator-=(const Color& c);
+		Color& operator*=(const Color& c);
+		Color& operator*=(float s);
+		Color& operator/=(float s);
 
 		uint32_t getRgbaValue() const;
 		uint32_t getAbgrValue() const;
-		T getLuminance() const;
+		float getLuminance() const;
 		bool isTransparent() const;
 		bool isZero() const;
 		bool isClamped() const;
 		bool isNan() const;
 		bool isNegative() const;
-		ColorType<T>& clamp();
-		ColorType<T> clamped() const;
-		ColorType<double> toColor() const;
-		ColorType<float> toColorf() const;
+		Color& clamp();
+		Color clamped() const;
+		
+		static Color fromRgbaValue(uint32_t rgba);
+		static Color fromAbgrValue(uint32_t abgr);
+		static Color lerp(const Color& start, const Color& end, float alpha);
+		static Color alphaBlend(const Color& first, const Color& second);
+		static Color pow(const Color& color, float power);
+		static Color fastPow(const Color& color, float power);
 
-		static ColorType<T> fromRgbaValue(uint32_t rgba);
-		static ColorType<T> fromAbgrValue(uint32_t abgr);
-		static ColorType<T> lerp(const ColorType<T>& start, const ColorType<T>& end, T alpha);
-		static ColorType<T> alphaBlend(const ColorType<T>& first, const ColorType<T>& second);
-		static ColorType<T> pow(const ColorType<T>& color, T power);
-		static ColorType<T> fastPow(const ColorType<T>& color, double power);
+		static const Color RED;
+		static const Color GREEN;
+		static const Color BLUE;
+		static const Color WHITE;
+		static const Color BLACK;
 
-		static const ColorType<T> RED;
-		static const ColorType<T> GREEN;
-		static const ColorType<T> BLUE;
-		static const ColorType<T> WHITE;
-		static const ColorType<T> BLACK;
-
-		T r;
-		T g;
-		T b;
-		T a;
+		float r;
+		float g;
+		float b;
+		float a;
 
 	private:
 
@@ -65,9 +72,4 @@ namespace Raycer
 				CEREAL_NVP(a));
 		}
 	};
-
-	using Color = ColorType<double>;
-	using Colorf = ColorType<float>;
 }
-
-#include "Rendering/Color.inl"

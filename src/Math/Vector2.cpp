@@ -8,7 +8,7 @@
 
 using namespace Raycer;
 
-Vector2::Vector2(double x_, double y_) : x(x_), y(y_)
+Vector2::Vector2(float x_, float y_) : x(x_), y(y_)
 {
 }
 
@@ -29,12 +29,12 @@ namespace Raycer
 		return Vector2(v.x * w.x, v.y * w.y);
 	}
 
-	Vector2 operator*(const Vector2& v, double s)
+	Vector2 operator*(const Vector2& v, float s)
 	{
 		return Vector2(v.x * s, v.y * s);
 	}
 
-	Vector2 operator*(double s, const Vector2& v)
+	Vector2 operator*(float s, const Vector2& v)
 	{
 		return Vector2(v.x * s, v.y * s);
 	}
@@ -44,9 +44,9 @@ namespace Raycer
 		return Vector2(v.x / w.x, v.y / w.y);
 	}
 
-	Vector2 operator/(const Vector2& v, double s)
+	Vector2 operator/(const Vector2& v, float s)
 	{
-		double invS = 1.0 / s;
+		float invS = 1.0f / s;
 		return Vector2(v.x * invS, v.y * invS);
 	}
 
@@ -94,7 +94,7 @@ Vector2& Vector2::operator*=(const Vector2& v)
 	return *this;
 }
 
-Vector2& Vector2::operator*=(double s)
+Vector2& Vector2::operator*=(float s)
 {
 	*this = *this * s;
 	return *this;
@@ -106,18 +106,18 @@ Vector2& Vector2::operator/=(const Vector2& v)
 	return *this;
 }
 
-Vector2& Vector2::operator/=(double s)
+Vector2& Vector2::operator/=(float s)
 {
 	*this = *this / s;
 	return *this;
 }
 
-double Vector2::operator[](uint64_t index) const
+float Vector2::operator[](uint64_t index) const
 {
 	return (&x)[index];
 }
 
-double Vector2::getElement(uint64_t index) const
+float Vector2::getElement(uint64_t index) const
 {
 	switch (index)
 	{
@@ -127,7 +127,7 @@ double Vector2::getElement(uint64_t index) const
 	}
 }
 
-void Vector2::setElement(uint64_t index, double value)
+void Vector2::setElement(uint64_t index, float value)
 {
 	switch (index)
 	{
@@ -137,12 +137,12 @@ void Vector2::setElement(uint64_t index, double value)
 	}
 }
 
-double Vector2::length() const
+float Vector2::length() const
 {
 	return std::sqrt(x * x + y * y);
 }
 
-double Vector2::lengthSquared() const
+float Vector2::lengthSquared() const
 {
 	return (x * x + y * y);
 }
@@ -159,16 +159,16 @@ Vector2 Vector2::normalized() const
 
 void Vector2::inverse()
 {
-	x = 1.0 / x;
-	y = 1.0 / y;
+	x = 1.0f / x;
+	y = 1.0f / y;
 }
 
 Vector2 Vector2::inversed() const
 {
 	Vector2 inverse;
 
-	inverse.x = 1.0 / x;
-	inverse.y = 1.0 / y;
+	inverse.x = 1.0f / x;
+	inverse.y = 1.0f / y;
 
 	return inverse;
 }
@@ -185,17 +185,17 @@ bool Vector2::isNan() const
 
 bool Vector2::isNormal() const
 {
-	return MathUtils::almostSame(lengthSquared(), 1.0);
+	return MathUtils::almostSame(lengthSquared(), 1.0f);
 }
 
-double Vector2::dot(const Vector2& v) const
+float Vector2::dot(const Vector2& v) const
 {
 	return (x * v.x) + (y * v.y);
 }
 
 Vector2 Vector2::reflect(const Vector2& normal) const
 {
-	return *this - ((2.0 * this->dot(normal)) * normal);
+	return *this - ((2.0f * this->dot(normal)) * normal);
 }
 
 std::string Vector2::toString() const
@@ -203,10 +203,10 @@ std::string Vector2::toString() const
 	return tfm::format("(%.2f, %.2f)", x, y);
 }
 
-Vector2 Vector2::lerp(const Vector2& v1, const Vector2& v2, double t)
+Vector2 Vector2::lerp(const Vector2& v1, const Vector2& v2, float t)
 {
-	assert(t >= 0.0 && t <= 1.0);
-	return v1 * (1.0 - t) + v2 * t;
+	assert(t >= 0.0f && t <= 1.0f);
+	return v1 * (1.0f - t) + v2 * t;
 }
 
 Vector2 Vector2::abs(const Vector2& v)

@@ -35,21 +35,21 @@ namespace
 	// concentric square -> disc mapping
 	Vector2 mapSquareToDisc(const Vector2& point)
 	{
-		double phi, r;
-		double a = 2.0 * point.x - 1.0;
-		double b = 2.0 * point.y - 1.0;
+		float phi, r;
+		float a = 2.0f * point.x - 1.0f;
+		float b = 2.0f * point.y - 1.0f;
 
 		if (a > -b)
 		{
 			if (a > b)
 			{
 				r = a;
-				phi = (M_PI / 4.0) * (b / a);
+				phi = (float(M_PI) / 4.0f) * (b / a);
 			}
 			else
 			{
 				r = b;
-				phi = (M_PI / 4.0) * (2.0 - (a / b));
+				phi = (float(M_PI) / 4.0f) * (2.0f - (a / b));
 			}
 		}
 		else
@@ -57,44 +57,44 @@ namespace
 			if (a < b)
 			{
 				r = -a;
-				phi = (M_PI / 4.0) * (4.0 + (b / a));
+				phi = (float(M_PI) / 4.0f) * (4.0f + (b / a));
 			}
 			else
 			{
 				r = -b;
 
 				if (b != 0.0)
-					phi = (M_PI / 4.0) * (6.0 - (a / b));
+					phi = (float(M_PI) / 4.0f) * (6.0f - (a / b));
 				else
 					phi = 0.0;
 			}
 		}
 
-		double u = r * cos(phi);
-		double v = r * sin(phi);
+		float u = r * cos(phi);
+		float v = r * sin(phi);
 
 		return Vector2(u, v);
 	}
 
 	Vector3 mapDiscToCosineHemisphere(const ONB& onb, const Vector2& point)
 	{
-		double r2 = point.x * point.x + point.y * point.y;
+		float r2 = point.x * point.x + point.y * point.y;
 
-		double x = point.x;
-		double y = point.y;
-		double z = sqrt(1.0 - r2);
+		float x = point.x;
+		float y = point.y;
+		float z = std::sqrt(1.0f - r2);
 
 		return x * onb.u + y * onb.v + z * onb.w;
 	}
 
 	Vector3 mapDiscToUniformHemisphere(const ONB& onb, const Vector2& point)
 	{
-		double r2 = point.x * point.x + point.y * point.y;
-		double a = sqrt(2.0 - r2);
+		float r2 = point.x * point.x + point.y * point.y;
+		float a = std::sqrt(2.0f - r2);
 
-		double x = point.x * a;
-		double y = point.y * a;
-		double z = 1.0 - r2;
+		float x = point.x * a;
+		float y = point.y * a;
+		float z = 1.0f - r2;
 
 		return x * onb.u + y * onb.v + z * onb.w;
 	}
@@ -142,7 +142,7 @@ void Sampler::generateSamples2D(uint64_t sampleCountSqrt, Random& random)
 	nextSampleIndex2D = 0;
 }
 
-bool Sampler::getNextSample(double& result)
+bool Sampler::getNextSample(float& result)
 {
 	if (nextSampleIndex1D >= samples1D.size())
 	{

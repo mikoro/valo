@@ -13,7 +13,7 @@ namespace
 	const uint64_t MAX_IMAGES = 1000;
 }
 
-const Imagef* ImagePool::getImage(const std::string& fileName, bool applyGamma)
+const Image* ImagePool::getImage(const std::string& fileName, bool applyGamma)
 {
 	if (!initialized)
 	{
@@ -23,11 +23,11 @@ const Imagef* ImagePool::getImage(const std::string& fileName, bool applyGamma)
 
 	if (!imageIndexMap.count(fileName))
 	{
-		images.push_back(Imagef(fileName));
+		images.push_back(Image(fileName));
 		imageIndexMap[fileName] = images.size() - 1;
 
 		if (applyGamma)
-			images.back().applyFastGamma(2.2);
+			images.back().applyFastGamma(2.2f);
 	}
 
 	// the limit is arbitrary, increase it if it becomes a problem
@@ -46,7 +46,7 @@ uint64_t ImagePool::getImageIndex(const std::string& fileName)
 		throw std::runtime_error("Image index requested for non-existing image");
 }
 
-const std::vector<Imagef>& ImagePool::getImages()
+const std::vector<Image>& ImagePool::getImages()
 {
 	return images;
 }

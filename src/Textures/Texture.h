@@ -22,10 +22,10 @@ namespace Raycer
 		virtual void initialize(Scene& scene) = 0;
 
 		virtual Color getColor(const Vector2& texcoord, const Vector3& position) const = 0;
-		virtual double getValue(const Vector2& texcoord, const Vector3& position) const = 0;
+		virtual float getValue(const Vector2& texcoord, const Vector3& position) const = 0;
 
 		uint64_t id = 0;
-		double intensity = 1.0;
+		float intensity = 1.0f;
 
 	private:
 

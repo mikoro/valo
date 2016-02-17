@@ -28,22 +28,22 @@ std::unique_ptr<Filter> Filter::getFilter(FilterType type)
 	}
 }
 
-double Filter::getWeight(double x, double y)
+float Filter::getWeight(float x, float y)
 {
 	return getWeightX(x) * getWeightY(y);
 }
 
-double Filter::getWeight(const Vector2& point)
+float Filter::getWeight(const Vector2& point)
 {
 	return getWeightX(point.x) * getWeightY(point.y);
 }
 
-double Filter::getRadiusX() const
+float Filter::getRadiusX() const
 {
 	return radiusX;
 }
 
-double Filter::getRadiusY() const
+float Filter::getRadiusY() const
 {
 	return radiusY;
 }

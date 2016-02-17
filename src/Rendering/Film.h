@@ -18,8 +18,8 @@ namespace Raycer
 
 	struct FilmPixel
 	{
-		Color cumulativeColor = Color(0.0, 0.0, 0.0, 0.0);
-		double cumulativeFilterWeight = 0.0;
+		Color cumulativeColor = Color(0.0f, 0.0f, 0.0f, 0.0f);
+		float cumulativeFilterWeight = 0.0f;
 
 		template <class Archive>
 		void serialize(Archive& ar)
@@ -38,8 +38,8 @@ namespace Raycer
 		void resize(uint64_t width, uint64_t height);
 		void resize(uint64_t length);
 		void clear();
-		void addSample(uint64_t x, uint64_t y, const Color& color, double filterWeight);
-		void addSample(uint64_t index, const Color& color, double filterWeight);
+		void addSample(uint64_t x, uint64_t y, const Color& color, float filterWeight);
+		void addSample(uint64_t index, const Color& color, float filterWeight);
 		Color getLinearColor(uint64_t x, uint64_t y) const;
 		Color getOutputColor(uint64_t x, uint64_t y) const;
 		void increasePixelSampleCount(uint64_t count);

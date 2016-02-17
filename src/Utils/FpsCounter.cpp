@@ -11,8 +11,8 @@ FpsCounter::FpsCounter()
 {
 	lastTime = glfwGetTime();
 
-	averageFrameTime.setAlpha(0.05);
-	averageFrameTime.setAverage(1.0 / 30.0);
+	averageFrameTime.setAlpha(0.05f);
+	averageFrameTime.setAverage(1.0f / 30.0f);
 }
 
 void FpsCounter::tick()
@@ -22,23 +22,23 @@ void FpsCounter::tick()
 	lastTime = currentTime;
 
 	// prevent too large frametime changes
-	if (frameTime > 2 * averageFrameTime.getAverage())
-		frameTime = 2 * averageFrameTime.getAverage();
+	if (frameTime > 2.0 * averageFrameTime.getAverage())
+		frameTime = 2.0 * averageFrameTime.getAverage();
 }
 
 void FpsCounter::update()
 {
-	averageFrameTime.addMeasurement(frameTime);
+	averageFrameTime.addMeasurement(float(frameTime));
 }
 
-double FpsCounter::getFrameTime() const
+float FpsCounter::getFrameTime() const
 {
-	return averageFrameTime.getAverage() * 1000.0;
+	return averageFrameTime.getAverage() * 1000.0f;
 }
 
-double FpsCounter::getFps() const
+float FpsCounter::getFps() const
 {
-	return 1.0 / averageFrameTime.getAverage();
+	return 1.0f / averageFrameTime.getAverage();
 }
 
 std::string FpsCounter::getFpsString() const

@@ -25,12 +25,12 @@ namespace Raycer
 	{
 	public:
 
-		explicit EulerAngle(double pitch = 0.0, double yaw = 0.0, double roll = 0.0);
+		explicit EulerAngle(float pitch = 0.0f, float yaw = 0.0f, float roll = 0.0f);
 
 		friend EulerAngle operator+(const EulerAngle& e1, const EulerAngle& e2);
 		friend EulerAngle operator-(const EulerAngle& e1, const EulerAngle& e2);
-		friend EulerAngle operator*(const EulerAngle& e, double s);
-		friend EulerAngle operator*(double s, const EulerAngle& e);
+		friend EulerAngle operator*(const EulerAngle& e, float s);
+		friend EulerAngle operator*(float s, const EulerAngle& e);
 		friend EulerAngle operator-(const EulerAngle& e);
 
 		EulerAngle& operator+=(const EulerAngle& e);
@@ -41,11 +41,11 @@ namespace Raycer
 
 		Vector3 getDirection() const;
 
-		static EulerAngle lerp(const EulerAngle& e1, const EulerAngle& e2, double t);
+		static EulerAngle lerp(const EulerAngle& e1, const EulerAngle& e2, float t);
 
-		double pitch; // x-axis
-		double yaw; // y-axis
-		double roll; // z-axis
+		float pitch; // x-axis
+		float yaw; // y-axis
+		float roll; // z-axis
 
 	private:
 

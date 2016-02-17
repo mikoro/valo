@@ -9,20 +9,20 @@ using namespace Raycer;
 
 namespace
 {
-	double sinc(double x)
+	float sinc(float x)
 	{
-		return sin(M_PI * x) / (M_PI * x);
+		return std::sin(float(M_PI) * x) / (float(M_PI) * x);
 	}
 
-	double calculateWeight(double s, double size)
+	float calculateWeight(float s, float size)
 	{
 		s = std::abs(s);
 
-		if (s == 0.0)
-			return 1.0;
+		if (s == 0.0f)
+			return 1.0f;
 
 		if (s > size)
-			return 0.0;
+			return 0.0f;
 
 		return sinc(s) * sinc(s / size);
 	}
@@ -35,16 +35,16 @@ LanczosSincFilter::LanczosSincFilter(uint64_t radiusX_, uint64_t radiusY_)
 
 void LanczosSincFilter::setRadius(uint64_t radiusX_, uint64_t radiusY_)
 {
-	radiusX = double(radiusX_);
-	radiusY = double(radiusY_);
+	radiusX = float(radiusX_);
+	radiusY = float(radiusY_);
 }
 
-double LanczosSincFilter::getWeightX(double x)
+float LanczosSincFilter::getWeightX(float x)
 {
 	return calculateWeight(x, radiusX);
 }
 
-double LanczosSincFilter::getWeightY(double y)
+float LanczosSincFilter::getWeightY(float y)
 {
 	return calculateWeight(y, radiusY);
 }

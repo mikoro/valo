@@ -46,7 +46,7 @@ namespace
 	}
 }
 
-double CMJSampler::getSample(uint64_t x, uint64_t n, uint64_t permutation, Random& random)
+float CMJSampler::getSample(uint64_t x, uint64_t n, uint64_t permutation, Random& random)
 {
 	(void)x;
 	(void)n;
@@ -55,7 +55,7 @@ double CMJSampler::getSample(uint64_t x, uint64_t n, uint64_t permutation, Rando
 
 	assert(x < n);
 
-	return 0.0;
+	return 0.0f;
 }
 
 Vector2 CMJSampler::getSquareSample(uint64_t x, uint64_t y, uint64_t nx, uint64_t ny, uint64_t permutation, Random& random)
@@ -69,8 +69,8 @@ Vector2 CMJSampler::getSquareSample(uint64_t x, uint64_t y, uint64_t nx, uint64_
 	uint64_t sx = permute(x, nx, permutation * 0x68bc21eb);
 	uint64_t sy = permute(y, ny, permutation * 0x02e5be93);
 
-	result.x = (double(x) + (double(sy) + random.getDouble()) / double(ny)) / double(nx);
-	result.y = (double(y) + (double(sx) + random.getDouble()) / double(nx)) / double(ny);
+	result.x = (float(x) + (float(sy) + random.getFloat()) / float(ny)) / float(nx);
+	result.y = (float(y) + (float(sx) + random.getFloat()) / float(nx)) / float(ny);
 
 	return result;
 }

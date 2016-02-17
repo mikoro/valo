@@ -59,9 +59,9 @@ namespace Raycer
 		struct General
 		{
 			TracerType tracerType = TracerType::RAY;
-			double rayMinDistance = 0.0000001;
-			Color backgroundColor = Color(0.0, 0.0, 0.0);
-			Color offLensColor = Color(0.0, 0.0, 0.0);
+			float rayMinDistance = 0.0000001f;
+			Color backgroundColor = Color(0.0f, 0.0f, 0.0f);
+			Color offLensColor = Color(0.0f, 0.0f, 0.0f);
 			bool enableNormalMapping = true;
 
 			template <class Archive>
@@ -102,7 +102,7 @@ namespace Raycer
 		{
 			uint64_t pixelSampleCount = 1;
 			uint64_t minPathLength = 3;
-			double terminationProbability = 0.5;
+			float terminationProbability = 0.5f;
 			bool enableMultiSampling = false;
 			bool enableCameraSampling = false;
 			bool enableDirectLighting = true;
@@ -129,11 +129,11 @@ namespace Raycer
 			TonemapperType type = TonemapperType::LINEAR;
 			bool applyGamma = true;
 			bool shouldClamp = true;
-			double gamma = 2.2;
-			double exposure = 0.0;
-			double key = 0.18;
+			float gamma = 2.2f;
+			float exposure = 0.0f;
+			float key = 0.18f;
 			bool enableAveraging = true;
-			double averagingAlpha = 0.1;
+			float averagingAlpha = 0.1f;
 
 			template <class Archive>
 			void serialize(Archive& ar)

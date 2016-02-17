@@ -7,27 +7,27 @@
 
 using namespace Raycer;
 
-GaussianFilter::GaussianFilter(double stdDevX, double stdDevY)
+GaussianFilter::GaussianFilter(float stdDevX, float stdDevY)
 {
 	setStandardDeviations(stdDevX, stdDevY);
 }
 
-void GaussianFilter::setStandardDeviations(double stdDevX, double stdDevY)
+void GaussianFilter::setStandardDeviations(float stdDevX, float stdDevY)
 {
-	alphaX = 1.0 / (sqrt(2.0 * M_PI) * stdDevX);
-	alphaY = 1.0 / (sqrt(2.0 * M_PI) * stdDevY);
-	betaX = -1.0 / (2.0 * stdDevX * stdDevX);
-	betaY = -1.0 / (2.0 * stdDevY * stdDevY);
-	radiusX = (7.43384 * stdDevX) / 2.0; // from full width at thousandth of maximum
-	radiusY = (7.43384 * stdDevY) / 2.0;
+	alphaX = 1.0f / (std::sqrt(2.0f * float(M_PI)) * stdDevX);
+	alphaY = 1.0f / (std::sqrt(2.0f * float(M_PI)) * stdDevY);
+	betaX = -1.0f / (2.0f * stdDevX * stdDevX);
+	betaY = -1.0f / (2.0f * stdDevY * stdDevY);
+	radiusX = (7.43384f * stdDevX) / 2.0f; // from full width at thousandth of maximum
+	radiusY = (7.43384f * stdDevY) / 2.0f;
 }
 
-double GaussianFilter::getWeightX(double x)
+float GaussianFilter::getWeightX(float x)
 {
-	return alphaX * exp(x * x * betaX);
+	return alphaX * std::exp(x * x * betaX);
 }
 
-double GaussianFilter::getWeightY(double y)
+float GaussianFilter::getWeightY(float y)
 {
-	return alphaY * exp(y * y * betaY);
+	return alphaY * std::exp(y * y * betaY);
 }

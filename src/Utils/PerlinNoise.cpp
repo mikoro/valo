@@ -30,7 +30,7 @@ void PerlinNoise::initialize(uint64_t seed)
 	permutations.insert(permutations.end(), duplicate.begin(), duplicate.end());
 }
 
-double PerlinNoise::getNoise(double x, double y, double z) const
+float PerlinNoise::getNoise(float x, float y, float z) const
 {
 	uint64_t X = uint64_t(floor(x)) & 255;
 	uint64_t Y = uint64_t(floor(y)) & 255;
@@ -40,9 +40,9 @@ double PerlinNoise::getNoise(double x, double y, double z) const
 	y -= floor(y);
 	z -= floor(z);
 
-	double u = fade(x);
-	double v = fade(y);
-	double w = fade(z);
+	float u = fade(x);
+	float v = fade(y);
+	float w = fade(z);
 
 	uint64_t A = permutations[X] + Y;
 	uint64_t AA = permutations[A] + Z;
@@ -51,7 +51,7 @@ double PerlinNoise::getNoise(double x, double y, double z) const
 	uint64_t BA = permutations[B] + Z;
 	uint64_t BB = permutations[B + 1] + Z;
 
-	double n = lerp(w, lerp(v, lerp(u, grad(permutations[AA], x, y, z),
+	float n = lerp(w, lerp(v, lerp(u, grad(permutations[AA], x, y, z),
 		grad(permutations[BA], x - 1, y, z)),
 		lerp(u, grad(permutations[AB], x, y - 1, z),
 		grad(permutations[BB], x - 1, y - 1, z))),
@@ -60,14 +60,14 @@ double PerlinNoise::getNoise(double x, double y, double z) const
 		lerp(u, grad(permutations[AB + 1], x, y - 1, z - 1),
 		grad(permutations[BB + 1], x - 1, y - 1, z - 1))));
 
-	return std::max(0.0, std::min(0.5 + n / 2.0, 1.0)); // move and clamp to 0.0-1.0 range
+	return std::max(0.0f, std::min(0.5f + n / 2.0f, 1.0f)); // move and clamp to 0.0-1.0 range
 }
 
-double PerlinNoise::getFbmNoise(uint64_t octaves, double lacunarity, double persistence, double x, double y, double z) const
+float PerlinNoise::getFbmNoise(uint64_t octaves, float lacunarity, float persistence, float x, float y, float z) const
 {
-	double result = 0.0;
-	double frequency = 1.0;
-	double amplitude = 1.0;
+	float result = 0.0f;
+	float frequency = 1.0f;
+	float amplitude = 1.0f;
 
 	for (uint64_t i = 0; i < octaves; ++i)
 	{
@@ -79,21 +79,21 @@ double PerlinNoise::getFbmNoise(uint64_t octaves, double lacunarity, double pers
 	return result;
 }
 
-double PerlinNoise::fade(double t) const
+float PerlinNoise::fade(float t) const
 {
-	return t * t * t * (t * (t * 6.0 - 15.0) + 10.0);
+	return t * t * t * (t * (t * 6.0f - 15.0f) + 10.0f);
 }
 
-double PerlinNoise::lerp(double t, double a, double b) const
+float PerlinNoise::lerp(float t, float a, float b) const
 {
 	return a + t * (b - a);
 }
 
-double PerlinNoise::grad(uint64_t hash, double x, double y, double z) const
+float PerlinNoise::grad(uint64_t hash, float x, float y, float z) const
 {
 	uint64_t h = hash & 15;
-	double u = (h < 8) ? x : y;
-	double v = (h < 4) ? y : ((h == 12 || h == 14) ? x : z);
+	float u = (h < 8) ? x : y;
+	float v = (h < 4) ? y : ((h == 12 || h == 14) ? x : z);
 
 	return ((h & 1) == 0 ? u : -u) + ((h & 2) == 0 ? v : -v);
 }

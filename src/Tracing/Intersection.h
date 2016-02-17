@@ -20,7 +20,7 @@ namespace Raycer
 		bool wasFound = false;
 		bool isBehind = false;
 
-		double distance = std::numeric_limits<double>::max();
+		float distance = std::numeric_limits<float>::max();
 
 		Vector3 position;
 		Vector3 normal;

@@ -21,14 +21,14 @@ namespace Raycer
 		void initialize(Scene& scene) override;
 
 		Color getColor(const Vector2& texcoord, const Vector3& position) const override;
-		double getValue(const Vector2& texcoord, const Vector3& position) const override;
+		float getValue(const Vector2& texcoord, const Vector3& position) const override;
 		
 		std::string imageFilePath;
 		bool applyGamma = false;
 
 	private:
 
-		const Imagef* image = nullptr;
+		const Image* image = nullptr;
 
 		friend class cereal::access;
 

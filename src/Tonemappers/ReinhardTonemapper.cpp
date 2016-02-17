@@ -24,22 +24,22 @@ void ReinhardTonemapper::apply(const Scene& scene, const Image& inputImage, Imag
 	auto& inputPixelData = inputImage.getPixelDataConst();
 	auto& outputPixelData = outputImage.getPixelData();
 
-	const double epsilon = 0.01;
+	const float epsilon = 0.01f;
 	const int64_t pixelCount = int64_t(inputPixelData.size());
-	double luminanceLogSum = 0.0;
-	double maxLuminance = 1.0;
-	double maxLuminancePrivate = 0.0;
+	float luminanceLogSum = 0.0f;
+	float maxLuminance = 1.0f;
+	float maxLuminancePrivate = 0.0f;
 	(void)maxLuminancePrivate; // vs2015 compilation warning fix
 
 	#pragma omp parallel reduction(+:luminanceLogSum) private(maxLuminancePrivate)
 	{
-		maxLuminancePrivate = 0.0;
+		maxLuminancePrivate = 0.0f;
 
 		#pragma omp for
 		for (int64_t i = 0; i < pixelCount; ++i)
 		{
-			double luminance = inputPixelData.at(i).getLuminance();
-			luminanceLogSum += log(epsilon + luminance);
+			float luminance = inputPixelData.at(i).getLuminance();
+			luminanceLogSum += std::log(epsilon + luminance);
 
 			if (luminance > maxLuminancePrivate)
 				maxLuminancePrivate = luminance;
@@ -62,20 +62,20 @@ void ReinhardTonemapper::apply(const Scene& scene, const Image& inputImage, Imag
 		maxLuminance = maxLuminanceAverage.getAverage();
 	}
 
-	const double luminanceLogAvg = exp(luminanceLogSum / double(pixelCount));
-	const double luminanceScale = scene.tonemapping.key / luminanceLogAvg;
-	const double maxLuminance2Inv = 1.0 / (maxLuminance * maxLuminance);
-	const double invGamma = 1.0 / scene.tonemapping.gamma;
+	const float luminanceLogAvg = std::exp(luminanceLogSum / float(pixelCount));
+	const float luminanceScale = scene.tonemapping.key / luminanceLogAvg;
+	const float maxLuminance2Inv = 1.0f / (maxLuminance * maxLuminance);
+	const float invGamma = 1.0f / scene.tonemapping.gamma;
 	
 	#pragma omp parallel for
 	for (int64_t i = 0; i < pixelCount; ++i)
 	{
 		Color inputColor = inputPixelData.at(i);
 
-		double originalLuminance = inputColor.getLuminance();
-		double scaledLuminance = luminanceScale * originalLuminance;
-		double mappedLuminance = (scaledLuminance * (1.0 + (scaledLuminance * maxLuminance2Inv))) / (1.0 + scaledLuminance);
-		double colorScale = mappedLuminance / originalLuminance;
+		float originalLuminance = inputColor.getLuminance();
+		float scaledLuminance = luminanceScale * originalLuminance;
+		float mappedLuminance = (scaledLuminance * (1.0f + (scaledLuminance * maxLuminance2Inv))) / (1.0f + scaledLuminance);
+		float colorScale = mappedLuminance / originalLuminance;
 
 		Color outputColor = inputColor * colorScale;
 
@@ -85,7 +85,7 @@ void ReinhardTonemapper::apply(const Scene& scene, const Image& inputImage, Imag
 		if (scene.tonemapping.applyGamma)
 			outputColor = Color::fastPow(outputColor, invGamma);
 
-		outputColor.a = 1.0;
+		outputColor.a = 1.0f;
 		outputPixelData[i] = outputColor;
 	}
 }

@@ -33,22 +33,22 @@ namespace Raycer
 
 		void restart();
 
-		double getElapsedMilliseconds() const;
-		double getElapsedSeconds() const;
+		float getElapsedMilliseconds() const;
+		float getElapsedSeconds() const;
 		TimerData getElapsed() const;
 		
-		void setTargetValue(double value);
-		void updateCurrentValue(double value);
-		void setAveragingAlpha(double alpha);
+		void setTargetValue(float value);
+		void updateCurrentValue(float value);
+		void setAveragingAlpha(float alpha);
 		TimerData getRemaining();
-		double getPercentage() const;
+		float getPercentage() const;
 
 	private:
 
 		std::chrono::high_resolution_clock::time_point startTime;
 
-		double currentValue = 0.0;
-		double targetValue = 0.0;
+		float currentValue = 0.0;
+		float targetValue = 0.0;
 
 		MovingAverage remainingMillisecondsAverage;
 	};

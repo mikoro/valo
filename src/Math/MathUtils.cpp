@@ -7,20 +7,20 @@
 
 using namespace Raycer;
 
-bool MathUtils::almostZero(double value, double threshold)
+bool MathUtils::almostZero(float value, float threshold)
 {
 	return std::abs(value) < threshold;
 }
 
 // https://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/
-bool MathUtils::almostSame(double first, double second, double threshold)
+bool MathUtils::almostSame(float first, float second, float threshold)
 {
-	double difference = std::abs(first - second);
+	float difference = std::abs(first - second);
 
 	if (difference < threshold)
 		return true;
 
-	double larger = std::max(std::abs(first), std::abs(second));
+	float larger = std::max(std::abs(first), std::abs(second));
 
 	if (difference < (larger * threshold))
 		return true;
@@ -28,41 +28,41 @@ bool MathUtils::almostSame(double first, double second, double threshold)
 	return false;
 }
 
-bool MathUtils::almostSame(const std::complex<double>& first, const std::complex<double>& second, double threshold)
+bool MathUtils::almostSame(const std::complex<float>& first, const std::complex<float>& second, float threshold)
 {
 	return almostSame(first.real(), second.real(), threshold) && almostSame(first.imag(), second.imag(), threshold);
 }
 
-double MathUtils::degToRad(double degrees)
+float MathUtils::degToRad(float degrees)
 {
-	return (degrees * (M_PI / 180.0));
+	return (degrees * (float(M_PI) / 180.0f));
 }
 
-double MathUtils::radToDeg(double radians)
+float MathUtils::radToDeg(float radians)
 {
-	return (radians * (180.0 / M_PI));
+	return (radians * (180.0f / float(M_PI)));
 }
 
-double MathUtils::smoothstep(double t)
+float MathUtils::smoothstep(float t)
 {
-	return t * t * (3 - 2 * t);
+	return t * t * (3.0f - 2.0f * t);
 }
 
-double MathUtils::smootherstep(double t)
+float MathUtils::smootherstep(float t)
 {
-	return t * t * t * (t * (t * 6.0 - 15.0) + 10.0);
+	return t * t * t * (t * (t * 6.0f - 15.0f) + 10.0f);
 }
 
-double MathUtils::fastPow(double a, double b)
+float MathUtils::fastPow(float a, float b)
 {
 	union
 	{
 		double d;
 		int32_t x[2];
-	} u = {a};
+	} u = {double(a)};
 
 	u.x[1] = static_cast<int32_t>(b * (u.x[1] - 1072632447) + 1072632447);
 	u.x[0] = 0;
 
-	return u.d;
+	return float(u.d);
 }

@@ -67,34 +67,34 @@ bool StringUtils::readUntilSpace(const std::string& input, uint64_t& startIndex,
 	return true;
 }
 
-double StringUtils::parseDouble(const std::string& input)
+float StringUtils::parseFloat(const std::string& input)
 {
 	const char* p = input.c_str();
 
-	double sign = 1.0;
-	double accumulator = 0.0;
+	float sign = 1.0f;
+	float accumulator = 0.0f;
 
 	if (*p == '-')
 	{
-		sign = -1.0;
+		sign = -1.0f;
 		++p;
 	}
 
 	while (*p >= '0' && *p <= '9')
 	{
-		accumulator = accumulator * 10 + *p - '0';
+		accumulator = accumulator * 10.0f + *p - '0';
 		++p;
 	}
 
 	if (*p == '.')
 	{
-		double k = 0.1;
+		float k = 0.1f;
 		p++;
 
 		while (*p >= '0' && *p <= '9')
 		{
 			accumulator += (*p - '0') * k;
-			k *= 0.1;
+			k *= 0.1f;
 			++p;
 		}
 	}

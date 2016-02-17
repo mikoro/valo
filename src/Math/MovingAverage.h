@@ -11,17 +11,17 @@ namespace Raycer
 	{
 	public:
 
-		explicit MovingAverage(double alpha = 1.0, double average = 0.0);
+		explicit MovingAverage(float alpha = 1.0f, float average = 0.0f);
 
-		void setAlpha(double alpha);
-		void setAverage(double average);
-		void addMeasurement(double value);
-		double getAverage() const;
+		void setAlpha(float alpha);
+		void setAverage(float average);
+		void addMeasurement(float value);
+		float getAverage() const;
 
 	private:
 
-		double alpha;
-		double average;
+		float alpha;
+		float average;
 
 		friend class cereal::access;
 

@@ -9,7 +9,7 @@
 
 using namespace Raycer;
 
-EulerAngle::EulerAngle(double pitch_, double yaw_, double roll_) : pitch(pitch_), yaw(yaw_), roll(roll_)
+EulerAngle::EulerAngle(float pitch_, float yaw_, float roll_) : pitch(pitch_), yaw(yaw_), roll(roll_)
 {
 }
 
@@ -25,12 +25,12 @@ namespace Raycer
 		return EulerAngle(e1.pitch - e2.pitch, e1.yaw - e2.yaw, e1.roll - e2.roll);
 	}
 
-	EulerAngle operator*(const EulerAngle& e, double s)
+	EulerAngle operator*(const EulerAngle& e, float s)
 	{
 		return EulerAngle(e.pitch * s, e.yaw * s, e.roll * s);
 	}
 
-	EulerAngle operator*(double s, const EulerAngle& e)
+	EulerAngle operator*(float s, const EulerAngle& e)
 	{
 		return EulerAngle(e.pitch * s, e.yaw * s, e.roll * s);
 	}
@@ -55,23 +55,23 @@ EulerAngle& EulerAngle::operator-=(const EulerAngle& e)
 
 void EulerAngle::clampPitch()
 {
-	if (pitch > 89.0)
-		pitch = 89.0;
+	if (pitch > 89.0f)
+		pitch = 89.0f;
 
-	if (pitch < -89.0)
-		pitch = -89.0;
+	if (pitch < -89.0f)
+		pitch = -89.0f;
 }
 
 void EulerAngle::normalize()
 {
-	while (std::abs(pitch) > 180.0)
-		pitch += (pitch > 0.0) ? -360.0 : 360.0;
+	while (std::abs(pitch) > 180.0f)
+		pitch += (pitch > 0.0f) ? -360.0f : 360.0f;
 
-	while (std::abs(yaw) > 180.0)
-		yaw += (yaw > 0.0) ? -360.0 : 360.0;
+	while (std::abs(yaw) > 180.0f)
+		yaw += (yaw > 0.0f) ? -360.0f : 360.0f;
 
-	while (std::abs(roll) > 180.0)
-		roll += (roll > 0.0) ? -360.0 : 360.0;
+	while (std::abs(roll) > 180.0f)
+		roll += (roll > 0.0f) ? -360.0f : 360.0f;
 }
 
 Vector3 EulerAngle::getDirection() const
@@ -79,17 +79,17 @@ Vector3 EulerAngle::getDirection() const
 	Vector3 result;
 
 	// is [0 0 -1] when angles are zero
-	result.x = -sin(MathUtils::degToRad(yaw)) * cos(MathUtils::degToRad(pitch));
-	result.y = sin(MathUtils::degToRad(pitch));
-	result.z = -cos(MathUtils::degToRad(yaw)) * cos(MathUtils::degToRad(pitch));
+	result.x = -std::sin(MathUtils::degToRad(yaw)) * std::cos(MathUtils::degToRad(pitch));
+	result.y = std::sin(MathUtils::degToRad(pitch));
+	result.z = -std::cos(MathUtils::degToRad(yaw)) * std::cos(MathUtils::degToRad(pitch));
 
 	return result.normalized();
 }
 
-EulerAngle EulerAngle::lerp(const EulerAngle& e1, const EulerAngle& e2, double t)
+EulerAngle EulerAngle::lerp(const EulerAngle& e1, const EulerAngle& e2, float t)
 {
 	EulerAngle result;
-	double oneMinusT = 1.0 - t;
+	float oneMinusT = 1.0f - t;
 
 	result.pitch = e1.pitch * oneMinusT + e2.pitch * t;
 	result.yaw = e1.yaw * oneMinusT + e2.yaw * t;

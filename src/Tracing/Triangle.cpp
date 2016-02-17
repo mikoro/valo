@@ -22,14 +22,14 @@ void Triangle::initialize()
 
 	Vector3 cross = v0tov1.cross(v0tov2);
 	normal = cross.normalized();
-	area = 0.5 * cross.length();
+	area = 0.5f * cross.length();
 
-	double denominator = t0tot1.x * t0tot2.y - t0tot1.y * t0tot2.x;
+	float denominator = t0tot1.x * t0tot2.y - t0tot1.y * t0tot2.x;
 
 	// tangent space aligned to texcoords
-	if (std::abs(denominator) > std::numeric_limits<double>::epsilon())
+	if (std::abs(denominator) > std::numeric_limits<float>::epsilon())
 	{
-		double r = 1.0 / denominator;
+		float r = 1.0f / denominator;
 		tangent = (v0tov1 * t0tot2.y - v0tov2 * t0tot1.y) * r;
 		bitangent = (v0tov2 * t0tot1.x - v0tov1 * t0tot2.x) * r;
 		tangent.normalize();
@@ -59,29 +59,29 @@ bool Triangle::intersect(const Ray& ray, Intersection& intersection) const
 	Vector3 v0v2 = vertices[2] - vertices[0];
 
 	Vector3 pvec = ray.direction.cross(v0v2);
-	double determinant = v0v1.dot(pvec);
+	float determinant = v0v1.dot(pvec);
 
 	// ray and triangle are parallel -> no intersection
-	if (std::abs(determinant) < std::numeric_limits<double>::epsilon())
+	if (std::abs(determinant) < std::numeric_limits<float>::epsilon())
 		return false;
 
-	double invDeterminant = 1.0 / determinant;
+	float invDeterminant = 1.0f / determinant;
 
 	Vector3 tvec = ray.origin - vertices[0];
-	double u = tvec.dot(pvec) * invDeterminant;
+	float u = tvec.dot(pvec) * invDeterminant;
 
-	if (u < 0.0 || u > 1.0)
+	if (u < 0.0f || u > 1.0f)
 		return false;
 
 	Vector3 qvec = tvec.cross(v0v1);
-	double v = ray.direction.dot(qvec) * invDeterminant;
+	float v = ray.direction.dot(qvec) * invDeterminant;
 
-	if (v < 0.0 || (u + v) > 1.0)
+	if (v < 0.0f || (u + v) > 1.0f)
 		return false;
 
-	double t = v0v2.dot(qvec) * invDeterminant;
+	float t = v0v2.dot(qvec) * invDeterminant;
 
-	if (t < 0.0)
+	if (t < 0.0f)
 		return false;
 
 	if (t < ray.minDistance || t > ray.maxDistance)
@@ -90,7 +90,7 @@ bool Triangle::intersect(const Ray& ray, Intersection& intersection) const
 	if (t > intersection.distance)
 		return false;
 
-	double w = 1.0 - u - v;
+	float w = 1.0f - u - v;
 
 	Vector3 intersectionPosition = ray.origin + (t * ray.direction);
 	Vector2 texcoord = (w * texcoords[0] + u * texcoords[1] + v * texcoords[2]) * material->texcoordScale;
@@ -100,7 +100,7 @@ bool Triangle::intersect(const Ray& ray, Intersection& intersection) const
 
 	if (material->maskMapTexture != nullptr)
 	{
-		if (material->maskMapTexture->getValue(texcoord, intersectionPosition) < 0.5)
+		if (material->maskMapTexture->getValue(texcoord, intersectionPosition) < 0.5f)
 			return false;
 	}
 
@@ -109,7 +109,7 @@ bool Triangle::intersect(const Ray& ray, Intersection& intersection) const
 	if (material->invertNormal)
 		tempNormal = -tempNormal;
 
-	intersection.isBehind = ray.direction.dot(tempNormal) > 0.0;
+	intersection.isBehind = ray.direction.dot(tempNormal) > 0.0f;
 
 	if (material->autoInvertNormal && intersection.isBehind)
 		tempNormal = -tempNormal;
@@ -131,20 +131,20 @@ AABB Triangle::getAABB() const
 	return aabb;
 }
 
-double Triangle::getArea() const
+float Triangle::getArea() const
 {
 	return area;
 }
 
 Intersection Triangle::getRandomIntersection(Random& random) const
 {
-	double r1 = random.getDouble();
-	double r2 = random.getDouble();
-	double sr1 = sqrt(r1);
+	float r1 = random.getFloat();
+	float r2 = random.getFloat();
+	float sr1 = std::sqrt(r1);
 
-	double u = 1.0 - sr1;
-	double v = r2 * sr1;
-	double w = 1.0 - u - v;
+	float u = 1.0f - sr1;
+	float v = r2 * sr1;
+	float w = 1.0f - u - v;
 
 	Vector3 position = u * vertices[0] + v * vertices[1] + w * vertices[2];
 	Vector3 tempNormal = material->normalInterpolation ? (w * normals[0] + u * normals[1] + v * normals[2]) : normal;

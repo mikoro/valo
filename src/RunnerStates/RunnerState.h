@@ -18,8 +18,8 @@ namespace Raycer
 		virtual void resume() = 0;
 		virtual void shutdown() = 0;
 
-		virtual void update(double timeStep) = 0;
-		virtual void render(double timeStep, double interpolation) = 0;
+		virtual void update(float timeStep) = 0;
+		virtual void render(float timeStep, float interpolation) = 0;
 
 		virtual void windowResized(uint64_t width, uint64_t height) = 0;
 	};

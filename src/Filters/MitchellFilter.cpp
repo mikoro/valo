@@ -9,38 +9,38 @@ using namespace Raycer;
 
 namespace
 {
-	double calculateWeight(double s, double B, double C)
+	float calculateWeight(float s, float B, float C)
 	{
 		s = std::abs(s);
 
-		if (s <= 1.0)
-			return ((12.0 - 9.0 * B - 6.0 * C) * (s * s * s) + (-18.0 + 12.0 * B + 6.0 * C) * (s * s) + (6.0 - 2.0 * B)) * (1.0 / 6.0);
-		else if (s <= 2.0)
-			return ((-B - 6.0 * C) * (s * s * s) + (6.0 * B + 30.0 * C) * (s * s) + (-12.0 * B - 48.0 * C) * s + (8.0 * B + 24.0 * C)) * (1.0 / 6.0);
+		if (s <= 1.0f)
+			return ((12.0f - 9.0f * B - 6.0f * C) * (s * s * s) + (-18.0f + 12.0f * B + 6.0f * C) * (s * s) + (6.0f - 2.0f * B)) * (1.0f / 6.0f);
+		else if (s <= 2.0f)
+			return ((-B - 6.0f * C) * (s * s * s) + (6.0f * B + 30.0f * C) * (s * s) + (-12.0f * B - 48.0f * C) * s + (8.0f * B + 24.0f * C)) * (1.0f / 6.0f);
 		else
-			return 0.0;
+			return 0.0f;
 	}
 }
 
-MitchellFilter::MitchellFilter(double B_, double C_)
+MitchellFilter::MitchellFilter(float B_, float C_)
 {
 	setCoefficients(B_, C_);
 }
 
-void MitchellFilter::setCoefficients(double B_, double C_)
+void MitchellFilter::setCoefficients(float B_, float C_)
 {
 	B = B_;
 	C = C_;
-	radiusX = 2.0;
-	radiusY = 2.0;
+	radiusX = 2.0f;
+	radiusY = 2.0f;
 }
 
-double MitchellFilter::getWeightX(double x)
+float MitchellFilter::getWeightX(float x)
 {
 	return calculateWeight(x, B, C);
 }
 
-double MitchellFilter::getWeightY(double y)
+float MitchellFilter::getWeightY(float y)
 {
 	return calculateWeight(y, B, C);
 }

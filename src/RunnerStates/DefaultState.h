@@ -26,8 +26,8 @@ namespace Raycer
 		void resume() override;
 		void shutdown() override;
 
-		void update(double timeStep) override;
-		void render(double timeStep, double interpolation) override;
+		void update(float timeStep) override;
+		void render(float timeStep, float interpolation) override;
 
 		void windowResized(uint64_t width, uint64_t height) override;
 

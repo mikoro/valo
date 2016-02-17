@@ -15,8 +15,8 @@ namespace Raycer
 
 		void tick();
 		void update();
-		double getFrameTime() const;
-		double getFps() const;
+		float getFrameTime() const;
+		float getFps() const;
 		std::string getFpsString() const;
 
 	private:

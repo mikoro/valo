@@ -13,16 +13,16 @@ namespace Raycer
 	{
 	public:
 
-		explicit MitchellFilter(double B = (1.0 / 3.0), double C = (1.0 / 3.0));
+		explicit MitchellFilter(float B = (1.0f / 3.0f), float C = (1.0f / 3.0f));
 
-		void setCoefficients(double B, double C);
+		void setCoefficients(float B, float C);
 
-		double getWeightX(double x) override;
-		double getWeightY(double y) override;
+		float getWeightX(float x) override;
+		float getWeightY(float y) override;
 
 	private:
 
-		double B = 0.0;
-		double C = 0.0;
+		float B = 0.0f;
+		float C = 0.0f;
 	};
 }

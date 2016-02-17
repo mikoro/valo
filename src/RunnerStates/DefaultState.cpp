@@ -61,7 +61,7 @@ void DefaultState::shutdown()
 {
 }
 
-void DefaultState::update(double timeStep)
+void DefaultState::update(float timeStep)
 {
 	Log& log = App::getLog();
 	Settings& settings = App::getSettings();
@@ -171,9 +171,9 @@ void DefaultState::update(double timeStep)
 
 	if (windowRunner.keyWasPressed(GLFW_KEY_F10))
 	{
-		double newScale = settings.interactive.renderScale * 0.5;
-		uint64_t newWidth = uint64_t(double(windowRunner.getWindowWidth()) * newScale + 0.5);
-		uint64_t newHeight = uint64_t(double(windowRunner.getWindowHeight()) * newScale + 0.5);
+		float newScale = settings.interactive.renderScale * 0.5f;
+		uint64_t newWidth = uint64_t(float(windowRunner.getWindowWidth()) * newScale + 0.5f);
+		uint64_t newHeight = uint64_t(float(windowRunner.getWindowHeight()) * newScale + 0.5f);
 
 		if (newWidth >= 2 && newHeight >= 2)
 		{
@@ -184,12 +184,12 @@ void DefaultState::update(double timeStep)
 
 	if (windowRunner.keyWasPressed(GLFW_KEY_F11))
 	{
-		if (settings.interactive.renderScale < 1.0)
+		if (settings.interactive.renderScale < 1.0f)
 		{
-			settings.interactive.renderScale *= 2.0;
+			settings.interactive.renderScale *= 2.0f;
 
-			if (settings.interactive.renderScale > 1.0)
-				settings.interactive.renderScale = 1.0;
+			if (settings.interactive.renderScale > 1.0f)
+				settings.interactive.renderScale = 1.0f;
 
 			resizeFilm();
 		}
@@ -198,19 +198,19 @@ void DefaultState::update(double timeStep)
 	if (windowRunner.keyIsDown(GLFW_KEY_LEFT_CONTROL) || windowRunner.keyIsDown(GLFW_KEY_RIGHT_CONTROL))
 	{
 		if (windowRunner.keyIsDown(GLFW_KEY_PAGE_DOWN))
-			scene.tonemapping.exposure -= 2.0 * timeStep;
+			scene.tonemapping.exposure -= 2.0f * timeStep;
 		else if (windowRunner.keyIsDown(GLFW_KEY_PAGE_UP))
-			scene.tonemapping.exposure += 2.0 * timeStep;
+			scene.tonemapping.exposure += 2.0f * timeStep;
 	}
 
 	if (windowRunner.keyIsDown(GLFW_KEY_LEFT_SHIFT) || windowRunner.keyIsDown(GLFW_KEY_RIGHT_SHIFT))
 	{
 		if (windowRunner.keyIsDown(GLFW_KEY_PAGE_DOWN))
-			scene.tonemapping.key -= 0.1 * timeStep;
+			scene.tonemapping.key -= 0.1f * timeStep;
 		else if (windowRunner.keyIsDown(GLFW_KEY_PAGE_UP))
-			scene.tonemapping.key += 0.1 * timeStep;
+			scene.tonemapping.key += 0.1f * timeStep;
 
-		scene.tonemapping.key = std::max(0.0, scene.tonemapping.key);
+		scene.tonemapping.key = std::max(0.0f, scene.tonemapping.key);
 	}
 
 	if (windowRunner.keyWasPressed(GLFW_KEY_M))
@@ -259,7 +259,7 @@ void DefaultState::update(double timeStep)
 	scene.camera.update(timeStep);
 }
 
-void DefaultState::render(double timeStep, double interpolation)
+void DefaultState::render(float timeStep, float interpolation)
 {
 	(void)timeStep;
 	(void)interpolation;
@@ -315,8 +315,8 @@ void DefaultState::resizeFilm()
 	Settings& settings = App::getSettings();
 	WindowRunner& windowRunner = App::getWindowRunner();
 
-	uint64_t filmWidth = uint64_t(double(windowRunner.getWindowWidth()) * settings.interactive.renderScale + 0.5);
-	uint64_t filmHeight = uint64_t(double(windowRunner.getWindowHeight()) * settings.interactive.renderScale + 0.5);
+	uint64_t filmWidth = uint64_t(float(windowRunner.getWindowWidth()) * settings.interactive.renderScale + 0.5);
+	uint64_t filmHeight = uint64_t(float(windowRunner.getWindowHeight()) * settings.interactive.renderScale + 0.5);
 
     filmWidth = std::max(uint64_t(1), filmWidth);
     filmHeight = std::max(uint64_t(1), filmHeight);

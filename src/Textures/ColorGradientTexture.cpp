@@ -31,10 +31,10 @@ Color ColorGradientTexture::getColor(const Vector2& texcoord, const Vector3& pos
 	return gradientColor * intensity;
 }
 
-double ColorGradientTexture::getValue(const Vector2& texcoord, const Vector3& position) const
+float ColorGradientTexture::getValue(const Vector2& texcoord, const Vector3& position) const
 {
 	(void)texcoord;
 	(void)position;
 
-	return 0.0;
+	return 0.0f;
 }

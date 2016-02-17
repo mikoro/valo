@@ -29,7 +29,7 @@ namespace Raycer
 		virtual Color getColor(const Scene& scene, const Intersection& intersection, const Light& light, Random& random) = 0;
 
 		virtual Vector3 getSampleDirection(const Intersection& intersection, RandomSampler& sampler, Random& random) = 0;
-		virtual double getDirectionProbability(const Intersection& intersection, const Vector3& out) = 0;
+		virtual float getDirectionProbability(const Intersection& intersection, const Vector3& out) = 0;
 		virtual Color getBrdf(const Intersection& intersection, const Vector3& out) = 0;
 
 		virtual Color getReflectance(const Intersection& intersection);
@@ -49,31 +49,31 @@ namespace Raycer
 		bool invertNormal = false;
 		bool fresnelReflection = false;
 		bool attenuating = false;
-		double shininess = 2.0;
-		double refractiveIndex = 1.0;
-		double rayReflectance = 0.0;
-		double rayTransmittance = 0.0;
-		double attenuationFactor = 1.0;
-		Color attenuationColor = Color(0.0, 0.0, 0.0);
-		Vector2 texcoordScale = Vector2(1.0, 1.0);
+		float shininess = 2.0f;
+		float refractiveIndex = 1.0f;
+		float rayReflectance = 0.0f;
+		float rayTransmittance = 0.0f;
+		float attenuationFactor = 1.0f;
+		Color attenuationColor = Color(0.0f, 0.0f, 0.0f);
+		Vector2 texcoordScale = Vector2(1.0f, 1.0f);
 
-		Color reflectance = Color(0.0, 0.0, 0.0);
+		Color reflectance = Color(0.0f, 0.0f, 0.0f);
 		uint64_t reflectanceMapTextureId = 0;
 		Texture* reflectanceMapTexture = nullptr;
 
-		Color emittance = Color(0.0, 0.0, 0.0);
+		Color emittance = Color(0.0f, 0.0f, 0.0f);
 		uint64_t emittanceMapTextureId = 0;
 		Texture* emittanceMapTexture = nullptr;
 
-		Color ambientReflectance = Color(0.0, 0.0, 0.0);
+		Color ambientReflectance = Color(0.0f, 0.0f, 0.0f);
 		uint64_t ambientMapTextureId = 0;
 		Texture* ambientMapTexture = nullptr;
 
-		Color diffuseReflectance = Color(0.0, 0.0, 0.0);
+		Color diffuseReflectance = Color(0.0f, 0.0f, 0.0f);
 		uint64_t diffuseMapTextureId = 0;
 		Texture* diffuseMapTexture = nullptr;
 
-		Color specularReflectance = Color(0.0, 0.0, 0.0);
+		Color specularReflectance = Color(0.0f, 0.0f, 0.0f);
 		uint64_t specularMapTextureId = 0;
 		Texture* specularMapTexture = nullptr;
 

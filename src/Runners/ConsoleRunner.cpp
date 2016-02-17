@@ -5,6 +5,7 @@
 
 #include "Runners/ConsoleRunner.h"
 #include "App.h"
+#include "Utils/Log.h"
 #include "Utils/Settings.h"
 #include "Utils/StringUtils.h"
 #include "Utils/SysUtils.h"
@@ -26,10 +27,10 @@ int ConsoleRunner::run()
 
 	interrupted = false;
 
-	samplesPerSecondAverage.setAlpha(0.05);
-	pixelsPerSecondAverage.setAlpha(0.05);
-	raysPerSecondAverage.setAlpha(0.05);
-	pathsPerSecondAverage.setAlpha(0.05);
+	samplesPerSecondAverage.setAlpha(0.05f);
+	pixelsPerSecondAverage.setAlpha(0.05f);
+	raysPerSecondAverage.setAlpha(0.05f);
+	pathsPerSecondAverage.setAlpha(0.05f);
 
 	Scene scene;
 
@@ -40,7 +41,7 @@ int ConsoleRunner::run()
 
 	scene.initialize();
 	scene.camera.setImagePlaneSize(settings.image.width, settings.image.height);
-	scene.camera.update(0.0);
+	scene.camera.update(0.0f);
 
 	Film film;
 	film.resize(settings.image.width, settings.image.height);
@@ -94,13 +95,13 @@ void ConsoleRunner::run(TracerState& state)
 		state.filmHeight,
 		state.filmPixelOffset,
 		state.filmPixelCount,
-		StringUtils::humanizeNumber(double(totalSamples)),
+		StringUtils::humanizeNumber(float(totalSamples)),
 		tracer->getPixelSampleCount(scene)
 		);
 
 	Timer tracingElapsedTimer;
-	tracingElapsedTimer.setAveragingAlpha(0.05);
-	tracingElapsedTimer.setTargetValue(double(totalSamples));
+	tracingElapsedTimer.setAveragingAlpha(0.05f);
+	tracingElapsedTimer.setTargetValue(float(totalSamples));
 
 	std::atomic<bool> renderThreadFinished(false);
 	std::exception_ptr renderThreadException = nullptr;
@@ -123,17 +124,17 @@ void ConsoleRunner::run(TracerState& state)
 
 	while (!renderThreadFinished)
 	{
-		tracingElapsedTimer.updateCurrentValue(double(state.sampleCount));
+		tracingElapsedTimer.updateCurrentValue(float(state.sampleCount));
 
 		auto elapsed = tracingElapsedTimer.getElapsed();
 		auto remaining = tracingElapsedTimer.getRemaining();
 
 		if (elapsed.totalMilliseconds > 0)
 		{
-			samplesPerSecondAverage.addMeasurement(double(state.sampleCount) / (double(elapsed.totalMilliseconds) / 1000.0));
-			pixelsPerSecondAverage.addMeasurement(double(state.pixelCount) / (double(elapsed.totalMilliseconds) / 1000.0));
-			raysPerSecondAverage.addMeasurement(double(state.rayCount) / (double(elapsed.totalMilliseconds) / 1000.0));
-			pathsPerSecondAverage.addMeasurement(double(state.pathCount) / (double(elapsed.totalMilliseconds) / 1000.0));
+			samplesPerSecondAverage.addMeasurement(float(state.sampleCount) / (float(elapsed.totalMilliseconds) / 1000.0f));
+			pixelsPerSecondAverage.addMeasurement(float(state.pixelCount) / (float(elapsed.totalMilliseconds) / 1000.0f));
+			raysPerSecondAverage.addMeasurement(float(state.rayCount) / (float(elapsed.totalMilliseconds) / 1000.0f));
+			pathsPerSecondAverage.addMeasurement(float(state.pathCount) / (float(elapsed.totalMilliseconds) / 1000.0f));
 		}
 
 		printProgress(tracingElapsedTimer.getPercentage(), elapsed, remaining, state.pixelSampleCount);
@@ -145,24 +146,24 @@ void ConsoleRunner::run(TracerState& state)
 	if (renderThreadException != nullptr)
 		std::rethrow_exception(renderThreadException);
 
-	tracingElapsedTimer.updateCurrentValue(double(state.sampleCount));
+	tracingElapsedTimer.updateCurrentValue(float(state.sampleCount));
 
 	auto elapsed = tracingElapsedTimer.getElapsed();
 	auto remaining = tracingElapsedTimer.getRemaining();
 
 	printProgress(tracingElapsedTimer.getPercentage(), elapsed, remaining, state.pixelSampleCount);
 
-	double totalSamplesPerSecond = 0.0;
-	double totalPixelsPerSecond = 0.0;
-	double totalRaysPerSecond = 0.0;
-	double totalPathsPerSecond = 0.0;
+	float totalSamplesPerSecond = 0.0f;
+	float totalPixelsPerSecond = 0.0f;
+	float totalRaysPerSecond = 0.0f;
+	float totalPathsPerSecond = 0.0f;
 
 	if (elapsed.totalMilliseconds > 0)
 	{
-		totalSamplesPerSecond = double(state.sampleCount) / (double(elapsed.totalMilliseconds) / 1000.0);
-		totalPixelsPerSecond = double(state.pixelCount) / (double(elapsed.totalMilliseconds) / 1000.0);
-		totalRaysPerSecond = double(state.rayCount) / (double(elapsed.totalMilliseconds) / 1000.0);
-		totalPathsPerSecond = double(state.pathCount) / (double(elapsed.totalMilliseconds) / 1000.0);
+		totalSamplesPerSecond = float(state.sampleCount) / (float(elapsed.totalMilliseconds) / 1000.0f);
+		totalPixelsPerSecond = float(state.pixelCount) / (float(elapsed.totalMilliseconds) / 1000.0f);
+		totalRaysPerSecond = float(state.rayCount) / (float(elapsed.totalMilliseconds) / 1000.0f);
+		totalPathsPerSecond = float(state.pathCount) / (float(elapsed.totalMilliseconds) / 1000.0f);
 	}
 
 	std::cout << tfm::format("\n\nTracing %s (time: %s, samples/s: %s, pixels/s: %s, rays/s: %s, paths/s: %s)\n\n",
@@ -183,9 +184,9 @@ void ConsoleRunner::interrupt()
 	interrupted = true;
 }
 
-void ConsoleRunner::printProgress(double percentage_, const TimerData& elapsed, const TimerData& remaining, uint64_t pixelSamples)
+void ConsoleRunner::printProgress(float percentage_, const TimerData& elapsed, const TimerData& remaining, uint64_t pixelSamples)
 {
-	uint64_t percentage = uint64_t(percentage_ + 0.5);
+	uint64_t percentage = uint64_t(percentage_ + 0.5f);
 	uint64_t barCount = percentage / 4;
 
     tfm::printf("[");

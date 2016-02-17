@@ -27,10 +27,10 @@ namespace
 		return tempPathString;
 	}
 
-	double readDouble(const std::string& input, uint64_t& startIndex, std::string& result)
+	float readFloat(const std::string& input, uint64_t& startIndex, std::string& result)
 	{
 		StringUtils::readUntilSpace(input, startIndex, result);
-		return StringUtils::parseDouble(result);
+		return StringUtils::parseFloat(result);
 	}
 
 	void processMaterialFile(const std::string& objFileDirectory, const std::string& mtlFilePath, ModelLoaderResult& result, std::map<std::string, uint64_t>& materialsMap, std::map<std::string, uint64_t>& externalMaterialsMap, uint64_t& currentId)
@@ -74,72 +74,72 @@ namespace
 			}
 			else if (part == "materialId")
 			{
-				externalMaterialsMap[currentMaterialName] = uint64_t(readDouble(line, lineIndex, part));
+				externalMaterialsMap[currentMaterialName] = uint64_t(readFloat(line, lineIndex, part));
 			}
 			else if (part == "skipLighting")
 			{
-				currentMaterial.skipLighting = readDouble(line, lineIndex, part) != 0.0;
+				currentMaterial.skipLighting = readFloat(line, lineIndex, part) != 0.0;
 			}
 			else if (part == "nonShadowing")
 			{
-				currentMaterial.nonShadowing = readDouble(line, lineIndex, part) != 0.0;
+				currentMaterial.nonShadowing = readFloat(line, lineIndex, part) != 0.0;
 			}
 			else if (part == "normalInterpolation")
 			{
-				currentMaterial.normalInterpolation = readDouble(line, lineIndex, part) != 0.0;
+				currentMaterial.normalInterpolation = readFloat(line, lineIndex, part) != 0.0;
 			}
 			else if (part == "autoInvertNormal")
 			{
-				currentMaterial.autoInvertNormal = readDouble(line, lineIndex, part) != 0.0;
+				currentMaterial.autoInvertNormal = readFloat(line, lineIndex, part) != 0.0;
 			}
 			else if (part == "invertNormal")
 			{
-				currentMaterial.invertNormal = readDouble(line, lineIndex, part) != 0.0;
+				currentMaterial.invertNormal = readFloat(line, lineIndex, part) != 0.0;
 			}
 			else if (part == "fresnelReflection")
 			{
-				currentMaterial.fresnelReflection = readDouble(line, lineIndex, part) != 0.0;
+				currentMaterial.fresnelReflection = readFloat(line, lineIndex, part) != 0.0;
 			}
 			else if (part == "attenuating")
 			{
-				currentMaterial.attenuating = readDouble(line, lineIndex, part) != 0.0;
+				currentMaterial.attenuating = readFloat(line, lineIndex, part) != 0.0;
 			}
 			else if (part == "shininess" || part == "Ns")
 			{
-				currentMaterial.shininess = readDouble(line, lineIndex, part);
+				currentMaterial.shininess = readFloat(line, lineIndex, part);
 			}
 			else if (part == "refractiveIndex" || part == "Ni")
 			{
-				currentMaterial.refractiveIndex = readDouble(line, lineIndex, part);
+				currentMaterial.refractiveIndex = readFloat(line, lineIndex, part);
 			}
 			else if (part == "rayReflectance")
 			{
-				currentMaterial.rayReflectance = readDouble(line, lineIndex, part);
+				currentMaterial.rayReflectance = readFloat(line, lineIndex, part);
 			}
 			else if (part == "rayTransmittance")
 			{
-				currentMaterial.rayTransmittance = readDouble(line, lineIndex, part);
+				currentMaterial.rayTransmittance = readFloat(line, lineIndex, part);
 			}
 			else if (part == "attenuationFactor")
 			{
-				currentMaterial.attenuationFactor = readDouble(line, lineIndex, part);
+				currentMaterial.attenuationFactor = readFloat(line, lineIndex, part);
 			}
 			else if (part == "attenuationColor")
 			{
-				currentMaterial.attenuationColor.r = readDouble(line, lineIndex, part);
-				currentMaterial.attenuationColor.g = readDouble(line, lineIndex, part);
-				currentMaterial.attenuationColor.b = readDouble(line, lineIndex, part);
+				currentMaterial.attenuationColor.r = readFloat(line, lineIndex, part);
+				currentMaterial.attenuationColor.g = readFloat(line, lineIndex, part);
+				currentMaterial.attenuationColor.b = readFloat(line, lineIndex, part);
 			}
 			else if (part == "texcoordScale")
 			{
-				currentMaterial.texcoordScale.x = readDouble(line, lineIndex, part);
-				currentMaterial.texcoordScale.y = readDouble(line, lineIndex, part);
+				currentMaterial.texcoordScale.x = readFloat(line, lineIndex, part);
+				currentMaterial.texcoordScale.y = readFloat(line, lineIndex, part);
 			}
 			else if (part == "reflectance" || part == "Kr")
 			{
-				currentMaterial.reflectance.r = readDouble(line, lineIndex, part);
-				currentMaterial.reflectance.g = readDouble(line, lineIndex, part);
-				currentMaterial.reflectance.b = readDouble(line, lineIndex, part);
+				currentMaterial.reflectance.r = readFloat(line, lineIndex, part);
+				currentMaterial.reflectance.g = readFloat(line, lineIndex, part);
+				currentMaterial.reflectance.b = readFloat(line, lineIndex, part);
 			}
 			else if ((part == "reflectanceMap" || part == "map_Kr") && currentMaterial.reflectanceMapTextureId == 0)
 			{
@@ -155,9 +155,9 @@ namespace
 			}
 			else if (part == "emittance" || part == "Ke")
 			{
-				currentMaterial.emittance.r = readDouble(line, lineIndex, part);
-				currentMaterial.emittance.g = readDouble(line, lineIndex, part);
-				currentMaterial.emittance.b = readDouble(line, lineIndex, part);
+				currentMaterial.emittance.r = readFloat(line, lineIndex, part);
+				currentMaterial.emittance.g = readFloat(line, lineIndex, part);
+				currentMaterial.emittance.b = readFloat(line, lineIndex, part);
 			}
 			else if ((part == "emittanceMap" || part == "map_Ke") && currentMaterial.emittanceMapTextureId == 0)
 			{
@@ -173,9 +173,9 @@ namespace
 			}
 			else if (part == "ambientReflectance" || part == "Ka")
 			{
-				currentMaterial.ambientReflectance.r = readDouble(line, lineIndex, part);
-				currentMaterial.ambientReflectance.g = readDouble(line, lineIndex, part);
-				currentMaterial.ambientReflectance.b = readDouble(line, lineIndex, part);
+				currentMaterial.ambientReflectance.r = readFloat(line, lineIndex, part);
+				currentMaterial.ambientReflectance.g = readFloat(line, lineIndex, part);
+				currentMaterial.ambientReflectance.b = readFloat(line, lineIndex, part);
 			}
 			else if ((part == "ambientMap" || part == "map_Ka") && currentMaterial.ambientMapTextureId == 0)
 			{
@@ -191,9 +191,9 @@ namespace
 			}
 			else if (part == "diffuseReflectance" || part == "Kd")
 			{
-				currentMaterial.diffuseReflectance.r = readDouble(line, lineIndex, part);
-				currentMaterial.diffuseReflectance.g = readDouble(line, lineIndex, part);
-				currentMaterial.diffuseReflectance.b = readDouble(line, lineIndex, part);
+				currentMaterial.diffuseReflectance.r = readFloat(line, lineIndex, part);
+				currentMaterial.diffuseReflectance.g = readFloat(line, lineIndex, part);
+				currentMaterial.diffuseReflectance.b = readFloat(line, lineIndex, part);
 
 				// for compatability
 				currentMaterial.reflectance.r = currentMaterial.diffuseReflectance.r;
@@ -215,9 +215,9 @@ namespace
 			}
 			else if (part == "specularReflectance" || part == "Ks")
 			{
-				currentMaterial.specularReflectance.r = readDouble(line, lineIndex, part);
-				currentMaterial.specularReflectance.g = readDouble(line, lineIndex, part);
-				currentMaterial.specularReflectance.b = readDouble(line, lineIndex, part);
+				currentMaterial.specularReflectance.r = readFloat(line, lineIndex, part);
+				currentMaterial.specularReflectance.g = readFloat(line, lineIndex, part);
+				currentMaterial.specularReflectance.b = readFloat(line, lineIndex, part);
 			}
 			else if ((part == "specularMap" || part == "map_Ks") && currentMaterial.specularMapTextureId == 0)
 			{
@@ -459,9 +459,9 @@ ModelLoaderResult ModelLoader::load(const ModelLoaderInfo& info)
 		{
 			Vector3 vertex;
 
-			vertex.x = readDouble(line, lineIndex, part);
-			vertex.y = readDouble(line, lineIndex, part);
-			vertex.z = readDouble(line, lineIndex, part);
+			vertex.x = readFloat(line, lineIndex, part);
+			vertex.y = readFloat(line, lineIndex, part);
+			vertex.z = readFloat(line, lineIndex, part);
 
 			vertices.push_back(transformation.transformPosition(vertex));
 		}
@@ -469,9 +469,9 @@ ModelLoaderResult ModelLoader::load(const ModelLoaderInfo& info)
 		{
 			Vector3 normal;
 
-			normal.x = readDouble(line, lineIndex, part);
-			normal.y = readDouble(line, lineIndex, part);
-			normal.z = readDouble(line, lineIndex, part);
+			normal.x = readFloat(line, lineIndex, part);
+			normal.y = readFloat(line, lineIndex, part);
+			normal.z = readFloat(line, lineIndex, part);
 
 			normals.push_back(transformationInvT.transformDirection(normal).normalized());
 		}
@@ -479,8 +479,8 @@ ModelLoaderResult ModelLoader::load(const ModelLoaderInfo& info)
 		{
 			Vector2 texcoord;
 
-			texcoord.x = readDouble(line, lineIndex, part);
-			texcoord.y = readDouble(line, lineIndex, part);
+			texcoord.x = readFloat(line, lineIndex, part);
+			texcoord.y = readFloat(line, lineIndex, part);
 
 			texcoords.push_back(texcoord);
 		}

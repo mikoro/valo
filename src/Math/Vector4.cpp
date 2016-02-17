@@ -9,11 +9,11 @@
 
 using namespace Raycer;
 
-Vector4::Vector4(double x_, double y_, double z_, double w_) : x(x_), y(y_), z(z_), w(w_)
+Vector4::Vector4(float x_, float y_, float z_, float w_) : x(x_), y(y_), z(z_), w(w_)
 {
 }
 
-Vector4::Vector4(const Vector3& v, double w_) : x(v.x), y(v.y), z(v.z), w(w_)
+Vector4::Vector4(const Vector3& v, float w_) : x(v.x), y(v.y), z(v.z), w(w_)
 {
 }
 
@@ -34,12 +34,12 @@ namespace Raycer
 		return Vector4(v.x * w.x, v.y * w.y, v.z * w.z, v.w * w.w);
 	}
 
-	Vector4 operator*(const Vector4& v, double s)
+	Vector4 operator*(const Vector4& v, float s)
 	{
 		return Vector4(v.x * s, v.y * s, v.z * s, v.w * s);
 	}
 
-	Vector4 operator*(double s, const Vector4& v)
+	Vector4 operator*(float s, const Vector4& v)
 	{
 		return Vector4(v.x * s, v.y * s, v.z * s, v.w * s);
 	}
@@ -49,9 +49,9 @@ namespace Raycer
 		return Vector4(v.x / w.x, v.y / w.y, v.z / w.z, v.w / w.w);
 	}
 
-	Vector4 operator/(const Vector4& v, double s)
+	Vector4 operator/(const Vector4& v, float s)
 	{
-		double invS = 1.0 / s;
+		float invS = 1.0f / s;
 		return Vector4(v.x * invS, v.y * invS, v.z * invS, v.w * invS);
 	}
 
@@ -99,7 +99,7 @@ Vector4& Vector4::operator*=(const Vector4& v)
 	return *this;
 }
 
-Vector4& Vector4::operator*=(double s)
+Vector4& Vector4::operator*=(float s)
 {
 	*this = *this * s;
 	return *this;
@@ -111,18 +111,18 @@ Vector4& Vector4::operator/=(const Vector4& v)
 	return *this;
 }
 
-Vector4& Vector4::operator/=(double s)
+Vector4& Vector4::operator/=(float s)
 {
 	*this = *this / s;
 	return *this;
 }
 
-double Vector4::operator[](uint64_t index) const
+float Vector4::operator[](uint64_t index) const
 {
 	return (&x)[index];
 }
 
-double Vector4::getElement(uint64_t index) const
+float Vector4::getElement(uint64_t index) const
 {
 	switch (index)
 	{
@@ -134,7 +134,7 @@ double Vector4::getElement(uint64_t index) const
 	}
 }
 
-void Vector4::setElement(uint64_t index, double value)
+void Vector4::setElement(uint64_t index, float value)
 {
 	switch (index)
 	{
@@ -146,12 +146,12 @@ void Vector4::setElement(uint64_t index, double value)
 	}
 }
 
-double Vector4::length() const
+float Vector4::length() const
 {
 	return std::sqrt(x * x + y * y + z * z + w * w);
 }
 
-double Vector4::lengthSquared() const
+float Vector4::lengthSquared() const
 {
 	return (x * x + y * y + z * z + w * w);
 }
@@ -178,27 +178,27 @@ Vector4 Vector4::normalizedForm() const
 
 void Vector4::inverse()
 {
-	x = 1.0 / x;
-	y = 1.0 / y;
-	z = 1.0 / z;
-	w = 1.0 / w;
+	x = 1.0f / x;
+	y = 1.0f / y;
+	z = 1.0f / z;
+	w = 1.0f / w;
 }
 
 Vector4 Vector4::inversed() const
 {
 	Vector4 inverse;
 
-	inverse.x = 1.0 / x;
-	inverse.y = 1.0 / y;
-	inverse.z = 1.0 / z;
-	inverse.w = 1.0 / w;
+	inverse.x = 1.0f / x;
+	inverse.y = 1.0f / y;
+	inverse.z = 1.0f / z;
+	inverse.w = 1.0f / w;
 
 	return inverse;
 }
 
 bool Vector4::isZero() const
 {
-	return (x == 0.0 && y == 0.0 && z == 0.0 && w == 0.0);
+	return (x == 0.0f && y == 0.0f && z == 0.0f && w == 0.0f);
 }
 
 bool Vector4::isNan() const
@@ -208,10 +208,10 @@ bool Vector4::isNan() const
 
 bool Vector4::isNormal() const
 {
-	return MathUtils::almostSame(lengthSquared(), 1.0);
+	return MathUtils::almostSame(lengthSquared(), 1.0f);
 }
 
-double Vector4::dot(const Vector4& v) const
+float Vector4::dot(const Vector4& v) const
 {
 	return (x * v.x) + (y * v.y) + (z * v.z) + (w * v.w);
 }
@@ -226,10 +226,10 @@ Vector3 Vector4::toVector3() const
 	return Vector3(x, y, z);
 }
 
-Vector4 Vector4::lerp(const Vector4& v1, const Vector4& v2, double t)
+Vector4 Vector4::lerp(const Vector4& v1, const Vector4& v2, float t)
 {
-	assert(t >= 0.0 && t <= 1.0);
-	return v1 * (1.0 - t) + v2 * t;
+	assert(t >= 0.0f && t <= 1.0f);
+	return v1 * (1.0f - t) + v2 * t;
 }
 
 Vector4 Vector4::abs(const Vector4& v)

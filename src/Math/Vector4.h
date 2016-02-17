@@ -13,16 +13,16 @@ namespace Raycer
 	{
 	public:
 
-		explicit Vector4(double x = 0.0, double y = 0.0, double z = 0.0, double w = 0.0);
-		explicit Vector4(const Vector3& v, double w = 0.0);
+		explicit Vector4(float x = 0.0f, float y = 0.0f, float z = 0.0f, float w = 0.0f);
+		explicit Vector4(const Vector3& v, float w = 0.0f);
 
 		friend Vector4 operator+(const Vector4& v, const Vector4& w);
 		friend Vector4 operator-(const Vector4& v, const Vector4& w);
 		friend Vector4 operator*(const Vector4& v, const Vector4& w);
-		friend Vector4 operator*(const Vector4& v, double s);
-		friend Vector4 operator*(double s, const Vector4& v);
+		friend Vector4 operator*(const Vector4& v, float s);
+		friend Vector4 operator*(float s, const Vector4& v);
 		friend Vector4 operator/(const Vector4& v, const Vector4& w);
-		friend Vector4 operator/(const Vector4& v, double s);
+		friend Vector4 operator/(const Vector4& v, float s);
 		friend Vector4 operator-(const Vector4& v);
 
 		friend bool operator==(const Vector4& v, const Vector4& w);
@@ -33,15 +33,15 @@ namespace Raycer
 		Vector4& operator+=(const Vector4& v);
 		Vector4& operator-=(const Vector4& v);
 		Vector4& operator*=(const Vector4& v);
-		Vector4& operator*=(double s);
+		Vector4& operator*=(float s);
 		Vector4& operator/=(const Vector4& v);
-		Vector4& operator/=(double s);
-		double operator[](uint64_t index) const;
+		Vector4& operator/=(float s);
+		float operator[](uint64_t index) const;
 
-		double getElement(uint64_t index) const;
-		void setElement(uint64_t index, double value);
-		double length() const;
-		double lengthSquared() const;
+		float getElement(uint64_t index) const;
+		void setElement(uint64_t index, float value);
+		float length() const;
+		float lengthSquared() const;
 		void normalizeLength();
 		Vector4 normalizedLength() const;
 		void normalizeForm();
@@ -51,17 +51,17 @@ namespace Raycer
 		bool isZero() const;
 		bool isNan() const;
 		bool isNormal() const;
-		double dot(const Vector4& v) const;
+		float dot(const Vector4& v) const;
 		std::string toString() const;
 		Vector3 toVector3() const;
 
-		static Vector4 lerp(const Vector4& v1, const Vector4& v2, double t);
+		static Vector4 lerp(const Vector4& v1, const Vector4& v2, float t);
 		static Vector4 abs(const Vector4& v);
 
-		double x;
-		double y;
-		double z;
-		double w;
+		float x;
+		float y;
+		float z;
+		float w;
 
 	private:
 

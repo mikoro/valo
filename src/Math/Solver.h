@@ -10,14 +10,14 @@ namespace Raycer
 	struct QuadraticResult
 	{
 		uint64_t rootCount = 0;
-		double roots[2];
+		float roots[2];
 	};
 
 	class Solver
 	{
 	public:
 
-		static QuadraticResult findQuadraticRoots(double a, double b, double c);
-		static double findRoot(const std::function<double(double)>& f, double begin, double end, uint64_t iterations = 32);
+		static QuadraticResult findQuadraticRoots(float a, float b, float c);
+		static float findRoot(const std::function<float(float)>& f, float begin, float end, uint64_t iterations = 32);
 	};
 }

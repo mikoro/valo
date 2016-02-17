@@ -15,21 +15,21 @@ namespace Raycer
 
 		virtual ~Filter() {}
 
-		virtual double getWeightX(double x) = 0;
-		virtual double getWeightY(double y) = 0;
+		virtual float getWeightX(float x) = 0;
+		virtual float getWeightY(float y) = 0;
 
-		double getWeight(double x, double y);
-		double getWeight(const Vector2& point);
+		float getWeight(float x, float y);
+		float getWeight(const Vector2& point);
 		
-		double getRadiusX() const;
-		double getRadiusY() const;
+		float getRadiusX() const;
+		float getRadiusY() const;
 		Vector2 getRadius() const;
 
 		static std::unique_ptr<Filter> getFilter(FilterType type);
 
 	protected:
 
-		double radiusX = 0.0;
-		double radiusY = 0.0;
+		float radiusX = 0.0f;
+		float radiusY = 0.0f;
 	};
 }

@@ -39,16 +39,16 @@ namespace Raycer
 	public:
 
 		Matrix4x4();
-		Matrix4x4(double m00, double m01, double m02, double m03, double m10, double m11, double m12, double m13, double m20, double m21, double m22, double m23, double m30, double m31, double m32, double m33);
+		Matrix4x4(float m00, float m01, float m02, float m03, float m10, float m11, float m12, float m13, float m20, float m21, float m22, float m23, float m30, float m31, float m32, float m33);
 		Matrix4x4(const Vector4& r, const Vector4& u, const Vector4& f, const Vector4& t);
 
 		friend Matrix4x4 operator+(const Matrix4x4& m, const Matrix4x4& n);
 		friend Matrix4x4 operator-(const Matrix4x4& m, const Matrix4x4& n);
-		friend Matrix4x4 operator*(const Matrix4x4& m, double s);
-		friend Matrix4x4 operator*(double s, const Matrix4x4& m);
+		friend Matrix4x4 operator*(const Matrix4x4& m, float s);
+		friend Matrix4x4 operator*(float s, const Matrix4x4& m);
 		friend Matrix4x4 operator*(const Matrix4x4& m, const Matrix4x4& n);
 		friend Vector4 operator*(const Matrix4x4& m, const Vector4& v);
-		friend Matrix4x4 operator/(const Matrix4x4& m, double s);
+		friend Matrix4x4 operator/(const Matrix4x4& m, float s);
 		friend Matrix4x4 operator-(const Matrix4x4& m);
 
 		friend bool operator==(const Matrix4x4& m, const Matrix4x4& n);
@@ -57,14 +57,14 @@ namespace Raycer
 		Matrix4x4& operator+=(const Matrix4x4& m);
 		Matrix4x4& operator-=(const Matrix4x4& m);
 		Matrix4x4& operator*=(const Matrix4x4& m);
-		Matrix4x4& operator*=(double s);
-		Matrix4x4& operator/=(double s);
+		Matrix4x4& operator*=(float s);
+		Matrix4x4& operator/=(float s);
 
-		operator double*();
-		operator const double*() const;
+		operator float*();
+		operator const float*() const;
 
-		double get(uint64_t row, uint64_t column) const;
-		void set(uint64_t row, uint64_t column, double value);
+		float get(uint64_t row, uint64_t column) const;
+		void set(uint64_t row, uint64_t column, float value);
 		Vector4 getRow(uint64_t index) const;
 		void setRow(uint64_t index, const Vector4& v);
 		Vector4 getColumn(uint64_t index) const;
@@ -85,19 +85,19 @@ namespace Raycer
 		static const Matrix4x4 ZERO;
 
 		static Matrix4x4 scale(const Vector3& s);
-		static Matrix4x4 scale(double sx, double sy, double sz);
+		static Matrix4x4 scale(float sx, float sy, float sz);
 		static Matrix4x4 translate(const Vector3& t);
-		static Matrix4x4 translate(double tx, double ty, double tz);
+		static Matrix4x4 translate(float tx, float ty, float tz);
 		static Matrix4x4 rotateXYZ(const EulerAngle& e);
 		static Matrix4x4 rotateZYX(const EulerAngle& e);
-		static Matrix4x4 rotateXYZ(double pitch, double yaw, double roll);
-		static Matrix4x4 rotateZYX(double pitch, double yaw, double roll);
-		static Matrix4x4 rotateX(double angle);
-		static Matrix4x4 rotateY(double angle);
-		static Matrix4x4 rotateZ(double angle);
+		static Matrix4x4 rotateXYZ(float pitch, float yaw, float roll);
+		static Matrix4x4 rotateZYX(float pitch, float yaw, float roll);
+		static Matrix4x4 rotateX(float angle);
+		static Matrix4x4 rotateY(float angle);
+		static Matrix4x4 rotateZ(float angle);
 		static Matrix4x4 rotate(const Vector3& from, const Vector3& to);
 
-		double m[4][4];
+		float m[4][4];
 
 	private:
 

@@ -7,31 +7,31 @@
 
 using namespace Raycer;
 
-BoxFilter::BoxFilter(double radiusX_, double radiusY_)
+BoxFilter::BoxFilter(float radiusX_, float radiusY_)
 {
 	setRadius(radiusX_, radiusY_);
 }
 
-void BoxFilter::setRadius(double radiusX_, double radiusY_)
+void BoxFilter::setRadius(float radiusX_, float radiusY_)
 {
 	radiusX = radiusX_;
 	radiusY = radiusY_;
-	weightX = 1.0 / (2.0 * radiusX);
-	weightY = 1.0 / (2.0 * radiusY);
+	weightX = 1.0f / (2.0f * radiusX);
+	weightY = 1.0f / (2.0f * radiusY);
 }
 
-double BoxFilter::getWeightX(double x)
+float BoxFilter::getWeightX(float x)
 {
 	if (x >= -radiusX && x < radiusX)
 		return weightX;
 	else
-		return 0.0;
+		return 0.0f;
 }
 
-double BoxFilter::getWeightY(double y)
+float BoxFilter::getWeightY(float y)
 {
 	if (y >= -radiusY && y < radiusY)
 		return weightY;
 	else
-		return 0.0;
+		return 0.0f;
 }

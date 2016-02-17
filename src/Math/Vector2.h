@@ -11,15 +11,15 @@ namespace Raycer
 	{
 	public:
 
-		explicit Vector2(double x = 0.0, double y = 0.0);
+		explicit Vector2(float x = 0.0f, float y = 0.0f);
 
 		friend Vector2 operator+(const Vector2& v, const Vector2& w);
 		friend Vector2 operator-(const Vector2& v, const Vector2& w);
 		friend Vector2 operator*(const Vector2& v, const Vector2& w);
-		friend Vector2 operator*(const Vector2& v, double s);
-		friend Vector2 operator*(double s, const Vector2& v);
+		friend Vector2 operator*(const Vector2& v, float s);
+		friend Vector2 operator*(float s, const Vector2& v);
 		friend Vector2 operator/(const Vector2& v, const Vector2& w);
-		friend Vector2 operator/(const Vector2& v, double s);
+		friend Vector2 operator/(const Vector2& v, float s);
 		friend Vector2 operator-(const Vector2& v);
 
 		friend bool operator==(const Vector2& v, const Vector2& w);
@@ -30,15 +30,15 @@ namespace Raycer
 		Vector2& operator+=(const Vector2& v);
 		Vector2& operator-=(const Vector2& v);
 		Vector2& operator*=(const Vector2& v);
-		Vector2& operator*=(double s);
+		Vector2& operator*=(float s);
 		Vector2& operator/=(const Vector2& v);
-		Vector2& operator/=(double s);
-		double operator[](uint64_t index) const;
+		Vector2& operator/=(float s);
+		float operator[](uint64_t index) const;
 
-		double getElement(uint64_t index) const;
-		void setElement(uint64_t index, double value);
-		double length() const;
-		double lengthSquared() const;
+		float getElement(uint64_t index) const;
+		void setElement(uint64_t index, float value);
+		float length() const;
+		float lengthSquared() const;
 		void normalize();
 		Vector2 normalized() const;
 		void inverse();
@@ -46,15 +46,15 @@ namespace Raycer
 		bool isZero() const;
 		bool isNan() const;
 		bool isNormal() const;
-		double dot(const Vector2& v) const;
+		float dot(const Vector2& v) const;
 		Vector2 reflect(const Vector2& normal) const;
 		std::string toString() const;
 
-		static Vector2 lerp(const Vector2& v1, const Vector2& v2, double t);
+		static Vector2 lerp(const Vector2& v1, const Vector2& v2, float t);
 		static Vector2 abs(const Vector2& v);
 
-		double x;
-		double y;
+		float x;
+		float y;
 
 	private:
 

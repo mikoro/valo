@@ -16,16 +16,16 @@ namespace Raycer
 	{
 	public:
 
-		const Imagef* getImage(const std::string& fileName, bool applyGamma);
+		const Image* getImage(const std::string& fileName, bool applyGamma);
 		uint64_t getImageIndex(const std::string& fileName);
-		const std::vector<Imagef>& getImages();
+		const std::vector<Image>& getImages();
 		void clear();
 
 	private:
 
 		bool initialized = false;
 		std::map<std::string, uint64_t> imageIndexMap;
-		std::vector<Imagef> images;
+		std::vector<Image> images;
 
 		friend class cereal::access;
 

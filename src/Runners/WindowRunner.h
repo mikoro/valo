@@ -17,11 +17,11 @@ namespace Raycer
 	{
 		int64_t windowX = 0;
 		int64_t windowY = 0;
-		int64_t scaledX = 0;
-		int64_t scaledY = 0;
+		int64_t filmX = 0;
+		int64_t filmY = 0;
 		int64_t deltaX = 0;
 		int64_t deltaY = 0;
-		double scrollY = 0.0;
+		float scrollY = 0.0f;
 		bool hasScrolled = false;
 	};
 
@@ -40,14 +40,14 @@ namespace Raycer
 		uint64_t getWindowWidth() const;
 		uint64_t getWindowHeight() const;
 		const MouseInfo& getMouseInfo() const;
-		double getElapsedTime() const;
+		float getElapsedTime() const;
 		const FpsCounter& getFpsCounter() const;
 
 		bool keyIsDown(int32_t key);
 		bool mouseIsDown(int32_t button);
 		bool keyWasPressed(int32_t key);
 		bool mouseWasPressed(int32_t button);
-		double getMouseWheelScroll();
+		float getMouseWheelScroll();
 
 		void changeState(RunnerStates newState);
 
@@ -61,8 +61,8 @@ namespace Raycer
 		void windowResized(uint64_t width, uint64_t height);
 		
 		void mainLoop();
-		void update(double timeStep);
-		void render(double timeStep, double interpolation);
+		void update(float timeStep);
+		void render(float timeStep, float interpolation);
 
 		void takeScreenshot() const;
 

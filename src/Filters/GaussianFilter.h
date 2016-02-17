@@ -13,18 +13,18 @@ namespace Raycer
 	{
 	public:
 
-		explicit GaussianFilter(double stdDevX = 1.0, double stdDevY = 1.0);
+		explicit GaussianFilter(float stdDevX = 1.0f, float stdDevY = 1.0f);
 
-		void setStandardDeviations(double stdDevX, double stdDevY);
+		void setStandardDeviations(float stdDevX, float stdDevY);
 
-		double getWeightX(double x) override;
-		double getWeightY(double y) override;
+		float getWeightX(float x) override;
+		float getWeightY(float y) override;
 
 	private:
 
-		double alphaX = 0.0;
-		double alphaY = 0.0;
-		double betaX = 0.0;
-		double betaY = 0.0;
+		float alphaX = 0.0f;
+		float alphaY = 0.0f;
+		float betaX = 0.0f;
+		float betaY = 0.0f;
 	};
 }

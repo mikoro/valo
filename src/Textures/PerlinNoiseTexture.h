@@ -23,15 +23,15 @@ namespace Raycer
 		void initialize(Scene& scene) override;
 
 		Color getColor(const Vector2& texcoord, const Vector3& position) const override;
-		double getValue(const Vector2& texcoord, const Vector3& position) const override;
+		float getValue(const Vector2& texcoord, const Vector3& position) const override;
 		
 		uint64_t seed = 1;
-		Vector3 scale = Vector3(10.0, 10.0, 10.0);
-		Color baseColor = Color(1.0, 1.0, 1.0);
+		Vector3 scale = Vector3(10.0f, 10.0f, 10.0f);
+		Color baseColor = Color(1.0f, 1.0f, 1.0f);
 		bool isFbm = false;
 		uint64_t octaves = 4;
-		double lacunarity = 2.0;
-		double persistence = 0.5;
+		float lacunarity = 2.0f;
+		float persistence = 0.5f;
 
 	private:
 

@@ -7,12 +7,12 @@
 
 using namespace Raycer;
 
-std::vector<Vector2> PoissonDisc::generate(uint64_t width, uint64_t height, double minDistance_, uint64_t iterationLimit, bool normalize)
+std::vector<Vector2> PoissonDisc::generate(uint64_t width, uint64_t height, float minDistance_, uint64_t iterationLimit, bool normalize)
 {
 	minDistance = minDistance_;
-	cellSize = minDistance / M_SQRT2;
-	gridWidth = uint64_t(ceil(double(width) / cellSize));
-	gridHeight = uint64_t(ceil(double(height) / cellSize));
+	cellSize = minDistance / float(M_SQRT2);
+	gridWidth = uint64_t(ceil(float(width) / cellSize));
+	gridHeight = uint64_t(ceil(float(height) / cellSize));
 	
 	grid.clear();
 	grid.resize(gridHeight);
@@ -26,7 +26,7 @@ std::vector<Vector2> PoissonDisc::generate(uint64_t width, uint64_t height, doub
 	points.clear();
 	pointsToProcess.clear();
 
-	Vector2 firstPoint = Vector2(random.getDouble() * double(width), random.getDouble() * double(height));
+	Vector2 firstPoint = Vector2(random.getFloat() * float(width), random.getFloat() * float(height));
 
 	points.push_back(firstPoint);
 	pointsToProcess.push_back(firstPoint);
@@ -43,7 +43,7 @@ std::vector<Vector2> PoissonDisc::generate(uint64_t width, uint64_t height, doub
 		{
 			Vector2 point = generateNewPoint(origin);
 
-			if (point.x < 0.0 || point.x > double(width) || point.y < 0.0 || point.y > double(height))
+			if (point.x < 0.0f || point.x > float(width) || point.y < 0.0f || point.y > float(height))
 				continue;
 
 			if (isTooCloseToOthers(point))
@@ -61,7 +61,7 @@ std::vector<Vector2> PoissonDisc::generate(uint64_t width, uint64_t height, doub
 	if (normalize)
 	{
 		for (Vector2& point : points)
-			point /= Vector2(double(width), double(height));
+			point /= Vector2(float(width), float(height));
 	}
 	
 	return points;
@@ -95,13 +95,13 @@ Vector2 PoissonDisc::getNextPointToProcess()
 
 Vector2 PoissonDisc::generateNewPoint(const Vector2& origin)
 {
-	double radius = minDistance * (1.0 + random.getDouble());
-	double angle = 2.0 * M_PI * random.getDouble();
+	float radius = minDistance * (1.0f + random.getFloat());
+	float angle = 2.0f * float(M_PI) * random.getFloat();
 
 	Vector2 point;
 
-	point.x = origin.x + radius * cos(angle);
-	point.y = origin.y + radius * sin(angle);
+	point.x = origin.x + radius * std::cos(angle);
+	point.y = origin.y + radius * std::sin(angle);
 
 	return point;
 }
@@ -115,7 +115,7 @@ bool PoissonDisc::isTooCloseToOthers(const Vector2& point)
 	uint64_t miny = std::max(int64_t(0), int64_t(cellIndex.y) - 2);
 	uint64_t maxy = std::min(int64_t(gridHeight) - 1, int64_t(cellIndex.y) + 2);
 
-	double minDistance2 = minDistance * minDistance;
+	float minDistance2 = minDistance * minDistance;
 
 	for (uint64_t y = miny; y <= maxy; ++y)
 	{

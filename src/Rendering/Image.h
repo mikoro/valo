@@ -22,46 +22,42 @@ namespace Raycer
 {
 	class Filter;
 
-	template <typename T>
-	class ImageType
+	class Image
 	{
 	public:
 
-		ImageType();
-		explicit ImageType(uint64_t length);
-		ImageType(uint64_t width, uint64_t height);
-		ImageType(uint64_t width, uint64_t height, float* rgbaData);
-		explicit ImageType(const std::string& fileName);
+		Image();
+		explicit Image(uint64_t length);
+		Image(uint64_t width, uint64_t height);
+		Image(uint64_t width, uint64_t height, float* rgbaData);
+		explicit Image(const std::string& fileName);
 
 		void load(uint64_t width, uint64_t height, float* rgbaData);
 		void load(const std::string& fileName);
 		void save(const std::string& fileName, bool writeToLog = true) const;
 		void resize(uint64_t length);
 		void resize(uint64_t width, uint64_t height);
-		void setPixel(uint64_t x, uint64_t y, const ColorType<T>& color);
-		void setPixel(uint64_t index, const ColorType<T>& color);
+		void setPixel(uint64_t x, uint64_t y, const Color& color);
+		void setPixel(uint64_t index, const Color& color);
 		void clear();
-		void clear(const ColorType<T>& color);
-		void applyGamma(T gamma);
-		void applyFastGamma(double gamma);
+		void clear(const Color& color);
+		void applyGamma(float gamma);
+		void applyFastGamma(float gamma);
 		void swapComponents();
 		void flip();
 		void fillWithTestPattern();
-
-		template <typename U>
-		void read(const ImageType<U>& other);
 
 		uint64_t getWidth() const;
 		uint64_t getHeight() const;
 		uint64_t getLength() const;
 
-		ColorType<T> getPixel(uint64_t x, uint64_t y) const;
-		ColorType<T> getPixel(uint64_t index) const;
-		ColorType<T> getPixelNearest(double u, double v) const;
-		ColorType<T> getPixelBilinear(double u, double v) const;
-		ColorType<T> getPixelBicubic(double u, double v, Filter* filter) const;
+		Color getPixel(uint64_t x, uint64_t y) const;
+		Color getPixel(uint64_t index) const;
+		Color getPixelNearest(float u, float v) const;
+		Color getPixelBilinear(float u, float v) const;
+		Color getPixelBicubic(float u, float v, Filter* filter) const;
 
-		using vector = std::vector<ColorType<T>, boost::alignment::aligned_allocator<ColorType<T>, CACHE_LINE_SIZE>>;
+		using vector = std::vector<Color, boost::alignment::aligned_allocator<Color, CACHE_LINE_SIZE>>;
 
 		vector& getPixelData();
 		const vector& getPixelDataConst() const;
@@ -85,9 +81,4 @@ namespace Raycer
 				CEREAL_NVP(pixelData));
 		}
 	};
-
-	using Image = ImageType<double>;
-	using Imagef = ImageType<float>;
 }
-
-#include "Rendering/Image.inl"

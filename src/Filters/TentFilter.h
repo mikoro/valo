@@ -13,16 +13,16 @@ namespace Raycer
 	{
 	public:
 
-		explicit TentFilter(double radiusX = 1.0, double radiusY = 1.0);
+		explicit TentFilter(float radiusX = 1.0f, float radiusY = 1.0f);
 
-		void setRadius(double radiusX, double radiusY);
+		void setRadius(float radiusX, float radiusY);
 
-		double getWeightX(double x) override;
-		double getWeightY(double y) override;
+		float getWeightX(float x) override;
+		float getWeightY(float y) override;
 
 	private:
 
-		double radiusXInv = 0.0;
-		double radiusYInv = 0.0;
+		float radiusXInv = 0.0f;
+		float radiusYInv = 0.0f;
 	};
 }

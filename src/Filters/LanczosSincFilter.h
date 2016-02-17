@@ -17,7 +17,7 @@ namespace Raycer
 
 		void setRadius(uint64_t radiusX, uint64_t radiusY);
 
-		double getWeightX(double x) override;
-		double getWeightY(double y) override;
+		float getWeightX(float x) override;
+		float getWeightY(float y) override;
 	};
 }

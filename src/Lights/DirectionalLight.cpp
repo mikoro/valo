@@ -23,10 +23,10 @@ Color DirectionalLight::getColor(const Scene& scene, const Intersection& interse
 {
 	(void)random;
 
-	double cosine = intersection.normal.dot(-direction);
+	float cosine = intersection.normal.dot(-direction);
 
-	if (cosine < 0.0)
-		return Color(0.0, 0.0, 0.0);
+	if (cosine < 0.0f)
+		return Color(0.0f, 0.0f, 0.0f);
 
 	Ray shadowRay;
 	Intersection shadowIntersection;
@@ -36,11 +36,11 @@ Color DirectionalLight::getColor(const Scene& scene, const Intersection& interse
 	shadowRay.isShadowRay = true;
 	shadowRay.fastOcclusion = true;
 	shadowRay.minDistance = scene.general.rayMinDistance;
-	shadowRay.maxDistance = std::numeric_limits<double>::max();
+	shadowRay.maxDistance = std::numeric_limits<float>::max();
 	shadowRay.precalculate();
 
 	if (scene.intersect(shadowRay, shadowIntersection))
-		return Color(0.0, 0.0, 0.0);
+		return Color(0.0f, 0.0f, 0.0f);
 
 	return cosine * color;
 }

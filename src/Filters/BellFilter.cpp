@@ -9,16 +9,16 @@ using namespace Raycer;
 
 namespace
 {
-	double calculateWeight(double s)
+	float calculateWeight(float s)
 	{
 		s = std::abs(s);
 
-		if (s < 0.5)
-			return 0.75 - (s * s);
-		else if (s <= 1.5)
-			return 0.5 * pow(s - 1.5, 2.0);
+		if (s < 0.5f)
+			return 0.75f - (s * s);
+		else if (s <= 1.5f)
+			return 0.5f * std::pow(s - 1.5f, 2.0f);
 		else
-			return 0.0;
+			return 0.0f;
 	}
 }
 
@@ -28,12 +28,12 @@ BellFilter::BellFilter()
 	radiusY = 1.5;
 }
 
-double BellFilter::getWeightX(double x)
+float BellFilter::getWeightX(float x)
 {
 	return calculateWeight(x);
 }
 
-double BellFilter::getWeightY(double y)
+float BellFilter::getWeightY(float y)
 {
 	return calculateWeight(y);
 }

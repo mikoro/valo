@@ -11,8 +11,8 @@ using namespace Raycer;
 
 AABB::AABB()
 {
-	min.x = min.y = min.z = std::numeric_limits<double>::max();
-	max.x = max.y = max.z = std::numeric_limits<double>::lowest();
+	min.x = min.y = min.z = std::numeric_limits<float>::max();
+	max.x = max.y = max.z = std::numeric_limits<float>::lowest();
 }
 
 AABB AABB::createFromMinMax(const Vector3& min_, const Vector3& max_)
@@ -55,10 +55,10 @@ AABB AABB::createFromVertices(const Vector3& v0, const Vector3& v1, const Vector
 // http://tavianator.com/fast-branchless-raybounding-box-intersections-part-2-nans/
 bool AABB::intersects(const Ray& ray) const
 {
-	double tmin = ((&min)[ray.directionIsNegative[0]].x - ray.origin.x) * ray.inverseDirection.x;
-	double tmax = ((&min)[1 - ray.directionIsNegative[0]].x - ray.origin.x) * ray.inverseDirection.x;
-	double tymin = ((&min)[ray.directionIsNegative[1]].y - ray.origin.y) * ray.inverseDirection.y;
-	double tymax = ((&min)[1 - ray.directionIsNegative[1]].y - ray.origin.y) * ray.inverseDirection.y;
+	float tmin = ((&min)[ray.directionIsNegative[0]].x - ray.origin.x) * ray.inverseDirection.x;
+	float tmax = ((&min)[1 - ray.directionIsNegative[0]].x - ray.origin.x) * ray.inverseDirection.x;
+	float tymin = ((&min)[ray.directionIsNegative[1]].y - ray.origin.y) * ray.inverseDirection.y;
+	float tymax = ((&min)[1 - ray.directionIsNegative[1]].y - ray.origin.y) * ray.inverseDirection.y;
 
 	if (tmin > tymax || tymin > tmax)
 		return false;
@@ -69,8 +69,8 @@ bool AABB::intersects(const Ray& ray) const
 	if (tymax < tmax)
 		tmax = tymax;
 
-	double tzmin = ((&min)[ray.directionIsNegative[2]].z - ray.origin.z) * ray.inverseDirection.z;
-	double tzmax = ((&min)[1 - ray.directionIsNegative[2]].z - ray.origin.z) * ray.inverseDirection.z;
+	float tzmin = ((&min)[ray.directionIsNegative[2]].z - ray.origin.z) * ray.inverseDirection.z;
+	float tzmax = ((&min)[1 - ray.directionIsNegative[2]].z - ray.origin.z) * ray.inverseDirection.z;
 
 	if (tmin > tzmax || tzmin > tmax)
 		return false;
@@ -133,8 +133,8 @@ AABB AABB::transformed(const Vector3& scale, const EulerAngle& rotate, const Vec
 	corners[6] = Vector3(min.x, max.y, min.z);
 	corners[7] = Vector3(max.x, max.y, min.z);
 
-	newMin.x = newMin.y = newMin.z = std::numeric_limits<double>::max();
-	newMax.x = newMax.y = newMax.z = std::numeric_limits<double>::lowest();
+	newMin.x = newMin.y = newMin.z = std::numeric_limits<float>::max();
+	newMax.x = newMax.y = newMax.z = std::numeric_limits<float>::lowest();
 
 	Matrix4x4 scaling = Matrix4x4::scale(scale);
 	Matrix4x4 rotation = Matrix4x4::rotateXYZ(rotate);
@@ -178,8 +178,8 @@ Vector3 AABB::getExtent() const
 	return max - min;
 }
 
-double AABB::getSurfaceArea() const
+float AABB::getSurfaceArea() const
 {
 	Vector3 extent = getExtent();
-	return 2.0 * (extent.x * extent.y + extent.z * extent.y + extent.x * extent.z);
+	return 2.0f * (extent.x * extent.y + extent.z * extent.y + extent.x * extent.z);
 }

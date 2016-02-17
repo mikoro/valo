@@ -25,14 +25,14 @@ namespace Raycer
 		PerlinNoise(uint64_t seed);
 
 		void initialize(uint64_t seed);
-		double getNoise(double x, double y, double z) const;
-		double getFbmNoise(uint64_t octaves, double lacunarity, double persistence, double x, double y, double z) const;
+		float getNoise(float x, float y, float z) const;
+		float getFbmNoise(uint64_t octaves, float lacunarity, float persistence, float x, float y, float z) const;
 
 	private:
 
-		double fade(double t) const;
-		double lerp(double t, double a, double b) const;
-		double grad(uint64_t hash, double x, double y, double z) const;
+		float fade(float t) const;
+		float lerp(float t, float a, float b) const;
+		float grad(uint64_t hash, float x, float y, float z) const;
 
 		std::vector<uint64_t> permutations;
 	};

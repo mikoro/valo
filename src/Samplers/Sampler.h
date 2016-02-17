@@ -30,7 +30,7 @@ namespace Raycer
 
 		virtual ~Sampler() {}
 
-		virtual double getSample(uint64_t x, uint64_t n, uint64_t permutation, Random& random) = 0;
+		virtual float getSample(uint64_t x, uint64_t n, uint64_t permutation, Random& random) = 0;
 		virtual Vector2 getSquareSample(uint64_t x, uint64_t y, uint64_t nx, uint64_t ny, uint64_t permutation, Random& random) = 0;
 		Vector2 getDiscSample(uint64_t x, uint64_t y, uint64_t nx, uint64_t ny, uint64_t permutation, Random& random);
 		Vector3 getCosineHemisphereSample(const ONB& onb, uint64_t x, uint64_t y, uint64_t nx, uint64_t ny, uint64_t permutation, Random& random);
@@ -39,7 +39,7 @@ namespace Raycer
 		virtual void generateSamples1D(uint64_t sampleCount, Random& random);
 		virtual void generateSamples2D(uint64_t sampleCountSqrt, Random& random);
 
-		bool getNextSample(double& result);
+		bool getNextSample(float& result);
 		bool getNextSquareSample(Vector2& result);
 		bool getNextDiscSample(Vector2& result);
 		bool getNextCosineHemisphereSample(const ONB& onb, Vector3& result);
@@ -50,7 +50,7 @@ namespace Raycer
 
 	protected:
 
-		std::vector<double> samples1D;
+		std::vector<float> samples1D;
 		std::vector<Vector2> samples2D;
 
 	private:

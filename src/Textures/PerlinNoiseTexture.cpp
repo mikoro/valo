@@ -23,7 +23,7 @@ Color PerlinNoiseTexture::getColor(const Vector2& texcoord, const Vector3& posit
 	return baseColor * getValue(texcoord, position);
 }
 
-double PerlinNoiseTexture::getValue(const Vector2& texcoord, const Vector3& position) const
+float PerlinNoiseTexture::getValue(const Vector2& texcoord, const Vector3& position) const
 {
 	(void)texcoord;
 

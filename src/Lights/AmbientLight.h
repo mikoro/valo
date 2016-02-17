@@ -32,7 +32,7 @@ namespace Raycer
 		bool occlusion = false;
 		SamplerType samplerType = SamplerType::CMJ;
 		uint64_t sampleCountSqrt = 3;
-		double maxSampleDistance = 1.0;
+		float maxSampleDistance = 1.0f;
 
 	private:
 

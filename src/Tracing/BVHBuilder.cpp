@@ -24,7 +24,7 @@ void BVHBuilder::build(std::vector<Triangle>& triangles, const BVHBuildInfo& bui
 	Timer timer;
 	BVHBuildEntry stack[128];
 	uint64_t triangleCount = triangles.size();
-	std::vector<double> rightScores(triangleCount);
+	std::vector<float> rightScores(triangleCount);
 	std::vector<Triangle*> trianglePtrs;
 	uint64_t failedSplitCount = 0;
 
@@ -121,10 +121,10 @@ void BVHBuilder::build(std::vector<Triangle>& triangles, const BVHBuildInfo& bui
 	log.logInfo("BVH building finished (time: %s, nodes: %d, leafs: %d, failed splits: %d)", timer.getElapsed().getString(true), nodeCount, leafCount, failedSplitCount);
 }
 
-void BVHBuilder::calculateSplit(std::vector<Triangle*>& trianglePtrs, BVHNode& node, uint64_t& splitIndex, const BVHBuildEntry& buildEntry, std::vector<double>& rightScores)
+void BVHBuilder::calculateSplit(std::vector<Triangle*>& trianglePtrs, BVHNode& node, uint64_t& splitIndex, const BVHBuildEntry& buildEntry, std::vector<float>& rightScores)
 {
-	double lowestScore = std::numeric_limits<double>::max();
-	double parentSurfaceArea = node.aabb.getSurfaceArea();
+	float lowestScore = std::numeric_limits<float>::max();
+	float parentSurfaceArea = node.aabb.getSurfaceArea();
 	
 	for (uint64_t axis = 0; axis <= 2; ++axis)
 	{
@@ -141,7 +141,7 @@ void BVHBuilder::calculateSplit(std::vector<Triangle*>& trianglePtrs, BVHNode& n
 			rightAABB.expand(trianglePtrs[i]->aabb);
 			rightCount++;
 
-			rightScores[i] = (rightAABB.getSurfaceArea() / parentSurfaceArea) * double(rightCount);
+			rightScores[i] = (rightAABB.getSurfaceArea() / parentSurfaceArea) * float(rightCount);
 		}
 
 		AABB leftAABB;
@@ -152,7 +152,7 @@ void BVHBuilder::calculateSplit(std::vector<Triangle*>& trianglePtrs, BVHNode& n
 			leftAABB.expand(trianglePtrs[i]->aabb);
 			leftCount++;
 
-			double score = (leftAABB.getSurfaceArea() / parentSurfaceArea) * double(leftCount) + rightScores[i + 1];
+			float score = (leftAABB.getSurfaceArea() / parentSurfaceArea) * float(leftCount) + rightScores[i + 1];
 
 			if (score < lowestScore)
 			{

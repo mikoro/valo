@@ -28,7 +28,7 @@ namespace
 		(void)window;
 		(void)xoffset;
 
-		mouseInfoPtr->scrollY = yoffset;
+		mouseInfoPtr->scrollY = float(yoffset);
 		mouseInfoPtr->hasScrolled = true;
 	}
 }
@@ -82,9 +82,9 @@ const MouseInfo& WindowRunner::getMouseInfo() const
 	return mouseInfo;
 }
 
-double WindowRunner::getElapsedTime() const
+float WindowRunner::getElapsedTime() const
 {
-	return glfwGetTime() - startTime;
+	return float(glfwGetTime() - startTime);
 }
 
 const FpsCounter& WindowRunner::getFpsCounter() const
@@ -134,7 +134,7 @@ bool WindowRunner::mouseWasPressed(int32_t button)
 	return false;
 }
 
-double WindowRunner::getMouseWheelScroll()
+float WindowRunner::getMouseWheelScroll()
 {
 	if (mouseInfo.hasScrolled)
 	{
@@ -142,7 +142,7 @@ double WindowRunner::getMouseWheelScroll()
 		return mouseInfo.scrollY;
 	}
 
-	return 0.0;
+	return 0.0f;
 }
 
 void WindowRunner::changeState(RunnerStates newState)
@@ -264,9 +264,9 @@ void WindowRunner::mainLoop()
 
 	double timeStep = 1.0 / 60.0;
 	double previousTime = glfwGetTime();
-	double timeAccumulator = 0;
+	double timeAccumulator = 0.0;
 
-	update(0.0);
+	update(0.0f);
 
 	while (shouldRun)
 	{
@@ -282,16 +282,16 @@ void WindowRunner::mainLoop()
 
 		while (timeAccumulator >= timeStep)
 		{
-			update(timeStep);
+			update(float(timeStep));
 			timeAccumulator -= timeStep;
 		}
 
 		double interpolation = timeAccumulator / timeStep;
-		render(frameTime, interpolation);
+		render(float(frameTime), float(interpolation));
 	}
 }
 
-void WindowRunner::update(double timeStep)
+void WindowRunner::update(float timeStep)
 {
 	Settings& settings = App::getSettings();
 	
@@ -305,8 +305,8 @@ void WindowRunner::update(double timeStep)
 
 	mouseInfo.windowX = int64_t(newMouseX + 0.5);
 	mouseInfo.windowY = int64_t(double(windowHeight) - newMouseY - 1.0 + 0.5);
-	mouseInfo.scaledX = int64_t((mouseInfo.windowX / double(windowWidth)) * (double(windowWidth) * settings.interactive.renderScale) + 0.5);
-	mouseInfo.scaledY = int64_t((mouseInfo.windowY / double(windowHeight)) * (double(windowHeight) * settings.interactive.renderScale) + 0.5);
+	mouseInfo.filmX = int64_t((mouseInfo.windowX / double(windowWidth)) * (double(windowWidth) * settings.interactive.renderScale) + 0.5);
+	mouseInfo.filmY = int64_t((mouseInfo.windowY / double(windowHeight)) * (double(windowHeight) * settings.interactive.renderScale) + 0.5);
 	mouseInfo.deltaX = mouseInfo.windowX - previousMouseX;
 	mouseInfo.deltaY = mouseInfo.windowY - previousMouseY;
 	previousMouseX = mouseInfo.windowX;
@@ -330,7 +330,7 @@ void WindowRunner::update(double timeStep)
 		throw std::runtime_error("Runner state has not been set");
 }
 
-void WindowRunner::render(double timeStep, double interpolation)
+void WindowRunner::render(float timeStep, float interpolation)
 {
 	fpsCounter.tick();
 

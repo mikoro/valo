@@ -89,8 +89,8 @@ void Tracer::run(TracerState& state, std::atomic<bool>& interrupted)
 					continue;
 
 				uint64_t offsetPixelIndex = uint64_t(pixelIndex) + state.filmPixelOffset;
-				double x = double(offsetPixelIndex % state.filmWidth);
-				double y = double(offsetPixelIndex / state.filmWidth);
+				float x = float(offsetPixelIndex % state.filmWidth);
+				float y = float(offsetPixelIndex / state.filmWidth);
 				Vector2 pixelCenter = Vector2(x, y);
 				Random& random = randoms[omp_get_thread_num()];
 
@@ -172,7 +172,7 @@ std::unique_ptr<Tracer> Tracer::getTracer(TracerType type)
 void Tracer::calculateNormalMapping(Intersection& intersection)
 {
 	Color normalColor = intersection.material->normalMapTexture->getColor(intersection.texcoord, intersection.position);
-	Vector3 normal(normalColor.r * 2.0 - 1.0, normalColor.g * 2.0 - 1.0, normalColor.b);
+	Vector3 normal(normalColor.r * 2.0f - 1.0f, normalColor.g * 2.0f - 1.0f, normalColor.b);
 	Vector3 mappedNormal = intersection.onb.u * normal.x + intersection.onb.v * normal.y + intersection.onb.w * normal.z;
 	intersection.normal = mappedNormal.normalized();
 }
@@ -182,13 +182,13 @@ Color Tracer::calculateDirectLight(const Scene& scene, const Intersection& inter
 	uint64_t emitterCount = scene.emissiveTriangles.size();
 
 	if (emitterCount == 0)
-		return Color(0.0, 0.0, 0.0);
+		return Color(0.0f, 0.0f, 0.0f);
 
 	Triangle* emitter = scene.emissiveTriangles[random.getUint64(0, emitterCount - 1)];
 	Intersection emitterIntersection = emitter->getRandomIntersection(random);
 	Vector3 intersectionToEmitter = emitterIntersection.position - intersection.position;
-	double emitterDistance2 = intersectionToEmitter.lengthSquared();
-	double emitterDistance = sqrt(emitterDistance2);
+	float emitterDistance2 = intersectionToEmitter.lengthSquared();
+	float emitterDistance = sqrt(emitterDistance2);
 	Vector3 sampleDirection = intersectionToEmitter / emitterDistance;
 
 	Ray shadowRay;
@@ -204,19 +204,19 @@ Color Tracer::calculateDirectLight(const Scene& scene, const Intersection& inter
 	scene.intersect(shadowRay, shadowIntersection);
 
 	if (shadowIntersection.wasFound)
-		return Color(0.0, 0.0, 0.0);
+		return Color(0.0f, 0.0f, 0.0f);
 
-	double cosine1 = intersection.normal.dot(sampleDirection);
-	double cosine2 = sampleDirection.dot(-emitter->normal);
+	float cosine1 = intersection.normal.dot(sampleDirection);
+	float cosine2 = sampleDirection.dot(-emitter->normal);
 
-	if (cosine1 < 0.0 || cosine2 < 0.0)
-		return Color(0.0, 0.0, 0.0);
+	if (cosine1 < 0.0f || cosine2 < 0.0f)
+		return Color(0.0f, 0.0f, 0.0f);
 
-	double probability1 = 1.0 / double(emitterCount);
-	double probability2 = 1.0 / emitter->getArea();
+	float probability1 = 1.0f / float(emitterCount);
+	float probability2 = 1.0f / emitter->getArea();
 	
 	Color emittance = emitter->material->getEmittance(emitterIntersection);
 	Color intersectionBrdf = intersection.material->getBrdf(intersection, sampleDirection);
 
-	return emittance * intersectionBrdf * cosine1 * cosine2 * (1.0 / emitterDistance2) / (probability1 * probability2);
+	return emittance * intersectionBrdf * cosine1 * cosine2 * (1.0f / emitterDistance2) / (probability1 * probability2);
 }

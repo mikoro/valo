@@ -7,30 +7,30 @@
 
 using namespace Raycer;
 
-MovingAverage::MovingAverage(double alpha_, double average_)
+MovingAverage::MovingAverage(float alpha_, float average_)
 {
 	setAlpha(alpha_);
 	setAverage(average_);
 }
 
-void MovingAverage::setAlpha(double alpha_)
+void MovingAverage::setAlpha(float alpha_)
 {
-	assert(alpha_ > 0.0 && alpha_ <= 1.0);
+	assert(alpha_ > 0.0f && alpha_ <= 1.0f);
 
 	alpha = alpha_;
 }
 
-void MovingAverage::setAverage(double average_)
+void MovingAverage::setAverage(float average_)
 {
 	average = average_;
 }
 
-void MovingAverage::addMeasurement(double value)
+void MovingAverage::addMeasurement(float value)
 {
-	average = alpha * value + (1.0 - alpha) * average;
+	average = alpha * value + (1.0f - alpha) * average;
 }
 
-double MovingAverage::getAverage() const
+float MovingAverage::getAverage() const
 {
 	return average;
 }
