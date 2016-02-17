@@ -112,7 +112,12 @@ Vector2& Vector2::operator/=(double s)
 	return *this;
 }
 
-double Vector2::get(uint64_t index) const
+double Vector2::operator[](uint64_t index) const
+{
+	return (&x)[index];
+}
+
+double Vector2::getElement(uint64_t index) const
 {
 	switch (index)
 	{
@@ -122,7 +127,7 @@ double Vector2::get(uint64_t index) const
 	}
 }
 
-void Vector2::set(uint64_t index, double value)
+void Vector2::setElement(uint64_t index, double value)
 {
 	switch (index)
 	{

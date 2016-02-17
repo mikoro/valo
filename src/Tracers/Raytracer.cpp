@@ -7,11 +7,9 @@
 #include "Scenes/Scene.h"
 #include "Tracing/Ray.h"
 #include "Tracing/Intersection.h"
-#include "Textures/Texture.h"
 #include "Math/Vector3.h"
 #include "Rendering/Color.h"
 #include "Rendering/Film.h"
-#include "Tracing/ONB.h"
 
 using namespace Raycer;
 

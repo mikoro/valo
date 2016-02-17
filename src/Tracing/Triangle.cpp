@@ -42,6 +42,7 @@ void Triangle::initialize()
 	}
 
 	aabb = AABB::createFromVertices(vertices[0], vertices[1], vertices[2]);
+	center = aabb.getCenter();
 }
 
 // Möller-Trumbore algorithm

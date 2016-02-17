@@ -86,13 +86,23 @@ bool AABB::intersects(const Ray& ray) const
 
 void AABB::expand(const AABB& other)
 {
-	min.x = std::min(min.x, other.min.x);
-	min.y = std::min(min.y, other.min.y);
-	min.z = std::min(min.z, other.min.z);
+	if (other.min.x < min.x)
+		min.x = other.min.x;
 
-	max.x = std::max(max.x, other.max.x);
-	max.y = std::max(max.y, other.max.y);
-	max.z = std::max(max.z, other.max.z);
+	if (other.min.y < min.y)
+		min.y = other.min.y;
+
+	if (other.min.z < min.z)
+		min.z = other.min.z;
+
+	if (other.max.x > max.x)
+		max.x = other.max.x;
+
+	if (other.max.y > max.y)
+		max.y = other.max.y;
+
+	if (other.max.z > max.z)
+		max.z = other.max.z;
 }
 
 uint64_t AABB::getLargestAxis() const

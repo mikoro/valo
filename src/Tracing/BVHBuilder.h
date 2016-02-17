@@ -35,6 +35,6 @@ namespace Raycer
 
 	private:
 
-		static void calculateSplit(std::vector<Triangle>& triangles, BVHNode& node, uint64_t& splitIndex, const BVHBuildEntry& buildEntry, std::vector<double>& rightScores);
+		static void calculateSplit(std::vector<Triangle*>& trianglePtrs, BVHNode& node, uint64_t& splitIndex, const BVHBuildEntry& buildEntry, std::vector<double>& rightScores);
 	};
 }

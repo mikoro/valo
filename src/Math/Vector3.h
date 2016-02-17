@@ -36,9 +36,10 @@ namespace Raycer
 		Vector3& operator*=(double s);
 		Vector3& operator/=(const Vector3& v);
 		Vector3& operator/=(double s);
+		double operator[](uint64_t index) const;
 
-		double get(uint64_t index) const;
-		void set(uint64_t index, double value);
+		double getElement(uint64_t index) const;
+		void setElement(uint64_t index, double value);
 		double length() const;
 		double lengthSquared() const;
 		void normalize();

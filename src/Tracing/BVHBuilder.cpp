@@ -3,6 +3,8 @@
 
 #include "Precompiled.h"
 
+#include <ppl.h>
+
 #include "Tracing/BVHBuilder.h"
 #include "Tracing/BVH.h"
 #include "Tracing/Triangle.h"
@@ -21,10 +23,16 @@ void BVHBuilder::build(std::vector<Triangle>& triangles, const BVHBuildInfo& bui
 
 	Timer timer;
 	BVHBuildEntry stack[128];
-	std::vector<double> rightScores(triangles.size());
+	uint64_t triangleCount = triangles.size();
+	std::vector<double> rightScores(triangleCount);
+	std::vector<Triangle*> trianglePtrs;
 	uint64_t failedSplitCount = 0;
 
 	bvh.nodes.clear();
+	trianglePtrs.reserve(triangleCount);
+
+	for (Triangle& triangle : triangles)
+		trianglePtrs.push_back(&triangle);
 	
 	uint64_t stackptr = 0;
 	uint64_t nodeCount = 0;
@@ -34,7 +42,7 @@ void BVHBuilder::build(std::vector<Triangle>& triangles, const BVHBuildInfo& bui
 
 	// push to stack
 	stack[stackptr].start = 0;
-	stack[stackptr].end = triangles.size();
+	stack[stackptr].end = triangleCount;
 	stack[stackptr].parent = ROOT;
 	stackptr++;
 
@@ -54,7 +62,7 @@ void BVHBuilder::build(std::vector<Triangle>& triangles, const BVHBuildInfo& bui
 		node.rightEnabled = 1;
 
 		for (uint64_t i = buildEntry.start; i < buildEntry.end; ++i)
-			node.aabb.expand(triangles[i].getAABB());
+			node.aabb.expand(trianglePtrs[i]->aabb);
 
 		// leaf node indicated by rightOffset == 0
 		if (node.triangleCount <= buildInfo.maxLeafSize)
@@ -78,7 +86,7 @@ void BVHBuilder::build(std::vector<Triangle>& triangles, const BVHBuildInfo& bui
 		}
 
 		uint64_t splitIndex = 0;
-		calculateSplit(triangles, node, splitIndex, buildEntry, rightScores);
+		calculateSplit(trianglePtrs, node, splitIndex, buildEntry, rightScores);
 		bvh.nodes.push_back(node);
 
 		// split failed -> fallback to middle split
@@ -103,19 +111,26 @@ void BVHBuilder::build(std::vector<Triangle>& triangles, const BVHBuildInfo& bui
 
 	bvh.bvhHasBeenBuilt = true;
 
+	std::vector<Triangle> tempTriangles(triangleCount);
+	
+	for (uint64_t i = 0; i < triangleCount; ++i)
+		tempTriangles[i] = *trianglePtrs[i];
+	
+	triangles = tempTriangles;
+
 	log.logInfo("BVH building finished (time: %s, nodes: %d, leafs: %d, failed splits: %d)", timer.getElapsed().getString(true), nodeCount, leafCount, failedSplitCount);
 }
 
-void BVHBuilder::calculateSplit(std::vector<Triangle>& triangles, BVHNode& node, uint64_t& splitIndex, const BVHBuildEntry& buildEntry, std::vector<double>& rightScores)
+void BVHBuilder::calculateSplit(std::vector<Triangle*>& trianglePtrs, BVHNode& node, uint64_t& splitIndex, const BVHBuildEntry& buildEntry, std::vector<double>& rightScores)
 {
 	double lowestScore = std::numeric_limits<double>::max();
 	double parentSurfaceArea = node.aabb.getSurfaceArea();
-
+	
 	for (uint64_t axis = 0; axis <= 2; ++axis)
 	{
-		std::sort(triangles.begin() + buildEntry.start, triangles.begin() + buildEntry.end, [axis](const Triangle& t1, const Triangle& t2)
+		concurrency::parallel_sort(trianglePtrs.begin() + buildEntry.start, trianglePtrs.begin() + buildEntry.end, [axis](const Triangle* t1, const Triangle* t2)
 		{
-			return t1.getAABB().getCenter().get(axis) < t2.getAABB().getCenter().get(axis);
+			return (&t1->center.x)[axis] < (&t2->center.x)[axis];
 		});
 
 		AABB rightAABB;
@@ -123,7 +138,7 @@ void BVHBuilder::calculateSplit(std::vector<Triangle>& triangles, BVHNode& node,
 
 		for (int64_t i = buildEntry.end - 1; i >= int64_t(buildEntry.start); --i)
 		{
-			rightAABB.expand(triangles[i].getAABB());
+			rightAABB.expand(trianglePtrs[i]->aabb);
 			rightCount++;
 
 			rightScores[i] = (rightAABB.getSurfaceArea() / parentSurfaceArea) * double(rightCount);
@@ -134,7 +149,7 @@ void BVHBuilder::calculateSplit(std::vector<Triangle>& triangles, BVHNode& node,
 
 		for (uint64_t i = buildEntry.start; i < buildEntry.end - 1; ++i)
 		{
-			leftAABB.expand(triangles[i].getAABB());
+			leftAABB.expand(trianglePtrs[i]->aabb);
 			leftCount++;
 
 			double score = (leftAABB.getSurfaceArea() / parentSurfaceArea) * double(leftCount) + rightScores[i + 1];
@@ -150,9 +165,9 @@ void BVHBuilder::calculateSplit(std::vector<Triangle>& triangles, BVHNode& node,
 
 	if (node.splitAxis != 2)
 	{
-		std::sort(triangles.begin() + buildEntry.start, triangles.begin() + buildEntry.end, [node](const Triangle& t1, const Triangle& t2)
+		concurrency::parallel_sort(trianglePtrs.begin() + buildEntry.start, trianglePtrs.begin() + buildEntry.end, [node](const Triangle* t1, const Triangle* t2)
 		{
-			return t1.getAABB().getCenter().get(node.splitAxis) < t2.getAABB().getCenter().get(node.splitAxis);
+			return (&t1->center.x)[node.splitAxis] < (&t2->center.x)[node.splitAxis];
 		});
 	}
 }

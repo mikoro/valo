@@ -36,9 +36,10 @@ namespace Raycer
 		Vector4& operator*=(double s);
 		Vector4& operator/=(const Vector4& v);
 		Vector4& operator/=(double s);
+		double operator[](uint64_t index) const;
 
-		double get(uint64_t index) const;
-		void set(uint64_t index, double value);
+		double getElement(uint64_t index) const;
+		void setElement(uint64_t index, double value);
 		double length() const;
 		double lengthSquared() const;
 		void normalizeLength();
