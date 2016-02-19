@@ -29,6 +29,7 @@ void BVHBuilder::build(std::vector<Triangle>& triangles, const BVHBuildInfo& bui
 	uint64_t failedSplitCount = 0;
 
 	bvh.nodes.clear();
+	bvh.nodes.reserve(triangleCount);
 	trianglePtrs.reserve(triangleCount);
 
 	for (Triangle& triangle : triangles)
@@ -110,6 +111,7 @@ void BVHBuilder::build(std::vector<Triangle>& triangles, const BVHBuildInfo& bui
 	}
 
 	bvh.bvhHasBeenBuilt = true;
+	bvh.nodes.shrink_to_fit();
 
 	std::vector<Triangle> tempTriangles(triangleCount);
 	
