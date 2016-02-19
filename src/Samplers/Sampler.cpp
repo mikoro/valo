@@ -80,6 +80,9 @@ namespace
 	{
 		float r2 = point.x * point.x + point.y * point.y;
 
+		if (r2 > 1.0f)
+			r2 = 1.0f;
+
 		float x = point.x;
 		float y = point.y;
 		float z = std::sqrt(1.0f - r2);
