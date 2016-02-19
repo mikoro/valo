@@ -87,7 +87,7 @@ void BVHBuilder::build(std::vector<Triangle>& triangles, const BVHBuildInfo& bui
 		}
 
 		uint64_t splitIndex = 0;
-		calculateSplit(trianglePtrs, node, splitIndex, buildEntry, rightScores);
+		calculateSplit(trianglePtrs, buildEntry.start, buildEntry.end, splitIndex, node, rightScores);
 		bvh.nodes.push_back(node);
 
 		// split failed -> fallback to middle split
@@ -120,17 +120,19 @@ void BVHBuilder::build(std::vector<Triangle>& triangles, const BVHBuildInfo& bui
 	
 	triangles = tempTriangles;
 
-	log.logInfo("BVH building finished (time: %s, nodes: %d, leafs: %d, failed splits: %d)", timer.getElapsed().getString(true), nodeCount, leafCount, failedSplitCount);
+	log.logInfo("BVH building finished (time: %s, nodes: %d, leafs: %d, failed splits: %d)", timer.getElapsed().getString(true), nodeCount - leafCount, leafCount, failedSplitCount);
 }
 
-void BVHBuilder::calculateSplit(std::vector<Triangle*>& trianglePtrs, BVHNode& node, uint64_t& splitIndex, const BVHBuildEntry& buildEntry, std::vector<float>& rightScores)
+void BVHBuilder::calculateSplit(std::vector<Triangle*>& trianglePtrs, uint64_t startIndex, uint64_t endIndex, uint64_t& splitIndex, BVHNode& node, std::vector<float>& rightScores)
 {
+	assert(endIndex > startIndex);
+
 	float lowestScore = std::numeric_limits<float>::max();
 	float parentSurfaceArea = node.aabb.getSurfaceArea();
 	
 	for (uint64_t axis = 0; axis <= 2; ++axis)
 	{
-		concurrency::parallel_sort(trianglePtrs.begin() + buildEntry.start, trianglePtrs.begin() + buildEntry.end, [axis](const Triangle* t1, const Triangle* t2)
+		concurrency::parallel_sort(trianglePtrs.begin() + startIndex, trianglePtrs.begin() + endIndex, [axis](const Triangle* t1, const Triangle* t2)
 		{
 			return (&t1->center.x)[axis] < (&t2->center.x)[axis];
 		});
@@ -138,7 +140,7 @@ void BVHBuilder::calculateSplit(std::vector<Triangle*>& trianglePtrs, BVHNode& n
 		AABB rightAABB;
 		uint64_t rightCount = 0;
 
-		for (int64_t i = buildEntry.end - 1; i >= int64_t(buildEntry.start); --i)
+		for (int64_t i = endIndex - 1; i >= int64_t(startIndex); --i)
 		{
 			rightAABB.expand(trianglePtrs[i]->aabb);
 			rightCount++;
@@ -149,7 +151,7 @@ void BVHBuilder::calculateSplit(std::vector<Triangle*>& trianglePtrs, BVHNode& n
 		AABB leftAABB;
 		uint64_t leftCount = 0;
 
-		for (uint64_t i = buildEntry.start; i < buildEntry.end - 1; ++i)
+		for (uint64_t i = startIndex; i < endIndex - 1; ++i)
 		{
 			leftAABB.expand(trianglePtrs[i]->aabb);
 			leftCount++;
@@ -167,7 +169,7 @@ void BVHBuilder::calculateSplit(std::vector<Triangle*>& trianglePtrs, BVHNode& n
 
 	if (node.splitAxis != 2)
 	{
-		concurrency::parallel_sort(trianglePtrs.begin() + buildEntry.start, trianglePtrs.begin() + buildEntry.end, [node](const Triangle* t1, const Triangle* t2)
+		concurrency::parallel_sort(trianglePtrs.begin() + startIndex, trianglePtrs.begin() + endIndex, [node](const Triangle* t1, const Triangle* t2)
 		{
 			return (&t1->center.x)[node.splitAxis] < (&t2->center.x)[node.splitAxis];
 		});

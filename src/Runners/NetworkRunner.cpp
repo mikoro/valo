@@ -519,7 +519,7 @@ void NetworkRunner::receiveResults()
 			ss.str(match[2]);
 			ss >> pixelCount;
 
-			assert(dataSize == pixelCount * sizeof(Colorf));
+			assert(dataSize == pixelCount * sizeof(Color));
 
 			ImagePart imagePart;
 			imagePart.pixelStartOffset = pixelStartOffset;
