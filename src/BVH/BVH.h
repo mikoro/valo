@@ -36,15 +36,16 @@ namespace Raycer
 	{
 		std::vector<Triangle*>* trianglePtrs;
 		std::vector<float>* rightScores;
-		uint64_t startIndex;
-		uint64_t endIndex;
-		float nodeSurfaceArea;
+		uint64_t start;
+		uint64_t end;
+		float parentSurfaceArea;
 	};
 
 	struct BVHSplitOutput
 	{
-		uint64_t splitIndex = 0;
-		uint64_t splitAxis = 0;
+		uint64_t index = 0;
+		uint64_t axis = 0;
+		bool failed = false;
 	};
 
 	class BVH

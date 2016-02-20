@@ -42,14 +42,14 @@ void BVH::undoDisable()
 
 BVHSplitOutput BVH::calculateSplit(const BVHSplitInput& input)
 {
-	assert(endIndex > startIndex);
+	assert(input.end - input.start >= 2);
 
 	BVHSplitOutput output;
 	float lowestScore = std::numeric_limits<float>::max();
 
 	for (uint64_t axis = 0; axis <= 2; ++axis)
 	{
-		concurrency::parallel_sort(input.trianglePtrs->begin() + input.startIndex, input.trianglePtrs->begin() + input.endIndex, [axis](const Triangle* t1, const Triangle* t2)
+		concurrency::parallel_sort(input.trianglePtrs->begin() + input.start, input.trianglePtrs->begin() + input.end, [axis](const Triangle* t1, const Triangle* t2)
 		{
 			return (&t1->center.x)[axis] < (&t2->center.x)[axis];
 		});
@@ -57,39 +57,45 @@ BVHSplitOutput BVH::calculateSplit(const BVHSplitInput& input)
 		AABB rightAABB;
 		uint64_t rightCount = 0;
 
-		for (int64_t i = input.endIndex - 1; i >= int64_t(input.startIndex); --i)
+		for (int64_t i = input.end - 1; i >= int64_t(input.start); --i)
 		{
 			rightAABB.expand((*input.trianglePtrs)[i]->aabb);
 			rightCount++;
 
-			(*input.rightScores)[i] = (rightAABB.getSurfaceArea() / input.nodeSurfaceArea) * float(rightCount);
+			(*input.rightScores)[i] = (rightAABB.getSurfaceArea() / input.parentSurfaceArea) * float(rightCount);
 		}
 
 		AABB leftAABB;
 		uint64_t leftCount = 0;
 
-		for (uint64_t i = input.startIndex; i < input.endIndex - 1; ++i)
+		for (uint64_t i = input.start; i < input.end - 1; ++i)
 		{
 			leftAABB.expand((*input.trianglePtrs)[i]->aabb);
 			leftCount++;
 
-			float score = (leftAABB.getSurfaceArea() / input.nodeSurfaceArea) * float(leftCount) + (*input.rightScores)[i + 1];
+			float score = (leftAABB.getSurfaceArea() / input.parentSurfaceArea) * float(leftCount) + (*input.rightScores)[i + 1];
 
 			if (score < lowestScore)
 			{
-				output.splitAxis = axis;
-				output.splitIndex = i + 1;
+				output.axis = axis;
+				output.index = i + 1;
 				lowestScore = score;
 			}
 		}
 	}
 
-	if (output.splitAxis != 2)
+	if (output.axis != 2)
 	{
-		concurrency::parallel_sort(input.trianglePtrs->begin() + input.startIndex, input.trianglePtrs->begin() + input.endIndex, [output](const Triangle* t1, const Triangle* t2)
+		concurrency::parallel_sort(input.trianglePtrs->begin() + input.start, input.trianglePtrs->begin() + input.end, [output](const Triangle* t1, const Triangle* t2)
 		{
-			return (&t1->center.x)[output.splitAxis] < (&t2->center.x)[output.splitAxis];
+			return (&t1->center.x)[output.axis] < (&t2->center.x)[output.axis];
 		});
+	}
+
+	if (output.index <= input.start || output.index >= input.end)
+	{
+		output.index = input.start + (input.end - input.start) / 2;
+		output.failed = true;
 	}
 
 	return output;

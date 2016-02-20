@@ -87,30 +87,26 @@ void BVH1::build(std::vector<Triangle>& triangles, const BVHBuildInfo& buildInfo
 			continue;
 		}
 
-		splitInput.startIndex = buildEntry.start;
-		splitInput.endIndex = buildEntry.end;
-		splitInput.nodeSurfaceArea = node.aabb.getSurfaceArea();
+		splitInput.start = buildEntry.start;
+		splitInput.end = buildEntry.end;
+		splitInput.parentSurfaceArea = node.aabb.getSurfaceArea();
 		BVHSplitOutput splitOutput = calculateSplit(splitInput);
 
-		node.splitAxis = splitOutput.splitAxis;
+		if (splitOutput.failed)
+			failedSplitCount++;
+
+		node.splitAxis = splitOutput.axis;
 		nodes.push_back(node);
 
-		// split failed -> fallback to middle split
-		if (splitOutput.splitIndex <= buildEntry.start || splitOutput.splitIndex >= buildEntry.end)
-		{
-			splitOutput.splitIndex = buildEntry.start + (buildEntry.end - buildEntry.start) / 2;
-			failedSplitCount++;
-		}
-
 		// push right child
-		stack[stackptr].start = splitOutput.splitIndex;
+		stack[stackptr].start = splitOutput.index;
 		stack[stackptr].end = buildEntry.end;
 		stack[stackptr].parent = int64_t(nodeCount) - 1;
 		stackptr++;
 
 		// push left child
 		stack[stackptr].start = buildEntry.start;
-		stack[stackptr].end = splitOutput.splitIndex;
+		stack[stackptr].end = splitOutput.index;
 		stack[stackptr].parent = int64_t(nodeCount) - 1;
 		stackptr++;
 	}
