@@ -13,6 +13,17 @@
 
 using namespace Raycer;
 
+namespace
+{
+	struct BVH4BuildEntry
+	{
+		uint64_t start;
+		uint64_t end;
+		int64_t parent;
+		int64_t child;
+	};
+}
+
 void BVH4::build(std::vector<Triangle>& triangles, const BVHBuildInfo& buildInfo)
 {
 	Log& log = App::getLog();
@@ -21,7 +32,9 @@ void BVH4::build(std::vector<Triangle>& triangles, const BVHBuildInfo& buildInfo
 
 	Timer timer;
 	uint64_t triangleCount = triangles.size();
-	uint64_t failedSplitCount = 0;
+	uint64_t failedLeftSplitCount = 0;
+	uint64_t failedMiddleSplitCount = 0;
+	uint64_t failedRightSplitCount = 0;
 	std::vector<Triangle*> trianglePtrs;
 	std::vector<float> rightScores(triangleCount);
 	BVHSplitInput splitInput;
@@ -69,34 +82,51 @@ void BVH4::build(std::vector<Triangle>& triangles, const BVHBuildInfo& buildInfo
 			nodes[parent].rightOffset[child] = nodeCount - 1 - parent;
 		}
 
+		if (!node.isLeaf)
+		{
+			// middle split
+			splitInput.start = buildEntry.start;
+			splitInput.end = buildEntry.end;
+			splitOutputs[1] = calculateSplit(splitInput);
+
+			if (splitOutputs[1].index - buildEntry.start < 2 || buildEntry.end - splitOutputs[1].index < 2)
+			{
+				node.isLeaf = true;
+				failedMiddleSplitCount++;
+			}
+
+			if (!node.isLeaf)
+			{
+				// left split
+				splitInput.start = buildEntry.start;
+				splitInput.end = splitOutputs[1].index;
+				splitOutputs[0] = calculateSplit(splitInput);
+
+				// right split
+				splitInput.start = splitOutputs[1].index;
+				splitInput.end = buildEntry.end;
+				splitOutputs[2] = calculateSplit(splitInput);
+
+				if (splitOutputs[0].failed)
+					failedLeftSplitCount++;
+
+				if (splitOutputs[2].failed)
+					failedRightSplitCount++;
+
+				node.aabb[0] = splitOutputs[0].leftAABB;
+				node.aabb[1] = splitOutputs[0].rightAABB;
+				node.aabb[2] = splitOutputs[2].leftAABB;
+				node.aabb[3] = splitOutputs[2].rightAABB;
+			}
+		}
+
+		nodes.push_back(node);
+
 		if (node.isLeaf)
 		{
-			nodes.push_back(node);
 			leafCount++;
 			continue;
 		}
-
-		// middle split
-		splitInput.start = buildEntry.start;
-		splitInput.end = buildEntry.end;
-		splitOutputs[1] = calculateSplit(splitInput);
-
-		// left split
-		splitInput.start = buildEntry.start;
-		splitInput.end = splitOutputs[1].index;
-		splitOutputs[0] = calculateSplit(splitInput);
-
-		// right split
-		splitInput.start = splitOutputs[1].index;
-		splitInput.end = buildEntry.end;
-		splitOutputs[2] = calculateSplit(splitInput);
-
-		node.aabb[0] = splitOutputs[0].leftAABB;
-		node.aabb[1] = splitOutputs[0].rightAABB;
-		node.aabb[2] = splitOutputs[2].leftAABB;
-		node.aabb[3] = splitOutputs[2].rightAABB;
-
-		nodes.push_back(node);
 
 		// push right child 2
 		stack[stackIndex].start = splitOutputs[2].index;
@@ -137,7 +167,7 @@ void BVH4::build(std::vector<Triangle>& triangles, const BVHBuildInfo& buildInfo
 
 	triangles = tempTriangles;
 
-	log.logInfo("BVH4 building finished (time: %s, nodes: %d, leafs: %d, failed splits: %d)", timer.getElapsed().getString(true), nodeCount - leafCount, leafCount, failedSplitCount);
+	log.logInfo("BVH4 building finished (time: %s, nodes: %d, leafs: %d, failed splits: (%d, %d, %d), triangles/leaf: %.2f)", timer.getElapsed().getString(true), nodeCount - leafCount, leafCount, failedLeftSplitCount, failedMiddleSplitCount, failedRightSplitCount, float(triangleCount) / float(leafCount));
 }
 
 bool BVH4::intersect(const std::vector<Triangle>& triangles, const Ray& ray, Intersection& intersection) const

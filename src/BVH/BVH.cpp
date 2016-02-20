@@ -80,8 +80,8 @@ BVHSplitOutput BVH::calculateSplit(const BVHSplitInput& input)
 
 			if (score < lowestScore)
 			{
-				output.axis = axis;
 				output.index = isLast ? i : i + 1;
+				output.axis = axis;
 				lowestScore = score;
 			}
 		}
@@ -98,6 +98,7 @@ BVHSplitOutput BVH::calculateSplit(const BVHSplitInput& input)
 	if (output.index <= input.start || output.index >= input.end)
 	{
 		output.index = input.start + (input.end - input.start) / 2;
+		output.axis = 0;
 		output.failed = true;
 
 		// TODO fix AABBs

@@ -57,7 +57,7 @@ std::array<bool, 4> AABB::intersects(const BVH4Node& node, const Ray& ray)
 {
 	std::array<bool, 4> result = { true };
 
-	#pragma loop(no_vector)
+	//#pragma loop(no_vector)
 	for (uint64_t i = 0; i < 4; ++i)
 	{
 		double tx0 = (node.aabb[i].min.x - ray.origin.x) * ray.inverseDirection.x;

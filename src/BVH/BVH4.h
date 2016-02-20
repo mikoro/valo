@@ -30,14 +30,6 @@ namespace Raycer
 		}
 	};
 
-	struct BVH4BuildEntry
-	{
-		uint64_t start;
-		uint64_t end;
-		int64_t parent;
-		int64_t child;
-	};
-
 	class BVH4 : public BVH
 	{
 	public:
