@@ -33,7 +33,6 @@ namespace Raycer
 		std::vector<float>* rightScores;
 		uint64_t start;
 		uint64_t end;
-		float parentSurfaceArea;
 	};
 
 	struct BVHSplitOutput

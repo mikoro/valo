@@ -89,7 +89,6 @@ void BVH1::build(std::vector<Triangle>& triangles, const BVHBuildInfo& buildInfo
 
 		splitInput.start = buildEntry.start;
 		splitInput.end = buildEntry.end;
-		splitInput.parentSurfaceArea = node.aabb.getSurfaceArea();
 		BVHSplitOutput splitOutput = calculateSplit(splitInput);
 
 		if (splitOutput.failed)

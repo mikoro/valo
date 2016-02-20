@@ -55,6 +55,7 @@ BVHSplitOutput BVH::calculateSplit(const BVHSplitInput& input)
 			return (&t1->center.x)[axis] < (&t2->center.x)[axis];
 		});
 
+		output.rightAABB = AABB();
 		uint64_t rightCount = 0;
 
 		for (int64_t i = input.end - 1; i >= int64_t(input.start); --i)
@@ -62,9 +63,10 @@ BVHSplitOutput BVH::calculateSplit(const BVHSplitInput& input)
 			output.rightAABB.expand((*input.trianglePtrs)[i]->aabb);
 			rightCount++;
 
-			(*input.rightScores)[i] = (output.rightAABB.getSurfaceArea() / input.parentSurfaceArea) * float(rightCount);
+			(*input.rightScores)[i] = output.rightAABB.getSurfaceArea() * float(rightCount);
 		}
 
+		output.leftAABB = AABB();
 		uint64_t leftCount = 0;
 
 		for (uint64_t i = input.start; i < input.end; ++i)
@@ -72,7 +74,7 @@ BVHSplitOutput BVH::calculateSplit(const BVHSplitInput& input)
 			output.leftAABB.expand((*input.trianglePtrs)[i]->aabb);
 			leftCount++;
 
-			float score = (output.leftAABB.getSurfaceArea() / input.parentSurfaceArea) * float(leftCount);
+			float score = output.leftAABB.getSurfaceArea() * float(leftCount);
 			bool isLast = (i + 1 == input.end);
 
 			if (!isLast)

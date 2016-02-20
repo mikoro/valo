@@ -42,7 +42,6 @@ void BVH4::build(std::vector<Triangle>& triangles, const BVHBuildInfo& buildInfo
 
 	splitInput.trianglePtrs = &trianglePtrs;
 	splitInput.rightScores = &rightScores;
-	splitInput.parentSurfaceArea = 1.0f;
 
 	nodes.clear();
 	nodes.reserve(triangleCount);
