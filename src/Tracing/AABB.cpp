@@ -55,30 +55,30 @@ AABB AABB::createFromVertices(const Vector3& v0, const Vector3& v1, const Vector
 
 std::array<bool, 4> AABB::intersects(const BVH4Node& node, const Ray& ray)
 {
-	std::array<bool, 4> result = { true };
+	std::array<bool, 4> result;
 
 	//#pragma loop(no_vector)
 	for (uint64_t i = 0; i < 4; ++i)
 	{
-		double tx0 = (node.aabb[i].min.x - ray.origin.x) * ray.inverseDirection.x;
-		double tx1 = (node.aabb[i].max.x - ray.origin.x) * ray.inverseDirection.x;
+		float tx0 = (node.aabb[i].min.x - ray.origin.x) * ray.inverseDirection.x;
+		float tx1 = (node.aabb[i].max.x - ray.origin.x) * ray.inverseDirection.x;
 
-		double tmin = std::min(tx0, tx1);
-		double tmax = std::max(tx0, tx1);
+		float tmin = std::min(tx0, tx1);
+		float tmax = std::max(tx0, tx1);
 
-		double ty0 = (node.aabb[i].min.y - ray.origin.y) * ray.inverseDirection.y;
-		double ty1 = (node.aabb[i].max.y - ray.origin.y) * ray.inverseDirection.y;
+		float ty0 = (node.aabb[i].min.y - ray.origin.y) * ray.inverseDirection.y;
+		float ty1 = (node.aabb[i].max.y - ray.origin.y) * ray.inverseDirection.y;
 
 		tmin = std::max(tmin, std::min(ty0, ty1));
 		tmax = std::min(tmax, std::max(ty0, ty1));
 
-		double tz0 = (node.aabb[i].min.z - ray.origin.z) * ray.inverseDirection.z;
-		double tz1 = (node.aabb[i].max.z - ray.origin.z) * ray.inverseDirection.z;
+		float tz0 = (node.aabb[i].min.z - ray.origin.z) * ray.inverseDirection.z;
+		float tz1 = (node.aabb[i].max.z - ray.origin.z) * ray.inverseDirection.z;
 
 		tmin = std::max(tmin, std::min(tz0, tz1));
 		tmax = std::min(tmax, std::max(tz0, tz1));
 
-		result[i] = tmax > std::max(tmin, 0.0);
+		result[i] = tmax >= std::max(tmin, 0.0f);
 	}
 
 	return result;

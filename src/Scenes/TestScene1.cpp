@@ -20,8 +20,8 @@ Scene Scene::createTestScene1()
 
 	scene.camera.position = Vector3(0.0f, 1.0f, 3.5f);
 
-	scene.bvhType = BVHType::BVH1;
-	//scene.bvhBuildInfo.maxLeafSize = 4;
+	scene.bvhType = BVHType::BVH4;
+	scene.bvhBuildInfo.maxLeafSize = 20;
 
 	ModelLoaderInfo model;
 	model.modelFilePath = "data/models/cornellbox/cornellbox.obj";
