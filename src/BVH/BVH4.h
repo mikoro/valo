@@ -12,53 +12,42 @@
 
 namespace Raycer
 {
-	struct BVH1Node
+	struct BVH4Node
 	{
-		AABB aabb;
-		int64_t rightOffset;
-		uint64_t startOffset;
+		std::array<AABB, 4> aabb;
+		std::array<uint64_t, 3> rightOffset;
+		uint64_t triangleOffset;
 		uint64_t triangleCount;
-		uint64_t splitAxis;
-		uint8_t leftEnabled;
-		uint8_t rightEnabled;
+		bool isLeaf;
 
 		template <class Archive>
 		void serialize(Archive& ar)
 		{
 			ar(CEREAL_NVP(aabb),
 				CEREAL_NVP(rightOffset),
-				CEREAL_NVP(startOffset),
-				CEREAL_NVP(triangleCount),
-				CEREAL_NVP(splitAxis),
-				CEREAL_NVP(leftEnabled),
-				CEREAL_NVP(rightEnabled));
+				CEREAL_NVP(triangleOffset),
+				CEREAL_NVP(triangleCount));
 		}
 	};
 
-	struct BVH1BuildEntry
+	struct BVH4BuildEntry
 	{
 		uint64_t start;
 		uint64_t end;
 		int64_t parent;
+		int64_t child;
 	};
 
-	class BVH1 : public BVH
+	class BVH4 : public BVH
 	{
 	public:
 
 		void build(std::vector<Triangle>& triangles, const BVHBuildInfo& buildInfo) override;
 		bool intersect(const std::vector<Triangle>& triangles, const Ray& ray, Intersection& intersection) const override;
 
-		void disableLeft() override;
-		void disableRight() override;
-		void undoDisable() override;
-
 	private:
 
-		std::vector<BVH1Node> nodes;
-
-		uint64_t disableIndex = 0;
-		std::vector<uint64_t> previousDisableIndices;
+		std::vector<BVH4Node> nodes;
 
 		friend class cereal::access;
 

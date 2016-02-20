@@ -6,6 +6,8 @@
 #include <memory>
 #include <vector>
 
+#include "Tracing/AABB.h"
+
 namespace Raycer
 {
 	class Triangle;
@@ -16,20 +18,13 @@ namespace Raycer
 
 	struct BVHBuildInfo
 	{
-		uint64_t maxLeafSize = 5;
+		uint64_t maxLeafSize = 4;
 
 		template <class Archive>
 		void serialize(Archive& ar)
 		{
 			ar(CEREAL_NVP(maxLeafSize));
 		}
-	};
-
-	struct BVHBuildEntry
-	{
-		uint64_t start;
-		uint64_t end;
-		int64_t parent;
 	};
 
 	struct BVHSplitInput
@@ -45,6 +40,8 @@ namespace Raycer
 	{
 		uint64_t index = 0;
 		uint64_t axis = 0;
+		AABB leftAABB;
+		AABB rightAABB;
 		bool failed = false;
 	};
 

@@ -11,7 +11,7 @@ Scene Scene::createTestScene1()
 {
 	Scene scene;
 
-	scene.general.tracerType = TracerType::PATH_RECURSIVE;
+	scene.general.tracerType = TracerType::PREVIEW;
 	scene.pathtracing.enableMultiSampling = true;
 	scene.pathtracing.multiSamplerFilterType = FilterType::BELL;
 	scene.pathtracing.minPathLength = 3;
@@ -19,6 +19,9 @@ Scene Scene::createTestScene1()
 	scene.pathtracing.pixelSampleCount = 1;
 
 	scene.camera.position = Vector3(0.0f, 1.0f, 3.5f);
+
+	scene.bvhType = BVHType::BVH4;
+	scene.bvhBuildInfo.maxLeafSize = 10;
 
 	ModelLoaderInfo model;
 	model.modelFilePath = "data/models/cornellbox/cornellbox.obj";

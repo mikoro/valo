@@ -20,7 +20,7 @@ void BVH1::build(std::vector<Triangle>& triangles, const BVHBuildInfo& buildInfo
 	log.logInfo("BVH1 building started (triangles: %d)", triangles.size());
 
 	Timer timer;
-	BVHBuildEntry stack[128];
+	BVH1BuildEntry stack[128];
 	uint64_t triangleCount = triangles.size();
 	uint64_t failedSplitCount = 0;
 	std::vector<Triangle*> trianglePtrs;
@@ -55,7 +55,7 @@ void BVH1::build(std::vector<Triangle>& triangles, const BVHBuildInfo& buildInfo
 
 		// pop from stack
 		BVH1Node node;
-		BVHBuildEntry buildEntry = stack[stackptr];
+		BVH1BuildEntry buildEntry = stack[stackptr];
 		node.rightOffset = UNVISITED;
 		node.startOffset = buildEntry.start;
 		node.triangleCount = buildEntry.end - buildEntry.start;

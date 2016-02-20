@@ -11,6 +11,7 @@ namespace Raycer
 {
 	class Ray;
 	class EulerAngle;
+	struct BVH4Node;
 
 	class AABB
 	{
@@ -21,6 +22,8 @@ namespace Raycer
 		static AABB createFromMinMax(const Vector3& min, const Vector3& max);
 		static AABB createFromCenterExtent(const Vector3& center, const Vector3& extent);
 		static AABB createFromVertices(const Vector3& v0, const Vector3& v1, const Vector3& v2);
+
+		static std::array<bool, 4> intersects(const BVH4Node& node, const Ray& ray);
 
 		bool intersects(const Ray& ray) const;
 		void expand(const AABB& other);

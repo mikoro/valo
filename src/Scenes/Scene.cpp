@@ -294,7 +294,7 @@ void Scene::initialize()
 	switch (bvhType)
 	{
 		case BVHType::BVH1: bvh = &bvh1; break;
-		case BVHType::BVH4: bvh = &bvh1; break;
+		case BVHType::BVH4: bvh = &bvh4; break;
 		case BVHType::BVH8: bvh = &bvh1; break;
 		case BVHType::SBVH1: bvh = &bvh1; break;
 		default: break;

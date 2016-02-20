@@ -234,6 +234,7 @@
     <ClCompile Include="src\App.cpp" />
     <ClCompile Include="src\BVH\BVH.cpp" />
     <ClCompile Include="src\BVH\BVH1.cpp" />
+    <ClCompile Include="src\BVH\BVH4.cpp" />
     <ClCompile Include="src\External\gl3w.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='DebugTest|x64'">NotUsing</PrecompiledHeader>
@@ -358,6 +359,7 @@
     <ClInclude Include="src\App.h" />
     <ClInclude Include="src\BVH\BVH.h" />
     <ClInclude Include="src\BVH\BVH1.h" />
+    <ClInclude Include="src\BVH\BVH4.h" />
     <ClInclude Include="src\Common.h" />
     <ClInclude Include="src\Filters\BellFilter.h" />
     <ClInclude Include="src\Filters\BoxFilter.h" />

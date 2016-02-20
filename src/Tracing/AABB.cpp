@@ -6,6 +6,7 @@
 #include "Tracing/AABB.h"
 #include "Tracing/Ray.h"
 #include "Math/Matrix4x4.h"
+#include "BVH/BVH4.h"
 
 using namespace Raycer;
 
@@ -50,6 +51,37 @@ AABB AABB::createFromVertices(const Vector3& v0, const Vector3& v1, const Vector
 	max_.z = std::max(v0.z, std::max(v1.z, v2.z));
 
 	return AABB::createFromMinMax(min_, max_);
+}
+
+std::array<bool, 4> AABB::intersects(const BVH4Node& node, const Ray& ray)
+{
+	std::array<bool, 4> result = { true };
+
+	#pragma loop(no_vector)
+	for (uint64_t i = 0; i < 4; ++i)
+	{
+		double tx0 = (node.aabb[i].min.x - ray.origin.x) * ray.inverseDirection.x;
+		double tx1 = (node.aabb[i].max.x - ray.origin.x) * ray.inverseDirection.x;
+
+		double tmin = std::min(tx0, tx1);
+		double tmax = std::max(tx0, tx1);
+
+		double ty0 = (node.aabb[i].min.y - ray.origin.y) * ray.inverseDirection.y;
+		double ty1 = (node.aabb[i].max.y - ray.origin.y) * ray.inverseDirection.y;
+
+		tmin = std::max(tmin, std::min(ty0, ty1));
+		tmax = std::min(tmax, std::max(ty0, ty1));
+
+		double tz0 = (node.aabb[i].min.z - ray.origin.z) * ray.inverseDirection.z;
+		double tz1 = (node.aabb[i].max.z - ray.origin.z) * ray.inverseDirection.z;
+
+		tmin = std::max(tmin, std::min(tz0, tz1));
+		tmax = std::min(tmax, std::max(tz0, tz1));
+
+		result[i] = tmax > std::max(tmin, 0.0);
+	}
+
+	return result;
 }
 
 // http://tavianator.com/fast-branchless-raybounding-box-intersections-part-2-nans/

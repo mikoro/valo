@@ -11,6 +11,7 @@
 #include "Tracing/Triangle.h"
 #include "BVH/BVH.h"
 #include "BVH/BVH1.h"
+#include "BVH/BVH4.h"
 #include "Textures/ColorTexture.h"
 #include "Textures/ColorGradientTexture.h"
 #include "Textures/CheckerTexture.h"
@@ -211,6 +212,7 @@ namespace Raycer
 		std::vector<Triangle*> emissiveTriangles;
 		ImagePool imagePool;
 		BVH1 bvh1;
+		BVH4 bvh4;
 
 		std::vector<Light*> lightsList;
 		std::vector<Texture*> texturesList;
@@ -236,7 +238,8 @@ namespace Raycer
 				CEREAL_NVP(models),
 				CEREAL_NVP(triangles),
 				CEREAL_NVP(imagePool),
-				CEREAL_NVP(bvh1));
+				CEREAL_NVP(bvh1),
+				CEREAL_NVP(bvh4));
 		}
 	};
 }
