@@ -5,6 +5,8 @@
 
 #include <vector>
 
+#include <boost/align/aligned_allocator.hpp>
+
 #include "cereal/cereal.hpp"
 
 #include "BVH/BVH.h"
@@ -14,19 +16,31 @@ namespace Raycer
 {
 	struct BVH4Node
 	{
-		std::array<AABB, 4> aabb;
-		std::array<uint64_t, 3> rightOffset;
-		uint64_t triangleOffset;
-		uint64_t triangleCount;
-		bool isLeaf;
+		std::array<float, 4> aabbMinX;
+		std::array<float, 4> aabbMinY;
+		std::array<float, 4> aabbMinZ;
+		std::array<float, 4> aabbMaxX;
+		std::array<float, 4> aabbMaxY;
+		std::array<float, 4> aabbMaxZ;
+		std::array<uint32_t, 3> rightOffset;
+		uint32_t triangleOffset;
+		uint32_t triangleCount;
+		uint32_t isLeaf;
+		uint32_t pad[2];
 
 		template <class Archive>
 		void serialize(Archive& ar)
 		{
-			ar(CEREAL_NVP(aabb),
+			ar(CEREAL_NVP(aabbMinX),
+				CEREAL_NVP(aabbMinY),
+				CEREAL_NVP(aabbMinZ),
+				CEREAL_NVP(aabbMaxX),
+				CEREAL_NVP(aabbMaxY),
+				CEREAL_NVP(aabbMaxZ),
 				CEREAL_NVP(rightOffset),
 				CEREAL_NVP(triangleOffset),
-				CEREAL_NVP(triangleCount));
+				CEREAL_NVP(triangleCount),
+				CEREAL_NVP(isLeaf));
 		}
 	};
 
@@ -39,7 +53,7 @@ namespace Raycer
 
 	private:
 
-		std::vector<BVH4Node> nodes;
+		std::vector<BVH4Node, boost::alignment::aligned_allocator<BVH4Node, 128>> nodes;
 
 		friend class cereal::access;
 

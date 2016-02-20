@@ -63,14 +63,13 @@ void BVH4::build(std::vector<Triangle>& triangles, const BVHBuildInfo& buildInfo
 
 	while (stackIndex > 0)
 	{
-		stackIndex--;
 		nodeCount++;
 
 		// pop from stack
-		BVH4BuildEntry buildEntry = stack[stackIndex];
+		BVH4BuildEntry buildEntry = stack[--stackIndex];
 		BVH4Node node;
-		node.triangleOffset = buildEntry.start;
-		node.triangleCount = buildEntry.end - buildEntry.start;
+		node.triangleOffset = uint32_t(buildEntry.start);
+		node.triangleCount = uint32_t(buildEntry.end - buildEntry.start);
 		node.isLeaf = (node.triangleCount <= buildInfo.maxLeafSize);
 
 		if (buildEntry.parent != -1 && buildEntry.child != -1)
@@ -78,7 +77,7 @@ void BVH4::build(std::vector<Triangle>& triangles, const BVHBuildInfo& buildInfo
 			uint64_t parent = uint64_t(buildEntry.parent);
 			uint64_t child = uint64_t(buildEntry.child);
 
-			nodes[parent].rightOffset[child] = nodeCount - 1 - parent;
+			nodes[parent].rightOffset[child] = uint32_t(nodeCount - 1 - parent);
 		}
 
 		if (!node.isLeaf)
@@ -112,10 +111,33 @@ void BVH4::build(std::vector<Triangle>& triangles, const BVHBuildInfo& buildInfo
 				if (splitOutputs[2].failed)
 					failedRightSplitCount++;
 
-				node.aabb[0] = splitOutputs[0].leftAABB;
-				node.aabb[1] = splitOutputs[0].rightAABB;
-				node.aabb[2] = splitOutputs[2].leftAABB;
-				node.aabb[3] = splitOutputs[2].rightAABB;
+				node.aabbMinX[0] = splitOutputs[0].leftAABB.min.x;
+				node.aabbMinY[0] = splitOutputs[0].leftAABB.min.y;
+				node.aabbMinZ[0] = splitOutputs[0].leftAABB.min.z;
+				node.aabbMaxX[0] = splitOutputs[0].leftAABB.max.x;
+				node.aabbMaxY[0] = splitOutputs[0].leftAABB.max.y;
+				node.aabbMaxZ[0] = splitOutputs[0].leftAABB.max.z;
+
+				node.aabbMinX[1] = splitOutputs[0].rightAABB.min.x;
+				node.aabbMinY[1] = splitOutputs[0].rightAABB.min.y;
+				node.aabbMinZ[1] = splitOutputs[0].rightAABB.min.z;
+				node.aabbMaxX[1] = splitOutputs[0].rightAABB.max.x;
+				node.aabbMaxY[1] = splitOutputs[0].rightAABB.max.y;
+				node.aabbMaxZ[1] = splitOutputs[0].rightAABB.max.z;
+
+				node.aabbMinX[2] = splitOutputs[2].leftAABB.min.x;
+				node.aabbMinY[2] = splitOutputs[2].leftAABB.min.y;
+				node.aabbMinZ[2] = splitOutputs[2].leftAABB.min.z;
+				node.aabbMaxX[2] = splitOutputs[2].leftAABB.max.x;
+				node.aabbMaxY[2] = splitOutputs[2].leftAABB.max.y;
+				node.aabbMaxZ[2] = splitOutputs[2].leftAABB.max.z;
+
+				node.aabbMinX[3] = splitOutputs[2].rightAABB.min.x;
+				node.aabbMinY[3] = splitOutputs[2].rightAABB.min.y;
+				node.aabbMinZ[3] = splitOutputs[2].rightAABB.min.z;
+				node.aabbMaxX[3] = splitOutputs[2].rightAABB.max.x;
+				node.aabbMaxY[3] = splitOutputs[2].rightAABB.max.y;
+				node.aabbMaxZ[3] = splitOutputs[2].rightAABB.max.z;
 			}
 		}
 
@@ -178,15 +200,11 @@ bool BVH4::intersect(const std::vector<Triangle>& triangles, const Ray& ray, Int
 	uint64_t stackIndex = 0;
 	bool wasFound = false;
 
-	// push to stack
-	stack[stackIndex] = 0;
-	stackIndex++;
+	stack[stackIndex++] = 0;
 
 	while (stackIndex > 0)
 	{
-		// pop from stack
-		stackIndex--;
-		uint64_t nodeIndex = stack[stackIndex];
+		uint64_t nodeIndex = stack[--stackIndex];
 		const BVH4Node& node = nodes[nodeIndex];
 
 		if (node.isLeaf)
@@ -205,31 +223,26 @@ bool BVH4::intersect(const std::vector<Triangle>& triangles, const Ray& ray, Int
 			continue;
 		}
 
-		std::array<bool, 4> intersects = AABB::intersects(node, ray);
+		std::array<uint32_t, 4> intersects = AABB::intersects(
+			&node.aabbMinX[0],
+			&node.aabbMinY[0],
+			&node.aabbMinZ[0],
+			&node.aabbMaxX[0],
+			&node.aabbMaxY[0],
+			&node.aabbMaxZ[0],
+			ray);
 
 		if (intersects[3])
-		{
-			stack[stackIndex] = nodeIndex + node.rightOffset[2];
-			stackIndex++;
-		}
+			stack[stackIndex++] = nodeIndex + node.rightOffset[2];
 
 		if (intersects[2])
-		{
-			stack[stackIndex] = nodeIndex + node.rightOffset[1];
-			stackIndex++;
-		}
+			stack[stackIndex++] = nodeIndex + node.rightOffset[1];
 
 		if (intersects[1])
-		{
-			stack[stackIndex] = nodeIndex + node.rightOffset[0];
-			stackIndex++;
-		}
+			stack[stackIndex++] = nodeIndex + node.rightOffset[0];
 
 		if (intersects[0])
-		{
-			stack[stackIndex] = nodeIndex + 1;
-			stackIndex++;
-		}
+			stack[stackIndex++] = nodeIndex + 1;
 	}
 
 	return wasFound;

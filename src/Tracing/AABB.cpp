@@ -53,32 +53,42 @@ AABB AABB::createFromVertices(const Vector3& v0, const Vector3& v1, const Vector
 	return AABB::createFromMinMax(min_, max_);
 }
 
-std::array<bool, 4> AABB::intersects(const BVH4Node& node, const Ray& ray)
+#define MIN(a,b) (((a)<(b))?(a):(b))
+#define MAX(a,b) (((a)>(b))?(a):(b))
+
+std::array<uint32_t, 4> AABB::intersects(const float* __restrict aabbMinX, const float* __restrict aabbMinY, const float* __restrict aabbMinZ, const float* __restrict aabbMaxX, const float* __restrict aabbMaxY, const float* __restrict aabbMaxZ, const Ray& ray)
 {
-	std::array<bool, 4> result;
+	const float originX = ray.origin.x;
+	const float originY = ray.origin.y;
+	const float originZ = ray.origin.z;
 
-	//#pragma loop(no_vector)
-	for (uint64_t i = 0; i < 4; ++i)
+	const float inverseDirectionX = ray.inverseDirection.x;
+	const float inverseDirectionY = ray.inverseDirection.y;
+	const float inverseDirectionZ = ray.inverseDirection.z;
+
+	std::array<uint32_t, 4> result;
+
+	for (uint32_t i = 0; i < 4; ++i)
 	{
-		float tx0 = (node.aabb[i].min.x - ray.origin.x) * ray.inverseDirection.x;
-		float tx1 = (node.aabb[i].max.x - ray.origin.x) * ray.inverseDirection.x;
+		const float tx0 = (aabbMinX[i] - originX) * inverseDirectionX;
+		const float tx1 = (aabbMaxX[i] - originX) * inverseDirectionX;
 
-		float tmin = std::min(tx0, tx1);
-		float tmax = std::max(tx0, tx1);
+		float tmin = MIN(tx0, tx1);
+		float tmax = MAX(tx0, tx1);
 
-		float ty0 = (node.aabb[i].min.y - ray.origin.y) * ray.inverseDirection.y;
-		float ty1 = (node.aabb[i].max.y - ray.origin.y) * ray.inverseDirection.y;
+		const float ty0 = (aabbMinY[i] - originY) * inverseDirectionY;
+		const float ty1 = (aabbMaxY[i] - originY) * inverseDirectionY;
 
-		tmin = std::max(tmin, std::min(ty0, ty1));
-		tmax = std::min(tmax, std::max(ty0, ty1));
+		tmin = MAX(tmin, MIN(ty0, ty1));
+		tmax = MIN(tmax, MAX(ty0, ty1));
 
-		float tz0 = (node.aabb[i].min.z - ray.origin.z) * ray.inverseDirection.z;
-		float tz1 = (node.aabb[i].max.z - ray.origin.z) * ray.inverseDirection.z;
+		const float tz0 = (aabbMinZ[i] - originZ) * inverseDirectionZ;
+		const float tz1 = (aabbMaxZ[i] - originZ) * inverseDirectionZ;
 
-		tmin = std::max(tmin, std::min(tz0, tz1));
-		tmax = std::min(tmax, std::max(tz0, tz1));
+		tmin = MAX(tmin, MIN(tz0, tz1));
+		tmax = MIN(tmax, MAX(tz0, tz1));
 
-		result[i] = tmax >= std::max(tmin, 0.0f);
+		result[i] = tmax >= MAX(tmin, 0.0f);
 	}
 
 	return result;
@@ -188,16 +198,6 @@ AABB AABB::transformed(const Vector3& scale, const EulerAngle& rotate, const Vec
 	}
 
 	return AABB::createFromMinMax(newMin, newMax);
-}
-
-Vector3 AABB::getMin() const
-{
-	return min;
-}
-
-Vector3 AABB::getMax() const
-{
-	return max;
 }
 
 Vector3 AABB::getCenter() const

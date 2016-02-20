@@ -23,23 +23,21 @@ namespace Raycer
 		static AABB createFromCenterExtent(const Vector3& center, const Vector3& extent);
 		static AABB createFromVertices(const Vector3& v0, const Vector3& v1, const Vector3& v2);
 
-		static std::array<bool, 4> intersects(const BVH4Node& node, const Ray& ray);
+		static std::array<uint32_t, 4> intersects(const float* __restrict aabbMinX, const float* __restrict aabbMinY, const float* __restrict aabbMinZ, const float* __restrict aabbMaxX, const float* __restrict aabbMaxY, const float* __restrict aabbMaxZ, const Ray& ray);
 
 		bool intersects(const Ray& ray) const;
 		void expand(const AABB& other);
 		uint64_t getLargestAxis() const;
 		AABB transformed(const Vector3& scale, const EulerAngle& rotate, const Vector3& translate) const;
 
-		Vector3 getMin() const;
-		Vector3 getMax() const;
 		Vector3 getCenter() const;
 		Vector3 getExtent() const;
 		float getSurfaceArea() const;
 
-	private:
-
 		Vector3 min;
 		Vector3 max;
+
+	private:
 
 		friend class cereal::access;
 

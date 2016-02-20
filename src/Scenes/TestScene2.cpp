@@ -14,7 +14,7 @@ Scene Scene::createTestScene2()
 	scene.general.tracerType = TracerType::PREVIEW;
 
 	scene.bvhType = BVHType::BVH4;
-	scene.bvhBuildInfo.maxLeafSize = 16;
+	scene.bvhBuildInfo.maxLeafSize = 8;
 
 	scene.camera.position = Vector3(3.14f, 0.82f, 2.50f);
 	scene.camera.orientation = EulerAngle(-10.91f, 52.88f, 0.0f);
