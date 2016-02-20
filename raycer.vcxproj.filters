@@ -55,6 +55,9 @@
     <Filter Include="Materials">
       <UniqueIdentifier>{82801c5f-bc8e-4e1d-99b5-03528d39c996}</UniqueIdentifier>
     </Filter>
+    <Filter Include="BVH">
+      <UniqueIdentifier>{008605c0-6aa3-48d2-98a9-2fb5801331fd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Utils\FpsCounter.cpp">
@@ -253,9 +256,6 @@
     <ClCompile Include="src\Samplers\Sampler.cpp">
       <Filter>Samplers</Filter>
     </ClCompile>
-    <ClCompile Include="src\Tracing\BVH.cpp">
-      <Filter>Tracing</Filter>
-    </ClCompile>
     <ClCompile Include="src\Tracing\Triangle.cpp">
       <Filter>Tracing</Filter>
     </ClCompile>
@@ -335,14 +335,17 @@
     <ClCompile Include="src\Tracers\PathtracerIterative.cpp">
       <Filter>Tracers</Filter>
     </ClCompile>
-    <ClCompile Include="src\Tracing\BVHBuilder.cpp">
-      <Filter>Tracing</Filter>
-    </ClCompile>
     <ClCompile Include="src\Rendering\Color.cpp">
       <Filter>Rendering</Filter>
     </ClCompile>
     <ClCompile Include="src\Rendering\Image.cpp">
       <Filter>Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BVH\BVH.cpp">
+      <Filter>BVH</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BVH\BVH1.cpp">
+      <Filter>BVH</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -522,9 +525,6 @@
     <ClInclude Include="src\Samplers\Sampler.h">
       <Filter>Samplers</Filter>
     </ClInclude>
-    <ClInclude Include="src\Tracing\BVH.h">
-      <Filter>Tracing</Filter>
-    </ClInclude>
     <ClInclude Include="src\Tracing\Triangle.h">
       <Filter>Tracing</Filter>
     </ClInclude>
@@ -586,14 +586,17 @@
     <ClInclude Include="src\Tracers\PathtracerIterative.h">
       <Filter>Tracers</Filter>
     </ClInclude>
-    <ClInclude Include="src\Tracing\BVHBuilder.h">
-      <Filter>Tracing</Filter>
-    </ClInclude>
     <ClInclude Include="src\Rendering\Color.h">
       <Filter>Rendering</Filter>
     </ClInclude>
     <ClInclude Include="src\Rendering\Image.h">
       <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BVH\BVH.h">
+      <Filter>BVH</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BVH\BVH1.h">
+      <Filter>BVH</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

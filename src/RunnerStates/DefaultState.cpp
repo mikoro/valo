@@ -249,11 +249,11 @@ void DefaultState::update(float timeStep)
 	if (windowRunner.keyIsDown(GLFW_KEY_LEFT_CONTROL) || windowRunner.keyIsDown(GLFW_KEY_RIGHT_CONTROL))
 	{
 		if (windowRunner.keyWasPressed(GLFW_KEY_LEFT))
-			scene.bvh.disableRight();
+			scene.bvh->disableRight();
 		else if (windowRunner.keyWasPressed(GLFW_KEY_RIGHT))
-			scene.bvh.disableLeft();
+			scene.bvh->disableLeft();
 		else if (windowRunner.keyWasPressed(GLFW_KEY_UP))
-			scene.bvh.undoDisable();
+			scene.bvh->undoDisable();
 	}
 
 	scene.camera.update(timeStep);

@@ -232,6 +232,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\App.cpp" />
+    <ClCompile Include="src\BVH\BVH.cpp" />
+    <ClCompile Include="src\BVH\BVH1.cpp" />
     <ClCompile Include="src\External\gl3w.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='DebugTest|x64'">NotUsing</PrecompiledHeader>
@@ -335,8 +337,6 @@
     <ClCompile Include="src\Tracers\Raytracer.cpp" />
     <ClCompile Include="src\Tracers\Tracer.cpp" />
     <ClCompile Include="src\Tracing\AABB.cpp" />
-    <ClCompile Include="src\Tracing\BVH.cpp" />
-    <ClCompile Include="src\Tracing\BVHBuilder.cpp" />
     <ClCompile Include="src\Tracing\Camera.cpp" />
     <ClCompile Include="src\Tracing\ONB.cpp" />
     <ClCompile Include="src\Tracing\Ray.cpp" />
@@ -356,6 +356,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\App.h" />
+    <ClInclude Include="src\BVH\BVH.h" />
+    <ClInclude Include="src\BVH\BVH1.h" />
     <ClInclude Include="src\Common.h" />
     <ClInclude Include="src\Filters\BellFilter.h" />
     <ClInclude Include="src\Filters\BoxFilter.h" />
@@ -421,8 +423,6 @@
     <ClInclude Include="src\Tracers\Tracer.h" />
     <ClInclude Include="src\Tracers\TracerState.h" />
     <ClInclude Include="src\Tracing\AABB.h" />
-    <ClInclude Include="src\Tracing\BVH.h" />
-    <ClInclude Include="src\Tracing\BVHBuilder.h" />
     <ClInclude Include="src\Tracing\Camera.h" />
     <ClInclude Include="src\Tracing\Intersection.h" />
     <ClInclude Include="src\Tracing\ONB.h" />

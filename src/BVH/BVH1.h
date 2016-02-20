@@ -7,15 +7,14 @@
 
 #include "cereal/cereal.hpp"
 
+#include "BVH/BVH.h"
 #include "Tracing/AABB.h"
 
 namespace Raycer
 {
-	class Triangle;
-	class Ray;
-	class Intersection;
+	class Vector2;
 
-	struct BVHNode
+	struct BVH1Node
 	{
 		AABB aabb;
 		int64_t rightOffset;
@@ -37,21 +36,21 @@ namespace Raycer
 				CEREAL_NVP(rightEnabled));
 		}
 	};
-	
-	class BVH
+
+	class BVH1 : public BVH
 	{
 	public:
 
-		bool intersect(const std::vector<Triangle>& triangles, const Ray& ray, Intersection& intersection) const;
+		void build(std::vector<Triangle>& triangles, const BVHBuildInfo& buildInfo) override;
+		bool intersect(const std::vector<Triangle>& triangles, const Ray& ray, Intersection& intersection) const override;
 
-		void disableLeft();
-		void disableRight();
-		void undoDisable();
-
-		bool bvhHasBeenBuilt = false;
-		std::vector<BVHNode> nodes;
+		void disableLeft() override;
+		void disableRight() override;
+		void undoDisable() override;
 
 	private:
+
+		std::vector<BVH1Node> nodes;
 
 		uint64_t disableIndex = 0;
 		std::vector<uint64_t> previousDisableIndices;
@@ -61,7 +60,7 @@ namespace Raycer
 		template <class Archive>
 		void serialize(Archive& ar)
 		{
-			ar(CEREAL_NVP(bvhHasBeenBuilt),
+			ar(CEREAL_NVP(built),
 				CEREAL_NVP(nodes));
 		}
 	};

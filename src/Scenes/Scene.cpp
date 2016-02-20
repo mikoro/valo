@@ -12,7 +12,6 @@
 #include "Utils/Log.h"
 #include "Utils/StringUtils.h"
 #include "Utils/Timer.h"
-#include "Tracing/BVHBuilder.h"
 
 using namespace Raycer;
 
@@ -290,10 +289,19 @@ void Scene::initialize()
 
 	camera.initialize();
 
-	// BVH BUILD
+	// BVH STUFF
 
-	if (!bvh.bvhHasBeenBuilt)
-		BVHBuilder::build(triangles, bvhBuildInfo, bvh);
+	switch (bvhType)
+	{
+		case BVHType::BVH1: bvh = &bvh1; break;
+		case BVHType::BVH4: bvh = &bvh1; break;
+		case BVHType::BVH8: bvh = &bvh1; break;
+		case BVHType::SBVH1: bvh = &bvh1; break;
+		default: break;
+	}
+
+	if (!bvh->hasBeenBuilt())
+		bvh->build(triangles, bvhBuildInfo);
 	else
 		log.logInfo("BVH has already been built");
 
@@ -310,5 +318,5 @@ void Scene::initialize()
 
 bool Scene::intersect(const Ray& ray, Intersection& intersection) const
 {
-	return bvh.intersect(triangles, ray, intersection);
+	return bvh->intersect(triangles, ray, intersection);
 }

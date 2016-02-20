@@ -9,8 +9,8 @@
 
 #include "Tracing/Camera.h"
 #include "Tracing/Triangle.h"
-#include "Tracing/BVH.h"
-#include "Tracing/BVHBuilder.h"
+#include "BVH/BVH.h"
+#include "BVH/BVH1.h"
 #include "Textures/ColorTexture.h"
 #include "Textures/ColorGradientTexture.h"
 #include "Textures/CheckerTexture.h"
@@ -202,12 +202,15 @@ namespace Raycer
 
 		} materials;
 
-		std::vector<ModelLoaderInfo> models;
+		BVHType bvhType = BVHType::BVH1;
 		BVHBuildInfo bvhBuildInfo;
-		BVH bvh;
+		BVH* bvh = nullptr;
+
+		std::vector<ModelLoaderInfo> models;
 		std::vector<Triangle> triangles;
 		std::vector<Triangle*> emissiveTriangles;
 		ImagePool imagePool;
+		BVH1 bvh1;
 
 		std::vector<Light*> lightsList;
 		std::vector<Texture*> texturesList;
@@ -228,11 +231,12 @@ namespace Raycer
 				CEREAL_NVP(lights),
 				CEREAL_NVP(textures),
 				CEREAL_NVP(materials),
-				CEREAL_NVP(models),
+				CEREAL_NVP(bvhType),
 				CEREAL_NVP(bvhBuildInfo),
-				CEREAL_NVP(bvh),
+				CEREAL_NVP(models),
 				CEREAL_NVP(triangles),
-				CEREAL_NVP(imagePool));
+				CEREAL_NVP(imagePool),
+				CEREAL_NVP(bvh1));
 		}
 	};
 }
