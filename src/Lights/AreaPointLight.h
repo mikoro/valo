@@ -45,7 +45,10 @@ namespace Raycer
 		void serialize(Archive& ar)
 		{
 			ar(CEREAL_NVP(color),
-				CEREAL_NVP(position));
+				CEREAL_NVP(position),
+				CEREAL_NVP(samplerType),
+				CEREAL_NVP(sampleCountSqrt),
+				CEREAL_NVP(radius));
 		}
 	};
 }

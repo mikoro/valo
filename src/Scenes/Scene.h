@@ -58,7 +58,7 @@ namespace Raycer
 		static Scene createTestScene7();
 		static Scene createTestScene8();
 
-		static const uint64_t TEST_SCENE_COUNT = 5;
+		static const uint64_t TEST_SCENE_COUNT = 8;
 
 		Camera camera;
 
