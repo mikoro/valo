@@ -309,11 +309,6 @@
     <ClCompile Include="src\Scenes\TestScene1.cpp" />
     <ClCompile Include="src\Scenes\TestScene2.cpp" />
     <ClCompile Include="src\Scenes\TestScene3.cpp" />
-    <ClCompile Include="src\Scenes\TestScene4.cpp" />
-    <ClCompile Include="src\Scenes\TestScene5.cpp" />
-    <ClCompile Include="src\Scenes\TestScene6.cpp" />
-    <ClCompile Include="src\Scenes\TestScene7.cpp" />
-    <ClCompile Include="src\Scenes\TestScene8.cpp" />
     <ClCompile Include="src\Tests\ColorGradientTest.cpp" />
     <ClCompile Include="src\Tests\EulerAngleTest.cpp" />
     <ClCompile Include="src\Tests\FilterTest.cpp" />
