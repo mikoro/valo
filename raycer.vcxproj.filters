@@ -350,6 +350,21 @@
     <ClCompile Include="src\BVH\BVH4.cpp">
       <Filter>BVH</Filter>
     </ClCompile>
+    <ClCompile Include="src\Scenes\TestScene4.cpp">
+      <Filter>Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Scenes\TestScene5.cpp">
+      <Filter>Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Scenes\TestScene6.cpp">
+      <Filter>Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Scenes\TestScene7.cpp">
+      <Filter>Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Scenes\TestScene8.cpp">
+      <Filter>Scenes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Utils\FpsCounter.h">

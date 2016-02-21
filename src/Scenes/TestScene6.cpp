@@ -7,7 +7,7 @@
 
 using namespace Raycer;
 
-Scene Scene::createTestScene3()
+Scene Scene::createTestScene6()
 {
 	Scene scene;
 
@@ -16,14 +16,21 @@ Scene Scene::createTestScene3()
 	scene.bvhType = BVHType::BVH1;
 	scene.bvhBuildInfo.maxLeafSize = 4;
 
-	scene.camera.position = Vector3(-2.9710, -0.9857, -0.9631);
-	scene.camera.orientation = EulerAngle(-0.6846, -117.9024, 0.0000);
-	scene.camera.fov = 1.0f;
+	scene.camera.position = Vector3(-6.1805f, 6.4027f, 3.4158f);
+	scene.camera.orientation = EulerAngle(-14.6954f, -45.0006f, 0.0000f);
+	scene.camera.fov = 12.0f;
 
 	ModelLoaderInfo model;
-	model.modelFilePath = "data/models/conference/conference.obj";
+	model.modelFilePath = "data/models/sponza_old/sponza_old.obj";
+	model.defaultMaterialId = 1;
 
 	scene.models.push_back(model);
+
+	DiffuseSpecularMaterial material;
+	material.id = 1;
+	material.reflectance = Color::WHITE;
+
+	scene.materials.diffuseSpecularMaterials.push_back(material);
 	
 	PointLight pointLight;
 	pointLight.color = Color(1.0f, 1.0f, 1.0f) * 2.0f;

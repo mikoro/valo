@@ -7,7 +7,7 @@
 
 using namespace Raycer;
 
-Scene Scene::createTestScene3()
+Scene Scene::createTestScene4()
 {
 	Scene scene;
 
@@ -16,12 +16,12 @@ Scene Scene::createTestScene3()
 	scene.bvhType = BVHType::BVH1;
 	scene.bvhBuildInfo.maxLeafSize = 4;
 
-	scene.camera.position = Vector3(-2.9710, -0.9857, -0.9631);
-	scene.camera.orientation = EulerAngle(-0.6846, -117.9024, 0.0000);
-	scene.camera.fov = 1.0f;
+	scene.camera.position = Vector3(-0.9688f, 0.5192f, -0.9582f);
+	scene.camera.orientation = EulerAngle(-17.5715f, -129.0079f, 0.0000f);
+	scene.camera.fov = 82.0f;
 
 	ModelLoaderInfo model;
-	model.modelFilePath = "data/models/conference/conference.obj";
+	model.modelFilePath = "data/models/indirect-test/indirect-test_mat.obj";
 
 	scene.models.push_back(model);
 	

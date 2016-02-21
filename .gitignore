@@ -15,6 +15,7 @@
 *.gch
 *.plist
 *.exe
+*.db3
 .vs
 My*
 *sublime*

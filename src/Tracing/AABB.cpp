@@ -6,7 +6,6 @@
 #include "Tracing/AABB.h"
 #include "Tracing/Ray.h"
 #include "Math/Matrix4x4.h"
-#include "BVH/BVH4.h"
 
 using namespace Raycer;
 
@@ -66,8 +65,11 @@ std::array<uint32_t, 4> AABB::intersects(const float* __restrict aabbMinX, const
 	const float inverseDirectionY = ray.inverseDirection.y;
 	const float inverseDirectionZ = ray.inverseDirection.z;
 
-	std::array<uint32_t, 4> result;
-
+	alignas(16) uint32_t result[4];
+	
+#ifdef __INTEL_COMPILER
+#pragma vector always assert aligned
+#endif
 	for (uint32_t i = 0; i < 4; ++i)
 	{
 		const float tx0 = (aabbMinX[i] - originX) * inverseDirectionX;
@@ -91,7 +93,7 @@ std::array<uint32_t, 4> AABB::intersects(const float* __restrict aabbMinX, const
 		result[i] = tmax >= MAX(tmin, 0.0f);
 	}
 
-	return result;
+	return std::array<uint32_t, 4> { result[0], result[1], result[2], result[3] };
 }
 
 // http://tavianator.com/fast-branchless-raybounding-box-intersections-part-2-nans/

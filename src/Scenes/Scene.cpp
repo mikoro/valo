@@ -24,6 +24,11 @@ Scene Scene::createTestScene(uint64_t number)
 		case 1: return createTestScene1();
 		case 2: return createTestScene2();
 		case 3: return createTestScene3();
+		case 4: return createTestScene4();
+		case 5: return createTestScene5();
+		case 6: return createTestScene6();
+		case 7: return createTestScene7();
+		case 8: return createTestScene8();
 		default: throw std::runtime_error("Unknown test scene number");
 	}
 }

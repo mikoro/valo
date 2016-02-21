@@ -13,11 +13,12 @@ Scene Scene::createTestScene2()
 
 	scene.general.tracerType = TracerType::PREVIEW;
 
-	scene.bvhType = BVHType::BVH4;
-	scene.bvhBuildInfo.maxLeafSize = 8;
+	scene.bvhType = BVHType::BVH1;
+	scene.bvhBuildInfo.maxLeafSize = 4;
 
-	scene.camera.position = Vector3(3.14f, 0.82f, 2.50f);
-	scene.camera.orientation = EulerAngle(-10.91f, 52.88f, 0.0f);
+	scene.camera.position = Vector3(-4.6401f, 0.4618f, 2.7327f);
+	scene.camera.orientation = EulerAngle(-13.3503f, -56.3473f, 0.0000f);
+	scene.camera.fov = 65.0f;
 
 	ModelLoaderInfo model;
 	model.modelFilePath = "data/models/conference/conference.obj";

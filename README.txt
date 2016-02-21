@@ -14,11 +14,13 @@ Student number: xxx
 NOTE: You may have to add "C:\Program Files (x86)\Windows Kits\10\Include\XXXXXX\ucrt" to VS includes
 and "C:\Program Files (x86)\Windows Kits\10\Lib\XXXXXX\ucrt\x64" to VS lib dirs before compiling.
 
+NOTE: Compile the program with ReleaseFull configuration!
+
 R1 BVH construction and traversal (5p): done [example_1.bat]
         R2 BVH saving and loading (1p): done [example_2.bat] (read instructions below)
-              R3 Simple texturing (1p): not done
-             R4 Ambient occlusion (2p): not done
-         R5 Simple multithreading (1p): not done
+              R3 Simple texturing (1p): done [example_3.bat]
+             R4 Ambient occlusion (2p): done [example_4_1.bat] [example_4_2.bat]
+         R5 Simple multithreading (1p): done (Tracer.cpp:83)
 
 BVH saving and loading:
 - run [example_1.bat]
@@ -27,17 +29,8 @@ BVH saving and loading:
 
 # Did you do any extra credit work?
 
-(Describe what you did and, if there was a substantial amount of work involved, how you did it. If your extra features are interactive or can be toggled, describe how to use them.)
-
 # Are there any known problems/bugs remaining in your code?
-
-(Please provide a list of the problems. If possible, describe what you think the cause is, how you have attempted to diagnose or fix the problem, and how you would attempt to diagnose or fix it if you had more time or motivation. This is important: we are more likely to assign partial credit if you help us understand what's going on.)
 
 # Did you collaborate with anyone in the class?
 
-(Did you help others? Did others help you? Let us know who you talked to, and what sort of help you gave or received.)
-
 # Any other comments you'd like to share about the assignment or the course so far?
-
-(Was the assignment too long? Too hard? Fun or boring? Did you learn something, or was it a total waste of time? Can we do something differently to help you learn? Please be brutally honest; we won't take it personally.)
-
