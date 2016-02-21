@@ -14,6 +14,7 @@
 #include "Tracers/PathtracerIterative.h"
 #include "Tracers/PreviewTracer.h"
 #include "Runners/WindowRunner.h"
+#include "TestScenes/TestScene.h"
 
 using namespace Raycer;
 
@@ -31,7 +32,7 @@ void DefaultState::initialize()
 	WindowRunner& windowRunner = App::getWindowRunner();
 
 	if (settings.scene.enableTestScenes)
-		scene = Scene::createTestScene(settings.scene.testSceneNumber);
+		scene = TestScene::create(settings.scene.testSceneNumber);
 	else
 		scene = Scene::loadFromFile(settings.scene.fileName);
 
@@ -86,14 +87,14 @@ void DefaultState::update(float timeStep)
 		if (currentTestSceneNumber < 1)
 			currentTestSceneNumber = 1;
 
-		if (currentTestSceneNumber > Scene::TEST_SCENE_COUNT)
-			currentTestSceneNumber = Scene::TEST_SCENE_COUNT;
+		if (currentTestSceneNumber > TestScene::TEST_SCENE_COUNT)
+			currentTestSceneNumber = TestScene::TEST_SCENE_COUNT;
 
 		if (previousTestSceneNumber != currentTestSceneNumber)
 		{
 			try
 			{
-				scene = Scene::createTestScene(currentTestSceneNumber);
+				scene = TestScene::create(currentTestSceneNumber);
 				scene.initialize();
 			}
 			catch (const std::exception& ex)

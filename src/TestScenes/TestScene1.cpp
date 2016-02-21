@@ -3,11 +3,14 @@
 
 #include "Precompiled.h"
 
-#include "Scenes/Scene.h"
+#include "TestScenes/TestScene.h"
+#include "Tracing/Scene.h"
 
 using namespace Raycer;
 
-Scene Scene::createTestScene1()
+// CORNELL BOX //
+
+Scene TestScene::create1()
 {
 	Scene scene;
 

@@ -3,11 +3,14 @@
 
 #include "Precompiled.h"
 
-#include "Scenes/Scene.h"
+#include "TestScenes/TestScene.h"
+#include "Tracing/Scene.h"
 
 using namespace Raycer;
 
-Scene Scene::createTestScene2()
+// CONFERENCE //
+
+Scene TestScene::create2()
 {
 	Scene scene;
 

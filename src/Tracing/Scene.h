@@ -37,7 +37,6 @@ namespace Raycer
 	{
 	public:
 
-		static Scene createTestScene(uint64_t number);
 		static Scene loadFromFile(const std::string& fileName);
 		static Scene loadFromJsonString(const std::string& text);
 		static Scene loadFromXmlString(const std::string& text);
@@ -48,12 +47,6 @@ namespace Raycer
 
 		void initialize();
 		bool intersect(const Ray& ray, Intersection& intersection) const;
-
-		static Scene createTestScene1();
-		static Scene createTestScene2();
-		static Scene createTestScene3();
-
-		static const uint64_t TEST_SCENE_COUNT = 3;
 
 		Camera camera;
 

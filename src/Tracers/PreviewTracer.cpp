@@ -4,7 +4,7 @@
 #include "Precompiled.h"
 
 #include "Tracers/PreviewTracer.h"
-#include "Scenes/Scene.h"
+#include "Tracing/Scene.h"
 #include "Tracing/Ray.h"
 #include "Tracing/Intersection.h"
 #include "Rendering/Film.h"

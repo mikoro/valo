@@ -4,7 +4,7 @@
 #include "Precompiled.h"
 
 #include "Tonemappers/PassthroughTonemapper.h"
-#include "Scenes/Scene.h"
+#include "Tracing/Scene.h"
 #include "Rendering/Image.h"
 #include "Rendering/Color.h"
 

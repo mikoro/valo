@@ -8,7 +8,7 @@
 #include "Tonemappers/LinearTonemapper.h"
 #include "Tonemappers/SimpleTonemapper.h"
 #include "Tonemappers/ReinhardTonemapper.h"
-#include "Scenes/Scene.h"
+#include "Tracing/Scene.h"
 #include "App.h"
 #include "Utils/Log.h"
 

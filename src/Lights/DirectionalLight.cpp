@@ -4,7 +4,7 @@
 #include "Precompiled.h"
 
 #include "Lights/DirectionalLight.h"
-#include "Scenes/Scene.h"
+#include "Tracing/Scene.h"
 #include "Tracing/Intersection.h"
 #include "Tracing/Ray.h"
 

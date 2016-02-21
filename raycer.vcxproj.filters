@@ -43,9 +43,6 @@
     <Filter Include="Tracers">
       <UniqueIdentifier>{c8a02df5-aad0-4513-b378-f3433b100713}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Scenes">
-      <UniqueIdentifier>{15975929-201a-4fb5-bd21-2c9fc9bb347b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="External">
       <UniqueIdentifier>{b2657f2b-747d-4206-a809-796eb405a2cd}</UniqueIdentifier>
     </Filter>
@@ -57,6 +54,9 @@
     </Filter>
     <Filter Include="BVH">
       <UniqueIdentifier>{008605c0-6aa3-48d2-98a9-2fb5801331fd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="TestScenes">
+      <UniqueIdentifier>{aadc1842-3364-421c-a353-9ae76ee61b4e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -274,12 +274,6 @@
     <ClCompile Include="src\Tracers\Tracer.cpp">
       <Filter>Tracers</Filter>
     </ClCompile>
-    <ClCompile Include="src\Scenes\Scene.cpp">
-      <Filter>Scenes</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Scenes\TestScene1.cpp">
-      <Filter>Scenes</Filter>
-    </ClCompile>
     <ClCompile Include="src\Tests\OnbTest.cpp">
       <Filter>Tests</Filter>
     </ClCompile>
@@ -301,12 +295,6 @@
     </ClCompile>
     <ClCompile Include="src\External\stb.cpp">
       <Filter>External</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Scenes\TestScene2.cpp">
-      <Filter>Scenes</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Scenes\TestScene3.cpp">
-      <Filter>Scenes</Filter>
     </ClCompile>
     <ClCompile Include="src\Lights\AmbientLight.cpp">
       <Filter>Lights</Filter>
@@ -349,6 +337,21 @@
     </ClCompile>
     <ClCompile Include="src\BVH\BVH4.cpp">
       <Filter>BVH</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Tracing\Scene.cpp">
+      <Filter>Tracing</Filter>
+    </ClCompile>
+    <ClCompile Include="src\TestScenes\TestScene1.cpp">
+      <Filter>TestScenes</Filter>
+    </ClCompile>
+    <ClCompile Include="src\TestScenes\TestScene2.cpp">
+      <Filter>TestScenes</Filter>
+    </ClCompile>
+    <ClCompile Include="src\TestScenes\TestScene3.cpp">
+      <Filter>TestScenes</Filter>
+    </ClCompile>
+    <ClCompile Include="src\TestScenes\TestScene.cpp">
+      <Filter>TestScenes</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -546,9 +549,6 @@
     <ClInclude Include="src\Tracers\TracerState.h">
       <Filter>Tracers</Filter>
     </ClInclude>
-    <ClInclude Include="src\Scenes\Scene.h">
-      <Filter>Scenes</Filter>
-    </ClInclude>
     <ClInclude Include="src\Precompiled.h" />
     <ClInclude Include="src\Utils\Settings.h">
       <Filter>Utils</Filter>
@@ -603,6 +603,12 @@
     </ClInclude>
     <ClInclude Include="src\BVH\BVH4.h">
       <Filter>BVH</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Tracing\Scene.h">
+      <Filter>Tracing</Filter>
+    </ClInclude>
+    <ClInclude Include="src\TestScenes\TestScene.h">
+      <Filter>TestScenes</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

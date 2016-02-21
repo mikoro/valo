@@ -14,6 +14,7 @@
 #include "Rendering/Film.h"
 #include "Runners/ConsoleRunner.h"
 #include "Rendering/Color.h"
+#include "TestScenes/TestScene.h"
 
 using namespace Raycer;
 using namespace boost::asio;
@@ -239,7 +240,7 @@ void NetworkRunner::sendJobs()
 		std::string sceneString;
 
 		if (settings.scene.enableTestScenes)
-			sceneString = Scene::createTestScene(settings.scene.testSceneNumber).getJsonString();
+			sceneString = TestScene::create(settings.scene.testSceneNumber).getJsonString();
 		else
 			sceneString = StringUtils::readFileToString(settings.scene.fileName);
 

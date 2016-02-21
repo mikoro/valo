@@ -10,7 +10,7 @@
 #include "Rendering/InfoPanel.h"
 #include "Rendering/Film.h"
 #include "Runners/WindowRunner.h"
-#include "Scenes/Scene.h"
+#include "Tracing/Scene.h"
 #include "Utils/Settings.h"
 #include "Utils/StringUtils.h"
 #include "Tracers/TracerState.h"

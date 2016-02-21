@@ -10,10 +10,11 @@
 #include "Utils/StringUtils.h"
 #include "Utils/SysUtils.h"
 #include "Rendering/Film.h"
-#include "Scenes/Scene.h"
+#include "Tracing/Scene.h"
 #include "Tracers/Tracer.h"
 #include "Tracers/TracerState.h"
 #include "Tracing/Camera.h"
+#include "TestScenes/TestScene.h"
 
 using namespace Raycer;
 using namespace std::chrono;
@@ -35,7 +36,7 @@ int ConsoleRunner::run()
 	Scene scene;
 
 	if (settings.scene.enableTestScenes)
-		scene = Scene::createTestScene(settings.scene.testSceneNumber);
+		scene = TestScene::create(settings.scene.testSceneNumber);
 	else
 		scene = Scene::loadFromFile(settings.scene.fileName);
 

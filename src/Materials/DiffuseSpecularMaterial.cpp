@@ -4,7 +4,7 @@
 #include "Precompiled.h"
 
 #include "Materials/DiffuseSpecularMaterial.h"
-#include "Scenes/Scene.h"
+#include "Tracing/Scene.h"
 #include "Tracing/Intersection.h"
 #include "Samplers/RandomSampler.h"
 

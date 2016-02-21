@@ -300,15 +300,10 @@
     <ClCompile Include="src\Samplers\RandomSampler.cpp" />
     <ClCompile Include="src\Samplers\RegularSampler.cpp" />
     <ClCompile Include="src\Samplers\Sampler.cpp" />
-    <ClCompile Include="src\Scenes\Scene.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='DebugTest|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='ReleaseFull|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="src\Scenes\TestScene1.cpp" />
-    <ClCompile Include="src\Scenes\TestScene2.cpp" />
-    <ClCompile Include="src\Scenes\TestScene3.cpp" />
+    <ClCompile Include="src\TestScenes\TestScene.cpp" />
+    <ClCompile Include="src\TestScenes\TestScene1.cpp" />
+    <ClCompile Include="src\TestScenes\TestScene2.cpp" />
+    <ClCompile Include="src\TestScenes\TestScene3.cpp" />
     <ClCompile Include="src\Tests\ColorGradientTest.cpp" />
     <ClCompile Include="src\Tests\EulerAngleTest.cpp" />
     <ClCompile Include="src\Tests\FilterTest.cpp" />
@@ -341,6 +336,7 @@
     <ClCompile Include="src\Tracing\Camera.cpp" />
     <ClCompile Include="src\Tracing\ONB.cpp" />
     <ClCompile Include="src\Tracing\Ray.cpp" />
+    <ClCompile Include="src\Tracing\Scene.cpp" />
     <ClCompile Include="src\Tracing\Triangle.cpp" />
     <ClCompile Include="src\Utils\ColorGradient.cpp" />
     <ClCompile Include="src\Utils\FpsCounter.cpp" />
@@ -406,7 +402,7 @@
     <ClInclude Include="src\Samplers\RandomSampler.h" />
     <ClInclude Include="src\Samplers\RegularSampler.h" />
     <ClInclude Include="src\Samplers\Sampler.h" />
-    <ClInclude Include="src\Scenes\Scene.h" />
+    <ClInclude Include="src\TestScenes\TestScene.h" />
     <ClInclude Include="src\Textures\CheckerTexture.h" />
     <ClInclude Include="src\Textures\ColorGradientTexture.h" />
     <ClInclude Include="src\Textures\ColorTexture.h" />
@@ -429,6 +425,7 @@
     <ClInclude Include="src\Tracing\Intersection.h" />
     <ClInclude Include="src\Tracing\ONB.h" />
     <ClInclude Include="src\Tracing\Ray.h" />
+    <ClInclude Include="src\Tracing\Scene.h" />
     <ClInclude Include="src\Tracing\Triangle.h" />
     <ClInclude Include="src\Utils\ColorGradient.h" />
     <ClInclude Include="src\Utils\FpsCounter.h" />

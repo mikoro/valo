@@ -8,7 +8,7 @@
 #include "Tracers/PathtracerRecursive.h"
 #include "Tracers/PathtracerIterative.h"
 #include "Tracers/PreviewTracer.h"
-#include "Scenes/Scene.h"
+#include "Tracing/Scene.h"
 #include "App.h"
 #include "Utils/Settings.h"
 #include "TracerState.h"

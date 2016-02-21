@@ -3,11 +3,14 @@
 
 #include "Precompiled.h"
 
-#include "Scenes/Scene.h"
+#include "TestScenes/TestScene.h"
+#include "Tracing/Scene.h"
 
 using namespace Raycer;
 
-Scene Scene::createTestScene3()
+// CRYTEK SPONZA //
+
+Scene TestScene::create3()
 {
 	Scene scene;
 

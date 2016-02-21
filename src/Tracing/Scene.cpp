@@ -6,7 +6,7 @@
 
 #include "Precompiled.h"
 
-#include "Scenes/Scene.h"
+#include "Tracing/Scene.h"
 #include "Textures/Texture.h"
 #include "App.h"
 #include "Utils/Log.h"
@@ -14,19 +14,6 @@
 #include "Utils/Timer.h"
 
 using namespace Raycer;
-
-Scene Scene::createTestScene(uint64_t number)
-{
-	App::getLog().logInfo("Creating test scene number %d", number);
-
-	switch (number)
-	{
-		case 1: return createTestScene1();
-		case 2: return createTestScene2();
-		case 3: return createTestScene3();
-		default: throw std::runtime_error("Unknown test scene number");
-	}
-}
 
 Scene Scene::loadFromFile(const std::string& fileName)
 {

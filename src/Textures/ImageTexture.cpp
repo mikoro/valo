@@ -8,7 +8,7 @@
 #include "Math/Vector3.h"
 #include "Rendering/Color.h"
 #include "Rendering/ImagePool.h"
-#include "Scenes/Scene.h"
+#include "Tracing/Scene.h"
 
 using namespace Raycer;
 
