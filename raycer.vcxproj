@@ -289,8 +289,8 @@
     <ClCompile Include="src\Rendering\Image.cpp" />
     <ClCompile Include="src\Rendering\ImagePool.cpp" />
     <ClCompile Include="src\Rendering\InfoPanel.cpp" />
-    <ClCompile Include="src\RunnerStates\DefaultState.cpp" />
     <ClCompile Include="src\Runners\ConsoleRunner.cpp" />
+    <ClCompile Include="src\Runners\WindowRunnerRenderState.cpp" />
     <ClCompile Include="src\Runners\NetworkRunner.cpp" />
     <ClCompile Include="src\Runners\WindowRunner.cpp" />
     <ClCompile Include="src\Samplers\CenterSampler.cpp" />
@@ -390,9 +390,8 @@
     <ClInclude Include="src\Rendering\Image.h" />
     <ClInclude Include="src\Rendering\ImagePool.h" />
     <ClInclude Include="src\Rendering\InfoPanel.h" />
-    <ClInclude Include="src\RunnerStates\DefaultState.h" />
-    <ClInclude Include="src\RunnerStates\RunnerState.h" />
     <ClInclude Include="src\Runners\ConsoleRunner.h" />
+    <ClInclude Include="src\Runners\WindowRunnerRenderState.h" />
     <ClInclude Include="src\Runners\NetworkRunner.h" />
     <ClInclude Include="src\Runners\WindowRunner.h" />
     <ClInclude Include="src\Samplers\CenterSampler.h" />

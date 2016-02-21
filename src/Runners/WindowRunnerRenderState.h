@@ -6,7 +6,7 @@
 #include <atomic>
 #include <memory>
 
-#include "RunnerStates/RunnerState.h"
+#include "Runners/WindowRunner.h"
 #include "Tracers/Tracer.h"
 #include "Tracing/Scene.h"
 #include "Rendering/Film.h"
@@ -15,15 +15,13 @@
 
 namespace Raycer
 {
-	class DefaultState : public RunnerState
+	class WindowRunnerRenderState : public WindowRunnerState
 	{
 	public:
 
-		DefaultState();
+		WindowRunnerRenderState();
 
 		void initialize() override;
-		void pause() override;
-		void resume() override;
 		void shutdown() override;
 
 		void update(float timeStep) override;

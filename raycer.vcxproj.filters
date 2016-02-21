@@ -34,9 +34,6 @@
     <Filter Include="Tracing">
       <UniqueIdentifier>{e41086c1-aec0-4f77-8f9d-6a045ee94c85}</UniqueIdentifier>
     </Filter>
-    <Filter Include="RunnerStates">
-      <UniqueIdentifier>{866932e9-b0c5-4908-b3d7-d317940ce93a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Samplers">
       <UniqueIdentifier>{0eb52790-23f1-4bb2-a552-2cb8295f9600}</UniqueIdentifier>
     </Filter>
@@ -223,9 +220,6 @@
     <ClCompile Include="src\Runners\WindowRunner.cpp">
       <Filter>Runners</Filter>
     </ClCompile>
-    <ClCompile Include="src\RunnerStates\DefaultState.cpp">
-      <Filter>RunnerStates</Filter>
-    </ClCompile>
     <ClCompile Include="src\Rendering\Film.cpp">
       <Filter>Rendering</Filter>
     </ClCompile>
@@ -352,6 +346,9 @@
     </ClCompile>
     <ClCompile Include="src\TestScenes\TestScene.cpp">
       <Filter>TestScenes</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Runners\WindowRunnerRenderState.cpp">
+      <Filter>Runners</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -495,12 +492,6 @@
     <ClInclude Include="src\Runners\WindowRunner.h">
       <Filter>Runners</Filter>
     </ClInclude>
-    <ClInclude Include="src\RunnerStates\DefaultState.h">
-      <Filter>RunnerStates</Filter>
-    </ClInclude>
-    <ClInclude Include="src\RunnerStates\RunnerState.h">
-      <Filter>RunnerStates</Filter>
-    </ClInclude>
     <ClInclude Include="src\Rendering\Film.h">
       <Filter>Rendering</Filter>
     </ClInclude>
@@ -609,6 +600,9 @@
     </ClInclude>
     <ClInclude Include="src\TestScenes\TestScene.h">
       <Filter>TestScenes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Runners\WindowRunnerRenderState.h">
+      <Filter>Runners</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

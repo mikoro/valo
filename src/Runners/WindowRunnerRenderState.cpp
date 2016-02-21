@@ -3,7 +3,7 @@
 
 #include "Precompiled.h"
 
-#include "RunnerStates/DefaultState.h"
+#include "Runners/WindowRunnerRenderState.h"
 #include "App.h"
 #include "Utils/Settings.h"
 #include "Utils/Log.h"
@@ -18,7 +18,7 @@
 
 using namespace Raycer;
 
-DefaultState::DefaultState() : interrupted(false)
+WindowRunnerRenderState::WindowRunnerRenderState() : interrupted(false)
 {
 	tracers[TracerType::RAY] = std::make_unique<Raytracer>();
 	tracers[TracerType::PATH_RECURSIVE] = std::make_unique<PathtracerRecursive>();
@@ -26,7 +26,7 @@ DefaultState::DefaultState() : interrupted(false)
 	tracers[TracerType::PREVIEW] = std::make_unique<PreviewTracer>();
 }
 
-void DefaultState::initialize()
+void WindowRunnerRenderState::initialize()
 {
 	Settings& settings = App::getSettings();
 	WindowRunner& windowRunner = App::getWindowRunner();
@@ -50,19 +50,11 @@ void DefaultState::initialize()
 	infoPanel.setState(InfoPanelState(settings.interactive.infoPanelState));
 }
 
-void DefaultState::pause()
+void WindowRunnerRenderState::shutdown()
 {
 }
 
-void DefaultState::resume()
-{
-}
-
-void DefaultState::shutdown()
-{
-}
-
-void DefaultState::update(float timeStep)
+void WindowRunnerRenderState::update(float timeStep)
 {
 	Log& log = App::getLog();
 	Settings& settings = App::getSettings();
@@ -148,26 +140,6 @@ void DefaultState::update(float timeStep)
 			scene.tonemapping.type = TonemapperType::REINHARD;
 		else if (scene.tonemapping.type == TonemapperType::REINHARD)
 			scene.tonemapping.type = TonemapperType::PASSTHROUGH;
-	}
-
-	if (windowRunner.keyWasPressed(GLFW_KEY_F6))
-	{
-		windowRunner.pause();
-		scene.saveToFile("temp_scene.bin");
-
-#ifdef _WIN32
-		ShellExecuteA(nullptr, "open", "raycer.exe", "--scene.fileName temp_scene.bin --general.interactive 0 --scene.enableTestScenes 0 --image.autoView 1", nullptr, SW_SHOWNORMAL);
-#else
-		int32_t pid = fork();
-
-		if (pid == 0)
-		{
-			char* arg[] = { (char*)"raycer", (char*)"--scene.fileName temp_scene.bin", (char*)"--general.interactive 0", (char*)"--scene.enableTestScenes 0", (char*)"--image.autoView 1", (char*)nullptr };
-
-			if (execvp(arg[0], arg) == -1)
-				App::getLog().logWarning("Could not launch external rendering (%d) (try adding raycer to PATH)", errno);
-		}
-#endif
 	}
 
 	if (windowRunner.keyWasPressed(GLFW_KEY_F10))
@@ -260,7 +232,7 @@ void DefaultState::update(float timeStep)
 	scene.camera.update(timeStep);
 }
 
-void DefaultState::render(float timeStep, float interpolation)
+void WindowRunnerRenderState::render(float timeStep, float interpolation)
 {
 	(void)timeStep;
 	(void)interpolation;
@@ -305,13 +277,13 @@ void DefaultState::render(float timeStep, float interpolation)
 	infoPanel.render(state);
 }
 
-void DefaultState::windowResized(uint64_t width, uint64_t height)
+void WindowRunnerRenderState::windowResized(uint64_t width, uint64_t height)
 {
 	filmRenderer.setWindowSize(width, height);
 	resizeFilm();
 }
 
-void DefaultState::resizeFilm()
+void WindowRunnerRenderState::resizeFilm()
 {
 	Settings& settings = App::getSettings();
 	WindowRunner& windowRunner = App::getWindowRunner();

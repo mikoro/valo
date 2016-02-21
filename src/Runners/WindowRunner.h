@@ -7,12 +7,28 @@
 #include <memory>
 
 #include "Utils/FpsCounter.h"
-#include "RunnerStates/RunnerState.h"
 
 struct GLFWwindow;
 
 namespace Raycer
 {
+	enum class WindowRunnerStates { NONE, RENDER };
+
+	class WindowRunnerState
+	{
+	public:
+
+		virtual ~WindowRunnerState() {}
+
+		virtual void initialize() = 0;
+		virtual void shutdown() = 0;
+
+		virtual void update(float timeStep) = 0;
+		virtual void render(float timeStep, float interpolation) = 0;
+
+		virtual void windowResized(uint64_t width, uint64_t height) = 0;
+	};
+
 	struct MouseInfo
 	{
 		int64_t windowX = 0;
@@ -34,7 +50,6 @@ namespace Raycer
 
 		int run();
 		void stop();
-		void pause();
 
 		GLFWwindow* getGlfwWindow() const;
 		uint64_t getWindowWidth() const;
@@ -49,7 +64,7 @@ namespace Raycer
 		bool mouseWasPressed(int32_t button);
 		float getMouseWheelScroll();
 
-		void changeState(RunnerStates newState);
+		void changeState(WindowRunnerStates state);
 
 	private:
 
@@ -60,14 +75,13 @@ namespace Raycer
 		void printWindowSize();
 		void windowResized(uint64_t width, uint64_t height);
 		
-		void mainLoop();
+		void mainloop();
 		void update(float timeStep);
 		void render(float timeStep, float interpolation);
 
 		void takeScreenshot() const;
 
 		bool shouldRun = true;
-		bool isPaused = false;
 		bool glfwInitialized = false;
 
 		double startTime = 0.0;
@@ -83,8 +97,8 @@ namespace Raycer
 		std::map<int32_t, bool> keyStates;
 		std::map<int32_t, bool> mouseStates;
 
-		std::map<RunnerStates, std::unique_ptr<RunnerState>> runnerStates;
-		RunnerStates currentState = RunnerStates::NONE;
+		std::map<WindowRunnerStates, std::unique_ptr<WindowRunnerState>> windowRunnerStates;
+		WindowRunnerState* currentState = nullptr;
 
 		FpsCounter fpsCounter;
 	};

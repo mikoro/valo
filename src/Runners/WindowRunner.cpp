@@ -9,8 +9,7 @@
 #include "Utils/Log.h"
 #include "Utils/GLHelper.h"
 #include "Rendering/Image.h"
-#include "RunnerStates/RunnerState.h"
-#include "RunnerStates/DefaultState.h"
+#include "Runners/WindowRunnerRenderState.h"
 
 using namespace Raycer;
 
@@ -35,6 +34,7 @@ namespace
 
 WindowRunner::WindowRunner()
 {
+	windowRunnerStates[WindowRunnerStates::RENDER] = std::make_unique<WindowRunnerRenderState>();
 }
 
 WindowRunner::~WindowRunner()
@@ -46,7 +46,7 @@ WindowRunner::~WindowRunner()
 int WindowRunner::run()
 {
 	initialize();
-	mainLoop();
+	mainloop();
 	shutdown();
 
 	return 0;
@@ -55,11 +55,6 @@ int WindowRunner::run()
 void WindowRunner::stop()
 {
 	shouldRun = false;
-}
-
-void WindowRunner::pause()
-{
-	isPaused = true;
 }
 
 GLFWwindow* WindowRunner::getGlfwWindow() const
@@ -145,13 +140,18 @@ float WindowRunner::getMouseWheelScroll()
 	return 0.0f;
 }
 
-void WindowRunner::changeState(RunnerStates newState)
+void WindowRunner::changeState(WindowRunnerStates state)
 {
-	if (currentState != RunnerStates::NONE)
-		runnerStates[currentState]->shutdown();
+	if (currentState != nullptr)
+		currentState->shutdown();
 
-	currentState = newState;
-	runnerStates[currentState]->initialize();
+	currentState = nullptr;
+
+	if (state != WindowRunnerStates::NONE)
+	{
+		currentState = windowRunnerStates[state].get();
+		currentState->initialize();
+	}
 }
 
 void WindowRunner::initialize()
@@ -207,15 +207,12 @@ void WindowRunner::initialize()
 		glfwSetInputMode(glfwWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 	checkWindowSize();
-
-	runnerStates[RunnerStates::DEFAULT] = std::make_unique<DefaultState>();
-	changeState(RunnerStates::DEFAULT);
+	changeState(WindowRunnerStates::RENDER);
 }
 
 void WindowRunner::shutdown()
 {
-	if (currentState != RunnerStates::NONE)
-		runnerStates[currentState]->shutdown();
+	currentState->shutdown();
 }
 
 void WindowRunner::checkWindowSize()
@@ -251,14 +248,14 @@ void WindowRunner::windowResized(uint64_t width, uint64_t height)
 
 	glViewport(0, 0, GLsizei(windowWidth), GLsizei(windowHeight));
 
-	if (currentState != RunnerStates::NONE)
-		runnerStates[currentState]->windowResized(windowWidth, windowHeight);
+	if (currentState != nullptr)
+		currentState->windowResized(windowWidth, windowHeight);
 }
 
 // http://gafferongames.com/game-physics/fix-your-timestep/
 // http://gamesfromwithin.com/casey-and-the-clearly-deterministic-contraptions
 // https://randomascii.wordpress.com/2012/02/13/dont-store-that-in-a-float/
-void WindowRunner::mainLoop()
+void WindowRunner::mainloop()
 {
 	App::getLog().logInfo("Entering the main loop");
 
@@ -318,16 +315,7 @@ void WindowRunner::update(float timeStep)
 	if (keyWasPressed(GLFW_KEY_ESCAPE))
 		shouldRun = false;
 
-	if (keyWasPressed(GLFW_KEY_P))
-		isPaused = !isPaused;
-
-	if (currentState != RunnerStates::NONE)
-	{
-		if (!isPaused)
-			runnerStates[currentState]->update(timeStep);
-	}
-	else
-		throw std::runtime_error("Runner state has not been set");
+	currentState->update(timeStep);
 }
 
 void WindowRunner::render(float timeStep, float interpolation)
@@ -337,15 +325,7 @@ void WindowRunner::render(float timeStep, float interpolation)
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
-	if (currentState != RunnerStates::NONE)
-	{
-		if (!isPaused)
-			runnerStates[currentState]->render(timeStep, interpolation);
-		else
-			std::this_thread::sleep_for(std::chrono::milliseconds(100));
-	}
-	else
-		throw std::runtime_error("Runner state has not been set");
+	currentState->render(timeStep, interpolation);
 
 	glfwSwapBuffers(glfwWindow);
 
