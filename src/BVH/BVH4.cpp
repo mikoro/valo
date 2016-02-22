@@ -89,7 +89,7 @@ void BVH4::build(std::vector<Triangle>& triangles, const BVHBuildInfo& buildInfo
 
 			if (splitOutputs[1].index - buildEntry.start < 2 || buildEntry.end - splitOutputs[1].index < 2)
 			{
-				node.isLeaf = true;
+				node.isLeaf = 1;
 				failedMiddleSplitCount++;
 			}
 

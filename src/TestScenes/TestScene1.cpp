@@ -8,13 +8,14 @@
 
 using namespace Raycer;
 
-// CORNELL BOX //
+// CORNELL BOX CUBOIDS //
 
 Scene TestScene::create1()
 {
 	Scene scene;
 
-	scene.general.tracerType = TracerType::PREVIEW;
+	scene.general.tracerType = TracerType::RAY;
+
 	scene.pathtracing.enableMultiSampling = true;
 	scene.pathtracing.multiSamplerFilterType = FilterType::BELL;
 	scene.pathtracing.minPathLength = 3;
@@ -23,11 +24,11 @@ Scene TestScene::create1()
 
 	scene.camera.position = Vector3(0.0f, 1.0f, 3.5f);
 
-	scene.bvhType = BVHType::BVH4;
-	scene.bvhBuildInfo.maxLeafSize = 20;
+	scene.bvhType = BVHType::BVH1;
+	scene.bvhBuildInfo.maxLeafSize = 4;
 
 	ModelLoaderInfo model;
-	model.modelFilePath = "data/models/cornellbox/cornellbox.obj";
+	model.modelFilePath = "data/models/cornellbox-cuboids/cornellbox.obj";
 
 	scene.models.push_back(model);
 	

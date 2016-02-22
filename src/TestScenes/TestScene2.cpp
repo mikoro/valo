@@ -8,31 +8,56 @@
 
 using namespace Raycer;
 
-// CONFERENCE //
+// CORNELL BOX SPHERES //
 
 Scene TestScene::create2()
 {
 	Scene scene;
 
 	scene.general.tracerType = TracerType::PREVIEW;
+	scene.pathtracing.enableMultiSampling = true;
+	scene.pathtracing.multiSamplerFilterType = FilterType::BELL;
+	scene.pathtracing.minPathLength = 3;
+	scene.pathtracing.terminationProbability = 0.2f;
+	scene.pathtracing.pixelSampleCount = 1;
 
+	scene.camera.position = Vector3(-0.0000f, 0.7808f, 2.9691f);
+	
 	scene.bvhType = BVHType::BVH1;
 	scene.bvhBuildInfo.maxLeafSize = 4;
 
-	scene.camera.position = Vector3(-4.6401f, 0.4618f, 2.7327f);
-	scene.camera.orientation = EulerAngle(-13.3503f, -56.3473f, 0.0000f);
-	scene.camera.fov = 65.0f;
-
 	ModelLoaderInfo model;
-	model.modelFilePath = "data/models/conference/conference.obj";
+	model.modelFilePath = "data/models/cornellbox-spheres/cornellbox.obj";
 
 	scene.models.push_back(model);
 	
+	AmbientLight ambientLight;
+	ambientLight.color = Color(1.0f, 1.0f, 1.0f) * 0.01f;
+	ambientLight.occlusion = false;
+	ambientLight.maxSampleDistance = 0.2f;
+	ambientLight.sampleCountSqrt = 4;
+
+	scene.lights.ambientLights.push_back(ambientLight);
+
+	DirectionalLight directionalLight;
+	directionalLight.color = Color(1.0f, 1.0f, 1.0f) * 0.2f;
+	directionalLight.direction = EulerAngle(-30.0f, 50.0f, 0.0f).getDirection();
+
+	//scene.lights.directionalLights.push_back(directionalLight);
+
 	PointLight pointLight;
-	pointLight.color = Color(1.0f, 1.0f, 1.0f) * 2.0f;
-	pointLight.position = Vector3(-0.64f, 1.09f, -0.34f);
+	pointLight.color = Color(1.0f, 0.71f, 0.24f) * 0.5f;
+	pointLight.position = Vector3(0.0f, 1.7f, 0.0f);
 
 	scene.lights.pointLights.push_back(pointLight);
+
+	AreaPointLight areaLight;
+	areaLight.color = Color(1.0f, 0.71f, 0.24f) * 0.5f;
+	areaLight.position = Vector3(0.0f, 1.7f, 0.0f);
+	areaLight.radius = 0.2f;
+	areaLight.sampleCountSqrt = 4;
+
+	//scene.lights.areaPointLights.push_back(areaLight);
 
 	return scene;
 }

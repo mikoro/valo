@@ -36,8 +36,6 @@ void WindowRunnerRenderState::initialize()
 	else
 		scene = Scene::loadFromFile(settings.scene.fileName);
 
-	currentTestSceneNumber = settings.scene.testSceneNumber;
-
 	filmRenderer.initialize();
 	windowResized(windowRunner.getWindowWidth(), windowRunner.getWindowHeight());
 
@@ -60,77 +58,32 @@ void WindowRunnerRenderState::update(float timeStep)
 	Settings& settings = App::getSettings();
 	WindowRunner& windowRunner = App::getWindowRunner();
 
-	if (windowRunner.keyWasPressed(GLFW_KEY_F1))
+	bool ctrlIsPressed = windowRunner.keyIsDown(GLFW_KEY_LEFT_CONTROL) || windowRunner.keyIsDown(GLFW_KEY_RIGHT_CONTROL);
+	
+	// INFO PANEL //
+
+	if (!ctrlIsPressed && windowRunner.keyWasPressed(GLFW_KEY_F1))
 		infoPanel.selectNextState();
 
-	bool increaseTestSceneNumber = windowRunner.keyWasPressed(GLFW_KEY_F2);
-	bool decreaseTestSceneNumber = windowRunner.keyWasPressed(GLFW_KEY_F3);
+	// TRACER //
 
-	if (increaseTestSceneNumber || decreaseTestSceneNumber)
+	if (!ctrlIsPressed && windowRunner.keyWasPressed(GLFW_KEY_F2))
 	{
-		uint64_t previousTestSceneNumber = currentTestSceneNumber;
+		if (scene.general.tracerType == TracerType::RAY)
+			scene.general.tracerType = TracerType::PATH_RECURSIVE;
+		else if (scene.general.tracerType == TracerType::PATH_RECURSIVE)
+			scene.general.tracerType = TracerType::PATH_ITERATIVE;
+		else if (scene.general.tracerType == TracerType::PATH_ITERATIVE)
+			scene.general.tracerType = TracerType::PREVIEW;
+		else if (scene.general.tracerType == TracerType::PREVIEW)
+			scene.general.tracerType = TracerType::RAY;
 
-		if (increaseTestSceneNumber)
-			currentTestSceneNumber++;
-
-		if (decreaseTestSceneNumber)
-			currentTestSceneNumber--;
-
-		if (currentTestSceneNumber < 1)
-			currentTestSceneNumber = 1;
-
-		if (currentTestSceneNumber > TestScene::TEST_SCENE_COUNT)
-			currentTestSceneNumber = TestScene::TEST_SCENE_COUNT;
-
-		if (previousTestSceneNumber != currentTestSceneNumber)
-		{
-			try
-			{
-				scene = TestScene::create(currentTestSceneNumber);
-				scene.initialize();
-			}
-			catch (const std::exception& ex)
-			{
-				log.logWarning("Could not create test scene: %s", ex.what());
-
-				scene = Scene();
-				scene.initialize();
-			}
-
-			scene.camera.setImagePlaneSize(film.getWidth(), film.getHeight());
-			film.clear();
-		}
-	}
-
-	if (windowRunner.keyWasPressed(GLFW_KEY_R))
-	{
-		scene.camera.reset();
 		film.clear();
 	}
 
-	if (windowRunner.keyWasPressed(GLFW_KEY_N))
-		scene.general.enableNormalMapping = !scene.general.enableNormalMapping;
+	// TONEMAPPER //
 
-	if (windowRunner.keyWasPressed(GLFW_KEY_F4))
-	{
-		if (windowRunner.keyIsDown(GLFW_KEY_LEFT_CONTROL) || windowRunner.keyIsDown(GLFW_KEY_RIGHT_CONTROL))
-			settings.interactive.usePreviewWhileMoving = !settings.interactive.usePreviewWhileMoving;
-		else
-		{
-			if (scene.general.tracerType == TracerType::RAY)
-				scene.general.tracerType = TracerType::PATH_RECURSIVE;
-			else if (scene.general.tracerType == TracerType::PATH_RECURSIVE)
-				scene.general.tracerType = TracerType::PATH_ITERATIVE;
-			else if (scene.general.tracerType == TracerType::PATH_ITERATIVE)
-				scene.general.tracerType = TracerType::PREVIEW;
-			else if (scene.general.tracerType == TracerType::PREVIEW)
-				scene.general.tracerType = TracerType::RAY;
-		}
-		
-		film.clear();
-	}
-
-	if (windowRunner.keyWasPressed(GLFW_KEY_F5))
+	if (!ctrlIsPressed && windowRunner.keyWasPressed(GLFW_KEY_F3))
 	{
 		if (scene.tonemapping.type == TonemapperType::PASSTHROUGH)
 			scene.tonemapping.type = TonemapperType::LINEAR;
@@ -142,7 +95,9 @@ void WindowRunnerRenderState::update(float timeStep)
 			scene.tonemapping.type = TonemapperType::PASSTHROUGH;
 	}
 
-	if (windowRunner.keyWasPressed(GLFW_KEY_F10))
+	// RENDER SCALE //
+
+	if (!ctrlIsPressed && windowRunner.keyWasPressed(GLFW_KEY_F10))
 	{
 		float newScale = settings.interactive.renderScale * 0.5f;
 		uint64_t newWidth = uint64_t(float(windowRunner.getWindowWidth()) * newScale + 0.5f);
@@ -155,7 +110,7 @@ void WindowRunnerRenderState::update(float timeStep)
 		}
 	}
 
-	if (windowRunner.keyWasPressed(GLFW_KEY_F11))
+	if (!ctrlIsPressed && windowRunner.keyWasPressed(GLFW_KEY_F11))
 	{
 		if (settings.interactive.renderScale < 1.0f)
 		{
@@ -168,65 +123,109 @@ void WindowRunnerRenderState::update(float timeStep)
 		}
 	}
 
-	if (windowRunner.keyIsDown(GLFW_KEY_LEFT_CONTROL) || windowRunner.keyIsDown(GLFW_KEY_RIGHT_CONTROL))
+	// MISC //
+	
+	if (windowRunner.keyWasPressed(GLFW_KEY_R))
 	{
-		if (windowRunner.keyIsDown(GLFW_KEY_PAGE_DOWN))
-			scene.tonemapping.exposure -= 2.0f * timeStep;
-		else if (windowRunner.keyIsDown(GLFW_KEY_PAGE_UP))
-			scene.tonemapping.exposure += 2.0f * timeStep;
+		scene.camera.reset();
+		film.clear();
 	}
 
-	if (windowRunner.keyIsDown(GLFW_KEY_LEFT_SHIFT) || windowRunner.keyIsDown(GLFW_KEY_RIGHT_SHIFT))
-	{
-		if (windowRunner.keyIsDown(GLFW_KEY_PAGE_DOWN))
-			scene.tonemapping.key -= 0.1f * timeStep;
-		else if (windowRunner.keyIsDown(GLFW_KEY_PAGE_UP))
-			scene.tonemapping.key += 0.1f * timeStep;
-
-		scene.tonemapping.key = std::max(0.0f, scene.tonemapping.key);
-	}
+	if (windowRunner.keyWasPressed(GLFW_KEY_N))
+		scene.general.enableNormalMapping = !scene.general.enableNormalMapping;
 
 	if (windowRunner.keyWasPressed(GLFW_KEY_M))
 		settings.camera.enableMovement = !settings.camera.enableMovement;
 
-	if (windowRunner.keyIsDown(GLFW_KEY_LEFT_CONTROL) || windowRunner.keyIsDown(GLFW_KEY_RIGHT_CONTROL))
+	// EXPOSURE & KEY //
+
+	if (ctrlIsPressed)
 	{
-		if (windowRunner.keyWasPressed(GLFW_KEY_1))
+		if (scene.tonemapping.type == TonemapperType::REINHARD)
+		{
+			if (windowRunner.keyIsDown(GLFW_KEY_PAGE_DOWN))
+				scene.tonemapping.key -= 0.1f * timeStep;
+			else if (windowRunner.keyIsDown(GLFW_KEY_PAGE_UP))
+				scene.tonemapping.key += 0.1f * timeStep;
+
+			scene.tonemapping.key = std::max(0.0f, scene.tonemapping.key);
+		}
+		else
+		{
+			if (windowRunner.keyIsDown(GLFW_KEY_PAGE_DOWN))
+				scene.tonemapping.exposure -= 2.0f * timeStep;
+			else if (windowRunner.keyIsDown(GLFW_KEY_PAGE_UP))
+				scene.tonemapping.exposure += 2.0f * timeStep;
+		}
+	}
+
+	// SCENE/CAMERA/FILM SAVING //
+
+	if (ctrlIsPressed)
+	{
+		if (windowRunner.keyWasPressed(GLFW_KEY_F1))
 			scene.saveToFile("temp_scene.xml");
 
-		if (windowRunner.keyWasPressed(GLFW_KEY_2))
+		if (windowRunner.keyWasPressed(GLFW_KEY_F2))
 			scene.saveToFile("temp_scene.json");
 
-		if (windowRunner.keyWasPressed(GLFW_KEY_3))
+		if (windowRunner.keyWasPressed(GLFW_KEY_F3))
 			scene.saveToFile("temp_scene.bin");
 
-		if (windowRunner.keyWasPressed(GLFW_KEY_4))
+		if (windowRunner.keyWasPressed(GLFW_KEY_F4))
 			scene.camera.saveState("camera.txt");
 
-		if (windowRunner.keyWasPressed(GLFW_KEY_5))
+		if (windowRunner.keyWasPressed(GLFW_KEY_F5))
 		{
 			film.generateOutputImage(scene);
 			film.getOutputImage().save("temp_result.png");
 		}
 
-		if (windowRunner.keyWasPressed(GLFW_KEY_6))
+		if (windowRunner.keyWasPressed(GLFW_KEY_F6))
 		{
 			film.generateOutputImage(scene);
 			film.getOutputImage().save("temp_result.hdr");
 		}
 
-		if (windowRunner.keyWasPressed(GLFW_KEY_7))
+		if (windowRunner.keyWasPressed(GLFW_KEY_F7))
 			film.save("temp_film.bin");
 	}
 
-	if (windowRunner.keyIsDown(GLFW_KEY_LEFT_CONTROL) || windowRunner.keyIsDown(GLFW_KEY_RIGHT_CONTROL))
+	// TEST SCENE LOADING //
+
+	int64_t testSceneIndex = -1;
+
+	if (windowRunner.keyWasPressed(GLFW_KEY_1)) testSceneIndex = 1;
+	if (windowRunner.keyWasPressed(GLFW_KEY_2)) testSceneIndex = 2;
+	if (windowRunner.keyWasPressed(GLFW_KEY_3)) testSceneIndex = 3;
+	if (windowRunner.keyWasPressed(GLFW_KEY_4)) testSceneIndex = 4;
+	if (windowRunner.keyWasPressed(GLFW_KEY_5)) testSceneIndex = 5;
+	if (windowRunner.keyWasPressed(GLFW_KEY_6)) testSceneIndex = 6;
+	if (windowRunner.keyWasPressed(GLFW_KEY_7)) testSceneIndex = 7;
+	if (windowRunner.keyWasPressed(GLFW_KEY_8)) testSceneIndex = 8;
+	if (windowRunner.keyWasPressed(GLFW_KEY_9)) testSceneIndex = 9;
+	if (windowRunner.keyWasPressed(GLFW_KEY_0)) testSceneIndex = 10;
+
+	if (testSceneIndex != -1)
 	{
-		if (windowRunner.keyWasPressed(GLFW_KEY_LEFT))
-			scene.bvh->disableRight();
-		else if (windowRunner.keyWasPressed(GLFW_KEY_RIGHT))
-			scene.bvh->disableLeft();
-		else if (windowRunner.keyWasPressed(GLFW_KEY_UP))
-			scene.bvh->undoDisable();
+		if (ctrlIsPressed)
+			testSceneIndex += 10;
+
+		try
+		{
+			scene = TestScene::create(testSceneIndex);
+			scene.initialize();
+		}
+		catch (const std::exception& ex)
+		{
+			log.logWarning("Could not create test scene: %s", ex.what());
+
+			scene = Scene();
+			scene.initialize();
+		}
+
+		scene.camera.setImagePlaneSize(film.getWidth(), film.getHeight());
+		film.clear();
 	}
 
 	scene.camera.update(timeStep);

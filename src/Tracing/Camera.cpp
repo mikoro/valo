@@ -245,8 +245,15 @@ void Camera::saveState(const std::string& fileName) const
 	file << tfm::format("yaw = %f", orientation.yaw) << std::endl;
 	file << tfm::format("roll = %f", orientation.roll) << std::endl;
 	file << std::endl;
-	file << tfm::format("scene.camera.position = Vector3(%.4f, %.4f, %.4f);", position.x, position.y, position.z) << std::endl;
-	file << tfm::format("scene.camera.orientation = EulerAngle(%.4f, %.4f, %.4f);", orientation.pitch, orientation.yaw, orientation.roll) << std::endl;
+	file << tfm::format("fov = %f", fov) << std::endl;
+	file << tfm::format("orthoSize = %f", orthoSize) << std::endl;
+	file << tfm::format("fishEyeAngle = %f", fishEyeAngle) << std::endl;
+	file << std::endl;
+	file << tfm::format("scene.camera.position = Vector3(%.4ff, %.4ff, %.4ff);", position.x, position.y, position.z) << std::endl;
+	file << tfm::format("scene.camera.orientation = EulerAngle(%.4ff, %.4ff, %.4ff);", orientation.pitch, orientation.yaw, orientation.roll) << std::endl;
+	file << tfm::format("scene.camera.fov = %.2ff;", fov) << std::endl;
+	file << tfm::format("scene.camera.orthoSize = %.2ff;", orthoSize) << std::endl;
+	file << tfm::format("scene.camera.fishEyeAngle = %.2ff;", fishEyeAngle) << std::endl;
 
 	file.close();
 }
