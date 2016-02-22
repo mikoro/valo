@@ -19,10 +19,6 @@ Only OBJ (and MTL) files are supported.
 
 Restrictions:
  - numbers cannot have scientific notation
- - negative indices are not supported
- - faces must be triangulated (only first three vertices are taken from each face)
-
-To make a mesh work, import it into Blender and then export with triangulation.
 
 */
 

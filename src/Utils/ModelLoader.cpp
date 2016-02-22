@@ -48,16 +48,11 @@ namespace
 		std::string line;
 		std::string part;
 		std::string currentMaterialName;
-		uint64_t lineIndex = 0;
 
 		while (std::getline(file, line))
 		{
-			part.clear();
-			lineIndex = 0;
-			StringUtils::readUntilSpace(line, lineIndex, part);
-
-			if (part.size() == 0)
-				continue;
+			std::stringstream ss(line);
+			ss >> part;
 
 			if (part == "newmtl") // new material
 			{
@@ -69,77 +64,51 @@ namespace
 				currentMaterial = DiffuseSpecularMaterial();
 				currentMaterial.id = ++currentId;
 
-				StringUtils::readUntilSpace(line, lineIndex, currentMaterialName);
+				ss >> currentMaterialName;
 				materialsMap[currentMaterialName] = currentMaterial.id;
 			}
 			else if (part == "materialId")
-			{
-				externalMaterialsMap[currentMaterialName] = uint64_t(readFloat(line, lineIndex, part));
-			}
+				ss >> externalMaterialsMap[currentMaterialName];
 			else if (part == "skipLighting")
-			{
-				currentMaterial.skipLighting = readFloat(line, lineIndex, part) != 0.0f;
-			}
+				ss >> currentMaterial.skipLighting;
 			else if (part == "nonShadowing")
-			{
-				currentMaterial.nonShadowing = readFloat(line, lineIndex, part) != 0.0f;
-			}
+				ss >> currentMaterial.nonShadowing;
 			else if (part == "normalInterpolation")
-			{
-				currentMaterial.normalInterpolation = readFloat(line, lineIndex, part) != 0.0f;
-			}
+				ss >> currentMaterial.normalInterpolation;
 			else if (part == "autoInvertNormal")
-			{
-				currentMaterial.autoInvertNormal = readFloat(line, lineIndex, part) != 0.0f;
-			}
+				ss >> currentMaterial.autoInvertNormal;
 			else if (part == "invertNormal")
-			{
-				currentMaterial.invertNormal = readFloat(line, lineIndex, part) != 0.0f;
-			}
+				ss >> currentMaterial.invertNormal;
 			else if (part == "fresnelReflection")
-			{
-				currentMaterial.fresnelReflection = readFloat(line, lineIndex, part) != 0.0f;
-			}
+				ss >> currentMaterial.fresnelReflection;
 			else if (part == "attenuating")
-			{
-				currentMaterial.attenuating = readFloat(line, lineIndex, part) != 0.0f;
-			}
+				ss >> currentMaterial.attenuating;
 			else if (part == "shininess" || part == "Ns")
-			{
-				currentMaterial.shininess = readFloat(line, lineIndex, part);
-			}
+				ss >> currentMaterial.shininess;
 			else if (part == "refractiveIndex" || part == "Ni")
-			{
-				currentMaterial.refractiveIndex = readFloat(line, lineIndex, part);
-			}
+				ss >> currentMaterial.refractiveIndex;
 			else if (part == "rayReflectance")
-			{
-				currentMaterial.rayReflectance = readFloat(line, lineIndex, part);
-			}
+				ss >> currentMaterial.rayReflectance;
 			else if (part == "rayTransmittance")
-			{
-				currentMaterial.rayTransmittance = readFloat(line, lineIndex, part);
-			}
+				ss >> currentMaterial.rayTransmittance;
 			else if (part == "attenuationFactor")
-			{
-				currentMaterial.attenuationFactor = readFloat(line, lineIndex, part);
-			}
+				ss >> currentMaterial.attenuationFactor;
 			else if (part == "attenuationColor")
 			{
-				currentMaterial.attenuationColor.r = readFloat(line, lineIndex, part);
-				currentMaterial.attenuationColor.g = readFloat(line, lineIndex, part);
-				currentMaterial.attenuationColor.b = readFloat(line, lineIndex, part);
+				ss >> currentMaterial.attenuationColor.r;
+				ss >> currentMaterial.attenuationColor.g;
+				ss >> currentMaterial.attenuationColor.b;
 			}
 			else if (part == "texcoordScale")
 			{
-				currentMaterial.texcoordScale.x = readFloat(line, lineIndex, part);
-				currentMaterial.texcoordScale.y = readFloat(line, lineIndex, part);
+				ss >> currentMaterial.texcoordScale.x;
+				ss >> currentMaterial.texcoordScale.y;
 			}
 			else if (part == "reflectance" || part == "Kr")
 			{
-				currentMaterial.reflectance.r = readFloat(line, lineIndex, part);
-				currentMaterial.reflectance.g = readFloat(line, lineIndex, part);
-				currentMaterial.reflectance.b = readFloat(line, lineIndex, part);
+				ss >> currentMaterial.reflectance.r;
+				ss >> currentMaterial.reflectance.g;
+				ss >> currentMaterial.reflectance.b;
 			}
 			else if ((part == "reflectanceMap" || part == "map_Kr") && currentMaterial.reflectanceMapTextureId == 0)
 			{
@@ -147,7 +116,7 @@ namespace
 				imageTexture.id = ++currentId;
 				currentMaterial.reflectanceMapTextureId = imageTexture.id;
 
-				StringUtils::readUntilSpace(line, lineIndex, part);
+				ss >> part;
 				imageTexture.imageFilePath = getAbsolutePath(objFileDirectory, part);
 				imageTexture.applyGamma = !StringUtils::endsWith(imageTexture.imageFilePath, ".hdr");
 
@@ -155,9 +124,9 @@ namespace
 			}
 			else if (part == "emittance" || part == "Ke")
 			{
-				currentMaterial.emittance.r = readFloat(line, lineIndex, part);
-				currentMaterial.emittance.g = readFloat(line, lineIndex, part);
-				currentMaterial.emittance.b = readFloat(line, lineIndex, part);
+				ss >> currentMaterial.emittance.r;
+				ss >> currentMaterial.emittance.g;
+				ss >> currentMaterial.emittance.b;
 			}
 			else if ((part == "emittanceMap" || part == "map_Ke") && currentMaterial.emittanceMapTextureId == 0)
 			{
@@ -165,7 +134,7 @@ namespace
 				imageTexture.id = ++currentId;
 				currentMaterial.emittanceMapTextureId = imageTexture.id;
 
-				StringUtils::readUntilSpace(line, lineIndex, part);
+				ss >> part;
 				imageTexture.imageFilePath = getAbsolutePath(objFileDirectory, part);
 				imageTexture.applyGamma = !StringUtils::endsWith(imageTexture.imageFilePath, ".hdr");
 
@@ -173,9 +142,9 @@ namespace
 			}
 			else if (part == "ambientReflectance" || part == "Ka")
 			{
-				currentMaterial.ambientReflectance.r = readFloat(line, lineIndex, part);
-				currentMaterial.ambientReflectance.g = readFloat(line, lineIndex, part);
-				currentMaterial.ambientReflectance.b = readFloat(line, lineIndex, part);
+				ss >> currentMaterial.ambientReflectance.r;
+				ss >> currentMaterial.ambientReflectance.g;
+				ss >> currentMaterial.ambientReflectance.b;
 			}
 			else if ((part == "ambientMap" || part == "map_Ka") && currentMaterial.ambientMapTextureId == 0)
 			{
@@ -183,7 +152,7 @@ namespace
 				imageTexture.id = ++currentId;
 				currentMaterial.ambientMapTextureId = imageTexture.id;
 
-				StringUtils::readUntilSpace(line, lineIndex, part);
+				ss >> part;
 				imageTexture.imageFilePath = getAbsolutePath(objFileDirectory, part);
 				imageTexture.applyGamma = !StringUtils::endsWith(imageTexture.imageFilePath, ".hdr");
 
@@ -191,9 +160,9 @@ namespace
 			}
 			else if (part == "diffuseReflectance" || part == "Kd")
 			{
-				currentMaterial.diffuseReflectance.r = readFloat(line, lineIndex, part);
-				currentMaterial.diffuseReflectance.g = readFloat(line, lineIndex, part);
-				currentMaterial.diffuseReflectance.b = readFloat(line, lineIndex, part);
+				ss >> currentMaterial.diffuseReflectance.r;
+				ss >> currentMaterial.diffuseReflectance.g;
+				ss >> currentMaterial.diffuseReflectance.b;
 
 				// for compatability
 				currentMaterial.reflectance.r = currentMaterial.diffuseReflectance.r;
@@ -207,7 +176,7 @@ namespace
 				currentMaterial.diffuseMapTextureId = imageTexture.id;
 				currentMaterial.reflectanceMapTextureId = imageTexture.id;
 
-				StringUtils::readUntilSpace(line, lineIndex, part);
+				ss >> part;
 				imageTexture.imageFilePath = getAbsolutePath(objFileDirectory, part);
 				imageTexture.applyGamma = !StringUtils::endsWith(imageTexture.imageFilePath, ".hdr");
 
@@ -215,9 +184,9 @@ namespace
 			}
 			else if (part == "specularReflectance" || part == "Ks")
 			{
-				currentMaterial.specularReflectance.r = readFloat(line, lineIndex, part);
-				currentMaterial.specularReflectance.g = readFloat(line, lineIndex, part);
-				currentMaterial.specularReflectance.b = readFloat(line, lineIndex, part);
+				ss >> currentMaterial.specularReflectance.r;
+				ss >> currentMaterial.specularReflectance.g;
+				ss >> currentMaterial.specularReflectance.b;
 			}
 			else if ((part == "specularMap" || part == "map_Ks") && currentMaterial.specularMapTextureId == 0)
 			{
@@ -225,7 +194,7 @@ namespace
 				imageTexture.id = ++currentId;
 				currentMaterial.specularMapTextureId = imageTexture.id;
 
-				StringUtils::readUntilSpace(line, lineIndex, part);
+				ss >> part;
 				imageTexture.imageFilePath = getAbsolutePath(objFileDirectory, part);
 				imageTexture.applyGamma = !StringUtils::endsWith(imageTexture.imageFilePath, ".hdr");
 
@@ -237,7 +206,7 @@ namespace
 				imageTexture.id = ++currentId;
 				currentMaterial.normalMapTextureId = imageTexture.id;
 
-				StringUtils::readUntilSpace(line, lineIndex, part);
+				ss >> part;
 				imageTexture.imageFilePath = getAbsolutePath(objFileDirectory, part);
 				imageTexture.applyGamma = false;
 
@@ -249,7 +218,7 @@ namespace
 				imageTexture.id = ++currentId;
 				currentMaterial.maskMapTextureId = imageTexture.id;
 
-				StringUtils::readUntilSpace(line, lineIndex, part);
+				ss >> part;
 				imageTexture.imageFilePath = getAbsolutePath(objFileDirectory, part);
 				imageTexture.applyGamma = false;
 
@@ -263,24 +232,33 @@ namespace
 			result.diffuseSpecularMaterials.push_back(currentMaterial);
 	}
 
-	bool processFace(const std::string& line, std::vector<Vector3>& vertices, std::vector<Vector3>& normals, std::vector<Vector2>& texcoords, ModelLoaderResult& result, uint64_t& currentId, uint64_t currentMaterialId, bool hasNormals, bool hasTexcoords)
+	bool processFace(const std::string& line, std::vector<Vector3>& vertices, std::vector<Vector3>& normals, std::vector<Vector2>& texcoords, ModelLoaderResult& result, uint64_t& currentId, uint64_t currentMaterialId)
 	{
 		Log& log = App::getLog();
 
-		uint64_t vertexIndices[3];
-		uint64_t normalIndices[3];
-		uint64_t texcoordIndices[3];
+		uint64_t vertexIndices[4];
+		uint64_t normalIndices[4];
+		uint64_t texcoordIndices[4];
 
 		std::string part1;
 		uint64_t lineIndex1 = 1;
+		uint64_t vertexCount = 0;
 
-		for (uint64_t i = 0; i < 3; ++i)
+		StringUtils::readUntilSpace(line, lineIndex1, part1);
+
+		uint64_t slashCount = std::count(part1.begin(), part1.end(), '/');
+		bool doubleSlash = (part1.find("//") != std::string::npos);
+		bool hasTexcoords = (slashCount > 0 && !doubleSlash);
+		bool hasNormals = (slashCount > 1);
+
+		lineIndex1 = 1;
+
+		for (uint64_t i = 0; i < 4; ++i)
 		{
 			if (!StringUtils::readUntilSpace(line, lineIndex1, part1))
-			{
-				log.logWarning("Not enough vertices in a face");
-				return false;
-			}
+				break;
+
+			vertexCount++;
 
 			std::replace(part1.begin(), part1.end(), '/', ' ');
 
@@ -288,7 +266,12 @@ namespace
 			uint64_t lineIndex2 = 0;
 
 			StringUtils::readUntilSpace(part1, lineIndex2, part2);
-			int64_t vertexIndex = strtoll(part2.c_str(), nullptr, 10) - 1;
+			int64_t vertexIndex = strtoll(part2.c_str(), nullptr, 10);
+
+			if (vertexIndex < 0)
+				vertexIndex = int64_t(vertices.size()) + vertexIndex;
+			else
+				vertexIndex--;
 
 			if (vertexIndex < 0 || vertexIndex >= int64_t(vertices.size()))
 			{
@@ -301,7 +284,12 @@ namespace
 			if (hasTexcoords)
 			{
 				StringUtils::readUntilSpace(part1, lineIndex2, part2);
-				int64_t texcoordIndex = strtoll(part2.c_str(), nullptr, 10) - 1;
+				int64_t texcoordIndex = strtoll(part2.c_str(), nullptr, 10);
+
+				if (texcoordIndex < 0)
+					texcoordIndex = int64_t(texcoords.size()) + texcoordIndex;
+				else
+					texcoordIndex--;
 
 				if (texcoordIndex < 0 || texcoordIndex >= int64_t(texcoords.size()))
 				{
@@ -315,7 +303,12 @@ namespace
 			if (hasNormals)
 			{
 				StringUtils::readUntilSpace(part1, lineIndex2, part2);
-				int64_t normalIndex = strtoll(part2.c_str(), nullptr, 10) - 1;
+				int64_t normalIndex = strtoll(part2.c_str(), nullptr, 10);
+
+				if (normalIndex < 0)
+					normalIndex = int64_t(normals.size()) + normalIndex;
+				else
+					normalIndex--;
 
 				if (normalIndex < 0 || normalIndex >= int64_t(normals.size()))
 				{
@@ -327,37 +320,47 @@ namespace
 			}
 		}
 
-		Triangle triangle;
-		triangle.id = ++currentId;
-		triangle.materialId = currentMaterialId;
-
-		triangle.vertices[0] = vertices[vertexIndices[0]];
-		triangle.vertices[1] = vertices[vertexIndices[1]];
-		triangle.vertices[2] = vertices[vertexIndices[2]];
-
-		if (hasNormals)
+		if (vertexCount < 3)
 		{
-			triangle.normals[0] = normals[normalIndices[0]];
-			triangle.normals[1] = normals[normalIndices[1]];
-			triangle.normals[2] = normals[normalIndices[2]];
-		}
-		else
-		{
-			Vector3 v0tov1 = triangle.vertices[1] - triangle.vertices[0];
-			Vector3 v0tov2 = triangle.vertices[2] - triangle.vertices[0];
-			Vector3 normal = v0tov1.cross(v0tov2).normalized();
-
-			triangle.normals[0] = triangle.normals[1] = triangle.normals[2] = normal;
+			log.logWarning("Too few vertices (%s) in a face", vertexCount);
+			return false;
 		}
 
-		if (hasTexcoords)
+		// triangulate
+		for (uint64_t i = 2; i < vertexCount; ++i)
 		{
-			triangle.texcoords[0] = texcoords[texcoordIndices[0]];
-			triangle.texcoords[1] = texcoords[texcoordIndices[1]];
-			triangle.texcoords[2] = texcoords[texcoordIndices[2]];
-		}
+			Triangle triangle;
+			triangle.id = ++currentId;
+			triangle.materialId = currentMaterialId;
 
-		result.triangles.push_back(triangle);
+			triangle.vertices[0] = vertices[vertexIndices[0]];
+			triangle.vertices[1] = vertices[vertexIndices[i - 1]];
+			triangle.vertices[2] = vertices[vertexIndices[i]];
+
+			if (hasNormals)
+			{
+				triangle.normals[0] = normals[normalIndices[0]];
+				triangle.normals[1] = normals[normalIndices[i - 1]];
+				triangle.normals[2] = normals[normalIndices[i]];
+			}
+			else
+			{
+				Vector3 v0tov1 = triangle.vertices[1] - triangle.vertices[0];
+				Vector3 v0tov2 = triangle.vertices[2] - triangle.vertices[0];
+				Vector3 normal = v0tov1.cross(v0tov2).normalized();
+
+				triangle.normals[0] = triangle.normals[1] = triangle.normals[2] = normal;
+			}
+
+			if (hasTexcoords)
+			{
+				triangle.texcoords[0] = texcoords[texcoordIndices[0]];
+				triangle.texcoords[1] = texcoords[texcoordIndices[i - 1]];
+				triangle.texcoords[2] = texcoords[texcoordIndices[i]];
+			}
+
+			result.triangles.push_back(triangle);
+		}
 
 		return true;
 	}
@@ -393,10 +396,6 @@ ModelLoaderResult ModelLoader::load(const ModelLoaderInfo& info)
 	vertices.reserve(info.triangleCountEstimate / 2);
 	normals.reserve(info.triangleCountEstimate / 2);
 	texcoords.reserve(info.triangleCountEstimate / 2);
-
-	bool isFirstFace = true;
-	bool hasNormals = false;
-	bool hasTexcoords = false;
 
 	FILE* file = fopen(info.modelFilePath.c_str(), "r");
 
@@ -468,16 +467,7 @@ ModelLoaderResult ModelLoader::load(const ModelLoaderInfo& info)
 		}
 		else if (part == "f") // face
 		{
-			if (isFirstFace)
-			{
-				uint64_t slashCount = std::count(part.begin(), part.end(), '/');
-				bool doubleSlash = (part.find("//") != std::string::npos);
-				hasTexcoords = (slashCount > 0 && !doubleSlash);
-				hasNormals = (slashCount > 1);
-				isFirstFace = false;
-			}
-
-			if (!processFace(line, vertices, normals, texcoords, result, currentId, currentMaterialId, hasNormals, hasTexcoords))
+			if (!processFace(line, vertices, normals, texcoords, result, currentId, currentMaterialId))
 				break;
 		}
 	}
