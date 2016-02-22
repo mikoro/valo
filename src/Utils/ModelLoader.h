@@ -13,6 +13,19 @@
 #include "Math/Vector3.h"
 #include "Math/EulerAngle.h"
 
+/*
+
+Only OBJ (and MTL) files are supported.
+
+Restrictions:
+ - numbers cannot have scientific notation
+ - negative indices are not supported
+ - faces must be triangulated (only first three vertices are taken from each face)
+
+To make a mesh work, import it into Blender and then export with triangulation.
+
+*/
+
 namespace Raycer
 {
 	struct ModelLoaderInfo
@@ -23,6 +36,7 @@ namespace Raycer
 		Vector3 translate = Vector3(0.0f, 0.0f, 0.0f);
 		uint64_t defaultMaterialId = 0;
 		uint64_t idStartOffset = 0;
+		uint64_t triangleCountEstimate = 0;
 		
 		template <class Archive>
 		void serialize(Archive& ar)

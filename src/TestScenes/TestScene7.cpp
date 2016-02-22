@@ -40,6 +40,7 @@ Scene TestScene::create7()
 	buddhaModel.modelFilePath = "data/models/buddha.obj";
 	buddhaModel.idStartOffset = 1000;
 	buddhaModel.defaultMaterialId = 2;
+	buddhaModel.triangleCountEstimate = 1087451;
 	buddhaModel.translate = Vector3(0.6f, 0.0f, 0.0f);
 	buddhaModel.rotate = EulerAngle(0.0f, 150.0f, 0.0f);
 	
@@ -49,6 +50,7 @@ Scene TestScene::create7()
 	dragonModel.modelFilePath = "data/models/dragon.obj";
 	dragonModel.idStartOffset = 10000000;
 	dragonModel.defaultMaterialId = 3;
+	dragonModel.triangleCountEstimate = 871306;
 	dragonModel.translate = Vector3(-0.4f, 0.0f, 0.0f);
 	dragonModel.rotate = EulerAngle(0.0f, 110.0f, 0.0f);
 

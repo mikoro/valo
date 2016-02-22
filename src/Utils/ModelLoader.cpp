@@ -263,130 +263,103 @@ namespace
 			result.diffuseSpecularMaterials.push_back(currentMaterial);
 	}
 
-	void processFace(const std::string& line, std::vector<Vector3>& vertices, std::vector<Vector3>& normals, std::vector<Vector2>& texcoords, ModelLoaderResult& result, uint64_t& currentId, uint64_t currentMaterialId)
+	bool processFace(const std::string& line, std::vector<Vector3>& vertices, std::vector<Vector3>& normals, std::vector<Vector2>& texcoords, ModelLoaderResult& result, uint64_t& currentId, uint64_t currentMaterialId, bool hasNormals, bool hasTexcoords)
 	{
 		Log& log = App::getLog();
 
-		std::vector<uint64_t> vertexIndices;
-		std::vector<uint64_t> normalIndices;
-		std::vector<uint64_t> texcoordIndices;
+		uint64_t vertexIndices[3];
+		uint64_t normalIndices[3];
+		uint64_t texcoordIndices[3];
 
 		std::string part1;
-		uint64_t lineIndex1 = 0;
+		uint64_t lineIndex1 = 1;
 
-		StringUtils::readUntilSpace(line, lineIndex1, part1);
-
-		// determine what indices are available from the slash count
-		uint64_t slashCount = std::count(part1.begin(), part1.end(), '/');
-		bool doubleSlash = (part1.find("//") != std::string::npos);
-		bool hasTexcoords = (slashCount > 0 && !doubleSlash);
-		bool hasNormals = (slashCount > 1);
-
-		lineIndex1 = 0;
-
-		while (StringUtils::readUntilSpace(line, lineIndex1, part1))
+		for (uint64_t i = 0; i < 3; ++i)
 		{
+			if (!StringUtils::readUntilSpace(line, lineIndex1, part1))
+			{
+				log.logWarning("Not enough vertices in a face");
+				return false;
+			}
+
 			std::replace(part1.begin(), part1.end(), '/', ' ');
 
 			std::string part2;
 			uint64_t lineIndex2 = 0;
 
 			StringUtils::readUntilSpace(part1, lineIndex2, part2);
-			int64_t vertexIndex = strtoll(part2.c_str(), nullptr, 10);
-
-			if (vertexIndex < 0)
-				vertexIndex = int64_t(vertices.size()) + vertexIndex;
-			else
-				vertexIndex--;
+			int64_t vertexIndex = strtoll(part2.c_str(), nullptr, 10) - 1;
 
 			if (vertexIndex < 0 || vertexIndex >= int64_t(vertices.size()))
 			{
 				log.logWarning("Vertex index (%s) was out of bounds", vertexIndex);
-				return;
+				return false;
 			}
 
-			vertexIndices.push_back(uint64_t(vertexIndex));
+			vertexIndices[i] = uint64_t(vertexIndex);
 
 			if (hasTexcoords)
 			{
 				StringUtils::readUntilSpace(part1, lineIndex2, part2);
-				int64_t texcoordIndex = strtoll(part2.c_str(), nullptr, 10);
-
-				if (texcoordIndex < 0)
-					texcoordIndex = int64_t(texcoords.size()) + texcoordIndex;
-				else
-					texcoordIndex--;
+				int64_t texcoordIndex = strtoll(part2.c_str(), nullptr, 10) - 1;
 
 				if (texcoordIndex < 0 || texcoordIndex >= int64_t(texcoords.size()))
 				{
 					log.logWarning("Texcoord index (%s) was out of bounds", texcoordIndex);
-					return;
+					return false;
 				}
 
-				texcoordIndices.push_back(uint64_t(texcoordIndex));
+				texcoordIndices[i] = uint64_t(texcoordIndex);
 			}
 
 			if (hasNormals)
 			{
 				StringUtils::readUntilSpace(part1, lineIndex2, part2);
-				int64_t normalIndex = strtoll(part2.c_str(), nullptr, 10);
-
-				if (normalIndex < 0)
-					normalIndex = int64_t(normals.size()) + normalIndex;
-				else
-					normalIndex--;
+				int64_t normalIndex = strtoll(part2.c_str(), nullptr, 10) - 1;
 
 				if (normalIndex < 0 || normalIndex >= int64_t(normals.size()))
 				{
 					log.logWarning("Normal index (%s) was out of bounds", normalIndex);
-					return;
+					return false;
 				}
 
-				normalIndices.push_back(uint64_t(normalIndex));
+				normalIndices[i] = uint64_t(normalIndex);
 			}
 		}
 
-		if (vertexIndices.size() < 3)
+		Triangle triangle;
+		triangle.id = ++currentId;
+		triangle.materialId = currentMaterialId;
+
+		triangle.vertices[0] = vertices[vertexIndices[0]];
+		triangle.vertices[1] = vertices[vertexIndices[1]];
+		triangle.vertices[2] = vertices[vertexIndices[2]];
+
+		if (hasNormals)
 		{
-			log.logWarning("Too few vertices (%s) in a face", vertexIndices.size());
-			return;
+			triangle.normals[0] = normals[normalIndices[0]];
+			triangle.normals[1] = normals[normalIndices[1]];
+			triangle.normals[2] = normals[normalIndices[2]];
 		}
-
-		// triangulate
-		for (uint64_t i = 2; i < vertexIndices.size(); ++i)
+		else
 		{
-			Triangle triangle;
-			triangle.id = ++currentId;
-			triangle.materialId = currentMaterialId;
-			
-			triangle.vertices[0] = vertices[vertexIndices[0]];
-			triangle.vertices[1] = vertices[vertexIndices[i - 1]];
-			triangle.vertices[2] = vertices[vertexIndices[i]];
+			Vector3 v0tov1 = triangle.vertices[1] - triangle.vertices[0];
+			Vector3 v0tov2 = triangle.vertices[2] - triangle.vertices[0];
+			Vector3 normal = v0tov1.cross(v0tov2).normalized();
 
-			if (hasNormals)
-			{
-				triangle.normals[0] = normals[normalIndices[0]];
-				triangle.normals[1] = normals[normalIndices[i - 1]];
-				triangle.normals[2] = normals[normalIndices[i]];
-			}
-			else
-			{
-				Vector3 v0tov1 = triangle.vertices[1] - triangle.vertices[0];
-				Vector3 v0tov2 = triangle.vertices[2] - triangle.vertices[0];
-				Vector3 normal = v0tov1.cross(v0tov2).normalized();
-
-				triangle.normals[0] = triangle.normals[1] = triangle.normals[2] = normal;
-			}
-
-			if (hasTexcoords)
-			{
-				triangle.texcoords[0] = texcoords[texcoordIndices[0]];
-				triangle.texcoords[1] = texcoords[texcoordIndices[i - 1]];
-				triangle.texcoords[2] = texcoords[texcoordIndices[i]];
-			}
-
-			result.triangles.push_back(triangle);
+			triangle.normals[0] = triangle.normals[1] = triangle.normals[2] = normal;
 		}
+
+		if (hasTexcoords)
+		{
+			triangle.texcoords[0] = texcoords[texcoordIndices[0]];
+			triangle.texcoords[1] = texcoords[texcoordIndices[1]];
+			triangle.texcoords[2] = texcoords[texcoordIndices[2]];
+		}
+
+		result.triangles.push_back(triangle);
+
+		return true;
 	}
 }
 
@@ -415,6 +388,15 @@ ModelLoaderResult ModelLoader::load(const ModelLoaderInfo& info)
 	std::vector<Vector3> vertices;
 	std::vector<Vector3> normals;
 	std::vector<Vector2> texcoords;
+
+	result.triangles.reserve(info.triangleCountEstimate);
+	vertices.reserve(info.triangleCountEstimate / 2);
+	normals.reserve(info.triangleCountEstimate / 2);
+	texcoords.reserve(info.triangleCountEstimate / 2);
+
+	bool isFirstFace = true;
+	bool hasNormals = false;
+	bool hasTexcoords = false;
 
 	FILE* file = fopen(info.modelFilePath.c_str(), "r");
 
@@ -485,12 +467,24 @@ ModelLoaderResult ModelLoader::load(const ModelLoaderInfo& info)
 			texcoords.push_back(texcoord);
 		}
 		else if (part == "f") // face
-			processFace(line.substr(lineIndex), vertices, normals, texcoords, result, currentId, currentMaterialId);
+		{
+			if (isFirstFace)
+			{
+				uint64_t slashCount = std::count(part.begin(), part.end(), '/');
+				bool doubleSlash = (part.find("//") != std::string::npos);
+				hasTexcoords = (slashCount > 0 && !doubleSlash);
+				hasNormals = (slashCount > 1);
+				isFirstFace = false;
+			}
+
+			if (!processFace(line, vertices, normals, texcoords, result, currentId, currentMaterialId, hasNormals, hasTexcoords))
+				break;
+		}
 	}
 
 	fclose(file);
 
-	log.logInfo("OBJ file reading finished (time: %s, triangles: %s, materials: %s, textures: %s)", timer.getElapsed().getString(true), result.triangles.size(), result.diffuseSpecularMaterials.size(), result.textures.size());
+	log.logInfo("OBJ file reading finished (time: %s, vertices: %s, normals: %s, texcoords: %s, triangles: %s, materials: %s, textures: %s)", timer.getElapsed().getString(true), vertices.size(), normals.size(), texcoords.size(), result.triangles.size(), result.diffuseSpecularMaterials.size(), result.textures.size());
 
 	return result;
 }
