@@ -14,7 +14,8 @@ Scene TestScene::create2()
 {
 	Scene scene;
 
-	scene.general.tracerType = TracerType::PREVIEW;
+	scene.general.tracerType = TracerType::RAY;
+
 	scene.pathtracing.enableMultiSampling = true;
 	scene.pathtracing.multiSamplerFilterType = FilterType::BELL;
 	scene.pathtracing.minPathLength = 3;
@@ -39,25 +40,11 @@ Scene TestScene::create2()
 
 	scene.lights.ambientLights.push_back(ambientLight);
 
-	DirectionalLight directionalLight;
-	directionalLight.color = Color(1.0f, 1.0f, 1.0f) * 0.2f;
-	directionalLight.direction = EulerAngle(-30.0f, 50.0f, 0.0f).getDirection();
-
-	//scene.lights.directionalLights.push_back(directionalLight);
-
 	PointLight pointLight;
-	pointLight.color = Color(1.0f, 0.71f, 0.24f) * 0.5f;
-	pointLight.position = Vector3(0.0f, 1.7f, 0.0f);
+	pointLight.color = Color(1.0f, 1.0f, 1.0f) * 1.0f;
+	pointLight.position = Vector3(0.0f, 1.5f, 0.0f);
 
 	scene.lights.pointLights.push_back(pointLight);
-
-	AreaPointLight areaLight;
-	areaLight.color = Color(1.0f, 0.71f, 0.24f) * 0.5f;
-	areaLight.position = Vector3(0.0f, 1.7f, 0.0f);
-	areaLight.radius = 0.2f;
-	areaLight.sampleCountSqrt = 4;
-
-	//scene.lights.areaPointLights.push_back(areaLight);
 
 	return scene;
 }
