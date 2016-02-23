@@ -27,7 +27,7 @@ namespace
 		return tempPathString;
 	}
 
-	// read one line from filebuffer to linebuffer
+	// read one line from filebuffer to linebuffer (separators: \r \n)
 	bool getLine(const char* fileBuffer, uint64_t& fileBufferIndex, uint64_t fileBufferLength, char* lineBuffer, uint64_t& lineBufferLength)
 	{
 		if (fileBufferIndex >= fileBufferLength)
@@ -63,7 +63,7 @@ namespace
 		return true;
 	}
 
-	// read one word from linebuffer to wordbuffer
+	// read one word from linebuffer to wordbuffer (separator: space)
 	bool getWord(const char* lineBuffer, uint64_t& lineBufferIndex, uint64_t lineBufferLength, char* wordBuffer, uint64_t& wordBufferLength)
 	{
 		if (lineBufferIndex >= lineBufferLength)
@@ -102,6 +102,7 @@ namespace
 		return true;
 	}
 
+	// simple word comparison character by character
 	bool compareWord(const char* wordBuffer, uint64_t wordBufferLength, const char* otherWord)
 	{
 		uint64_t otherWordLength = strlen(otherWord);
@@ -118,49 +119,115 @@ namespace
 		return true;
 	}
 
-	float getFloat(const char* lineBuffer, uint64_t& lineBufferIndex, uint64_t lineBufferLength)
+	// simplified ascii -> float conversion (no scientific notation)
+	float getFloat(const char* buffer, uint64_t& bufferIndex, uint64_t bufferLength)
 	{
-		if (lineBufferIndex >= lineBufferLength)
+		if (bufferIndex >= bufferLength)
 			return 0.0f;
 
-		while (lineBufferIndex < lineBufferLength)
+		char c = 0;
+
+		while (bufferIndex < bufferLength)
 		{
-			char c = lineBuffer[lineBufferIndex];
+			c = buffer[bufferIndex];
 
 			if (c != ' ')
 				break;
 
-			lineBufferIndex++;
+			bufferIndex++;
 		}
+
+		if (bufferIndex >= bufferLength)
+			return 0.0f;
 
 		float sign = 1.0f;
 		float accumulator = 0.0f;
 
-		char c = lineBuffer[lineBufferIndex];
-
 		if (c == '-')
 		{
 			sign = -1.0f;
-			c = lineBuffer[++lineBufferIndex];
+
+			if (++bufferIndex >= bufferLength)
+				return 0.0f;
 		}
+
+		c = buffer[bufferIndex];
 
 		while (c >= '0' && c <= '9')
 		{
 			accumulator = accumulator * 10.0f + c - '0';
-			c = lineBuffer[++lineBufferIndex];
+
+			if (++bufferIndex >= bufferLength)
+				return sign * accumulator;
+
+			c = buffer[bufferIndex];
 		}
 
 		if (c == '.')
 		{
+			if (++bufferIndex >= bufferLength)
+				return sign * accumulator;
+
 			float k = 0.1f;
-			c = lineBuffer[++lineBufferIndex];
+			c = buffer[bufferIndex];
 
 			while (c >= '0' && c <= '9')
 			{
 				accumulator += (c - '0') * k;
 				k *= 0.1f;
-				c = lineBuffer[++lineBufferIndex];
+
+				if (++bufferIndex >= bufferLength)
+					return sign * accumulator;
+
+				c = buffer[bufferIndex];
 			}
+		}
+
+		return sign * accumulator;
+	}
+
+	// simplified ascii -> int conversion
+	int64_t getInt(const char* buffer, uint64_t& bufferIndex, uint64_t bufferLength)
+	{
+		if (bufferIndex >= bufferLength)
+			return 0;
+
+		char c = 0;
+
+		while (bufferIndex < bufferLength)
+		{
+			c = buffer[bufferIndex];
+
+			if (c != ' ' && c != '/')
+				break;
+
+			bufferIndex++;
+		}
+
+		if (bufferIndex >= bufferLength)
+			return 0;
+
+		int64_t sign = 1;
+		int64_t accumulator = 0;
+
+		if (c == '-')
+		{
+			sign = -1;
+
+			if (++bufferIndex >= bufferLength)
+				return 0;
+		}
+
+		c = buffer[bufferIndex];
+
+		while (c >= '0' && c <= '9')
+		{
+			accumulator = accumulator * 10 + c - '0';
+
+			if (++bufferIndex >= bufferLength)
+				return sign * accumulator;
+
+			c = buffer[bufferIndex];
 		}
 
 		return sign * accumulator;
@@ -190,75 +257,19 @@ namespace
 		hasTexcoords = (slashCount > 0 && doubleSlashCount == 0);
 	}
 
-	void getIndices(char* wordBuffer, uint64_t wordBufferLength, bool hasNormals, bool hasTexcoords, int64_t& vertexIndex, int64_t& normalIndex, int64_t& texcoordIndex)
+	// extract indices from a face
+	void getIndices(char* wordBuffer, uint64_t& wordBufferIndex, uint64_t wordBufferLength, bool hasNormals, bool hasTexcoords, int64_t& vertexIndex, int64_t& normalIndex, int64_t& texcoordIndex)
 	{
-		uint64_t i;
-		uint64_t texcoordOffset = 0;
-		uint64_t normalOffset = 0;
+		vertexIndex = getInt(wordBuffer, wordBufferIndex, wordBufferLength);
 
-		wordBuffer[wordBufferLength] = 0;
-
-		if (hasNormals && hasTexcoords)
-		{
-			for (i = 0; i < wordBufferLength; ++i)
-			{
-				if (wordBuffer[i] == '/')
-				{
-					wordBuffer[i] = 0;
-					texcoordOffset = i + 1;
-					break;
-				}
-			}
-
-			for (; i < wordBufferLength; ++i)
-			{
-				if (wordBuffer[i] == '/')
-				{
-					wordBuffer[i] = 0;
-					normalOffset = i + 1;
-					break;
-				}
-			}
-
-			vertexIndex = strtoll(wordBuffer, nullptr, 10);
-			texcoordIndex = strtoll(wordBuffer + texcoordOffset, nullptr, 10);
-			normalIndex = strtoll(wordBuffer + normalOffset, nullptr, 10);
-		}
-		else if (hasNormals)
-		{
-			for (i = 0; i < wordBufferLength; ++i)
-			{
-				if (wordBuffer[i] == '/')
-				{
-					wordBuffer[i] = 0;
-					normalOffset = i + 2;
-					break;
-				}
-			}
-
-			vertexIndex = strtoll(wordBuffer, nullptr, 10);
-			normalIndex = strtoll(wordBuffer + normalOffset, nullptr, 10);
-		}
-		else if (hasTexcoords)
-		{
-			for (i = 0; i < wordBufferLength; ++i)
-			{
-				if (wordBuffer[i] == '/')
-				{
-					wordBuffer[i] = 0;
-					texcoordOffset = i + 1;
-					break;
-				}
-			}
-
-			vertexIndex = strtoll(wordBuffer, nullptr, 10);
-			texcoordIndex = strtoll(wordBuffer + texcoordOffset, nullptr, 10);
-		}
-		else
-			vertexIndex = strtoll(wordBuffer, nullptr, 10);
+		if (hasTexcoords)
+			texcoordIndex = getInt(wordBuffer, wordBufferIndex, wordBufferLength);
+		
+		if (hasNormals)
+			normalIndex = getInt(wordBuffer, wordBufferIndex, wordBufferLength);
 	}
 
-	bool processFace(const char* lineBuffer, uint64_t& lineBufferIndex, uint64_t lineBufferLength, std::vector<Vector3>& vertices, std::vector<Vector3>& normals, std::vector<Vector2>& texcoords, ModelLoaderResult& result, uint64_t& currentId, uint64_t currentMaterialId)
+	bool processFace(const char* lineBuffer, uint64_t& lineBufferIndex, uint64_t lineBufferLength, uint64_t lineNumber, std::vector<Vector3>& vertices, std::vector<Vector3>& normals, std::vector<Vector2>& texcoords, ModelLoaderResult& result, uint64_t& currentId, uint64_t currentMaterialId)
 	{
 		Log& log = App::getLog();
 
@@ -268,6 +279,7 @@ namespace
 
 		char wordBuffer[128];
 		uint64_t wordBufferLength = 0;
+		uint64_t wordBufferIndex = 0;
 		uint64_t vertexCount = 0;
 
 		bool hasNormals = false;
@@ -287,7 +299,8 @@ namespace
 			int64_t texcoordIndex = 0;
 			int64_t normalIndex = 0;
 
-			getIndices(wordBuffer, wordBufferLength, hasNormals, hasTexcoords, vertexIndex, normalIndex, texcoordIndex);
+			wordBufferIndex = 0;
+			getIndices(wordBuffer, wordBufferIndex, wordBufferLength, hasNormals, hasTexcoords, vertexIndex, normalIndex, texcoordIndex);
 
 			if (vertexIndex < 0)
 				vertexIndex = int64_t(vertices.size()) + vertexIndex;
@@ -296,7 +309,7 @@ namespace
 
 			if (vertexIndex < 0 || vertexIndex >= int64_t(vertices.size()))
 			{
-				log.logWarning("Vertex index (%s) was out of bounds", vertexIndex);
+				log.logWarning("Vertex index (%s) was out of bounds (line: %s)", vertexIndex, lineNumber);
 				return false;
 			}
 
@@ -311,7 +324,7 @@ namespace
 
 				if (texcoordIndex < 0 || texcoordIndex >= int64_t(texcoords.size()))
 				{
-					log.logWarning("Texcoord index (%s) was out of bounds", texcoordIndex);
+					log.logWarning("Texcoord index (%s) was out of bounds (line: %s)", texcoordIndex, lineNumber);
 					return false;
 				}
 
@@ -327,7 +340,7 @@ namespace
 
 				if (normalIndex < 0 || normalIndex >= int64_t(normals.size()))
 				{
-					log.logWarning("Normal index (%s) was out of bounds", normalIndex);
+					log.logWarning("Normal index (%s) was out of bounds (line: %s)", normalIndex, lineNumber);
 					return false;
 				}
 
@@ -337,7 +350,7 @@ namespace
 
 		if (vertexCount < 3)
 		{
-			log.logWarning("Too few vertices (%s) in a face", vertexCount);
+			log.logWarning("Too few vertices (%s) in a face (line: %s)", vertexCount, lineNumber);
 			return false;
 		}
 
@@ -629,11 +642,14 @@ ModelLoaderResult ModelLoader::load(const ModelLoaderInfo& info)
 	uint64_t fileBufferLength = fileBuffer.size();
 	uint64_t lineBufferLength = 0;
 	uint64_t wordBufferLength = 0;
+	uint64_t lineNumber = 0;
 	char lineBuffer[128];
 	char wordBuffer[128];
 
 	while (getLine(&fileBuffer[0], fileBufferIndex, fileBufferLength, lineBuffer, lineBufferLength))
 	{
+		lineNumber++;
+
 		if (lineBufferLength == 0)
 			continue;
 
@@ -642,7 +658,7 @@ ModelLoaderResult ModelLoader::load(const ModelLoaderInfo& info)
 
 		if (compareWord(wordBuffer, wordBufferLength, "f")) // face
 		{
-			if (!processFace(lineBuffer, lineBufferIndex, lineBufferLength, vertices, normals, texcoords, result, currentId, currentMaterialId))
+			if (!processFace(lineBuffer, lineBufferIndex, lineBufferLength, lineNumber, vertices, normals, texcoords, result, currentId, currentMaterialId))
 				break;
 		}
 		else if (compareWord(wordBuffer, wordBufferLength, "v")) // vertex
