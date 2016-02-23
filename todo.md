@@ -1,12 +1,7 @@
 pathtracer
- - flat pathtracer
+ - remove recursive pathtracer
  - more materials
  - import brdf from file
-
-textures
- - mip map generation
- - ray differentials
- - EWA texture filtering
 
 gpu
  - implement cuda raytracer
@@ -14,11 +9,11 @@ gpu
 
 misc
  - spline curve class
- - transform class
- - triangle group
+ - transform class with keyframes
  - add transform to camera
- - add transform to triangle group
  - implement video rendering
- - add BVH -> QBVH conversion
- - implement QBVH travelsal and SIMD triangle intersect with ispc
+ - optimize bvh1 builder
+ - add triangle4/8 data structures
+ - implement bvh traversal and triangle intersection with ispc
  - add scope exit to obj loader and consolerunner text color
+ - fix materials+textures when loading bvh from file

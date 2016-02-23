@@ -45,10 +45,14 @@ namespace Raycer
 		std::string getJsonString() const;
 		std::string getXmlString() const;
 
+		void loadBvhData(const std::string& fileName);
+		void saveBvhData(const std::string& fileName) const;
+
+		void loadImagePool(const std::string& fileName);
+		void saveImagePool(const std::string& fileName) const;
+
 		void initialize();
 		bool intersect(const Ray& ray, Intersection& intersection) const;
-
-		Camera camera;
 
 		struct General
 		{
@@ -69,6 +73,9 @@ namespace Raycer
 			}
 
 		} general;
+
+		Camera camera;
+		std::vector<ModelLoaderInfo> models;
 
 		struct Raytracing
 		{
@@ -196,20 +203,62 @@ namespace Raycer
 
 		} materials;
 
-		BVHType bvhType = BVHType::BVH1;
-		BVHBuildInfo bvhBuildInfo;
-		BVH* bvh = nullptr;
+		struct BVHInfo
+		{
+			bool loadFromFile = false;
+			std::string fileName = "bvh.bin";
+			BVHType bvhType = BVHType::BVH1;
+			uint64_t maxLeafSize = 4;
 
-		std::vector<ModelLoaderInfo> models;
-		std::vector<Triangle> triangles;
-		std::vector<Triangle*> emissiveTriangles;
+			template <class Archive>
+			void serialize(Archive& ar)
+			{
+				ar(CEREAL_NVP(loadFromFile),
+					CEREAL_NVP(fileName),
+					CEREAL_NVP(bvhType),
+					CEREAL_NVP(maxLeafSize));
+			}
+
+		} bvhInfo;
+
+		struct ImagePoolInfo
+		{
+			bool loadFromFile = false;
+			std::string fileName = "imagepool.bin";
+
+			template <class Archive>
+			void serialize(Archive& ar)
+			{
+				ar(CEREAL_NVP(loadFromFile),
+					CEREAL_NVP(fileName));
+			}
+
+		} imagePoolInfo;
+
+		struct BVHData
+		{
+			std::vector<Triangle> triangles;
+			BVH1 bvh1;
+			BVH4 bvh4;
+
+			template <class Archive>
+			void serialize(Archive& ar)
+			{
+				ar(CEREAL_NVP(triangles),
+					CEREAL_NVP(bvh1),
+					CEREAL_NVP(bvh4));
+			}
+
+		} bvhData;
+
 		ImagePool imagePool;
-		BVH1 bvh1;
-		BVH4 bvh4;
-
+		
+		std::vector<Triangle*> emissiveTriangles;
 		std::vector<Light*> lightsList;
 		std::vector<Texture*> texturesList;
 		std::vector<Material*> materialsList;
+		
+		BVH* bvh = nullptr;
 
 	private:
 
@@ -218,21 +267,17 @@ namespace Raycer
 		template <class Archive>
 		void serialize(Archive& ar)
 		{
-			ar(CEREAL_NVP(camera),
-				CEREAL_NVP(general),
+			ar(CEREAL_NVP(general),
+				CEREAL_NVP(camera),
+				CEREAL_NVP(models),
 				CEREAL_NVP(raytracing),
 				CEREAL_NVP(pathtracing),
 				CEREAL_NVP(tonemapping),
 				CEREAL_NVP(lights),
 				CEREAL_NVP(textures),
 				CEREAL_NVP(materials),
-				CEREAL_NVP(bvhType),
-				CEREAL_NVP(bvhBuildInfo),
-				CEREAL_NVP(models),
-				CEREAL_NVP(triangles),
-				CEREAL_NVP(imagePool),
-				CEREAL_NVP(bvh1),
-				CEREAL_NVP(bvh4));
+				CEREAL_NVP(bvhInfo),
+				CEREAL_NVP(imagePoolInfo));
 		}
 	};
 }

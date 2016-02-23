@@ -24,7 +24,7 @@ namespace
 	};
 }
 
-void BVH4::build(std::vector<Triangle>& triangles, const BVHBuildInfo& buildInfo)
+void BVH4::build(std::vector<Triangle>& triangles, uint64_t maxLeafSize)
 {
 	Log& log = App::getLog();
 
@@ -70,7 +70,7 @@ void BVH4::build(std::vector<Triangle>& triangles, const BVHBuildInfo& buildInfo
 		BVH4Node node;
 		node.triangleOffset = uint32_t(buildEntry.start);
 		node.triangleCount = uint32_t(buildEntry.end - buildEntry.start);
-		node.isLeaf = (node.triangleCount <= buildInfo.maxLeafSize);
+		node.isLeaf = (node.triangleCount <= maxLeafSize);
 
 		if (buildEntry.parent != -1 && buildEntry.child != -1)
 		{
@@ -178,7 +178,6 @@ void BVH4::build(std::vector<Triangle>& triangles, const BVHBuildInfo& buildInfo
 		stackIndex++;
 	}
 
-	built = true;
 	nodes.shrink_to_fit();
 
 	std::vector<Triangle> tempTriangles(triangleCount);

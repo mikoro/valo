@@ -48,7 +48,7 @@ namespace Raycer
 	{
 	public:
 
-		void build(std::vector<Triangle>& triangles, const BVHBuildInfo& buildInfo) override;
+		void build(std::vector<Triangle>& triangles, uint64_t maxLeafSize) override;
 		bool intersect(const std::vector<Triangle>& triangles, const Ray& ray, Intersection& intersection) const override;
 
 	private:
@@ -60,8 +60,7 @@ namespace Raycer
 		template <class Archive>
 		void serialize(Archive& ar)
 		{
-			ar(CEREAL_NVP(built),
-				CEREAL_NVP(nodes));
+			ar(CEREAL_NVP(nodes));
 		}
 	};
 }

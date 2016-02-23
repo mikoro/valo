@@ -24,8 +24,8 @@ Scene TestScene::create1()
 
 	scene.camera.position = Vector3(0.0f, 1.0f, 3.5f);
 
-	scene.bvhType = BVHType::BVH1;
-	scene.bvhBuildInfo.maxLeafSize = 4;
+	scene.bvhInfo.bvhType = BVHType::BVH1;
+	scene.bvhInfo.maxLeafSize = 4;
 
 	ModelLoaderInfo model;
 	model.modelFilePath = "data/models/cornellbox-cuboids/cornellbox.obj";
@@ -40,20 +40,14 @@ Scene TestScene::create1()
 
 	scene.lights.ambientLights.push_back(ambientLight);
 
-	DirectionalLight directionalLight;
-	directionalLight.color = Color(1.0f, 1.0f, 1.0f) * 0.2f;
-	directionalLight.direction = EulerAngle(-30.0f, 50.0f, 0.0f).getDirection();
-
-	//scene.lights.directionalLights.push_back(directionalLight);
-
 	PointLight pointLight;
-	pointLight.color = Color(1.0f, 0.71f, 0.24f) * 0.5f;
+	pointLight.color = Color(1.0f, 0.71f, 0.24f) * 1.0f;
 	pointLight.position = Vector3(0.0f, 1.7f, 0.0f);
 
 	scene.lights.pointLights.push_back(pointLight);
 
 	AreaPointLight areaLight;
-	areaLight.color = Color(1.0f, 0.71f, 0.24f) * 0.5f;
+	areaLight.color = Color(1.0f, 0.71f, 0.24f) * 1.0f;
 	areaLight.position = Vector3(0.0f, 1.7f, 0.0f);
 	areaLight.radius = 0.2f;
 	areaLight.sampleCountSqrt = 4;

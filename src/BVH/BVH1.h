@@ -19,8 +19,6 @@ namespace Raycer
 		uint64_t startOffset;
 		uint64_t triangleCount;
 		uint64_t splitAxis;
-		uint8_t leftEnabled;
-		uint8_t rightEnabled;
 
 		template <class Archive>
 		void serialize(Archive& ar)
@@ -29,9 +27,7 @@ namespace Raycer
 				CEREAL_NVP(rightOffset),
 				CEREAL_NVP(startOffset),
 				CEREAL_NVP(triangleCount),
-				CEREAL_NVP(splitAxis),
-				CEREAL_NVP(leftEnabled),
-				CEREAL_NVP(rightEnabled));
+				CEREAL_NVP(splitAxis));
 		}
 	};
 
@@ -46,27 +42,19 @@ namespace Raycer
 	{
 	public:
 
-		void build(std::vector<Triangle>& triangles, const BVHBuildInfo& buildInfo) override;
+		void build(std::vector<Triangle>& triangles, uint64_t maxLeafSize) override;
 		bool intersect(const std::vector<Triangle>& triangles, const Ray& ray, Intersection& intersection) const override;
-
-		void disableLeft() override;
-		void disableRight() override;
-		void undoDisable() override;
 
 	private:
 
 		std::vector<BVH1Node> nodes;
-
-		uint64_t disableIndex = 0;
-		std::vector<uint64_t> previousDisableIndices;
 
 		friend class cereal::access;
 
 		template <class Archive>
 		void serialize(Archive& ar)
 		{
-			ar(CEREAL_NVP(built),
-				CEREAL_NVP(nodes));
+			ar(CEREAL_NVP(nodes));
 		}
 	};
 }

@@ -13,7 +13,7 @@
 
 using namespace Raycer;
 
-void BVH1::build(std::vector<Triangle>& triangles, const BVHBuildInfo& buildInfo)
+void BVH1::build(std::vector<Triangle>& triangles, uint64_t maxLeafSize)
 {
 	Log& log = App::getLog();
 
@@ -60,14 +60,12 @@ void BVH1::build(std::vector<Triangle>& triangles, const BVHBuildInfo& buildInfo
 		node.startOffset = buildEntry.start;
 		node.triangleCount = buildEntry.end - buildEntry.start;
 		node.splitAxis = 0;
-		node.leftEnabled = 1;
-		node.rightEnabled = 1;
 
 		for (uint64_t i = buildEntry.start; i < buildEntry.end; ++i)
 			node.aabb.expand(trianglePtrs[i]->aabb);
 
 		// leaf node indicated by rightOffset == 0
-		if (node.triangleCount <= buildInfo.maxLeafSize)
+		if (node.triangleCount <= maxLeafSize)
 			node.rightOffset = 0;
 
 		// update the parent rightOffset when visiting its right child
@@ -110,7 +108,6 @@ void BVH1::build(std::vector<Triangle>& triangles, const BVHBuildInfo& buildInfo
 		stackptr++;
 	}
 
-	built = true;
 	nodes.shrink_to_fit();
 
 	std::vector<Triangle> tempTriangles(triangleCount);
@@ -165,71 +162,27 @@ bool BVH1::intersect(const std::vector<Triangle>& triangles, const Ray& ray, Int
 				{
 					// seems to perform better like this (inverted logic?)
 
-					if (node.leftEnabled)
-					{
-						// left child
-						stack[stackIndex] = nodeIndex + 1;
-						stackIndex++;
-					}
+					// left child
+					stack[stackIndex] = nodeIndex + 1;
+					stackIndex++;
 
-					if (node.rightEnabled)
-					{
-						// right child
-						stack[stackIndex] = nodeIndex + uint64_t(node.rightOffset);
-						stackIndex++;
-					}
+					// right child
+					stack[stackIndex] = nodeIndex + uint64_t(node.rightOffset);
+					stackIndex++;
 				}
 				else
 				{
-					if (node.rightEnabled)
-					{
-						// right child
-						stack[stackIndex] = nodeIndex + uint64_t(node.rightOffset);
-						stackIndex++;
-					}
+					// right child
+					stack[stackIndex] = nodeIndex + uint64_t(node.rightOffset);
+					stackIndex++;
 
-					if (node.leftEnabled)
-					{
-						// left child
-						stack[stackIndex] = nodeIndex + 1;
-						stackIndex++;
-					}
+					// left child
+					stack[stackIndex] = nodeIndex + 1;
+					stackIndex++;
 				}
 			}
 		}
 	}
 
 	return wasFound;
-}
-
-void BVH1::disableLeft()
-{
-	if (nodes[disableIndex].rightOffset == 0)
-		return;
-
-	previousDisableIndices.push_back(disableIndex);
-	nodes[disableIndex].leftEnabled = 0;
-	disableIndex += nodes[disableIndex].rightOffset;
-}
-
-void BVH1::disableRight()
-{
-	if (nodes[disableIndex].rightOffset == 0)
-		return;
-
-	previousDisableIndices.push_back(disableIndex);
-	nodes[disableIndex].rightEnabled = 0;
-	++disableIndex;
-}
-
-void BVH1::undoDisable()
-{
-	if (previousDisableIndices.size() == 0)
-		return;
-
-	disableIndex = previousDisableIndices.back();
-	previousDisableIndices.pop_back();
-
-	nodes[disableIndex].leftEnabled = 1;
-	nodes[disableIndex].rightEnabled = 1;
 }

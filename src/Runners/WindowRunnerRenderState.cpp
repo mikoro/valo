@@ -67,23 +67,24 @@ void WindowRunnerRenderState::update(float timeStep)
 
 	// TRACER //
 
-	if (!ctrlIsPressed && windowRunner.keyWasPressed(GLFW_KEY_F2))
+	if (!ctrlIsPressed)
 	{
-		if (scene.general.tracerType == TracerType::RAY)
-			scene.general.tracerType = TracerType::PATH_RECURSIVE;
-		else if (scene.general.tracerType == TracerType::PATH_RECURSIVE)
-			scene.general.tracerType = TracerType::PATH_ITERATIVE;
-		else if (scene.general.tracerType == TracerType::PATH_ITERATIVE)
-			scene.general.tracerType = TracerType::PREVIEW;
-		else if (scene.general.tracerType == TracerType::PREVIEW)
+		if (windowRunner.keyWasPressed(GLFW_KEY_F2))
 			scene.general.tracerType = TracerType::RAY;
 
-		film.clear();
+		if (windowRunner.keyWasPressed(GLFW_KEY_F3))
+		{
+			scene.general.tracerType = TracerType::PATH_RECURSIVE;
+			film.clear();
+		}
+
+		if (windowRunner.keyWasPressed(GLFW_KEY_F4))
+			scene.general.tracerType = TracerType::PREVIEW;
 	}
 
 	// TONEMAPPER //
 
-	if (!ctrlIsPressed && windowRunner.keyWasPressed(GLFW_KEY_F3))
+	if (!ctrlIsPressed && windowRunner.keyWasPressed(GLFW_KEY_F5))
 	{
 		if (scene.tonemapping.type == TonemapperType::PASSTHROUGH)
 			scene.tonemapping.type = TonemapperType::LINEAR;
@@ -97,7 +98,7 @@ void WindowRunnerRenderState::update(float timeStep)
 
 	// RENDER SCALE //
 
-	if (!ctrlIsPressed && windowRunner.keyWasPressed(GLFW_KEY_F10))
+	if (!ctrlIsPressed && windowRunner.keyWasPressed(GLFW_KEY_F6))
 	{
 		float newScale = settings.interactive.renderScale * 0.5f;
 		uint64_t newWidth = uint64_t(float(windowRunner.getWindowWidth()) * newScale + 0.5f);
@@ -110,7 +111,7 @@ void WindowRunnerRenderState::update(float timeStep)
 		}
 	}
 
-	if (!ctrlIsPressed && windowRunner.keyWasPressed(GLFW_KEY_F11))
+	if (!ctrlIsPressed && windowRunner.keyWasPressed(GLFW_KEY_F7))
 	{
 		if (settings.interactive.renderScale < 1.0f)
 		{
@@ -164,31 +165,28 @@ void WindowRunnerRenderState::update(float timeStep)
 	if (ctrlIsPressed)
 	{
 		if (windowRunner.keyWasPressed(GLFW_KEY_F1))
-			scene.saveToFile("temp_scene.xml");
+			scene.saveToFile("scene.xml");
 
 		if (windowRunner.keyWasPressed(GLFW_KEY_F2))
-			scene.saveToFile("temp_scene.json");
+			scene.saveToFile("scene.json");
 
 		if (windowRunner.keyWasPressed(GLFW_KEY_F3))
-			scene.saveToFile("temp_scene.bin");
-
-		if (windowRunner.keyWasPressed(GLFW_KEY_F4))
 			scene.camera.saveState("camera.txt");
 
-		if (windowRunner.keyWasPressed(GLFW_KEY_F5))
+		if (windowRunner.keyWasPressed(GLFW_KEY_F4))
 		{
 			film.generateOutputImage(scene);
-			film.getOutputImage().save("temp_result.png");
+			film.getOutputImage().save("output.png");
 		}
+
+		if (windowRunner.keyWasPressed(GLFW_KEY_F5))
+			film.save("film.bin");
 
 		if (windowRunner.keyWasPressed(GLFW_KEY_F6))
-		{
-			film.generateOutputImage(scene);
-			film.getOutputImage().save("temp_result.hdr");
-		}
+			scene.saveBvhData("bvh.bin");
 
 		if (windowRunner.keyWasPressed(GLFW_KEY_F7))
-			film.save("temp_film.bin");
+			scene.saveImagePool("imagepool.bin");
 	}
 
 	// TEST SCENE LOADING //

@@ -24,8 +24,8 @@ Scene TestScene::create2()
 
 	scene.camera.position = Vector3(-0.0000f, 0.7808f, 2.9691f);
 	
-	scene.bvhType = BVHType::BVH1;
-	scene.bvhBuildInfo.maxLeafSize = 4;
+	scene.bvhInfo.bvhType = BVHType::BVH1;
+	scene.bvhInfo.maxLeafSize = 4;
 
 	ModelLoaderInfo model;
 	model.modelFilePath = "data/models/cornellbox-spheres/cornellbox.obj";
@@ -41,7 +41,7 @@ Scene TestScene::create2()
 	scene.lights.ambientLights.push_back(ambientLight);
 
 	PointLight pointLight;
-	pointLight.color = Color(1.0f, 1.0f, 1.0f) * 1.0f;
+	pointLight.color = Color(1.0f, 1.0f, 1.0f) * 0.7f;
 	pointLight.position = Vector3(0.0f, 1.5f, 0.0f);
 
 	scene.lights.pointLights.push_back(pointLight);

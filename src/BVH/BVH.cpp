@@ -24,23 +24,6 @@ std::unique_ptr<BVH> BVH::getBVH(BVHType type)
 	}
 }
 
-bool BVH::hasBeenBuilt()
-{
-	return built;
-}
-
-void BVH::disableLeft()
-{	
-}
-
-void BVH::disableRight()
-{
-}
-
-void BVH::undoDisable()
-{
-}
-
 BVHSplitOutput BVH::calculateSplit(const BVHSplitInput& input)
 {
 	assert(input.end > input.start);

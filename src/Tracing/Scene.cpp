@@ -133,6 +133,66 @@ std::string Scene::getXmlString() const
 	return ss.str();
 }
 
+void Scene::loadBvhData(const std::string& fileName)
+{
+	App::getLog().logInfo("Loading BVH data from %s", fileName);
+
+	std::ifstream file(fileName, std::ios::binary);
+
+	if (!file.good())
+		throw std::runtime_error("Could not open the BVH data file for loading");
+
+	cereal::BinaryInputArchive archive(file);
+	archive(bvhData);
+	
+	file.close();
+}
+
+void Scene::saveBvhData(const std::string& fileName) const
+{
+	App::getLog().logInfo("Saving BVH data to %s", fileName);
+
+	std::ofstream file(fileName, std::ios::binary);
+
+	if (!file.good())
+		throw std::runtime_error("Could not open the BVH data file for saving");
+
+	cereal::BinaryOutputArchive archive(file);
+	archive(cereal::make_nvp("bvhData", bvhData));
+	
+	file.close();
+}
+
+void Scene::loadImagePool(const std::string& fileName)
+{
+	App::getLog().logInfo("Loading image pool from %s", fileName);
+
+	std::ifstream file(fileName, std::ios::binary);
+
+	if (!file.good())
+		throw std::runtime_error("Could not open the image pool file for loading");
+
+	cereal::BinaryInputArchive archive(file);
+	archive(imagePool);
+
+	file.close();
+}
+
+void Scene::saveImagePool(const std::string& fileName) const
+{
+	App::getLog().logInfo("Saving image pool to %s", fileName);
+
+	std::ofstream file(fileName, std::ios::binary);
+
+	if (!file.good())
+		throw std::runtime_error("Could not open the image pool file for saving");
+
+	cereal::BinaryOutputArchive archive(file);
+	archive(cereal::make_nvp("imagePool", imagePool));
+
+	file.close();
+}
+
 void Scene::initialize()
 {
 	Log& log = App::getLog();
@@ -140,23 +200,19 @@ void Scene::initialize()
 
 	Timer timer;
 
-	// MODELS
+	// MODEL LOADING
 
-	for (const ModelLoaderInfo& modelInfo : models)
+	if (!bvhInfo.loadFromFile)
 	{
-		ModelLoaderResult result = ModelLoader::load(modelInfo);
+		for (const ModelLoaderInfo& modelInfo : models)
+		{
+			ModelLoaderResult result = ModelLoader::load(modelInfo);
 
-		for (const Triangle& triangle : result.triangles)
-			triangles.push_back(triangle);
-
-		for (const DiffuseSpecularMaterial& material : result.diffuseSpecularMaterials)
-			materials.diffuseSpecularMaterials.push_back(material);
-
-		for (const ImageTexture& imageTexture : result.textures)
-			textures.imageTextures.push_back(imageTexture);
+			bvhData.triangles.insert(bvhData.triangles.end(), result.triangles.begin(), result.triangles.end());
+			materials.diffuseSpecularMaterials.insert(materials.diffuseSpecularMaterials.end(), result.diffuseSpecularMaterials.begin(), result.diffuseSpecularMaterials.end());
+			textures.imageTextures.insert(textures.imageTextures.end(), result.textures.begin(), result.textures.end());
+		}
 	}
-
-	models.clear();
 
 	// LIGHT POINTERS
 
@@ -197,7 +253,7 @@ void Scene::initialize()
 	for (DiffuseSpecularMaterial& material : materials.diffuseSpecularMaterials)
 		materialsList.push_back(&material);
 
-	// POINTER MAP GENERATION + POINTER SETTING
+	// POINTER ASSIGNMENT
 
 	std::map<uint64_t, Texture*> texturesMap;
 	std::map<uint64_t, Material*> materialsMap;
@@ -246,25 +302,61 @@ void Scene::initialize()
 			material->maskMapTexture = texturesMap[material->maskMapTextureId];
 	}
 
-	for (Triangle& triangle : triangles)
+	// BVH LOADING
+
+	if (bvhInfo.loadFromFile)
+		loadBvhData(bvhInfo.fileName);
+
+	// TRIANGLE INITIALIZATION
+
+	for (Triangle& triangle : bvhData.triangles)
 	{
-		if (triangle.id == 0)
-			throw std::runtime_error(tfm::format("A triangle must have a non-zero id"));
-
-		if (trianglesMap.count(triangle.id))
-			throw std::runtime_error(tfm::format("A duplicate triangle id was found (id: %s)", triangle.id));
-
-		trianglesMap[triangle.id] = true;
-
 		if (materialsMap.count(triangle.materialId))
 			triangle.material = materialsMap[triangle.materialId];
 		else
 			throw std::runtime_error(tfm::format("A triangle has a non-existent material id (%d)", triangle.materialId));
 
-		triangle.initialize();
+		if (!bvhInfo.loadFromFile)
+		{
+			if (triangle.id == 0)
+				throw std::runtime_error(tfm::format("A triangle must have a non-zero id"));
+
+			if (trianglesMap.count(triangle.id))
+				throw std::runtime_error(tfm::format("A duplicate triangle id was found (id: %s)", triangle.id));
+
+			trianglesMap[triangle.id] = true;
+			triangle.initialize();
+		}
 	}
 
-	// INITIALIZATION
+	// BVH BUILDING
+
+	switch (bvhInfo.bvhType)
+	{
+		case BVHType::BVH1: bvh = &bvhData.bvh1; break;
+		case BVHType::BVH4: bvh = &bvhData.bvh4; break;
+		case BVHType::BVH8: bvh = &bvhData.bvh1; break;
+		case BVHType::SBVH1: bvh = &bvhData.bvh1; break;
+		default: break;
+	}
+
+	if (!bvhInfo.loadFromFile)
+		bvh->build(bvhData.triangles, bvhInfo.maxLeafSize);
+	
+	// EMISSIVE TRIANGLES
+
+	for (Triangle& triangle : bvhData.triangles)
+	{
+		if (triangle.material->isEmissive())
+			emissiveTriangles.push_back(&triangle);
+	}
+
+	// IMAGE POOL LOADING
+
+	if (imagePoolInfo.loadFromFile)
+		loadImagePool(imagePoolInfo.fileName);
+	
+	// MISC INITIALIZATION
 
 	for (Light* light : lightsList)
 		light->initialize();
@@ -272,38 +364,12 @@ void Scene::initialize()
 	for (Texture* texture : texturesList)
 		texture->initialize(*this);	
 
-	// CAMERA
-
 	camera.initialize();
 
-	// BVH STUFF
-
-	switch (bvhType)
-	{
-		case BVHType::BVH1: bvh = &bvh1; break;
-		case BVHType::BVH4: bvh = &bvh4; break;
-		case BVHType::BVH8: bvh = &bvh1; break;
-		case BVHType::SBVH1: bvh = &bvh1; break;
-		default: break;
-	}
-
-	if (!bvh->hasBeenBuilt())
-		bvh->build(triangles, bvhBuildInfo);
-	else
-		log.logInfo("BVH has already been built");
-
-	// EMISSIVE TRIANGLES
-
-	for (Triangle& triangle : triangles)
-	{
-		if (triangle.material->isEmissive())
-			emissiveTriangles.push_back(&triangle);
-	}
-	
 	log.logInfo("Scene initialization finished (time: %s)", timer.getElapsed().getString(true));
 }
 
 bool Scene::intersect(const Ray& ray, Intersection& intersection) const
 {
-	return bvh->intersect(triangles, ray, intersection);
+	return bvh->intersect(bvhData.triangles, ray, intersection);
 }

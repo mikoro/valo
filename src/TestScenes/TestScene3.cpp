@@ -23,8 +23,8 @@ Scene TestScene::create3()
 
 	scene.camera.position = Vector3(0.0f, 1.0f, 0.0f);
 
-	scene.bvhType = BVHType::BVH1;
-	scene.bvhBuildInfo.maxLeafSize = 4;
+	scene.bvhInfo.bvhType = BVHType::BVH1;
+	scene.bvhInfo.maxLeafSize = 4;
 
 	ModelLoaderInfo model;
 	model.modelFilePath = "data/models/spheres/spheres.obj";
