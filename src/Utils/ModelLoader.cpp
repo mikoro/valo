@@ -27,10 +27,357 @@ namespace
 		return tempPathString;
 	}
 
-	float readFloat(const std::string& input, uint64_t& startIndex, std::string& result)
+	// read one line from filebuffer to linebuffer
+	bool getLine(const char* fileBuffer, uint64_t& fileBufferIndex, uint64_t fileBufferLength, char* lineBuffer, uint64_t& lineBufferLength)
 	{
-		StringUtils::readUntilSpace(input, startIndex, result);
-		return StringUtils::parseFloat(result);
+		if (fileBufferIndex >= fileBufferLength)
+			return false;
+
+		while (fileBufferIndex < fileBufferLength)
+		{
+			char c = fileBuffer[fileBufferIndex];
+
+			if (c != '\r' && c != '\n')
+				break;
+
+			fileBufferIndex++;
+		}
+
+		uint64_t startFileBufferIndex = fileBufferIndex;
+
+		while (fileBufferIndex < fileBufferLength)
+		{
+			char c = fileBuffer[fileBufferIndex];
+
+			if (c == '\r' || c == '\n')
+				break;
+
+			fileBufferIndex++;
+		}
+
+		lineBufferLength = fileBufferIndex - startFileBufferIndex;
+
+		for (uint64_t i = 0; i < lineBufferLength && i < 128; ++i)
+			lineBuffer[i] = fileBuffer[startFileBufferIndex + i];
+
+		return true;
+	}
+
+	// read one word from linebuffer to wordbuffer
+	bool getWord(const char* lineBuffer, uint64_t& lineBufferIndex, uint64_t lineBufferLength, char* wordBuffer, uint64_t& wordBufferLength)
+	{
+		if (lineBufferIndex >= lineBufferLength)
+			return false;
+
+		while (lineBufferIndex < lineBufferLength)
+		{
+			char c = lineBuffer[lineBufferIndex];
+
+			if (c != ' ')
+				break;
+
+			lineBufferIndex++;
+		}
+
+		uint64_t startLineBufferIndex = lineBufferIndex;
+
+		while (lineBufferIndex < lineBufferLength)
+		{
+			char c = lineBuffer[lineBufferIndex];
+
+			if (c == ' ')
+				break;
+
+			lineBufferIndex++;
+		}
+
+		wordBufferLength = lineBufferIndex - startLineBufferIndex;
+
+		if (wordBufferLength == 0)
+			return false;
+
+		for (uint64_t i = 0; i < wordBufferLength && i < 128; ++i)
+			wordBuffer[i] = lineBuffer[startLineBufferIndex + i];
+
+		return true;
+	}
+
+	bool compareWord(const char* wordBuffer, uint64_t wordBufferLength, const char* otherWord)
+	{
+		uint64_t otherWordLength = strlen(otherWord);
+
+		if (wordBufferLength != otherWordLength)
+			return false;
+
+		for (uint64_t i = 0; i < wordBufferLength; ++i)
+		{
+			if (wordBuffer[i] != otherWord[i])
+				return false;
+		}
+
+		return true;
+	}
+
+	float getFloat(const char* lineBuffer, uint64_t& lineBufferIndex, uint64_t lineBufferLength)
+	{
+		if (lineBufferIndex >= lineBufferLength)
+			return 0.0f;
+
+		while (lineBufferIndex < lineBufferLength)
+		{
+			char c = lineBuffer[lineBufferIndex];
+
+			if (c != ' ')
+				break;
+
+			lineBufferIndex++;
+		}
+
+		float sign = 1.0f;
+		float accumulator = 0.0f;
+
+		char c = lineBuffer[lineBufferIndex];
+
+		if (c == '-')
+		{
+			sign = -1.0f;
+			c = lineBuffer[++lineBufferIndex];
+		}
+
+		while (c >= '0' && c <= '9')
+		{
+			accumulator = accumulator * 10.0f + c - '0';
+			c = lineBuffer[++lineBufferIndex];
+		}
+
+		if (c == '.')
+		{
+			float k = 0.1f;
+			c = lineBuffer[++lineBufferIndex];
+
+			while (c >= '0' && c <= '9')
+			{
+				accumulator += (c - '0') * k;
+				k *= 0.1f;
+				c = lineBuffer[++lineBufferIndex];
+			}
+		}
+
+		return sign * accumulator;
+	}
+
+	// what indices are included in a face
+	void checkIndices(const char* wordBuffer, uint64_t wordBufferLength, bool& hasNormals, bool& hasTexcoords)
+	{
+		uint64_t slashCount = 0;
+		uint64_t doubleSlashCount = 0;
+
+		for (uint64_t i = 0; i < wordBufferLength; ++i)
+		{
+			if (wordBuffer[i] == '/')
+			{
+				slashCount++;
+
+				if (i < wordBufferLength - 1)
+				{
+					if (wordBuffer[i + 1] == '/')
+						doubleSlashCount++;
+				}
+			}
+		}
+
+		hasNormals = (slashCount == 2);
+		hasTexcoords = (slashCount > 0 && doubleSlashCount == 0);
+	}
+
+	void getIndices(char* wordBuffer, uint64_t wordBufferLength, bool hasNormals, bool hasTexcoords, int64_t& vertexIndex, int64_t& normalIndex, int64_t& texcoordIndex)
+	{
+		uint64_t i;
+		uint64_t texcoordOffset = 0;
+		uint64_t normalOffset = 0;
+
+		wordBuffer[wordBufferLength] = 0;
+
+		if (hasNormals && hasTexcoords)
+		{
+			for (i = 0; i < wordBufferLength; ++i)
+			{
+				if (wordBuffer[i] == '/')
+				{
+					wordBuffer[i] = 0;
+					texcoordOffset = i + 1;
+					break;
+				}
+			}
+
+			for (; i < wordBufferLength; ++i)
+			{
+				if (wordBuffer[i] == '/')
+				{
+					wordBuffer[i] = 0;
+					normalOffset = i + 1;
+					break;
+				}
+			}
+
+			vertexIndex = strtoll(wordBuffer, nullptr, 10);
+			texcoordIndex = strtoll(wordBuffer + texcoordOffset, nullptr, 10);
+			normalIndex = strtoll(wordBuffer + normalOffset, nullptr, 10);
+		}
+		else if (hasNormals)
+		{
+			for (i = 0; i < wordBufferLength; ++i)
+			{
+				if (wordBuffer[i] == '/')
+				{
+					wordBuffer[i] = 0;
+					normalOffset = i + 2;
+					break;
+				}
+			}
+
+			vertexIndex = strtoll(wordBuffer, nullptr, 10);
+			normalIndex = strtoll(wordBuffer + normalOffset, nullptr, 10);
+		}
+		else if (hasTexcoords)
+		{
+			for (i = 0; i < wordBufferLength; ++i)
+			{
+				if (wordBuffer[i] == '/')
+				{
+					wordBuffer[i] = 0;
+					texcoordOffset = i + 1;
+					break;
+				}
+			}
+
+			vertexIndex = strtoll(wordBuffer, nullptr, 10);
+			texcoordIndex = strtoll(wordBuffer + texcoordOffset, nullptr, 10);
+		}
+		else
+			vertexIndex = strtoll(wordBuffer, nullptr, 10);
+	}
+
+	bool processFace(const char* lineBuffer, uint64_t& lineBufferIndex, uint64_t lineBufferLength, std::vector<Vector3>& vertices, std::vector<Vector3>& normals, std::vector<Vector2>& texcoords, ModelLoaderResult& result, uint64_t& currentId, uint64_t currentMaterialId)
+	{
+		Log& log = App::getLog();
+
+		uint64_t vertexIndices[4];
+		uint64_t normalIndices[4];
+		uint64_t texcoordIndices[4];
+
+		char wordBuffer[128];
+		uint64_t wordBufferLength = 0;
+		uint64_t vertexCount = 0;
+
+		bool hasNormals = false;
+		bool hasTexcoords = false;
+
+		for (uint64_t i = 0; i < 4; ++i)
+		{
+			if (!getWord(lineBuffer, lineBufferIndex, lineBufferLength, wordBuffer, wordBufferLength))
+				break;
+
+			vertexCount++;
+
+			if (i == 0)
+				checkIndices(wordBuffer, wordBufferLength, hasNormals, hasTexcoords);
+
+			int64_t vertexIndex = 0;
+			int64_t texcoordIndex = 0;
+			int64_t normalIndex = 0;
+
+			getIndices(wordBuffer, wordBufferLength, hasNormals, hasTexcoords, vertexIndex, normalIndex, texcoordIndex);
+
+			if (vertexIndex < 0)
+				vertexIndex = int64_t(vertices.size()) + vertexIndex;
+			else
+				vertexIndex--;
+
+			if (vertexIndex < 0 || vertexIndex >= int64_t(vertices.size()))
+			{
+				log.logWarning("Vertex index (%s) was out of bounds", vertexIndex);
+				return false;
+			}
+
+			vertexIndices[i] = uint64_t(vertexIndex);
+
+			if (hasTexcoords)
+			{
+				if (texcoordIndex < 0)
+					texcoordIndex = int64_t(texcoords.size()) + texcoordIndex;
+				else
+					texcoordIndex--;
+
+				if (texcoordIndex < 0 || texcoordIndex >= int64_t(texcoords.size()))
+				{
+					log.logWarning("Texcoord index (%s) was out of bounds", texcoordIndex);
+					return false;
+				}
+
+				texcoordIndices[i] = uint64_t(texcoordIndex);
+			}
+
+			if (hasNormals)
+			{
+				if (normalIndex < 0)
+					normalIndex = int64_t(normals.size()) + normalIndex;
+				else
+					normalIndex--;
+
+				if (normalIndex < 0 || normalIndex >= int64_t(normals.size()))
+				{
+					log.logWarning("Normal index (%s) was out of bounds", normalIndex);
+					return false;
+				}
+
+				normalIndices[i] = uint64_t(normalIndex);
+			}
+		}
+
+		if (vertexCount < 3)
+		{
+			log.logWarning("Too few vertices (%s) in a face", vertexCount);
+			return false;
+		}
+
+		// triangulate
+		for (uint64_t i = 2; i < vertexCount; ++i)
+		{
+			Triangle triangle;
+			triangle.id = ++currentId;
+			triangle.materialId = currentMaterialId;
+
+			triangle.vertices[0] = vertices[vertexIndices[0]];
+			triangle.vertices[1] = vertices[vertexIndices[i - 1]];
+			triangle.vertices[2] = vertices[vertexIndices[i]];
+
+			if (hasNormals)
+			{
+				triangle.normals[0] = normals[normalIndices[0]];
+				triangle.normals[1] = normals[normalIndices[i - 1]];
+				triangle.normals[2] = normals[normalIndices[i]];
+			}
+			else
+			{
+				Vector3 v0tov1 = triangle.vertices[1] - triangle.vertices[0];
+				Vector3 v0tov2 = triangle.vertices[2] - triangle.vertices[0];
+				Vector3 normal = v0tov1.cross(v0tov2).normalized();
+
+				triangle.normals[0] = triangle.normals[1] = triangle.normals[2] = normal;
+			}
+
+			if (hasTexcoords)
+			{
+				triangle.texcoords[0] = texcoords[texcoordIndices[0]];
+				triangle.texcoords[1] = texcoords[texcoordIndices[i - 1]];
+				triangle.texcoords[2] = texcoords[texcoordIndices[i]];
+			}
+
+			result.triangles.push_back(triangle);
+		}
+
+		return true;
 	}
 
 	void processMaterialFile(const std::string& objFileDirectory, const std::string& mtlFilePath, ModelLoaderResult& result, std::map<std::string, uint64_t>& materialsMap, std::map<std::string, uint64_t>& externalMaterialsMap, uint64_t& currentId)
@@ -231,139 +578,6 @@ namespace
 		if (materialPending)
 			result.diffuseSpecularMaterials.push_back(currentMaterial);
 	}
-
-	bool processFace(const std::string& line, std::vector<Vector3>& vertices, std::vector<Vector3>& normals, std::vector<Vector2>& texcoords, ModelLoaderResult& result, uint64_t& currentId, uint64_t currentMaterialId)
-	{
-		Log& log = App::getLog();
-
-		uint64_t vertexIndices[4];
-		uint64_t normalIndices[4];
-		uint64_t texcoordIndices[4];
-
-		std::string part1;
-		uint64_t lineIndex1 = 1;
-		uint64_t vertexCount = 0;
-
-		StringUtils::readUntilSpace(line, lineIndex1, part1);
-
-		uint64_t slashCount = std::count(part1.begin(), part1.end(), '/');
-		bool doubleSlash = (part1.find("//") != std::string::npos);
-		bool hasTexcoords = (slashCount > 0 && !doubleSlash);
-		bool hasNormals = (slashCount > 1);
-
-		lineIndex1 = 1;
-
-		for (uint64_t i = 0; i < 4; ++i)
-		{
-			if (!StringUtils::readUntilSpace(line, lineIndex1, part1))
-				break;
-
-			vertexCount++;
-
-			std::replace(part1.begin(), part1.end(), '/', ' ');
-
-			std::string part2;
-			uint64_t lineIndex2 = 0;
-
-			StringUtils::readUntilSpace(part1, lineIndex2, part2);
-			int64_t vertexIndex = strtoll(part2.c_str(), nullptr, 10);
-
-			if (vertexIndex < 0)
-				vertexIndex = int64_t(vertices.size()) + vertexIndex;
-			else
-				vertexIndex--;
-
-			if (vertexIndex < 0 || vertexIndex >= int64_t(vertices.size()))
-			{
-				log.logWarning("Vertex index (%s) was out of bounds", vertexIndex);
-				return false;
-			}
-
-			vertexIndices[i] = uint64_t(vertexIndex);
-
-			if (hasTexcoords)
-			{
-				StringUtils::readUntilSpace(part1, lineIndex2, part2);
-				int64_t texcoordIndex = strtoll(part2.c_str(), nullptr, 10);
-
-				if (texcoordIndex < 0)
-					texcoordIndex = int64_t(texcoords.size()) + texcoordIndex;
-				else
-					texcoordIndex--;
-
-				if (texcoordIndex < 0 || texcoordIndex >= int64_t(texcoords.size()))
-				{
-					log.logWarning("Texcoord index (%s) was out of bounds", texcoordIndex);
-					return false;
-				}
-
-				texcoordIndices[i] = uint64_t(texcoordIndex);
-			}
-
-			if (hasNormals)
-			{
-				StringUtils::readUntilSpace(part1, lineIndex2, part2);
-				int64_t normalIndex = strtoll(part2.c_str(), nullptr, 10);
-
-				if (normalIndex < 0)
-					normalIndex = int64_t(normals.size()) + normalIndex;
-				else
-					normalIndex--;
-
-				if (normalIndex < 0 || normalIndex >= int64_t(normals.size()))
-				{
-					log.logWarning("Normal index (%s) was out of bounds", normalIndex);
-					return false;
-				}
-
-				normalIndices[i] = uint64_t(normalIndex);
-			}
-		}
-
-		if (vertexCount < 3)
-		{
-			log.logWarning("Too few vertices (%s) in a face", vertexCount);
-			return false;
-		}
-
-		// triangulate
-		for (uint64_t i = 2; i < vertexCount; ++i)
-		{
-			Triangle triangle;
-			triangle.id = ++currentId;
-			triangle.materialId = currentMaterialId;
-
-			triangle.vertices[0] = vertices[vertexIndices[0]];
-			triangle.vertices[1] = vertices[vertexIndices[i - 1]];
-			triangle.vertices[2] = vertices[vertexIndices[i]];
-
-			if (hasNormals)
-			{
-				triangle.normals[0] = normals[normalIndices[0]];
-				triangle.normals[1] = normals[normalIndices[i - 1]];
-				triangle.normals[2] = normals[normalIndices[i]];
-			}
-			else
-			{
-				Vector3 v0tov1 = triangle.vertices[1] - triangle.vertices[0];
-				Vector3 v0tov2 = triangle.vertices[2] - triangle.vertices[0];
-				Vector3 normal = v0tov1.cross(v0tov2).normalized();
-
-				triangle.normals[0] = triangle.normals[1] = triangle.normals[2] = normal;
-			}
-
-			if (hasTexcoords)
-			{
-				triangle.texcoords[0] = texcoords[texcoordIndices[0]];
-				triangle.texcoords[1] = texcoords[texcoordIndices[i - 1]];
-				triangle.texcoords[2] = texcoords[texcoordIndices[i]];
-			}
-
-			result.triangles.push_back(triangle);
-		}
-
-		return true;
-	}
 }
 
 ModelLoaderResult ModelLoader::load(const ModelLoaderInfo& info)
@@ -397,82 +611,91 @@ ModelLoaderResult ModelLoader::load(const ModelLoaderInfo& info)
 	normals.reserve(info.triangleCountEstimate / 2);
 	texcoords.reserve(info.triangleCountEstimate / 2);
 
-	FILE* file = fopen(info.modelFilePath.c_str(), "r");
+	std::ifstream file(info.modelFilePath, std::ios::in | std::ios::binary | std::ios::ate);
 
-	if (file == nullptr)
-		throw std::runtime_error("Could not open the OBJ file");
+	if (!file.good())
+		throw std::runtime_error(tfm::format("Could not open the OBJ file: %s", info.modelFilePath));
 
-	char buffer[1024];
-	std::string line;
-	std::string part;
-	uint64_t lineIndex = 0;
+	auto size = file.tellg();
+	file.seekg(0, std::ios::beg);
 
-	while (fgets(buffer, sizeof(buffer), file) != nullptr)
+	std::vector<char> fileBuffer(size);
+	file.read(&fileBuffer[0], size);
+
+	file.close();
+
+	uint64_t fileBufferIndex = 0;
+	uint64_t lineBufferIndex = 0;
+	uint64_t fileBufferLength = fileBuffer.size();
+	uint64_t lineBufferLength = 0;
+	uint64_t wordBufferLength = 0;
+	char lineBuffer[128];
+	char wordBuffer[128];
+
+	while (getLine(&fileBuffer[0], fileBufferIndex, fileBufferLength, lineBuffer, lineBufferLength))
 	{
-		line.assign(buffer);
-		part.clear();
-		lineIndex = 0;
-		StringUtils::readUntilSpace(line, lineIndex, part);
-
-		if (part.size() == 0)
+		if (lineBufferLength == 0)
 			continue;
 
-		if (part == "mtllib") // new material file
-		{
-			StringUtils::readUntilSpace(line, lineIndex, part);
-			processMaterialFile(objFileDirectory, part, result, materialsMap, externalMaterialsMap, currentId);
-		}
-		else if (part == "usemtl") // select material
-		{
-			StringUtils::readUntilSpace(line, lineIndex, part);
+		lineBufferIndex = 0;
+		getWord(lineBuffer, lineBufferIndex, lineBufferLength, wordBuffer, wordBufferLength);
 
-			if (externalMaterialsMap.count(part))
-				currentMaterialId = externalMaterialsMap[part];
-			else if (materialsMap.count(part))
-				currentMaterialId = materialsMap[part];
-			else
-			{
-				log.logWarning("Could not find material named \"%s\"", part);
-				currentMaterialId = info.defaultMaterialId;
-			}
+		if (compareWord(wordBuffer, wordBufferLength, "f")) // face
+		{
+			if (!processFace(lineBuffer, lineBufferIndex, lineBufferLength, vertices, normals, texcoords, result, currentId, currentMaterialId))
+				break;
 		}
-		else if (part == "v") // vertex
+		else if (compareWord(wordBuffer, wordBufferLength, "v")) // vertex
 		{
 			Vector3 vertex;
 
-			vertex.x = readFloat(line, lineIndex, part);
-			vertex.y = readFloat(line, lineIndex, part);
-			vertex.z = readFloat(line, lineIndex, part);
+			vertex.x = getFloat(lineBuffer, lineBufferIndex, lineBufferLength);
+			vertex.y = getFloat(lineBuffer, lineBufferIndex, lineBufferLength);
+			vertex.z = getFloat(lineBuffer, lineBufferIndex, lineBufferLength);
 
 			vertices.push_back(transformation.transformPosition(vertex));
 		}
-		else if (part == "vn") // normal
+		else if (compareWord(wordBuffer, wordBufferLength, "vn")) // normal
 		{
 			Vector3 normal;
 
-			normal.x = readFloat(line, lineIndex, part);
-			normal.y = readFloat(line, lineIndex, part);
-			normal.z = readFloat(line, lineIndex, part);
+			normal.x = getFloat(lineBuffer, lineBufferIndex, lineBufferLength);
+			normal.y = getFloat(lineBuffer, lineBufferIndex, lineBufferLength);
+			normal.z = getFloat(lineBuffer, lineBufferIndex, lineBufferLength);
 
 			normals.push_back(transformationInvT.transformDirection(normal).normalized());
 		}
-		else if (part == "vt") // texcoord
+		else if (compareWord(wordBuffer, wordBufferLength, "vt")) // texcoord
 		{
 			Vector2 texcoord;
 
-			texcoord.x = readFloat(line, lineIndex, part);
-			texcoord.y = readFloat(line, lineIndex, part);
+			texcoord.x = getFloat(lineBuffer, lineBufferIndex, lineBufferLength);
+			texcoord.y = getFloat(lineBuffer, lineBufferIndex, lineBufferLength);
 
 			texcoords.push_back(texcoord);
 		}
-		else if (part == "f") // face
+		else if (compareWord(wordBuffer, wordBufferLength, "mtllib")) // new material file
 		{
-			if (!processFace(line, vertices, normals, texcoords, result, currentId, currentMaterialId))
-				break;
+			getWord(lineBuffer, lineBufferIndex, lineBufferLength, wordBuffer, wordBufferLength);
+			std::string mtlFilePath(wordBuffer, wordBufferLength);
+			processMaterialFile(objFileDirectory, mtlFilePath, result, materialsMap, externalMaterialsMap, currentId);
+		}
+		else if (compareWord(wordBuffer, wordBufferLength, "usemtl")) // select material
+		{
+			getWord(lineBuffer, lineBufferIndex, lineBufferLength, wordBuffer, wordBufferLength);
+			std::string materialName(wordBuffer, wordBufferLength);
+
+			if (externalMaterialsMap.count(materialName))
+				currentMaterialId = externalMaterialsMap[materialName];
+			else if (materialsMap.count(materialName))
+				currentMaterialId = materialsMap[materialName];
+			else
+			{
+				log.logWarning("Could not find material named \"%s\"", materialName);
+				currentMaterialId = info.defaultMaterialId;
+			}
 		}
 	}
-
-	fclose(file);
 
 	log.logInfo("OBJ file reading finished (time: %s, vertices: %s, normals: %s, texcoords: %s, triangles: %s, materials: %s, textures: %s)", timer.getElapsed().getString(true), vertices.size(), normals.size(), texcoords.size(), result.triangles.size(), result.diffuseSpecularMaterials.size(), result.textures.size());
 
