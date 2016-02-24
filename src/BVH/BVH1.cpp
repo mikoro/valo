@@ -61,8 +61,9 @@ void BVH1::build(std::vector<Triangle>& triangles, uint64_t maxLeafSize)
 		nodeCount++;
 
 		// pop from stack
-		BVH1Node node;
 		BVH1BuildEntry buildEntry = stack[--stackIndex];
+
+		BVH1Node node;
 		node.rightOffset = -3;
 		node.startOffset = uint32_t(buildEntry.start);
 		node.triangleCount = uint32_t(buildEntry.end - buildEntry.start);
@@ -119,7 +120,7 @@ void BVH1::build(std::vector<Triangle>& triangles, uint64_t maxLeafSize)
 
 	triangles = sortedTriangles;
 
-	log.logInfo("BVH1 building finished (time: %s, nodes: %d, leafs: %d)", timer.getElapsed().getString(true), nodeCount - leafCount, leafCount);
+	log.logInfo("BVH1 building finished (time: %s, nodes: %d, leafs: %d, triangles/leaf: %.2f)", timer.getElapsed().getString(true), nodeCount - leafCount, leafCount, float(triangleCount) / float(leafCount));
 }
 
 bool BVH1::intersect(const std::vector<Triangle>& triangles, const Ray& ray, Intersection& intersection) const

@@ -32,19 +32,19 @@ void BVH4::build(std::vector<Triangle>& triangles, uint64_t maxLeafSize)
 
 	Timer timer;
 	uint64_t triangleCount = triangles.size();
-	uint64_t failedLeftSplitCount = 0;
-	uint64_t failedMiddleSplitCount = 0;
-	uint64_t failedRightSplitCount = 0;
-	std::vector<Triangle*> trianglePtrs;
-	std::vector<float> rightScores(triangleCount);
+	std::vector<BVHBuildTriangle> buildTriangles(triangleCount);
+	std::vector<BVHSplitCache> cache(triangleCount);
 	BVHSplitOutput splitOutputs[3];
+
+	for (uint64_t i = 0; i < triangleCount; ++i)
+	{
+		buildTriangles[i].triangle = &triangles[i];
+		buildTriangles[i].aabb = triangles[i].getAabb();
+		buildTriangles[i].center = buildTriangles[i].aabb.getCenter();
+	}
 
 	nodes.clear();
 	nodes.reserve(triangleCount);
-	trianglePtrs.reserve(triangleCount);
-
-	for (Triangle& triangle : triangles)
-		trianglePtrs.push_back(&triangle);
 
 	BVH4BuildEntry stack[128];
 	uint64_t stackIndex = 0;
@@ -63,6 +63,7 @@ void BVH4::build(std::vector<Triangle>& triangles, uint64_t maxLeafSize)
 
 		// pop from stack
 		BVH4BuildEntry buildEntry = stack[--stackIndex];
+
 		BVH4Node node;
 		node.triangleOffset = uint32_t(buildEntry.start);
 		node.triangleCount = uint32_t(buildEntry.end - buildEntry.start);
@@ -79,50 +80,41 @@ void BVH4::build(std::vector<Triangle>& triangles, uint64_t maxLeafSize)
 		if (!node.isLeaf)
 		{
 			// middle split
-			//splitOutputs[1] = calculateSplit(splitInput);
+			splitOutputs[1] = calculateSplit(buildTriangles, cache, buildEntry.start, buildEntry.end);
 
-			if (splitOutputs[1].index - buildEntry.start < 2 || buildEntry.end - splitOutputs[1].index < 2)
-			{
-				node.isLeaf = 1;
-				failedMiddleSplitCount++;
-			}
+			// left split
+			splitOutputs[0] = calculateSplit(buildTriangles, cache, buildEntry.start, splitOutputs[1].index);
 
-			if (!node.isLeaf)
-			{
-				// left split
-				//splitOutputs[0] = calculateSplit(splitInput);
+			// right split
+			splitOutputs[2] = calculateSplit(buildTriangles, cache, splitOutputs[1].index, buildEntry.end);
 
-				// right split
-				//splitOutputs[2] = calculateSplit(splitInput);
+			node.aabbMinX[0] = splitOutputs[0].leftAabb.min.x;
+			node.aabbMinY[0] = splitOutputs[0].leftAabb.min.y;
+			node.aabbMinZ[0] = splitOutputs[0].leftAabb.min.z;
+			node.aabbMaxX[0] = splitOutputs[0].leftAabb.max.x;
+			node.aabbMaxY[0] = splitOutputs[0].leftAabb.max.y;
+			node.aabbMaxZ[0] = splitOutputs[0].leftAabb.max.z;
 
-				node.aabbMinX[0] = splitOutputs[0].leftAabb.min.x;
-				node.aabbMinY[0] = splitOutputs[0].leftAabb.min.y;
-				node.aabbMinZ[0] = splitOutputs[0].leftAabb.min.z;
-				node.aabbMaxX[0] = splitOutputs[0].leftAabb.max.x;
-				node.aabbMaxY[0] = splitOutputs[0].leftAabb.max.y;
-				node.aabbMaxZ[0] = splitOutputs[0].leftAabb.max.z;
+			node.aabbMinX[1] = splitOutputs[0].rightAabb.min.x;
+			node.aabbMinY[1] = splitOutputs[0].rightAabb.min.y;
+			node.aabbMinZ[1] = splitOutputs[0].rightAabb.min.z;
+			node.aabbMaxX[1] = splitOutputs[0].rightAabb.max.x;
+			node.aabbMaxY[1] = splitOutputs[0].rightAabb.max.y;
+			node.aabbMaxZ[1] = splitOutputs[0].rightAabb.max.z;
 
-				node.aabbMinX[1] = splitOutputs[0].rightAabb.min.x;
-				node.aabbMinY[1] = splitOutputs[0].rightAabb.min.y;
-				node.aabbMinZ[1] = splitOutputs[0].rightAabb.min.z;
-				node.aabbMaxX[1] = splitOutputs[0].rightAabb.max.x;
-				node.aabbMaxY[1] = splitOutputs[0].rightAabb.max.y;
-				node.aabbMaxZ[1] = splitOutputs[0].rightAabb.max.z;
+			node.aabbMinX[2] = splitOutputs[2].leftAabb.min.x;
+			node.aabbMinY[2] = splitOutputs[2].leftAabb.min.y;
+			node.aabbMinZ[2] = splitOutputs[2].leftAabb.min.z;
+			node.aabbMaxX[2] = splitOutputs[2].leftAabb.max.x;
+			node.aabbMaxY[2] = splitOutputs[2].leftAabb.max.y;
+			node.aabbMaxZ[2] = splitOutputs[2].leftAabb.max.z;
 
-				node.aabbMinX[2] = splitOutputs[2].leftAabb.min.x;
-				node.aabbMinY[2] = splitOutputs[2].leftAabb.min.y;
-				node.aabbMinZ[2] = splitOutputs[2].leftAabb.min.z;
-				node.aabbMaxX[2] = splitOutputs[2].leftAabb.max.x;
-				node.aabbMaxY[2] = splitOutputs[2].leftAabb.max.y;
-				node.aabbMaxZ[2] = splitOutputs[2].leftAabb.max.z;
-
-				node.aabbMinX[3] = splitOutputs[2].rightAabb.min.x;
-				node.aabbMinY[3] = splitOutputs[2].rightAabb.min.y;
-				node.aabbMinZ[3] = splitOutputs[2].rightAabb.min.z;
-				node.aabbMaxX[3] = splitOutputs[2].rightAabb.max.x;
-				node.aabbMaxY[3] = splitOutputs[2].rightAabb.max.y;
-				node.aabbMaxZ[3] = splitOutputs[2].rightAabb.max.z;
-			}
+			node.aabbMinX[3] = splitOutputs[2].rightAabb.min.x;
+			node.aabbMinY[3] = splitOutputs[2].rightAabb.min.y;
+			node.aabbMinZ[3] = splitOutputs[2].rightAabb.min.z;
+			node.aabbMaxX[3] = splitOutputs[2].rightAabb.max.x;
+			node.aabbMaxY[3] = splitOutputs[2].rightAabb.max.y;
+			node.aabbMaxZ[3] = splitOutputs[2].rightAabb.max.z;
 		}
 
 		nodes.push_back(node);
@@ -164,14 +156,14 @@ void BVH4::build(std::vector<Triangle>& triangles, uint64_t maxLeafSize)
 
 	nodes.shrink_to_fit();
 
-	std::vector<Triangle> tempTriangles(triangleCount);
+	std::vector<Triangle> sortedTriangles(triangleCount);
 
 	for (uint64_t i = 0; i < triangleCount; ++i)
-		tempTriangles[i] = *trianglePtrs[i];
+		sortedTriangles[i] = *buildTriangles[i].triangle;
 
-	triangles = tempTriangles;
+	triangles = sortedTriangles;
 
-	log.logInfo("BVH4 building finished (time: %s, nodes: %d, leafs: %d, failed splits: (%d, %d, %d), triangles/leaf: %.2f)", timer.getElapsed().getString(true), nodeCount - leafCount, leafCount, failedLeftSplitCount, failedMiddleSplitCount, failedRightSplitCount, float(triangleCount) / float(leafCount));
+	log.logInfo("BVH4 building finished (time: %s, nodes: %d, leafs: %d, triangles/leaf: %.2f)", timer.getElapsed().getString(true), nodeCount - leafCount, leafCount, float(triangleCount) / float(leafCount));
 }
 
 bool BVH4::intersect(const std::vector<Triangle>& triangles, const Ray& ray, Intersection& intersection) const
