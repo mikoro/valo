@@ -5,7 +5,6 @@
 
 #include "Tracing/AABB.h"
 #include "Tracing/Ray.h"
-#include "Math/Matrix4x4.h"
 
 using namespace Raycer;
 
@@ -147,59 +146,6 @@ void AABB::expand(const AABB& other)
 
 	if (other.max.z > max.z)
 		max.z = other.max.z;
-}
-
-uint64_t AABB::getLargestAxis() const
-{
-	Vector3 extent = getExtent();
-	uint64_t largest = 0;
-
-	if (extent.y > extent.x)
-		largest = 1;
-
-	if (extent.z > extent.x && extent.z > extent.y)
-		largest = 2;
-
-	return largest;
-}
-
-AABB AABB::transformed(const Vector3& scale, const EulerAngle& rotate, const Vector3& translate) const
-{
-	Vector3 corners[8], newMin, newMax;
-	Vector3 center = getCenter();
-
-	corners[0] = min;
-	corners[1] = Vector3(max.x, min.y, min.z);
-	corners[2] = Vector3(max.x, min.y, max.z);
-	corners[3] = Vector3(min.x, min.y, max.z);
-	corners[4] = max;
-	corners[5] = Vector3(min.x, max.y, max.z);
-	corners[6] = Vector3(min.x, max.y, min.z);
-	corners[7] = Vector3(max.x, max.y, min.z);
-
-	newMin.x = newMin.y = newMin.z = std::numeric_limits<float>::max();
-	newMax.x = newMax.y = newMax.z = std::numeric_limits<float>::lowest();
-
-	Matrix4x4 scaling = Matrix4x4::scale(scale);
-	Matrix4x4 rotation = Matrix4x4::rotateXYZ(rotate);
-	Matrix4x4 translation1 = Matrix4x4::translate(-center);
-	Matrix4x4 translation2 = Matrix4x4::translate(center + translate);
-	Matrix4x4 transformation = translation2 * rotation * scaling * translation1;
-
-	for (auto & corner : corners)
-	{
-		corner = transformation.transformPosition(corner);
-
-		newMin.x = std::min(newMin.x, corner.x);
-		newMin.y = std::min(newMin.y, corner.y);
-		newMin.z = std::min(newMin.z, corner.z);
-
-		newMax.x = std::max(newMax.x, corner.x);
-		newMax.y = std::max(newMax.y, corner.y);
-		newMax.z = std::max(newMax.z, corner.z);
-	}
-
-	return AABB::createFromMinMax(newMin, newMax);
 }
 
 Vector3 AABB::getCenter() const
