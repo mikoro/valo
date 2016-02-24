@@ -22,7 +22,6 @@ void Triangle::initialize()
 
 	Vector3 cross = v0tov1.cross(v0tov2);
 	normal = cross.normalized();
-	area = 0.5f * cross.length();
 
 	float denominator = t0tot1.x * t0tot2.y - t0tot1.y * t0tot2.x;
 
@@ -40,9 +39,6 @@ void Triangle::initialize()
 		tangent = normal.cross(Vector3::ALMOST_UP).normalized();
 		bitangent = tangent.cross(normal).normalized();
 	}
-
-	aabb = AABB::createFromVertices(vertices[0], vertices[1], vertices[2]);
-	center = aabb.getCenter();
 }
 
 // Möller-Trumbore algorithm
@@ -156,10 +152,14 @@ Intersection Triangle::getRandomIntersection(Random& random) const
 
 AABB Triangle::getAABB() const
 {
-	return aabb;
+	return AABB::createFromVertices(vertices[0], vertices[1], vertices[2]);
 }
 
 float Triangle::getArea() const
 {
-	return area;
+	Vector3 v0tov1 = vertices[1] - vertices[0];
+	Vector3 v0tov2 = vertices[2] - vertices[0];
+	Vector3 cross = v0tov1.cross(v0tov2);
+
+	return 0.5f * cross.length();
 }

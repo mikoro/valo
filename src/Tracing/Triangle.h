@@ -35,9 +35,6 @@ namespace Raycer
 		Vector3 normal;
 		Vector3 tangent;
 		Vector3 bitangent;
-		Vector3 center;
-		AABB aabb;
-		float area = 1.0f;
 		
 		Material* material = nullptr;
 

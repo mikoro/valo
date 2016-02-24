@@ -335,8 +335,6 @@ void Scene::initialize()
 	{
 		case BVHType::BVH1: bvh = &bvhData.bvh1; break;
 		case BVHType::BVH4: bvh = &bvhData.bvh4; break;
-		case BVHType::BVH8: bvh = &bvhData.bvh1; break;
-		case BVHType::SBVH1: bvh = &bvhData.bvh1; break;
 		default: break;
 	}
 

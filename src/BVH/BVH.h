@@ -14,7 +14,14 @@ namespace Raycer
 	class Ray;
 	class Intersection;
 
-	enum class BVHType { BVH1, BVH4, BVH8, SBVH1 };
+	enum class BVHType { BVH1, BVH4 };
+
+	struct BVHBuildTriangle
+	{
+		Triangle* triangle;
+		AABB aabb;
+		Vector3 center;
+	};
 
 	struct BVHSplitCache
 	{
@@ -44,6 +51,6 @@ namespace Raycer
 
 	protected:
 
-		static BVHSplitOutput calculateSplit(std::vector<Triangle*>& trianglePtrs, std::vector<BVHSplitCache>& cache, uint64_t start, uint64_t end);
+		static BVHSplitOutput calculateSplit(std::vector<BVHBuildTriangle>& buildTriangles, std::vector<BVHSplitCache>& cache, uint64_t start, uint64_t end);
 	};
 }

@@ -31,12 +31,16 @@ void BVH1::build(std::vector<Triangle>& triangles, uint64_t maxLeafSize)
 
 	Timer timer;
 	uint64_t triangleCount = triangles.size();
-	std::vector<Triangle*> trianglePtrs(triangleCount);
+	std::vector<BVHBuildTriangle> buildTriangles(triangleCount);
 	std::vector<BVHSplitCache> cache(triangleCount);
 	BVHSplitOutput splitOutput;
 
 	for (uint64_t i = 0; i < triangleCount; ++i)
-		trianglePtrs[i] = &triangles[i];
+	{
+		buildTriangles[i].triangle = &triangles[i];
+		buildTriangles[i].aabb = triangles[i].getAABB();
+		buildTriangles[i].center = buildTriangles[i].aabb.getCenter();
+	}
 
 	nodes.clear();
 	nodes.reserve(triangleCount);
@@ -79,7 +83,7 @@ void BVH1::build(std::vector<Triangle>& triangles, uint64_t maxLeafSize)
 
 		if (node.rightOffset != 0)
 		{
-			splitOutput = calculateSplit(trianglePtrs, cache, buildEntry.start, buildEntry.end);
+			splitOutput = calculateSplit(buildTriangles, cache, buildEntry.start, buildEntry.end);
 
 			node.splitAxis = uint32_t(splitOutput.axis);
 			node.aabb = splitOutput.fullAABB;
@@ -111,7 +115,7 @@ void BVH1::build(std::vector<Triangle>& triangles, uint64_t maxLeafSize)
 	std::vector<Triangle> sortedTriangles(triangleCount);
 	
 	for (uint64_t i = 0; i < triangleCount; ++i)
-		sortedTriangles[i] = *trianglePtrs[i];
+		sortedTriangles[i] = *buildTriangles[i].triangle;
 
 	triangles = sortedTriangles;
 
