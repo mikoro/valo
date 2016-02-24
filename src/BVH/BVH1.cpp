@@ -13,6 +13,16 @@
 
 using namespace Raycer;
 
+namespace
+{
+	struct BVH1BuildEntry
+	{
+		uint64_t start;
+		uint64_t end;
+		int64_t parent;
+	};
+}
+
 void BVH1::build(std::vector<Triangle>& triangles, uint64_t maxLeafSize)
 {
 	Log& log = App::getLog();
@@ -20,49 +30,49 @@ void BVH1::build(std::vector<Triangle>& triangles, uint64_t maxLeafSize)
 	log.logInfo("BVH1 building started (triangles: %d)", triangles.size());
 
 	Timer timer;
-	BVH1BuildEntry stack[128];
 	uint64_t triangleCount = triangles.size();
 	uint64_t failedSplitCount = 0;
+	//std::array<std::vector<Triangle*>, 3> trianglePtrs;
 	std::vector<Triangle*> trianglePtrs;
 	std::vector<float> rightScores(triangleCount);
 	BVHSplitInput splitInput;
+	BVHSplitOutput splitOutput;
+
 	splitInput.trianglePtrs = &trianglePtrs;
 	splitInput.rightScores = &rightScores;
 
-	nodes.clear();
-	nodes.reserve(triangleCount);
-	trianglePtrs.reserve(triangleCount);
+	//sortTriangles(triangles, trianglePtrs);
 
 	for (Triangle& triangle : triangles)
 		trianglePtrs.push_back(&triangle);
 
-	uint64_t stackptr = 0;
-	uint64_t nodeCount = 0;
-	uint64_t leafCount = 0;
+	nodes.clear();
+	nodes.reserve(triangleCount);
 
 	enum { ROOT = -4, UNVISITED = -3, VISITED_TWICE = -1 };
 
-	// push to stack
-	stack[stackptr].start = 0;
-	stack[stackptr].end = triangleCount;
-	stack[stackptr].parent = ROOT;
-	stackptr++;
+	BVH1BuildEntry stack[128];
+	uint64_t stackIndex = 0;
+	uint64_t nodeCount = 0;
+	uint64_t leafCount = 0;
 
-	while (stackptr > 0)
+	// push to stack
+	stack[stackIndex].start = 0;
+	stack[stackIndex].end = triangleCount;
+	stack[stackIndex].parent = ROOT;
+	stackIndex++;
+
+	while (stackIndex > 0)
 	{
-		stackptr--;
 		nodeCount++;
 
 		// pop from stack
 		BVH1Node node;
-		BVH1BuildEntry buildEntry = stack[stackptr];
+		BVH1BuildEntry buildEntry = stack[--stackIndex];
 		node.rightOffset = UNVISITED;
 		node.startOffset = buildEntry.start;
 		node.triangleCount = buildEntry.end - buildEntry.start;
 		node.splitAxis = 0;
-
-		for (uint64_t i = buildEntry.start; i < buildEntry.end; ++i)
-			node.aabb.expand(trianglePtrs[i]->aabb);
 
 		// leaf node indicated by rightOffset == 0
 		if (node.triangleCount <= maxLeafSize)
@@ -71,41 +81,48 @@ void BVH1::build(std::vector<Triangle>& triangles, uint64_t maxLeafSize)
 		// update the parent rightOffset when visiting its right child
 		if (buildEntry.parent != ROOT)
 		{
-			nodes[uint64_t(buildEntry.parent)].rightOffset++;
+			uint64_t parent = uint64_t(buildEntry.parent);
 
-			if (nodes[uint64_t(buildEntry.parent)].rightOffset == VISITED_TWICE)
-				nodes[uint64_t(buildEntry.parent)].rightOffset = int64_t(nodeCount) - 1 - buildEntry.parent;
+			nodes[parent].rightOffset++;
+
+			if (nodes[parent].rightOffset == VISITED_TWICE)
+				nodes[parent].rightOffset = int64_t(nodeCount - 1 - parent);
 		}
 
-		// leaf node -> no further subdivision
+		if (node.rightOffset != 0)
+		{
+			splitInput.start = buildEntry.start;
+			splitInput.end = buildEntry.end;
+
+			splitOutput = calculateSplit(splitInput);
+
+			if (splitOutput.failed)
+				failedSplitCount++;
+
+			node.splitAxis = splitOutput.axis;
+			node.aabb = splitOutput.leftAABB;
+			node.aabb.expand(splitOutput.rightAABB);
+		}
+
+		nodes.push_back(node);
+
 		if (node.rightOffset == 0)
 		{
-			nodes.push_back(node);
 			leafCount++;
 			continue;
 		}
 
-		splitInput.start = buildEntry.start;
-		splitInput.end = buildEntry.end;
-		BVHSplitOutput splitOutput = calculateSplit(splitInput);
-
-		if (splitOutput.failed)
-			failedSplitCount++;
-
-		node.splitAxis = splitOutput.axis;
-		nodes.push_back(node);
-
 		// push right child
-		stack[stackptr].start = splitOutput.index;
-		stack[stackptr].end = buildEntry.end;
-		stack[stackptr].parent = int64_t(nodeCount) - 1;
-		stackptr++;
+		stack[stackIndex].start = splitOutput.index;
+		stack[stackIndex].end = buildEntry.end;
+		stack[stackIndex].parent = int64_t(nodeCount) - 1;
+		stackIndex++;
 
 		// push left child
-		stack[stackptr].start = buildEntry.start;
-		stack[stackptr].end = splitOutput.index;
-		stack[stackptr].parent = int64_t(nodeCount) - 1;
-		stackptr++;
+		stack[stackIndex].start = buildEntry.start;
+		stack[stackIndex].end = splitOutput.index;
+		stack[stackIndex].parent = int64_t(nodeCount) - 1;
+		stackIndex++;
 	}
 
 	nodes.shrink_to_fit();
@@ -129,57 +146,41 @@ bool BVH1::intersect(const std::vector<Triangle>& triangles, const Ray& ray, Int
 	uint64_t stackIndex = 0;
 	bool wasFound = false;
 
-	// push to stack
-	stack[stackIndex] = 0;
-	stackIndex++;
+	stack[stackIndex++] = 0;
 
 	while (stackIndex > 0)
 	{
-		// pop from stack
-		stackIndex--;
-		uint64_t nodeIndex = stack[stackIndex];
+		uint64_t nodeIndex = stack[--stackIndex];
 		const BVH1Node& node = nodes[nodeIndex];
+
+		// leaf node
+		if (node.rightOffset == 0)
+		{
+			for (uint64_t i = 0; i < node.triangleCount; ++i)
+			{
+				if (triangles[node.startOffset + i].intersect(ray, intersection))
+				{
+					if (ray.fastOcclusion)
+						return true;
+
+					wasFound = true;
+				}
+			}
+
+			continue;
+		}
 
 		if (node.aabb.intersects(ray))
 		{
-			// leaf node
-			if (node.rightOffset == 0)
+			if (ray.directionIsNegative[node.splitAxis])
 			{
-				for (uint64_t i = 0; i < node.triangleCount; ++i)
-				{
-					if (triangles[node.startOffset + i].intersect(ray, intersection))
-					{
-						if (ray.fastOcclusion)
-							return true;
-
-						wasFound = true;
-					}
-				}
+				stack[stackIndex++] = nodeIndex + 1; // left child
+				stack[stackIndex++] = nodeIndex + uint64_t(node.rightOffset); // right child
 			}
-			else // travel down the tree
+			else
 			{
-				if (ray.directionIsNegative[node.splitAxis])
-				{
-					// seems to perform better like this (inverted logic?)
-
-					// left child
-					stack[stackIndex] = nodeIndex + 1;
-					stackIndex++;
-
-					// right child
-					stack[stackIndex] = nodeIndex + uint64_t(node.rightOffset);
-					stackIndex++;
-				}
-				else
-				{
-					// right child
-					stack[stackIndex] = nodeIndex + uint64_t(node.rightOffset);
-					stackIndex++;
-
-					// left child
-					stack[stackIndex] = nodeIndex + 1;
-					stackIndex++;
-				}
+				stack[stackIndex++] = nodeIndex + uint64_t(node.rightOffset); // right child
+				stack[stackIndex++] = nodeIndex + 1; // left child
 			}
 		}
 	}

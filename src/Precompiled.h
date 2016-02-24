@@ -40,6 +40,7 @@
 #ifdef _WIN32
 #include <windows.h>
 #include <shellapi.h>
+#include <ppl.h>
 #else
 #include <errno.h>
 #include <stdlib.h>

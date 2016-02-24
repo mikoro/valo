@@ -3,8 +3,6 @@
 
 #include "Precompiled.h"
 
-#include <ppl.h>
-
 #include "BVH/BVH.h"
 #include "BVH/BVH1.h"
 #include "BVH/BVH4.h"
@@ -21,6 +19,27 @@ std::unique_ptr<BVH> BVH::getBVH(BVHType type)
 		//case BVHType::BVH8: return std::make_unique<BVH1>();
 		//case BVHType::SBVH1: return std::make_unique<BVH1>();
 		default: throw std::runtime_error("Unknown BVH type");
+	}
+}
+
+void BVH::sortTriangles(std::vector<Triangle>& triangles, std::array<std::vector<Triangle*>, 3>& trianglePtrs)
+{
+	uint64_t triangleCount = triangles.size();
+
+	trianglePtrs[0].resize(triangleCount);
+
+	for (uint64_t i = 0; i < triangleCount; ++i)
+		trianglePtrs[0][i] = &triangles[i];
+
+	trianglePtrs[1] = trianglePtrs[0];
+	trianglePtrs[2] = trianglePtrs[0];
+
+	for (uint64_t i = 0; i < 3; ++i)
+	{
+		concurrency::parallel_sort(trianglePtrs[i].begin(), trianglePtrs[i].end(), [i](const Triangle* t1, const Triangle* t2)
+		{
+			return (&t1->center.x)[i] < (&t2->center.x)[i];
+		});
 	}
 }
 

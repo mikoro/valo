@@ -5,6 +5,8 @@
 
 #include <vector>
 
+#include <boost/align/aligned_allocator.hpp>
+
 #include "cereal/cereal.hpp"
 
 #include "BVH/BVH.h"
@@ -19,6 +21,7 @@ namespace Raycer
 		uint64_t startOffset;
 		uint64_t triangleCount;
 		uint64_t splitAxis;
+		uint64_t pad;
 
 		template <class Archive>
 		void serialize(Archive& ar)
@@ -31,13 +34,6 @@ namespace Raycer
 		}
 	};
 
-	struct BVH1BuildEntry
-	{
-		uint64_t start;
-		uint64_t end;
-		int64_t parent;
-	};
-
 	class BVH1 : public BVH
 	{
 	public:
@@ -47,7 +43,7 @@ namespace Raycer
 
 	private:
 
-		std::vector<BVH1Node> nodes;
+		std::vector<BVH1Node, boost::alignment::aligned_allocator<BVH1Node, 128>> nodes;
 
 		friend class cereal::access;
 
