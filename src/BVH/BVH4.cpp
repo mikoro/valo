@@ -32,15 +32,17 @@ void BVH4::build(std::vector<Triangle>& triangles, uint64_t maxLeafSize)
 
 	Timer timer;
 	uint64_t triangleCount = triangles.size();
-	std::vector<BVHBuildTriangle> buildTriangles(triangleCount);
+	BVHBuildTriangleVector buildTriangles(triangleCount);
 	std::vector<BVHSplitCache> cache(triangleCount);
 	BVHSplitOutput splitOutputs[3];
 
 	for (uint64_t i = 0; i < triangleCount; ++i)
 	{
+		Aabb aabb = triangles[i].getAabb();
+
 		buildTriangles[i].triangle = &triangles[i];
-		buildTriangles[i].aabb = triangles[i].getAabb();
-		buildTriangles[i].center = buildTriangles[i].aabb.getCenter();
+		buildTriangles[i].aabb = aabb;
+		buildTriangles[i].center = aabb.getCenter();
 	}
 
 	nodes.clear();

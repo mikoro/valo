@@ -38,6 +38,8 @@ namespace Raycer
 		Aabb rightAabb;
 	};
 
+	using BVHBuildTriangleVector = std::vector<BVHBuildTriangle, boost::alignment::aligned_allocator<BVHBuildTriangle, 64>>;
+
 	class BVH
 	{
 	public:
@@ -51,6 +53,6 @@ namespace Raycer
 
 	protected:
 
-		static BVHSplitOutput calculateSplit(std::vector<BVHBuildTriangle>& buildTriangles, std::vector<BVHSplitCache>& cache, uint64_t start, uint64_t end);
+		static BVHSplitOutput calculateSplit(BVHBuildTriangleVector& buildTriangles, std::vector<BVHSplitCache>& cache, uint64_t start, uint64_t end);
 	};
 }

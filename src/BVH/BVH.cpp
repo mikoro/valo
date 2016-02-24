@@ -20,7 +20,7 @@ std::unique_ptr<BVH> BVH::getBVH(BVHType type)
 	}
 }
 
-BVHSplitOutput BVH::calculateSplit(std::vector<BVHBuildTriangle>& buildTriangles, std::vector<BVHSplitCache>& cache, uint64_t start, uint64_t end)
+BVHSplitOutput BVH::calculateSplit(BVHBuildTriangleVector& buildTriangles, std::vector<BVHSplitCache>& cache, uint64_t start, uint64_t end)
 {
 	assert(end > start);
 

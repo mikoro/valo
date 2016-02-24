@@ -362,6 +362,9 @@
     <ClCompile Include="src\Tracing\Aabb.cpp">
       <Filter>Tracing</Filter>
     </ClCompile>
+    <ClCompile Include="src\Tracing\AabbSimd.cpp">
+      <Filter>Tracing</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Utils\FpsCounter.h">
@@ -614,6 +617,9 @@
       <Filter>Runners</Filter>
     </ClInclude>
     <ClInclude Include="src\Tracing\Aabb.h">
+      <Filter>Tracing</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Tracing\AabbSimd.h">
       <Filter>Tracing</Filter>
     </ClInclude>
   </ItemGroup>

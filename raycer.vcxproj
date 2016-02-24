@@ -337,6 +337,7 @@
     <ClCompile Include="src\Tracers\Raytracer.cpp" />
     <ClCompile Include="src\Tracers\Tracer.cpp" />
     <ClCompile Include="src\Tracing\Aabb.cpp" />
+    <ClCompile Include="src\Tracing\AabbSimd.cpp" />
     <ClCompile Include="src\Tracing\Camera.cpp" />
     <ClCompile Include="src\Tracing\ONB.cpp" />
     <ClCompile Include="src\Tracing\Ray.cpp" />
@@ -424,6 +425,7 @@
     <ClInclude Include="src\Tracers\Tracer.h" />
     <ClInclude Include="src\Tracers\TracerState.h" />
     <ClInclude Include="src\Tracing\Aabb.h" />
+    <ClInclude Include="src\Tracing\AabbSimd.h" />
     <ClInclude Include="src\Tracing\Camera.h" />
     <ClInclude Include="src\Tracing\Intersection.h" />
     <ClInclude Include="src\Tracing\ONB.h" />
