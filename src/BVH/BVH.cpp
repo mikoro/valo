@@ -22,28 +22,7 @@ std::unique_ptr<BVH> BVH::getBVH(BVHType type)
 	}
 }
 
-void BVH::sortTriangles(std::vector<Triangle>& triangles, std::array<std::vector<Triangle*>, 3>& sortedTrianglePtrs)
-{
-	uint64_t triangleCount = triangles.size();
-
-	sortedTrianglePtrs[0].resize(triangleCount);
-
-	for (uint64_t i = 0; i < triangleCount; ++i)
-		sortedTrianglePtrs[0][i] = &triangles[i];
-
-	sortedTrianglePtrs[1] = sortedTrianglePtrs[0];
-	sortedTrianglePtrs[2] = sortedTrianglePtrs[0];
-
-	for (uint64_t i = 0; i < 3; ++i)
-	{
-		concurrency::parallel_sort(sortedTrianglePtrs[i].begin(), sortedTrianglePtrs[i].end(), [i](const Triangle* t1, const Triangle* t2)
-		{
-			return (&t1->center.x)[i] < (&t2->center.x)[i];
-		});
-	}
-}
-
-BVHSplitOutput BVH::calculateSplit(std::array<std::vector<Triangle*>, 3>& sortedTrianglePtrs, std::vector<BVHSplitCache>& cache, uint64_t start, uint64_t end)
+BVHSplitOutput BVH::calculateSplit(std::vector<Triangle*>& trianglePtrs, std::vector<BVHSplitCache>& cache, uint64_t start, uint64_t end)
 {
 	assert(end > start);
 
@@ -53,12 +32,17 @@ BVHSplitOutput BVH::calculateSplit(std::array<std::vector<Triangle*>, 3>& sorted
 
 	for (uint64_t axis = 0; axis <= 2; ++axis)
 	{
+		concurrency::parallel_sort(trianglePtrs.begin() + start, trianglePtrs.begin() + end, [axis](const Triangle* t1, const Triangle* t2)
+		{
+			return (&t1->center.x)[axis] < (&t2->center.x)[axis];
+		});
+
 		AABB rightAABB;
 		uint64_t rightCount = 0;
 
 		for (int64_t i = end - 1; i >= int64_t(start); --i)
 		{
-			rightAABB.expand(sortedTrianglePtrs[axis][i]->aabb);
+			rightAABB.expand(trianglePtrs[i]->aabb);
 			rightCount++;
 
 			cache[i].aabb = rightAABB;
@@ -70,7 +54,7 @@ BVHSplitOutput BVH::calculateSplit(std::array<std::vector<Triangle*>, 3>& sorted
 
 		for (uint64_t i = start; i < end; ++i)
 		{
-			leftAABB.expand(sortedTrianglePtrs[axis][i]->aabb);
+			leftAABB.expand(trianglePtrs[i]->aabb);
 			leftCount++;
 
 			float cost = leftAABB.getSurfaceArea() * float(leftCount);
@@ -94,9 +78,17 @@ BVHSplitOutput BVH::calculateSplit(std::array<std::vector<Triangle*>, 3>& sorted
 		fullAABB[axis] = leftAABB;
 	}
 
-	output.fullAABB = fullAABB[output.axis];
-
 	assert(output.index >= start && output.index <= end);
+
+	if (output.axis != 2)
+	{
+		concurrency::parallel_sort(trianglePtrs.begin() + start, trianglePtrs.begin() + end, [output](const Triangle* t1, const Triangle* t2)
+		{
+			return (&t1->center.x)[output.axis] < (&t2->center.x)[output.axis];
+		});
+	}
+	
+	output.fullAABB = fullAABB[output.axis];
 
 	return output;
 }

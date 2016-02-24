@@ -44,7 +44,6 @@ namespace Raycer
 
 	protected:
 
-		static void sortTriangles(std::vector<Triangle>& triangles, std::array<std::vector<Triangle*>, 3>& sortedTrianglePtrs);
-		static BVHSplitOutput calculateSplit(std::array<std::vector<Triangle*>, 3>& sortedTrianglePtrs, std::vector<BVHSplitCache>& cache, uint64_t start, uint64_t end);
+		static BVHSplitOutput calculateSplit(std::vector<Triangle*>& trianglePtrs, std::vector<BVHSplitCache>& cache, uint64_t start, uint64_t end);
 	};
 }
