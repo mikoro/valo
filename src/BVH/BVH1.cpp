@@ -20,6 +20,7 @@ namespace
 		uint64_t start;
 		uint64_t end;
 		int64_t parent;
+		uint64_t splitAxis;
 	};
 }
 
@@ -31,19 +32,12 @@ void BVH1::build(std::vector<Triangle>& triangles, uint64_t maxLeafSize)
 
 	Timer timer;
 	uint64_t triangleCount = triangles.size();
-	//std::array<std::vector<Triangle*>, 3> trianglePtrs;
-	std::vector<Triangle*> trianglePtrs;
+	std::array<std::vector<Triangle*>, 3> sortedTrianglePtrs;
 	std::vector<BVHSplitCache> cache(triangleCount);
-	BVHSplitInput splitInput;
+	std::vector<Triangle> outputTriangles(triangleCount);
 	BVHSplitOutput splitOutput;
 
-	splitInput.trianglePtrs = &trianglePtrs;
-	splitInput.cache = &cache;
-
-	//sortTriangles(triangles, trianglePtrs);
-
-	for (Triangle& triangle : triangles)
-		trianglePtrs.push_back(&triangle);
+	sortTriangles(triangles, sortedTrianglePtrs);
 
 	nodes.clear();
 	nodes.reserve(triangleCount);
@@ -59,6 +53,7 @@ void BVH1::build(std::vector<Triangle>& triangles, uint64_t maxLeafSize)
 	stack[stackIndex].start = 0;
 	stack[stackIndex].end = triangleCount;
 	stack[stackIndex].parent = ROOT;
+	stack[stackIndex].splitAxis = 0;
 	stackIndex++;
 
 	while (stackIndex > 0)
@@ -75,7 +70,12 @@ void BVH1::build(std::vector<Triangle>& triangles, uint64_t maxLeafSize)
 
 		// leaf node indicated by rightOffset == 0
 		if (node.triangleCount <= maxLeafSize)
+		{
 			node.rightOffset = 0;
+
+			for (uint64_t i = buildEntry.start; i < buildEntry.end; ++i)
+				outputTriangles[i] = *sortedTrianglePtrs[buildEntry.splitAxis][i];
+		}
 
 		// update the parent rightOffset when visiting its right child
 		if (buildEntry.parent != ROOT)
@@ -90,10 +90,7 @@ void BVH1::build(std::vector<Triangle>& triangles, uint64_t maxLeafSize)
 
 		if (node.rightOffset != 0)
 		{
-			splitInput.start = buildEntry.start;
-			splitInput.end = buildEntry.end;
-
-			splitOutput = calculateSplit(splitInput);
+			splitOutput = calculateSplit(sortedTrianglePtrs, cache, buildEntry.start, buildEntry.end);
 
 			node.splitAxis = uint32_t(splitOutput.axis);
 			node.aabb = splitOutput.fullAABB;
@@ -111,25 +108,28 @@ void BVH1::build(std::vector<Triangle>& triangles, uint64_t maxLeafSize)
 		stack[stackIndex].start = splitOutput.index;
 		stack[stackIndex].end = buildEntry.end;
 		stack[stackIndex].parent = int64_t(nodeCount) - 1;
+		stack[stackIndex].splitAxis = splitOutput.axis;
 		stackIndex++;
 
 		// push left child
 		stack[stackIndex].start = buildEntry.start;
 		stack[stackIndex].end = splitOutput.index;
 		stack[stackIndex].parent = int64_t(nodeCount) - 1;
+		stack[stackIndex].splitAxis = splitOutput.axis;
 		stackIndex++;
 	}
 
 	nodes.shrink_to_fit();
-
-	std::vector<Triangle> tempTriangles(triangleCount);
-
-	for (uint64_t i = 0; i < triangleCount; ++i)
-		tempTriangles[i] = *trianglePtrs[i];
-
-	triangles = tempTriangles;
+	triangles = outputTriangles;
 
 	log.logInfo("BVH1 building finished (time: %s, nodes: %d, leafs: %d)", timer.getElapsed().getString(true), nodeCount - leafCount, leafCount);
+
+	std::ofstream file("triangles.txt");
+
+	for (Triangle& triangle : triangles)
+		file << triangle.id << std::endl;
+
+	file.close();
 }
 
 bool BVH1::intersect(const std::vector<Triangle>& triangles, const Ray& ray, Intersection& intersection) const

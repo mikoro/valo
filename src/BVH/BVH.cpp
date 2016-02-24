@@ -22,90 +22,81 @@ std::unique_ptr<BVH> BVH::getBVH(BVHType type)
 	}
 }
 
-void BVH::sortTriangles(std::vector<Triangle>& triangles, std::array<std::vector<Triangle*>, 3>& trianglePtrs)
+void BVH::sortTriangles(std::vector<Triangle>& triangles, std::array<std::vector<Triangle*>, 3>& sortedTrianglePtrs)
 {
 	uint64_t triangleCount = triangles.size();
 
-	trianglePtrs[0].resize(triangleCount);
+	sortedTrianglePtrs[0].resize(triangleCount);
 
 	for (uint64_t i = 0; i < triangleCount; ++i)
-		trianglePtrs[0][i] = &triangles[i];
+		sortedTrianglePtrs[0][i] = &triangles[i];
 
-	trianglePtrs[1] = trianglePtrs[0];
-	trianglePtrs[2] = trianglePtrs[0];
+	sortedTrianglePtrs[1] = sortedTrianglePtrs[0];
+	sortedTrianglePtrs[2] = sortedTrianglePtrs[0];
 
 	for (uint64_t i = 0; i < 3; ++i)
 	{
-		concurrency::parallel_sort(trianglePtrs[i].begin(), trianglePtrs[i].end(), [i](const Triangle* t1, const Triangle* t2)
+		concurrency::parallel_sort(sortedTrianglePtrs[i].begin(), sortedTrianglePtrs[i].end(), [i](const Triangle* t1, const Triangle* t2)
 		{
 			return (&t1->center.x)[i] < (&t2->center.x)[i];
 		});
 	}
 }
 
-BVHSplitOutput BVH::calculateSplit(const BVHSplitInput& input)
+BVHSplitOutput BVH::calculateSplit(std::array<std::vector<Triangle*>, 3>& sortedTrianglePtrs, std::vector<BVHSplitCache>& cache, uint64_t start, uint64_t end)
 {
-	assert(input.end > input.start);
+	assert(end > start);
 
 	BVHSplitOutput output;
 	float lowestCost = std::numeric_limits<float>::max();
+	AABB fullAABB[3];
 
 	for (uint64_t axis = 0; axis <= 2; ++axis)
 	{
-		concurrency::parallel_sort(input.trianglePtrs->begin() + input.start, input.trianglePtrs->begin() + input.end, [axis](const Triangle* t1, const Triangle* t2)
-		{
-			return (&t1->center.x)[axis] < (&t2->center.x)[axis];
-		});
-
 		AABB rightAABB;
 		uint64_t rightCount = 0;
 
-		for (int64_t i = input.end - 1; i >= int64_t(input.start); --i)
+		for (int64_t i = end - 1; i >= int64_t(start); --i)
 		{
-			rightAABB.expand((*input.trianglePtrs)[i]->aabb);
+			rightAABB.expand(sortedTrianglePtrs[axis][i]->aabb);
 			rightCount++;
 
-			(*input.cache)[i].aabb = rightAABB;
-			(*input.cache)[i].cost = rightAABB.getSurfaceArea() * float(rightCount);
+			cache[i].aabb = rightAABB;
+			cache[i].cost = rightAABB.getSurfaceArea() * float(rightCount);
 		}
 
 		AABB leftAABB;
 		uint64_t leftCount = 0;
 
-		for (uint64_t i = input.start; i < input.end; ++i)
+		for (uint64_t i = start; i < end; ++i)
 		{
-			leftAABB.expand((*input.trianglePtrs)[i]->aabb);
+			leftAABB.expand(sortedTrianglePtrs[axis][i]->aabb);
 			leftCount++;
 
 			float cost = leftAABB.getSurfaceArea() * float(leftCount);
-			bool isLast = (i + 1 == input.end);
 
-			if (!isLast)
-				cost += (*input.cache)[i + 1].cost;
+			if (i + 1 < end)
+				cost += cache[i + 1].cost;
 
 			if (cost < lowestCost)
 			{
-				output.index = isLast ? i : i + 1;
+				output.index = i + 1;
 				output.axis = axis;
 				output.leftAABB = leftAABB;
-				output.rightAABB = (*input.cache)[output.index].aabb;
+
+				if (output.index < end)
+					output.rightAABB = cache[output.index].aabb;
 
 				lowestCost = cost;
 			}
 		}
 
-		output.fullAABB = leftAABB;
+		fullAABB[axis] = leftAABB;
 	}
 
-	if (output.axis != 2)
-	{
-		concurrency::parallel_sort(input.trianglePtrs->begin() + input.start, input.trianglePtrs->begin() + input.end, [output](const Triangle* t1, const Triangle* t2)
-		{
-			return (&t1->center.x)[output.axis] < (&t2->center.x)[output.axis];
-		});
-	}
+	output.fullAABB = fullAABB[output.axis];
 
-	assert(output.index >= input.start && output.index < input.end);
+	assert(output.index >= start && output.index <= end);
 
 	return output;
 }

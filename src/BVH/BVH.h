@@ -22,14 +22,6 @@ namespace Raycer
 		float cost;
 	};
 
-	struct BVHSplitInput
-	{
-		std::vector<Triangle*>* trianglePtrs;
-		std::vector<BVHSplitCache>* cache;
-		uint64_t start;
-		uint64_t end;
-	};
-
 	struct BVHSplitOutput
 	{
 		uint64_t index;
@@ -52,7 +44,7 @@ namespace Raycer
 
 	protected:
 
-		static void sortTriangles(std::vector<Triangle>& triangles, std::array<std::vector<Triangle*>, 3>& trianglePtrs);
-		static BVHSplitOutput calculateSplit(const BVHSplitInput& input);
+		static void sortTriangles(std::vector<Triangle>& triangles, std::array<std::vector<Triangle*>, 3>& sortedTrianglePtrs);
+		static BVHSplitOutput calculateSplit(std::array<std::vector<Triangle*>, 3>& sortedTrianglePtrs, std::vector<BVHSplitCache>& cache, uint64_t start, uint64_t end);
 	};
 }
