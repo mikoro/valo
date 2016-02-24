@@ -16,21 +16,27 @@ namespace Raycer
 
 	enum class BVHType { BVH1, BVH4, BVH8, SBVH1 };
 
+	struct BVHSplitCache
+	{
+		AABB aabb;
+		float cost;
+	};
+
 	struct BVHSplitInput
 	{
 		std::vector<Triangle*>* trianglePtrs;
-		std::vector<float>* rightScores;
+		std::vector<BVHSplitCache>* cache;
 		uint64_t start;
 		uint64_t end;
 	};
 
 	struct BVHSplitOutput
 	{
-		uint64_t index = 0;
-		uint64_t axis = 0;
+		uint64_t index;
+		uint64_t axis;
+		AABB fullAABB;
 		AABB leftAABB;
 		AABB rightAABB;
-		bool failed = false;
 	};
 
 	class BVH

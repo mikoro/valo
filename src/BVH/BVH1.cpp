@@ -31,15 +31,14 @@ void BVH1::build(std::vector<Triangle>& triangles, uint64_t maxLeafSize)
 
 	Timer timer;
 	uint64_t triangleCount = triangles.size();
-	uint64_t failedSplitCount = 0;
 	//std::array<std::vector<Triangle*>, 3> trianglePtrs;
 	std::vector<Triangle*> trianglePtrs;
-	std::vector<float> rightScores(triangleCount);
+	std::vector<BVHSplitCache> cache(triangleCount);
 	BVHSplitInput splitInput;
 	BVHSplitOutput splitOutput;
 
 	splitInput.trianglePtrs = &trianglePtrs;
-	splitInput.rightScores = &rightScores;
+	splitInput.cache = &cache;
 
 	//sortTriangles(triangles, trianglePtrs);
 
@@ -70,8 +69,8 @@ void BVH1::build(std::vector<Triangle>& triangles, uint64_t maxLeafSize)
 		BVH1Node node;
 		BVH1BuildEntry buildEntry = stack[--stackIndex];
 		node.rightOffset = UNVISITED;
-		node.startOffset = buildEntry.start;
-		node.triangleCount = buildEntry.end - buildEntry.start;
+		node.startOffset = uint32_t(buildEntry.start);
+		node.triangleCount = uint32_t(buildEntry.end - buildEntry.start);
 		node.splitAxis = 0;
 
 		// leaf node indicated by rightOffset == 0
@@ -86,7 +85,7 @@ void BVH1::build(std::vector<Triangle>& triangles, uint64_t maxLeafSize)
 			nodes[parent].rightOffset++;
 
 			if (nodes[parent].rightOffset == VISITED_TWICE)
-				nodes[parent].rightOffset = int64_t(nodeCount - 1 - parent);
+				nodes[parent].rightOffset = int32_t(nodeCount - 1 - parent);
 		}
 
 		if (node.rightOffset != 0)
@@ -96,12 +95,8 @@ void BVH1::build(std::vector<Triangle>& triangles, uint64_t maxLeafSize)
 
 			splitOutput = calculateSplit(splitInput);
 
-			if (splitOutput.failed)
-				failedSplitCount++;
-
-			node.splitAxis = splitOutput.axis;
-			node.aabb = splitOutput.leftAABB;
-			node.aabb.expand(splitOutput.rightAABB);
+			node.splitAxis = uint32_t(splitOutput.axis);
+			node.aabb = splitOutput.fullAABB;
 		}
 
 		nodes.push_back(node);
@@ -134,7 +129,7 @@ void BVH1::build(std::vector<Triangle>& triangles, uint64_t maxLeafSize)
 
 	triangles = tempTriangles;
 
-	log.logInfo("BVH1 building finished (time: %s, nodes: %d, leafs: %d, failed splits: %d)", timer.getElapsed().getString(true), nodeCount - leafCount, leafCount, failedSplitCount);
+	log.logInfo("BVH1 building finished (time: %s, nodes: %d, leafs: %d)", timer.getElapsed().getString(true), nodeCount - leafCount, leafCount);
 }
 
 bool BVH1::intersect(const std::vector<Triangle>& triangles, const Ray& ray, Intersection& intersection) const

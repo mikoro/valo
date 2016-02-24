@@ -41,7 +41,7 @@ void BVH4::build(std::vector<Triangle>& triangles, uint64_t maxLeafSize)
 	BVHSplitOutput splitOutputs[3];
 
 	splitInput.trianglePtrs = &trianglePtrs;
-	splitInput.rightScores = &rightScores;
+	//splitInput.rightScores = &rightScores;
 
 	nodes.clear();
 	nodes.reserve(triangleCount);
@@ -104,12 +104,6 @@ void BVH4::build(std::vector<Triangle>& triangles, uint64_t maxLeafSize)
 				splitInput.start = splitOutputs[1].index;
 				splitInput.end = buildEntry.end;
 				splitOutputs[2] = calculateSplit(splitInput);
-
-				if (splitOutputs[0].failed)
-					failedLeftSplitCount++;
-
-				if (splitOutputs[2].failed)
-					failedRightSplitCount++;
 
 				node.aabbMinX[0] = splitOutputs[0].leftAABB.min.x;
 				node.aabbMinY[0] = splitOutputs[0].leftAABB.min.y;

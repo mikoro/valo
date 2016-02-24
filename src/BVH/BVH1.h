@@ -17,11 +17,10 @@ namespace Raycer
 	struct BVH1Node
 	{
 		AABB aabb;
-		int64_t rightOffset;
-		uint64_t startOffset;
-		uint64_t triangleCount;
-		uint64_t splitAxis;
-		uint64_t pad;
+		int32_t rightOffset;
+		uint32_t startOffset;
+		uint32_t triangleCount;
+		uint32_t splitAxis;
 
 		template <class Archive>
 		void serialize(Archive& ar)

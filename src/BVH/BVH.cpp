@@ -48,7 +48,7 @@ BVHSplitOutput BVH::calculateSplit(const BVHSplitInput& input)
 	assert(input.end > input.start);
 
 	BVHSplitOutput output;
-	float lowestScore = std::numeric_limits<float>::max();
+	float lowestCost = std::numeric_limits<float>::max();
 
 	for (uint64_t axis = 0; axis <= 2; ++axis)
 	{
@@ -57,38 +57,44 @@ BVHSplitOutput BVH::calculateSplit(const BVHSplitInput& input)
 			return (&t1->center.x)[axis] < (&t2->center.x)[axis];
 		});
 
-		output.rightAABB = AABB();
+		AABB rightAABB;
 		uint64_t rightCount = 0;
 
 		for (int64_t i = input.end - 1; i >= int64_t(input.start); --i)
 		{
-			output.rightAABB.expand((*input.trianglePtrs)[i]->aabb);
+			rightAABB.expand((*input.trianglePtrs)[i]->aabb);
 			rightCount++;
 
-			(*input.rightScores)[i] = output.rightAABB.getSurfaceArea() * float(rightCount);
+			(*input.cache)[i].aabb = rightAABB;
+			(*input.cache)[i].cost = rightAABB.getSurfaceArea() * float(rightCount);
 		}
 
-		output.leftAABB = AABB();
+		AABB leftAABB;
 		uint64_t leftCount = 0;
 
 		for (uint64_t i = input.start; i < input.end; ++i)
 		{
-			output.leftAABB.expand((*input.trianglePtrs)[i]->aabb);
+			leftAABB.expand((*input.trianglePtrs)[i]->aabb);
 			leftCount++;
 
-			float score = output.leftAABB.getSurfaceArea() * float(leftCount);
+			float cost = leftAABB.getSurfaceArea() * float(leftCount);
 			bool isLast = (i + 1 == input.end);
 
 			if (!isLast)
-				score += (*input.rightScores)[i + 1];
+				cost += (*input.cache)[i + 1].cost;
 
-			if (score < lowestScore)
+			if (cost < lowestCost)
 			{
 				output.index = isLast ? i : i + 1;
 				output.axis = axis;
-				lowestScore = score;
+				output.leftAABB = leftAABB;
+				output.rightAABB = (*input.cache)[output.index].aabb;
+
+				lowestCost = cost;
 			}
 		}
+
+		output.fullAABB = leftAABB;
 	}
 
 	if (output.axis != 2)
@@ -99,14 +105,7 @@ BVHSplitOutput BVH::calculateSplit(const BVHSplitInput& input)
 		});
 	}
 
-	if (output.index <= input.start || output.index >= input.end)
-	{
-		output.index = input.start + (input.end - input.start) / 2;
-		output.axis = 0;
-		output.failed = true;
-
-		// TODO fix AABBs
-	}
+	assert(output.index >= input.start && output.index < input.end);
 
 	return output;
 }
