@@ -1,10 +1,9 @@
 ## Windows
 
-- Install boost headers and binaries (http://sourceforge.net/projects/boost/files/boost-binaries/1.59.0/)
+- Install boost headers and binaries (http://sourceforge.net/projects/boost/files/boost-binaries/1.60.0/)
 - Open solution with VS2015
 - Adjust project include paths to point to the boost libraries
 - Compile the code
-- Copy test scene data to the bin/{Debug,Release}/data directory (download link below)
 - Run bin/{Debug,Release}/raycer.exe
 
 ### Boost
@@ -20,7 +19,7 @@ Download the sources and run the commands from a corresponding developer console
 	intel:
 	compilervars.bat intel64 vs2015
 	bootstrap.bat
-    b2 --build-type=minimal toolset=intel address-model=64 stage
+    b2 --build-type=minimal toolset=intel-16.0-vc14 address-model=64 stage
 
 ## Linux
 
@@ -64,15 +63,9 @@ Can be compiled with the Apple clang supplied with Xcode 7.0 (OS X 10.11).
 
 See remarks of the linux build.
 
-## Download test scene data
-
-Download test scene data: [Mirror 1](https://s3.amazonaws.com/raycer/v1.0.0/raycer_test_scene_data.zip)
-
-Extract and merge the data folder from the zip file to the existing data folder after compilation.
-
 ## Framework versions
 
-- boost 1.59.0
+- boost 1.60.0
 - GLFW 3.1.2
 - CATCH v1.2.1
 - cereal 1.1.2
