@@ -172,9 +172,6 @@
     <ClCompile Include="src\Filters\TentFilter.cpp">
       <Filter>Filters</Filter>
     </ClCompile>
-    <ClCompile Include="src\Tracing\AABB.cpp">
-      <Filter>Tracing</Filter>
-    </ClCompile>
     <ClCompile Include="src\Tracing\Camera.cpp">
       <Filter>Tracing</Filter>
     </ClCompile>
@@ -362,6 +359,9 @@
     <ClCompile Include="src\TestScenes\TestScene7.cpp">
       <Filter>TestScenes</Filter>
     </ClCompile>
+    <ClCompile Include="src\Tracing\Aabb.cpp">
+      <Filter>Tracing</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Utils\FpsCounter.h">
@@ -449,9 +449,6 @@
     </ClInclude>
     <ClInclude Include="src\Filters\TentFilter.h">
       <Filter>Filters</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Tracing\AABB.h">
-      <Filter>Tracing</Filter>
     </ClInclude>
     <ClInclude Include="src\Tracing\Camera.h">
       <Filter>Tracing</Filter>
@@ -615,6 +612,9 @@
     </ClInclude>
     <ClInclude Include="src\Runners\WindowRunnerRenderState.h">
       <Filter>Runners</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Tracing\Aabb.h">
+      <Filter>Tracing</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

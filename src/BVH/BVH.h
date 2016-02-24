@@ -6,7 +6,7 @@
 #include <memory>
 #include <vector>
 
-#include "Tracing/AABB.h"
+#include "Tracing/Aabb.h"
 
 namespace Raycer
 {
