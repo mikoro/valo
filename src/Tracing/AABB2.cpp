@@ -1,22 +1,22 @@
-// Copyright © 2015 Mikko Ronkainen <firstname@mikkoronkainen.com>
+﻿// Copyright © 2015 Mikko Ronkainen <firstname@mikkoronkainen.com>
 // License: MIT, see the LICENSE file.
 
 #include "Precompiled.h"
 
-#include "Tracing/AABB.h"
+#include "Tracing/Aabb.h"
 #include "Tracing/Ray.h"
 
 using namespace Raycer;
 
-AABB::AABB()
+Aabb::Aabb()
 {
 	min.x = min.y = min.z = std::numeric_limits<float>::max();
 	max.x = max.y = max.z = std::numeric_limits<float>::lowest();
 }
 
-AABB AABB::createFromMinMax(const Vector3& min_, const Vector3& max_)
+Aabb Aabb::createFromMinMax(const Vector3& min_, const Vector3& max_)
 {
-	AABB aabb;
+	Aabb aabb;
 
 	aabb.min = min_;
 	aabb.max = max_;
@@ -24,9 +24,9 @@ AABB AABB::createFromMinMax(const Vector3& min_, const Vector3& max_)
 	return aabb;
 }
 
-AABB AABB::createFromCenterExtent(const Vector3& center, const Vector3& extent)
+Aabb Aabb::createFromCenterExtent(const Vector3& center, const Vector3& extent)
 {
-	AABB aabb;
+	Aabb aabb;
 
 	aabb.min = center - extent / 2.0f;
 	aabb.max = center + extent / 2.0f;
@@ -34,7 +34,7 @@ AABB AABB::createFromCenterExtent(const Vector3& center, const Vector3& extent)
 	return aabb;
 }
 
-AABB AABB::createFromVertices(const Vector3& v0, const Vector3& v1, const Vector3& v2)
+Aabb Aabb::createFromVertices(const Vector3& v0, const Vector3& v1, const Vector3& v2)
 {
 	Vector3 min_;
 
@@ -48,13 +48,13 @@ AABB AABB::createFromVertices(const Vector3& v0, const Vector3& v1, const Vector
 	max_.y = std::max(v0.y, std::max(v1.y, v2.y));
 	max_.z = std::max(v0.z, std::max(v1.z, v2.z));
 
-	return AABB::createFromMinMax(min_, max_);
+	return Aabb::createFromMinMax(min_, max_);
 }
 
 #define MIN(a,b) (((a)<(b))?(a):(b))
 #define MAX(a,b) (((a)>(b))?(a):(b))
 
-std::array<uint32_t, 4> AABB::intersects(const float* __restrict aabbMinX, const float* __restrict aabbMinY, const float* __restrict aabbMinZ, const float* __restrict aabbMaxX, const float* __restrict aabbMaxY, const float* __restrict aabbMaxZ, const Ray& ray)
+std::array<uint32_t, 4> Aabb::intersects(const float* __restrict aabbMinX, const float* __restrict aabbMinY, const float* __restrict aabbMinZ, const float* __restrict aabbMaxX, const float* __restrict aabbMaxY, const float* __restrict aabbMaxZ, const Ray& ray)
 {
 	const float originX = ray.origin.x;
 	const float originY = ray.origin.y;
@@ -96,7 +96,7 @@ std::array<uint32_t, 4> AABB::intersects(const float* __restrict aabbMinX, const
 }
 
 // http://tavianator.com/fast-branchless-raybounding-box-intersections-part-2-nans/
-bool AABB::intersects(const Ray& ray) const
+bool Aabb::intersects(const Ray& ray) const
 {
 	float tmin = ((&min)[ray.directionIsNegative[0]].x - ray.origin.x) * ray.inverseDirection.x;
 	float tmax = ((&min)[1 - ray.directionIsNegative[0]].x - ray.origin.x) * ray.inverseDirection.x;
@@ -127,7 +127,7 @@ bool AABB::intersects(const Ray& ray) const
 	return (tmin < ray.maxDistance) && (tmax > ray.minDistance);
 }
 
-void AABB::expand(const AABB& other)
+void Aabb::expand(const Aabb& other)
 {
 	if (other.min.x < min.x)
 		min.x = other.min.x;
@@ -148,17 +148,17 @@ void AABB::expand(const AABB& other)
 		max.z = other.max.z;
 }
 
-Vector3 AABB::getCenter() const
+Vector3 Aabb::getCenter() const
 {
 	return (min + max) * 0.5;
 }
 
-Vector3 AABB::getExtent() const
+Vector3 Aabb::getExtent() const
 {
 	return max - min;
 }
 
-float AABB::getSurfaceArea() const
+float Aabb::getSurfaceArea() const
 {
 	Vector3 extent = getExtent();
 	return 2.0f * (extent.x * extent.y + extent.z * extent.y + extent.x * extent.z);

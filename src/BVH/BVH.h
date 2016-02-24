@@ -1,4 +1,4 @@
-// Copyright © 2015 Mikko Ronkainen <firstname@mikkoronkainen.com>
+﻿// Copyright © 2015 Mikko Ronkainen <firstname@mikkoronkainen.com>
 // License: MIT, see the LICENSE file.
 
 #pragma once
@@ -19,13 +19,13 @@ namespace Raycer
 	struct BVHBuildTriangle
 	{
 		Triangle* triangle;
-		AABB aabb;
+		Aabb aabb;
 		Vector3 center;
 	};
 
 	struct BVHSplitCache
 	{
-		AABB aabb;
+		Aabb aabb;
 		float cost;
 	};
 
@@ -33,9 +33,9 @@ namespace Raycer
 	{
 		uint64_t index;
 		uint64_t axis;
-		AABB fullAABB;
-		AABB leftAABB;
-		AABB rightAABB;
+		Aabb fullAabb;
+		Aabb leftAabb;
+		Aabb rightAabb;
 	};
 
 	class BVH

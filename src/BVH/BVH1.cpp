@@ -1,4 +1,4 @@
-// Copyright © 2015 Mikko Ronkainen <firstname@mikkoronkainen.com>
+﻿// Copyright © 2015 Mikko Ronkainen <firstname@mikkoronkainen.com>
 // License: MIT, see the LICENSE file.
 
 #include "Precompiled.h"
@@ -38,7 +38,7 @@ void BVH1::build(std::vector<Triangle>& triangles, uint64_t maxLeafSize)
 	for (uint64_t i = 0; i < triangleCount; ++i)
 	{
 		buildTriangles[i].triangle = &triangles[i];
-		buildTriangles[i].aabb = triangles[i].getAABB();
+		buildTriangles[i].aabb = triangles[i].getAabb();
 		buildTriangles[i].center = buildTriangles[i].aabb.getCenter();
 	}
 
@@ -86,7 +86,7 @@ void BVH1::build(std::vector<Triangle>& triangles, uint64_t maxLeafSize)
 			splitOutput = calculateSplit(buildTriangles, cache, buildEntry.start, buildEntry.end);
 
 			node.splitAxis = uint32_t(splitOutput.axis);
-			node.aabb = splitOutput.fullAABB;
+			node.aabb = splitOutput.fullAabb;
 		}
 
 		nodes.push_back(node);

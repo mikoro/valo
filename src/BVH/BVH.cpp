@@ -1,4 +1,4 @@
-// Copyright © 2015 Mikko Ronkainen <firstname@mikkoronkainen.com>
+﻿// Copyright © 2015 Mikko Ronkainen <firstname@mikkoronkainen.com>
 // License: MIT, see the LICENSE file.
 
 #include "Precompiled.h"
@@ -26,7 +26,7 @@ BVHSplitOutput BVH::calculateSplit(std::vector<BVHBuildTriangle>& buildTriangles
 
 	BVHSplitOutput output;
 	float lowestCost = std::numeric_limits<float>::max();
-	AABB fullAABB[3];
+	Aabb fullAabb[3];
 
 	for (uint64_t axis = 0; axis <= 2; ++axis)
 	{
@@ -35,27 +35,27 @@ BVHSplitOutput BVH::calculateSplit(std::vector<BVHBuildTriangle>& buildTriangles
 			return (&t1.center.x)[axis] < (&t2.center.x)[axis];
 		});
 
-		AABB rightAABB;
+		Aabb rightAabb;
 		uint64_t rightCount = 0;
 
 		for (int64_t i = end - 1; i >= int64_t(start); --i)
 		{
-			rightAABB.expand(buildTriangles[i].aabb);
+			rightAabb.expand(buildTriangles[i].aabb);
 			rightCount++;
 
-			cache[i].aabb = rightAABB;
-			cache[i].cost = rightAABB.getSurfaceArea() * float(rightCount);
+			cache[i].aabb = rightAabb;
+			cache[i].cost = rightAabb.getSurfaceArea() * float(rightCount);
 		}
 
-		AABB leftAABB;
+		Aabb leftAabb;
 		uint64_t leftCount = 0;
 
 		for (uint64_t i = start; i < end; ++i)
 		{
-			leftAABB.expand(buildTriangles[i].aabb);
+			leftAabb.expand(buildTriangles[i].aabb);
 			leftCount++;
 
-			float cost = leftAABB.getSurfaceArea() * float(leftCount);
+			float cost = leftAabb.getSurfaceArea() * float(leftCount);
 
 			if (i + 1 < end)
 				cost += cache[i + 1].cost;
@@ -64,16 +64,16 @@ BVHSplitOutput BVH::calculateSplit(std::vector<BVHBuildTriangle>& buildTriangles
 			{
 				output.index = i + 1;
 				output.axis = axis;
-				output.leftAABB = leftAABB;
+				output.leftAabb = leftAabb;
 
 				if (output.index < end)
-					output.rightAABB = cache[output.index].aabb;
+					output.rightAabb = cache[output.index].aabb;
 
 				lowestCost = cost;
 			}
 		}
 
-		fullAABB[axis] = leftAABB;
+		fullAabb[axis] = leftAabb;
 	}
 
 	assert(output.index >= start && output.index <= end);
@@ -86,7 +86,7 @@ BVHSplitOutput BVH::calculateSplit(std::vector<BVHBuildTriangle>& buildTriangles
 		});
 	}
 	
-	output.fullAABB = fullAABB[output.axis];
+	output.fullAabb = fullAabb[output.axis];
 
 	return output;
 }

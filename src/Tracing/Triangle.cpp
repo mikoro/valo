@@ -1,4 +1,4 @@
-// Copyright © 2015 Mikko Ronkainen <firstname@mikkoronkainen.com>
+﻿// Copyright © 2015 Mikko Ronkainen <firstname@mikkoronkainen.com>
 // License: MIT, see the LICENSE file.
 
 #include "Precompiled.h"
@@ -150,9 +150,9 @@ Intersection Triangle::getRandomIntersection(Random& random) const
 	return intersection;
 }
 
-AABB Triangle::getAABB() const
+Aabb Triangle::getAabb() const
 {
-	return AABB::createFromVertices(vertices[0], vertices[1], vertices[2]);
+	return Aabb::createFromVertices(vertices[0], vertices[1], vertices[2]);
 }
 
 float Triangle::getArea() const

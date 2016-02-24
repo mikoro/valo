@@ -1,4 +1,4 @@
-// Copyright © 2015 Mikko Ronkainen <firstname@mikkoronkainen.com>
+﻿// Copyright © 2015 Mikko Ronkainen <firstname@mikkoronkainen.com>
 // License: MIT, see the LICENSE file.
 
 #include "Precompiled.h"
@@ -95,33 +95,33 @@ void BVH4::build(std::vector<Triangle>& triangles, uint64_t maxLeafSize)
 				// right split
 				//splitOutputs[2] = calculateSplit(splitInput);
 
-				node.aabbMinX[0] = splitOutputs[0].leftAABB.min.x;
-				node.aabbMinY[0] = splitOutputs[0].leftAABB.min.y;
-				node.aabbMinZ[0] = splitOutputs[0].leftAABB.min.z;
-				node.aabbMaxX[0] = splitOutputs[0].leftAABB.max.x;
-				node.aabbMaxY[0] = splitOutputs[0].leftAABB.max.y;
-				node.aabbMaxZ[0] = splitOutputs[0].leftAABB.max.z;
+				node.aabbMinX[0] = splitOutputs[0].leftAabb.min.x;
+				node.aabbMinY[0] = splitOutputs[0].leftAabb.min.y;
+				node.aabbMinZ[0] = splitOutputs[0].leftAabb.min.z;
+				node.aabbMaxX[0] = splitOutputs[0].leftAabb.max.x;
+				node.aabbMaxY[0] = splitOutputs[0].leftAabb.max.y;
+				node.aabbMaxZ[0] = splitOutputs[0].leftAabb.max.z;
 
-				node.aabbMinX[1] = splitOutputs[0].rightAABB.min.x;
-				node.aabbMinY[1] = splitOutputs[0].rightAABB.min.y;
-				node.aabbMinZ[1] = splitOutputs[0].rightAABB.min.z;
-				node.aabbMaxX[1] = splitOutputs[0].rightAABB.max.x;
-				node.aabbMaxY[1] = splitOutputs[0].rightAABB.max.y;
-				node.aabbMaxZ[1] = splitOutputs[0].rightAABB.max.z;
+				node.aabbMinX[1] = splitOutputs[0].rightAabb.min.x;
+				node.aabbMinY[1] = splitOutputs[0].rightAabb.min.y;
+				node.aabbMinZ[1] = splitOutputs[0].rightAabb.min.z;
+				node.aabbMaxX[1] = splitOutputs[0].rightAabb.max.x;
+				node.aabbMaxY[1] = splitOutputs[0].rightAabb.max.y;
+				node.aabbMaxZ[1] = splitOutputs[0].rightAabb.max.z;
 
-				node.aabbMinX[2] = splitOutputs[2].leftAABB.min.x;
-				node.aabbMinY[2] = splitOutputs[2].leftAABB.min.y;
-				node.aabbMinZ[2] = splitOutputs[2].leftAABB.min.z;
-				node.aabbMaxX[2] = splitOutputs[2].leftAABB.max.x;
-				node.aabbMaxY[2] = splitOutputs[2].leftAABB.max.y;
-				node.aabbMaxZ[2] = splitOutputs[2].leftAABB.max.z;
+				node.aabbMinX[2] = splitOutputs[2].leftAabb.min.x;
+				node.aabbMinY[2] = splitOutputs[2].leftAabb.min.y;
+				node.aabbMinZ[2] = splitOutputs[2].leftAabb.min.z;
+				node.aabbMaxX[2] = splitOutputs[2].leftAabb.max.x;
+				node.aabbMaxY[2] = splitOutputs[2].leftAabb.max.y;
+				node.aabbMaxZ[2] = splitOutputs[2].leftAabb.max.z;
 
-				node.aabbMinX[3] = splitOutputs[2].rightAABB.min.x;
-				node.aabbMinY[3] = splitOutputs[2].rightAABB.min.y;
-				node.aabbMinZ[3] = splitOutputs[2].rightAABB.min.z;
-				node.aabbMaxX[3] = splitOutputs[2].rightAABB.max.x;
-				node.aabbMaxY[3] = splitOutputs[2].rightAABB.max.y;
-				node.aabbMaxZ[3] = splitOutputs[2].rightAABB.max.z;
+				node.aabbMinX[3] = splitOutputs[2].rightAabb.min.x;
+				node.aabbMinY[3] = splitOutputs[2].rightAabb.min.y;
+				node.aabbMinZ[3] = splitOutputs[2].rightAabb.min.z;
+				node.aabbMaxX[3] = splitOutputs[2].rightAabb.max.x;
+				node.aabbMaxY[3] = splitOutputs[2].rightAabb.max.y;
+				node.aabbMaxZ[3] = splitOutputs[2].rightAabb.max.z;
 			}
 		}
 
@@ -206,7 +206,7 @@ bool BVH4::intersect(const std::vector<Triangle>& triangles, const Ray& ray, Int
 			continue;
 		}
 
-		std::array<uint32_t, 4> intersects = AABB::intersects(
+		std::array<uint32_t, 4> intersects = Aabb::intersects(
 			&node.aabbMinX[0],
 			&node.aabbMinY[0],
 			&node.aabbMinZ[0],

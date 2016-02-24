@@ -1,4 +1,4 @@
-// Copyright © 2015 Mikko Ronkainen <firstname@mikkoronkainen.com>
+﻿// Copyright © 2015 Mikko Ronkainen <firstname@mikkoronkainen.com>
 // License: MIT, see the LICENSE file.
 
 #pragma once
@@ -10,13 +10,13 @@
 #include "cereal/cereal.hpp"
 
 #include "BVH/BVH.h"
-#include "Tracing/AABB.h"
+#include "Tracing/Aabb.h"
 
 namespace Raycer
 {
 	struct BVH1Node
 	{
-		AABB aabb;
+		Aabb aabb;
 		int32_t rightOffset;
 		uint32_t startOffset;
 		uint32_t triangleCount;

@@ -1,11 +1,11 @@
-// Copyright © 2015 Mikko Ronkainen <firstname@mikkoronkainen.com>
+﻿// Copyright © 2015 Mikko Ronkainen <firstname@mikkoronkainen.com>
 // License: MIT, see the LICENSE file.
 
 #pragma once
 
 #include "cereal/cereal.hpp"
 
-#include "Tracing/AABB.h"
+#include "Tracing/Aabb.h"
 #include "Math/Vector3.h"
 #include "Math/Vector2.h"
 
@@ -23,7 +23,7 @@ namespace Raycer
 		void initialize();
 		bool intersect(const Ray& ray, Intersection& intersection) const;
 		Intersection getRandomIntersection(Random& random) const;
-		AABB getAABB() const;
+		Aabb getAabb() const;
 		float getArea() const;
 
 		uint64_t id = 0;
