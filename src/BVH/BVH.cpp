@@ -8,7 +8,7 @@
 #include "BVH/BVH4.h"
 
 #ifdef _WIN32
-#define PARALLEL_SORT concurrent::parallel_sort
+#define PARALLEL_SORT concurrency::parallel_sort
 #endif
 
 #ifdef __linux

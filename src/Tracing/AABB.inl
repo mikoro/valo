@@ -54,7 +54,10 @@ namespace Raycer
 			tmin = MAX(tmin, MIN(tz0, tz1));
 			tmax = MIN(tmax, MAX(tz0, tz1));
 
-			result[i] = tmax >= MAX(tmin, 0.0f) && tmin < maxDistance && tmax > minDistance;
+			// msvc doesn't vectorize this
+			//result[i] = tmax >= MAX(tmin, 0.0f) && tmin < maxDistance && tmax > minDistance;
+
+			result[i] = tmax >= MAX(tmin, 0.0f);
 		}
 
 		std::array<uint32_t, N> resultArray;

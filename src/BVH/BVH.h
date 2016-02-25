@@ -10,8 +10,8 @@
 
 namespace Raycer
 {
-	class Scene;
 	class Triangle;
+	class Scene;
 	class Ray;
 	class Intersection;
 
@@ -59,7 +59,7 @@ namespace Raycer
 	};
 
 	template <uint64_t N>
-	struct BVHNodeSimd
+	struct BVHNodeSOA
 	{
 		std::array<float, N> aabbMinX;
 		std::array<float, N> aabbMinY;
@@ -95,7 +95,7 @@ namespace Raycer
 
 		virtual ~BVH() {}
 
-		virtual void build(std::vector<Triangle>& triangles, uint64_t maxLeafSize) = 0;
+		virtual void build(Scene& scene) = 0;
 		virtual bool intersect(const Scene& scene, const Ray& ray, Intersection& intersection) const = 0;
 
 		static std::unique_ptr<BVH> getBVH(BVHType type);

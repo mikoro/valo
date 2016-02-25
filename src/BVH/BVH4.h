@@ -1,4 +1,4 @@
-// Copyright © 2015 Mikko Ronkainen <firstname@mikkoronkainen.com>
+﻿// Copyright © 2015 Mikko Ronkainen <firstname@mikkoronkainen.com>
 // License: MIT, see the LICENSE file.
 
 #pragma once
@@ -18,12 +18,12 @@ namespace Raycer
 	{
 	public:
 
-		void build(std::vector<Triangle>& triangles, uint64_t maxLeafSize) override;
+		void build(Scene& scene) override;
 		bool intersect(const Scene& scene, const Ray& ray, Intersection& intersection) const override;
 
 	private:
 
-		std::vector<BVHNodeSimd<4>, boost::alignment::aligned_allocator<BVHNodeSimd<4>, 16>> nodes;
+		std::vector<BVHNodeSOA<4>, boost::alignment::aligned_allocator<BVHNodeSOA<4>, 16>> nodes;
 
 		friend class cereal::access;
 

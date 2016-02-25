@@ -244,6 +244,7 @@ namespace Raycer
 		struct BVHData
 		{
 			std::vector<Triangle> triangles;
+			std::vector<TriangleSOA<4>> triangles4;
 			BVH1 bvh1;
 			BVH4 bvh4;
 
@@ -251,6 +252,7 @@ namespace Raycer
 			void serialize(Archive& ar)
 			{
 				ar(CEREAL_NVP(triangles),
+					CEREAL_NVP(triangles4),
 					CEREAL_NVP(bvh1),
 					CEREAL_NVP(bvh4));
 			}
@@ -259,14 +261,15 @@ namespace Raycer
 
 		ImagePool imagePool;
 		
+		std::map<uint64_t, Triangle*> trianglesMap;
 		std::vector<Triangle*> emissiveTriangles;
 		std::vector<Light*> lightsList;
 		std::vector<Texture*> texturesList;
 		std::vector<Material*> materialsList;
 		
-		BVH* bvh = nullptr;
-
 	private:
+
+		BVH* bvh = nullptr;
 
 		friend class cereal::access;
 

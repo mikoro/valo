@@ -25,23 +25,24 @@ namespace
 	};
 }
 
-void BVH4::build(std::vector<Triangle>& triangles, uint64_t maxLeafSize)
+void BVH4::build(Scene& scene)
 {
 	Log& log = App::getLog();
 
-	log.logInfo("BVH4 building started (triangles: %d)", triangles.size());
-
 	Timer timer;
-	uint64_t triangleCount = triangles.size();
+	uint64_t triangleCount = scene.bvhData.triangles.size();
+
+	log.logInfo("BVH4 building started (triangles: %d)", triangleCount);
+
 	std::vector<BVHBuildTriangle> buildTriangles(triangleCount);
 	std::vector<BVHSplitCache> cache(triangleCount);
 	BVHSplitOutput splitOutputs[3];
 
 	for (uint64_t i = 0; i < triangleCount; ++i)
 	{
-		AABB aabb = triangles[i].getAABB();
+		AABB aabb = scene.bvhData.triangles[i].getAABB();
 
-		buildTriangles[i].triangle = &triangles[i];
+		buildTriangles[i].triangle = &scene.bvhData.triangles[i];
 		buildTriangles[i].aabb = aabb;
 		buildTriangles[i].center = aabb.getCenter();
 	}
@@ -67,10 +68,10 @@ void BVH4::build(std::vector<Triangle>& triangles, uint64_t maxLeafSize)
 		// pop from stack
 		BVH4BuildEntry buildEntry = stack[--stackIndex];
 
-		BVHNodeSimd<4> node;
+		BVHNodeSOA<4> node;
 		node.triangleOffset = uint32_t(buildEntry.start);
 		node.triangleCount = uint32_t(buildEntry.end - buildEntry.start);
-		node.isLeaf = (node.triangleCount <= maxLeafSize);
+		node.isLeaf = (node.triangleCount <= scene.bvhInfo.maxLeafSize);
 
 		if (buildEntry.parent != -1 && buildEntry.child != -1)
 		{
@@ -155,7 +156,7 @@ void BVH4::build(std::vector<Triangle>& triangles, uint64_t maxLeafSize)
 	for (uint64_t i = 0; i < triangleCount; ++i)
 		sortedTriangles[i] = *buildTriangles[i].triangle;
 
-	triangles = sortedTriangles;
+	scene.bvhData.triangles = sortedTriangles;
 
 	log.logInfo("BVH4 building finished (time: %s, nodes: %d, leafs: %d, triangles/leaf: %.2f)", timer.getElapsed().getString(true), nodeCount - leafCount, leafCount, float(triangleCount) / float(leafCount));
 }
@@ -174,7 +175,7 @@ bool BVH4::intersect(const Scene& scene, const Ray& ray, Intersection& intersect
 	while (stackIndex > 0)
 	{
 		uint64_t nodeIndex = stack[--stackIndex];
-		const BVHNodeSimd<4>& node = nodes[nodeIndex];
+		const BVHNodeSOA<4>& node = nodes[nodeIndex];
 
 		if (node.isLeaf)
 		{

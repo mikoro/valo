@@ -16,7 +16,7 @@ namespace Raycer
 	{
 	public:
 
-		void build(std::vector<Triangle>& triangles, uint64_t maxLeafSize) override;
+		void build(Scene& scene) override;
 		bool intersect(const Scene& scene, const Ray& ray, Intersection& intersection) const override;
 
 	private:

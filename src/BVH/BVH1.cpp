@@ -24,23 +24,24 @@ namespace
 	};
 }
 
-void BVH1::build(std::vector<Triangle>& triangles, uint64_t maxLeafSize)
+void BVH1::build(Scene& scene)
 {
 	Log& log = App::getLog();
 
-	log.logInfo("BVH1 building started (triangles: %d)", triangles.size());
-
 	Timer timer;
-	uint64_t triangleCount = triangles.size();
+	uint64_t triangleCount = scene.bvhData.triangles.size();
+
+	log.logInfo("BVH1 building started (triangles: %d)", triangleCount);
+
 	std::vector<BVHBuildTriangle> buildTriangles(triangleCount);
 	std::vector<BVHSplitCache> cache(triangleCount);
 	BVHSplitOutput splitOutput;
 
 	for (uint64_t i = 0; i < triangleCount; ++i)
 	{
-		AABB aabb = triangles[i].getAABB();
+		AABB aabb = scene.bvhData.triangles[i].getAABB();
 
-		buildTriangles[i].triangle = &triangles[i];
+		buildTriangles[i].triangle = &scene.bvhData.triangles[i];
 		buildTriangles[i].aabb = aabb;
 		buildTriangles[i].center = aabb.getCenter();
 	}
@@ -73,7 +74,7 @@ void BVH1::build(std::vector<Triangle>& triangles, uint64_t maxLeafSize)
 		node.splitAxis = 0;
 
 		// leaf node indicated by rightOffset == 0
-		if (node.triangleCount <= maxLeafSize)
+		if (node.triangleCount <= scene.bvhInfo.maxLeafSize)
 			node.rightOffset = 0;
 
 		// update the parent rightOffset when visiting its right child
@@ -121,7 +122,7 @@ void BVH1::build(std::vector<Triangle>& triangles, uint64_t maxLeafSize)
 	for (uint64_t i = 0; i < triangleCount; ++i)
 		sortedTriangles[i] = *buildTriangles[i].triangle;
 
-	triangles = sortedTriangles;
+	scene.bvhData.triangles = sortedTriangles;
 
 	log.logInfo("BVH1 building finished (time: %s, nodes: %d, leafs: %d, triangles/leaf: %.2f)", timer.getElapsed().getString(true), nodeCount - leafCount, leafCount, float(triangleCount) / float(leafCount));
 }

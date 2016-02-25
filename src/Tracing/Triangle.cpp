@@ -178,3 +178,22 @@ float Triangle::getArea() const
 
 	return 0.5f * cross.length();
 }
+
+/*
+bool Triangle::intersect(
+	const float* __restrict vertex1X,
+	const float* __restrict vertex1Y,
+	const float* __restrict vertex1Z,
+	const float* __restrict vertex2X,
+	const float* __restrict vertex2Y,
+	const float* __restrict vertex2Z,
+	const float* __restrict vertex3X,
+	const float* __restrict vertex3Y,
+	const float* __restrict vertex3Z,
+	const Scene& scene,
+	const Ray& ray,
+	Intersection& intersection)
+{
+	
+}
+*/

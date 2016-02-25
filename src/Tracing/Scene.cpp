@@ -257,7 +257,6 @@ void Scene::initialize()
 
 	std::map<uint64_t, Texture*> texturesMap;
 	std::map<uint64_t, Material*> materialsMap;
-	std::map<uint64_t, bool> trianglesMap;
 
 	for (Texture* texture : texturesList)
 	{
@@ -324,7 +323,7 @@ void Scene::initialize()
 			if (trianglesMap.count(triangle.id))
 				throw std::runtime_error(tfm::format("A duplicate triangle id was found (id: %s)", triangle.id));
 
-			trianglesMap[triangle.id] = true;
+			trianglesMap[triangle.id] = &triangle;
 			triangle.initialize();
 		}
 	}
@@ -339,7 +338,7 @@ void Scene::initialize()
 	}
 
 	if (!bvhInfo.loadFromFile)
-		bvh->build(bvhData.triangles, bvhInfo.maxLeafSize);
+		bvh->build(*this);
 	
 	// EMISSIVE TRIANGLES
 
@@ -348,6 +347,13 @@ void Scene::initialize()
 		if (triangle.material->isEmissive())
 			emissiveTriangles.push_back(&triangle);
 	}
+
+	// TRIANGLE MAP
+
+	trianglesMap.clear();
+
+	for (Triangle& triangle : bvhData.triangles)
+		trianglesMap[triangle.id] = &triangle;
 
 	// IMAGE POOL LOADING
 
