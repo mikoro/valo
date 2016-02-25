@@ -49,6 +49,9 @@ void BVH1::build(Scene& scene)
 	nodes.clear();
 	nodes.reserve(triangleCount);
 
+	scene.bvhData.triangles4.clear();
+	scene.bvhData.triangles4.reserve(triangleCount / 4);
+
 	BVH1BuildEntry stack[128];
 	uint64_t stackIndex = 0;
 	uint64_t nodeCount = 0;
@@ -69,13 +72,40 @@ void BVH1::build(Scene& scene)
 
 		BVHNode node;
 		node.rightOffset = -3;
-		node.startOffset = uint32_t(buildEntry.start);
+		node.triangleOffset = 0;
 		node.triangleCount = uint32_t(buildEntry.end - buildEntry.start);
 		node.splitAxis = 0;
 
-		// leaf node indicated by rightOffset == 0
-		if (node.triangleCount <= scene.bvhInfo.maxLeafSize)
+		if (node.triangleCount <= 4)
+		{
 			node.rightOffset = 0;
+
+			TriangleSOA<4> triangleSOA;
+			memset(&triangleSOA, 0, sizeof(TriangleSOA<4>));
+
+			uint64_t index = 0;
+
+			for (uint64_t i = buildEntry.start; i < buildEntry.end; ++i)
+			{
+				Triangle triangle = *buildTriangles[i].triangle;
+
+				triangleSOA.vertex1X[index] = triangle.vertices[0].x;
+				triangleSOA.vertex1Y[index] = triangle.vertices[0].y;
+				triangleSOA.vertex1Z[index] = triangle.vertices[0].z;
+				triangleSOA.vertex2X[index] = triangle.vertices[1].x;
+				triangleSOA.vertex2Y[index] = triangle.vertices[1].y;
+				triangleSOA.vertex2Z[index] = triangle.vertices[1].z;
+				triangleSOA.vertex3X[index] = triangle.vertices[2].x;
+				triangleSOA.vertex3Y[index] = triangle.vertices[2].y;
+				triangleSOA.vertex3Z[index] = triangle.vertices[2].z;
+				triangleSOA.triangleId[index] = uint32_t(triangle.id);
+
+				index++;
+			}
+
+			node.triangleOffset = uint32_t(scene.bvhData.triangles4.size());
+			scene.bvhData.triangles4.push_back(triangleSOA);
+		}
 
 		// update the parent rightOffset when visiting its right child
 		if (buildEntry.parent != -1)
@@ -148,7 +178,7 @@ bool BVH1::intersect(const Scene& scene, const Ray& ray, Intersection& intersect
 		{
 			for (uint64_t i = 0; i < node.triangleCount; ++i)
 			{
-				if (scene.bvhData.triangles[node.startOffset + i].intersect(scene, ray, intersection))
+				if (scene.bvhData.triangles[node.triangleOffset + i].intersect(scene, ray, intersection))
 				{
 					if (ray.fastOcclusion)
 						return true;

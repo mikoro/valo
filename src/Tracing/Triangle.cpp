@@ -179,7 +179,6 @@ float Triangle::getArea() const
 	return 0.5f * cross.length();
 }
 
-/*
 bool Triangle::intersect(
 	const float* __restrict vertex1X,
 	const float* __restrict vertex1Y,
@@ -190,10 +189,83 @@ bool Triangle::intersect(
 	const float* __restrict vertex3X,
 	const float* __restrict vertex3Y,
 	const float* __restrict vertex3Z,
+	const uint32_t* __restrict triangleId,
 	const Scene& scene,
 	const Ray& ray,
 	Intersection& intersection)
 {
-	
+	const float originX = ray.origin.x;
+	const float originY = ray.origin.y;
+	const float originZ = ray.origin.z;
+
+	const float directionX = ray.direction.x;
+	const float directionY = ray.direction.y;
+	const float directionZ = ray.direction.z;
+
+	const float minDistance = ray.minDistance;
+	const float maxDistance = ray.maxDistance;
+
+	alignas(16) float result[4];
+	memset(result, 1, sizeof(result));
+
+#ifdef __INTEL_COMPILER
+#pragma vector always assert aligned
+#endif
+	for (uint32_t i = 0; i < 4; ++i)
+	{
+		uint32_t wasFound = 1;
+
+		const float v0v1X = vertex2X[i] - vertex1X[i];
+		const float v0v1Y = vertex2Y[i] - vertex1Y[i];
+		const float v0v1Z = vertex2Z[i] - vertex1Z[i];
+
+		const float v0v2X = vertex3X[i] - vertex1X[i];
+		const float v0v2Y = vertex3Y[i] - vertex1Y[i];
+		const float v0v2Z = vertex3Z[i] - vertex1Z[i];
+
+		// cross product
+		const float pvecX = directionY * v0v2Z - directionZ * v0v2Y;
+		const float pvecY = directionZ * v0v2X - directionX * v0v2Z;
+		const float pvecZ = directionX * v0v2Y - directionY * v0v2X;
+
+		// dot product
+		const float determinant = v0v1X * pvecX + v0v1Y * pvecY + v0v1Z * pvecZ;
+		
+		wasFound = (std::abs(determinant) < 1.0f) ? 0 : 1;
+
+		/*
+
+		// ray and triangle are parallel -> no intersection
+		if (std::abs(determinant) < std::numeric_limits<float>::epsilon())
+			return false;
+
+		float invDeterminant = 1.0f / determinant;
+
+		Vector3 tvec = ray.origin - vertices[0];
+		float u = tvec.dot(pvec) * invDeterminant;
+
+		if (u < 0.0f || u > 1.0f)
+			return false;
+
+		Vector3 qvec = tvec.cross(v0v1);
+		float v = ray.direction.dot(qvec) * invDeterminant;
+
+		if (v < 0.0f || (u + v) > 1.0f)
+			return false;
+
+		float t = v0v2.dot(qvec) * invDeterminant;
+
+		if (t < 0.0f)
+			return false;
+
+		if (t < ray.minDistance || t > ray.maxDistance)
+			return false;
+
+		if (t > intersection.distance)
+			return false;*/
+
+		result[i] = wasFound;
+	}
+
+	return true;
 }
-*/

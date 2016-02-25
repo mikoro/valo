@@ -43,7 +43,7 @@ namespace Raycer
 	{
 		AABB aabb;
 		int32_t rightOffset;
-		uint32_t startOffset;
+		uint32_t triangleOffset;
 		uint32_t triangleCount;
 		uint32_t splitAxis;
 
@@ -52,7 +52,7 @@ namespace Raycer
 		{
 			ar(CEREAL_NVP(aabb),
 				CEREAL_NVP(rightOffset),
-				CEREAL_NVP(startOffset),
+				CEREAL_NVP(triangleOffset),
 				CEREAL_NVP(triangleCount),
 				CEREAL_NVP(splitAxis));
 		}

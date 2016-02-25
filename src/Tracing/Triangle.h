@@ -60,7 +60,7 @@ namespace Raycer
 		AABB getAABB() const;
 		float getArea() const;
 
-		static bool intersect(const float* __restrict vertex1X, const float* __restrict vertex1Y, const float* __restrict vertex1Z, const float* __restrict vertex2X, const float* __restrict vertex2Y, const float* __restrict vertex2Z, const float* __restrict vertex3X, const float* __restrict vertex3Y, const float* __restrict vertex3Z, const Scene& scene, const Ray& ray, Intersection& intersection);
+		static bool intersect(const float* __restrict vertex1X, const float* __restrict vertex1Y, const float* __restrict vertex1Z, const float* __restrict vertex2X, const float* __restrict vertex2Y, const float* __restrict vertex2Z, const float* __restrict vertex3X, const float* __restrict vertex3Y, const float* __restrict vertex3Z, const uint32_t* __restrict triangleId, const Scene& scene, const Ray& ray, Intersection& intersection);
 
 		uint64_t id = 0;
 		uint64_t materialId = 0;

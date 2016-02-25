@@ -244,7 +244,8 @@ namespace Raycer
 		struct BVHData
 		{
 			std::vector<Triangle> triangles;
-			std::vector<TriangleSOA<4>> triangles4;
+			TriangleSOAVector4 triangles4;
+			TriangleSOAVector8 triangles8;
 			BVH1 bvh1;
 			BVH4 bvh4;
 
@@ -253,6 +254,7 @@ namespace Raycer
 			{
 				ar(CEREAL_NVP(triangles),
 					CEREAL_NVP(triangles4),
+					CEREAL_NVP(triangles8),
 					CEREAL_NVP(bvh1),
 					CEREAL_NVP(bvh4));
 			}
