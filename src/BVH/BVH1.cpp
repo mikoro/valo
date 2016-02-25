@@ -38,7 +38,7 @@ void BVH1::build(std::vector<Triangle>& triangles, uint64_t maxLeafSize)
 
 	for (uint64_t i = 0; i < triangleCount; ++i)
 	{
-		AABB aabb = triangles[i].getAabb();
+		AABB aabb = triangles[i].getAABB();
 
 		buildTriangles[i].triangle = &triangles[i];
 		buildTriangles[i].aabb = aabb;

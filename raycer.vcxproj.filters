@@ -359,7 +359,7 @@
     <ClCompile Include="src\TestScenes\TestScene7.cpp">
       <Filter>TestScenes</Filter>
     </ClCompile>
-    <ClCompile Include="src\Tracing\Aabb.cpp">
+    <ClCompile Include="src\Tracing\AABB.cpp">
       <Filter>Tracing</Filter>
     </ClCompile>
   </ItemGroup>
@@ -613,7 +613,7 @@
     <ClInclude Include="src\Runners\WindowRunnerRenderState.h">
       <Filter>Runners</Filter>
     </ClInclude>
-    <ClInclude Include="src\Tracing\Aabb.h">
+    <ClInclude Include="src\Tracing\AABB.h">
       <Filter>Tracing</Filter>
     </ClInclude>
   </ItemGroup>

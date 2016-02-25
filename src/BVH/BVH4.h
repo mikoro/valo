@@ -10,7 +10,7 @@
 #include "cereal/cereal.hpp"
 
 #include "BVH/BVH.h"
-#include "Tracing/Aabb.h"
+#include "Tracing/AABB.h"
 
 namespace Raycer
 {

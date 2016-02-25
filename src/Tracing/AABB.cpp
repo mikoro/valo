@@ -3,7 +3,7 @@
 
 #include "Precompiled.h"
 
-#include "Tracing/Aabb.h"
+#include "Tracing/AABB.h"
 #include "Tracing/Ray.h"
 
 using namespace Raycer;
