@@ -1,6 +1,8 @@
 // Copyright © 2015 Mikko Ronkainen <firstname@mikkoronkainen.com>
 // License: MIT, see the LICENSE file.
 
+#include "Tracing/Ray.h"
+
 #define MIN(a,b) (((a)<(b))?(a):(b))
 #define MAX(a,b) (((a)>(b))?(a):(b))
 
@@ -28,15 +30,6 @@ namespace Raycer
 		const float maxDistance = ray.maxDistance;
 
 		alignas(16) uint32_t result[N];
-
-#if !defined(_MSC_VER) || defined(__INTEL_COMPILER)
-		__assume_aligned(aabbMinX, 16);
-		__assume_aligned(aabbMinY, 16);
-		__assume_aligned(aabbMinZ, 16);
-		__assume_aligned(aabbMaxX, 16);
-		__assume_aligned(aabbMaxY, 16);
-		__assume_aligned(aabbMaxZ, 16);
-#endif
 
 #ifdef __INTEL_COMPILER
 #pragma vector always assert aligned

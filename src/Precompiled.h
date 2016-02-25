@@ -56,6 +56,7 @@
 #ifdef __linux
 #include <dlfcn.h>
 #include <GL/glx.h>
+#include <parallel/algorithm>
 #endif
 
 #include "tinyformat/tinyformat.h"

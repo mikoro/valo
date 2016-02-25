@@ -7,6 +7,14 @@
 #include "BVH/BVH1.h"
 #include "BVH/BVH4.h"
 
+#ifdef _WIN32
+#define PARALLEL_SORT concurrent::parallel_sort
+#endif
+
+#ifdef __linux
+#define PARALLEL_SORT __gnu_parallel::sort
+#endif
+
 using namespace Raycer;
 
 std::unique_ptr<BVH> BVH::getBVH(BVHType type)
@@ -29,7 +37,7 @@ BVHSplitOutput BVH::calculateSplit(std::vector<BVHBuildTriangle>& buildTriangles
 
 	for (uint64_t axis = 0; axis <= 2; ++axis)
 	{
-		concurrency::parallel_sort(buildTriangles.begin() + start, buildTriangles.begin() + end, [axis](const BVHBuildTriangle& t1, const BVHBuildTriangle& t2)
+		PARALLEL_SORT(buildTriangles.begin() + start, buildTriangles.begin() + end, [axis](const BVHBuildTriangle& t1, const BVHBuildTriangle& t2)
 		{
 			return (&t1.center.x)[axis] < (&t2.center.x)[axis];
 		});
@@ -79,7 +87,7 @@ BVHSplitOutput BVH::calculateSplit(std::vector<BVHBuildTriangle>& buildTriangles
 
 	if (output.axis != 2)
 	{
-		concurrency::parallel_sort(buildTriangles.begin() + start, buildTriangles.begin() + end, [output](const BVHBuildTriangle& t1, const BVHBuildTriangle& t2)
+		PARALLEL_SORT(buildTriangles.begin() + start, buildTriangles.begin() + end, [output](const BVHBuildTriangle& t1, const BVHBuildTriangle& t2)
 		{
 			return (&t1.center.x)[output.axis] < (&t2.center.x)[output.axis];
 		});
