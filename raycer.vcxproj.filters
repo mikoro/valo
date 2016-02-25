@@ -635,5 +635,8 @@
     <None Include="data\shaders\film.vert">
       <Filter>Shaders</Filter>
     </None>
+    <None Include="src\Tracing\AABB.inl">
+      <Filter>Tracing</Filter>
+    </None>
   </ItemGroup>
 </Project>

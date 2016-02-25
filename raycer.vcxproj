@@ -450,6 +450,7 @@
     <None Include="data\shaders\film.frag" />
     <None Include="data\shaders\film.vert" />
     <None Include="src\Math\Polynomial.inl" />
+    <None Include="src\Tracing\AABB.inl" />
     <None Include="src\Utils\Log.inl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
