@@ -126,7 +126,7 @@ Color Raytracer::traceRecursive(const Scene& scene, const Ray& ray, Intersection
 	if (material->skipLighting)
 		return material->getDiffuseReflectance(intersection);
 
-	if (scene.general.enableNormalMapping && material->normalMapTexture != nullptr)
+	if (scene.general.normalMapping && material->normalMapTexture != nullptr)
 		calculateNormalMapping(intersection);
 
 	float rayReflectance, rayTransmittance;
@@ -241,6 +241,9 @@ Color Raytracer::calculateTransmittedColor(const Scene& scene, const Intersectio
 
 Color Raytracer::calculateMaterialColor(const Scene& scene, const Intersection& intersection, Random& random)
 {
+	if (intersection.hasColor)
+		return intersection.color;
+
 	Material* material = intersection.material;
 
 	Color materialColor;

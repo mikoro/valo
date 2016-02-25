@@ -3,6 +3,7 @@
 
 #include "Precompiled.h"
 
+#include "Tracing/Scene.h"
 #include "Tracing/Triangle.h"
 #include "Tracing/Ray.h"
 #include "Tracing/Intersection.h"
@@ -43,7 +44,7 @@ void Triangle::initialize()
 
 // Möller-Trumbore algorithm
 // http://www.scratchapixel.com/lessons/3d-basic-rendering/ray-tracing-rendering-a-triangle/moller-trumbore-ray-triangle-intersection
-bool Triangle::intersect(const Ray& ray, Intersection& intersection) const
+bool Triangle::intersect(const Scene& scene, const Ray& ray, Intersection& intersection) const
 {
 	if (ray.isShadowRay && material->nonShadowing)
 		return false;
@@ -100,7 +101,7 @@ bool Triangle::intersect(const Ray& ray, Intersection& intersection) const
 			return false;
 	}
 
-	Vector3 tempNormal = material->normalInterpolation ? (w * normals[0] + u * normals[1] + v * normals[2]) : normal;
+	Vector3 tempNormal = (scene.general.normalInterpolation && material->normalInterpolation) ? (w * normals[0] + u * normals[1] + v * normals[2]) : normal;
 
 	if (material->invertNormal)
 		tempNormal = -tempNormal;
@@ -109,6 +110,20 @@ bool Triangle::intersect(const Ray& ray, Intersection& intersection) const
 
 	if (material->autoInvertNormal && intersection.isBehind)
 		tempNormal = -tempNormal;
+
+	if (scene.general.normalVisualization)
+	{
+		intersection.color.r = (tempNormal.x + 1.0f) / 2.0f;
+		intersection.color.g = (tempNormal.y + 1.0f) / 2.0f;
+		intersection.color.b = (tempNormal.z + 1.0f) / 2.0f;
+		intersection.hasColor = true;
+	}
+
+	if (scene.general.interpolationVisualization)
+	{
+		intersection.color = w * Color::RED + u * Color::GREEN + v * Color::BLUE;
+		intersection.hasColor = true;
+	}
 
 	intersection.wasFound = true;
 	intersection.distance = t;

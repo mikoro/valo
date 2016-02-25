@@ -132,11 +132,26 @@ void WindowRunnerRenderState::update(float timeStep)
 		film.clear();
 	}
 
-	if (windowRunner.keyWasPressed(GLFW_KEY_N))
-		scene.general.enableNormalMapping = !scene.general.enableNormalMapping;
+	if (windowRunner.keyWasPressed(GLFW_KEY_P))
+		settings.camera.enableMovement = !settings.camera.enableMovement;
 
 	if (windowRunner.keyWasPressed(GLFW_KEY_M))
-		settings.camera.enableMovement = !settings.camera.enableMovement;
+		scene.general.normalMapping = !scene.general.normalMapping;
+
+	if (windowRunner.keyWasPressed(GLFW_KEY_N))
+		scene.general.normalInterpolation = !scene.general.normalInterpolation;
+
+	if (windowRunner.keyWasPressed(GLFW_KEY_B))
+	{
+		scene.general.normalVisualization = !scene.general.normalVisualization;
+		scene.general.interpolationVisualization = false;
+	}
+
+	if (windowRunner.keyWasPressed(GLFW_KEY_V))
+	{
+		scene.general.interpolationVisualization = !scene.general.interpolationVisualization;
+		scene.general.normalVisualization = false;
+	}
 
 	// EXPOSURE & KEY //
 

@@ -369,5 +369,5 @@ void Scene::initialize()
 
 bool Scene::intersect(const Ray& ray, Intersection& intersection) const
 {
-	return bvh->intersect(bvhData.triangles, ray, intersection);
+	return bvh->intersect(*this, ray, intersection);
 }

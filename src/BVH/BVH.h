@@ -10,6 +10,7 @@
 
 namespace Raycer
 {
+	class Scene;
 	class Triangle;
 	class Ray;
 	class Intersection;
@@ -47,7 +48,7 @@ namespace Raycer
 		virtual ~BVH() {}
 
 		virtual void build(std::vector<Triangle>& triangles, uint64_t maxLeafSize) = 0;
-		virtual bool intersect(const std::vector<Triangle>& triangles, const Ray& ray, Intersection& intersection) const = 0;
+		virtual bool intersect(const Scene& scene, const Ray& ray, Intersection& intersection) const = 0;
 
 		static std::unique_ptr<BVH> getBVH(BVHType type);
 

@@ -15,6 +15,7 @@ Scene TestScene::create3()
 	Scene scene;
 
 	scene.general.tracerType = TracerType::RAY;
+
 	scene.pathtracing.enableMultiSampling = true;
 	scene.pathtracing.multiSamplerFilterType = FilterType::BELL;
 	scene.pathtracing.minPathLength = 3;

@@ -7,6 +7,7 @@
 #include "App.h"
 #include "Utils/Log.h"
 #include "Utils/Timer.h"
+#include "Tracing/Scene.h"
 #include "Tracing/Triangle.h"
 #include "Tracing/Ray.h"
 #include "Tracing/Intersection.h"
@@ -125,7 +126,7 @@ void BVH1::build(std::vector<Triangle>& triangles, uint64_t maxLeafSize)
 	log.logInfo("BVH1 building finished (time: %s, nodes: %d, leafs: %d, triangles/leaf: %.2f)", timer.getElapsed().getString(true), nodeCount - leafCount, leafCount, float(triangleCount) / float(leafCount));
 }
 
-bool BVH1::intersect(const std::vector<Triangle>& triangles, const Ray& ray, Intersection& intersection) const
+bool BVH1::intersect(const Scene& scene, const Ray& ray, Intersection& intersection) const
 {
 	if (ray.fastOcclusion && intersection.wasFound)
 		return true;
@@ -146,7 +147,7 @@ bool BVH1::intersect(const std::vector<Triangle>& triangles, const Ray& ray, Int
 		{
 			for (uint64_t i = 0; i < node.triangleCount; ++i)
 			{
-				if (triangles[node.startOffset + i].intersect(ray, intersection))
+				if (scene.bvhData.triangles[node.startOffset + i].intersect(scene, ray, intersection))
 				{
 					if (ray.fastOcclusion)
 						return true;

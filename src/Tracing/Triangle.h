@@ -11,6 +11,7 @@
 
 namespace Raycer
 {
+	class Scene;
 	class Ray;
 	class Intersection;
 	class Material;
@@ -21,7 +22,7 @@ namespace Raycer
 	public:
 
 		void initialize();
-		bool intersect(const Ray& ray, Intersection& intersection) const;
+		bool intersect(const Scene& scene, const Ray& ray, Intersection& intersection) const;
 		Intersection getRandomIntersection(Random& random) const;
 		Aabb getAabb() const;
 		float getArea() const;

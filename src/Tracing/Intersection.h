@@ -8,6 +8,7 @@
 #include "Math/Vector3.h"
 #include "Math/Vector2.h"
 #include "Tracing/ONB.h"
+#include "Rendering/Color.h"
 
 namespace Raycer
 {
@@ -19,6 +20,7 @@ namespace Raycer
 
 		bool wasFound = false;
 		bool isBehind = false;
+		bool hasColor = false;
 
 		float distance = std::numeric_limits<float>::max();
 
@@ -26,6 +28,7 @@ namespace Raycer
 		Vector3 normal;
 		Vector2 texcoord;
 		Vector3 rayDirection;
+		Color color;
 
 		ONB onb;
 

@@ -60,7 +60,10 @@ namespace Raycer
 			float rayMinDistance = 0.0001f;
 			Color backgroundColor = Color(0.0f, 0.0f, 0.0f);
 			Color offLensColor = Color(0.0f, 0.0f, 0.0f);
-			bool enableNormalMapping = true;
+			bool normalMapping = true;
+			bool normalInterpolation = true;
+			bool normalVisualization = false;
+			bool interpolationVisualization = false;
 
 			template <class Archive>
 			void serialize(Archive& ar)
@@ -69,7 +72,10 @@ namespace Raycer
 					CEREAL_NVP(rayMinDistance),
 					CEREAL_NVP(backgroundColor),
 					CEREAL_NVP(offLensColor),
-					CEREAL_NVP(enableNormalMapping));
+					CEREAL_NVP(normalMapping),
+					CEREAL_NVP(normalInterpolation),
+					CEREAL_NVP(normalVisualization),
+					CEREAL_NVP(interpolationVisualization));
 			}
 
 		} general;

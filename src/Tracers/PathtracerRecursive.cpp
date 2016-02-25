@@ -68,7 +68,7 @@ Color PathtracerRecursive::traceRecursive(const Scene& scene, const Ray& ray, Ra
 	Color directLight(0.0f, 0.0f, 0.0f);
 	Color indirectLight(0.0f, 0.0f, 0.0f);
 
-	if (scene.general.enableNormalMapping && intersection.material->normalMapTexture != nullptr)
+	if (scene.general.normalMapping && intersection.material->normalMapTexture != nullptr)
 		calculateNormalMapping(intersection);
 
 	if (depth == 0 && !intersection.isBehind && intersection.material->isEmissive())

@@ -16,7 +16,7 @@ Scene TestScene::create7()
 
 	Color skyColor(182, 126, 91);
 
-	scene.general.tracerType = TracerType::PREVIEW;
+	scene.general.tracerType = TracerType::RAY;
 	scene.pathtracing.enableMultiSampling = true;
 	scene.pathtracing.multiSamplerFilterType = FilterType::TENT;
 	scene.pathtracing.minPathLength = 3;
@@ -37,7 +37,7 @@ Scene TestScene::create7()
 	scene.models.push_back(planeModel);
 
 	ModelLoaderInfo buddhaModel;
-	buddhaModel.modelFilePath = "data/models/buddha.obj";
+	buddhaModel.modelFilePath = "data/models/buddha2.obj";
 	buddhaModel.idStartOffset = 1000;
 	buddhaModel.defaultMaterialId = 2;
 	buddhaModel.triangleCountEstimate = 1087451;
