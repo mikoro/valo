@@ -37,7 +37,7 @@ Scene TestScene::create7()
 	scene.models.push_back(planeModel);
 
 	ModelLoaderInfo buddhaModel;
-	buddhaModel.modelFilePath = "data/models/buddha2.obj";
+	buddhaModel.modelFilePath = "data/models/buddha.obj";
 	buddhaModel.idStartOffset = 1000;
 	buddhaModel.defaultMaterialId = 2;
 	buddhaModel.triangleCountEstimate = 1087451;

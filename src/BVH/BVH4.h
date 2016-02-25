@@ -23,10 +23,10 @@ namespace Raycer
 		std::array<float, 4> aabbMaxY;
 		std::array<float, 4> aabbMaxZ;
 		std::array<uint32_t, 3> rightOffset;
+		std::array<uint16_t, 3> splitAxis;
 		uint32_t triangleOffset;
 		uint32_t triangleCount;
 		uint32_t isLeaf;
-		uint32_t pad[2];
 
 		template <class Archive>
 		void serialize(Archive& ar)
@@ -53,7 +53,7 @@ namespace Raycer
 
 	private:
 
-		std::vector<BVH4Node, boost::alignment::aligned_allocator<BVH4Node, 128>> nodes;
+		std::vector<BVH4Node, boost::alignment::aligned_allocator<BVH4Node, 16>> nodes;
 
 		friend class cereal::access;
 

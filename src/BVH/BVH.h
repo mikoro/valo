@@ -39,7 +39,7 @@ namespace Raycer
 		Aabb rightAabb;
 	};
 
-	using BVHBuildTriangleVector = std::vector<BVHBuildTriangle, boost::alignment::aligned_allocator<BVHBuildTriangle, 64>>;
+	using BVHBuildTriangleVector = std::vector<BVHBuildTriangle, boost::alignment::aligned_allocator<BVHBuildTriangle, 16>>;
 
 	class BVH
 	{

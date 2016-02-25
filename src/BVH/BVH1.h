@@ -42,7 +42,7 @@ namespace Raycer
 
 	private:
 
-		std::vector<BVH1Node, boost::alignment::aligned_allocator<BVH1Node, 128>> nodes;
+		std::vector<BVH1Node, boost::alignment::aligned_allocator<BVH1Node, 16>> nodes;
 
 		friend class cereal::access;
 

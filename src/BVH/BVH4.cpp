@@ -91,33 +91,24 @@ void BVH4::build(std::vector<Triangle>& triangles, uint64_t maxLeafSize)
 			// right split
 			splitOutputs[2] = calculateSplit(buildTriangles, cache, splitOutputs[1].index, buildEntry.end);
 
-			node.aabbMinX[0] = splitOutputs[0].leftAabb.min.x;
-			node.aabbMinY[0] = splitOutputs[0].leftAabb.min.y;
-			node.aabbMinZ[0] = splitOutputs[0].leftAabb.min.z;
-			node.aabbMaxX[0] = splitOutputs[0].leftAabb.max.x;
-			node.aabbMaxY[0] = splitOutputs[0].leftAabb.max.y;
-			node.aabbMaxZ[0] = splitOutputs[0].leftAabb.max.z;
+			node.splitAxis[0] = uint16_t(splitOutputs[0].axis);
+			node.splitAxis[1] = uint16_t(splitOutputs[1].axis);
+			node.splitAxis[2] = uint16_t(splitOutputs[2].axis);
 
-			node.aabbMinX[1] = splitOutputs[0].rightAabb.min.x;
-			node.aabbMinY[1] = splitOutputs[0].rightAabb.min.y;
-			node.aabbMinZ[1] = splitOutputs[0].rightAabb.min.z;
-			node.aabbMaxX[1] = splitOutputs[0].rightAabb.max.x;
-			node.aabbMaxY[1] = splitOutputs[0].rightAabb.max.y;
-			node.aabbMaxZ[1] = splitOutputs[0].rightAabb.max.z;
+			auto setAabb = [&node](uint64_t aabbIndex, const Aabb& aabb)
+			{
+				node.aabbMinX[aabbIndex] = aabb.min.x;
+				node.aabbMinY[aabbIndex] = aabb.min.y;
+				node.aabbMinZ[aabbIndex] = aabb.min.z;
+				node.aabbMaxX[aabbIndex] = aabb.max.x;
+				node.aabbMaxY[aabbIndex] = aabb.max.y;
+				node.aabbMaxZ[aabbIndex] = aabb.max.z;
+			};
 
-			node.aabbMinX[2] = splitOutputs[2].leftAabb.min.x;
-			node.aabbMinY[2] = splitOutputs[2].leftAabb.min.y;
-			node.aabbMinZ[2] = splitOutputs[2].leftAabb.min.z;
-			node.aabbMaxX[2] = splitOutputs[2].leftAabb.max.x;
-			node.aabbMaxY[2] = splitOutputs[2].leftAabb.max.y;
-			node.aabbMaxZ[2] = splitOutputs[2].leftAabb.max.z;
-
-			node.aabbMinX[3] = splitOutputs[2].rightAabb.min.x;
-			node.aabbMinY[3] = splitOutputs[2].rightAabb.min.y;
-			node.aabbMinZ[3] = splitOutputs[2].rightAabb.min.z;
-			node.aabbMaxX[3] = splitOutputs[2].rightAabb.max.x;
-			node.aabbMaxY[3] = splitOutputs[2].rightAabb.max.y;
-			node.aabbMaxZ[3] = splitOutputs[2].rightAabb.max.z;
+			setAabb(0, splitOutputs[0].leftAabb);
+			setAabb(1, splitOutputs[0].rightAabb);
+			setAabb(2, splitOutputs[2].leftAabb);
+			setAabb(3, splitOutputs[2].rightAabb);
 		}
 
 		nodes.push_back(node);
