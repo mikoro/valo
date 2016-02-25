@@ -33,7 +33,7 @@ void BVH4::build(std::vector<Triangle>& triangles, uint64_t maxLeafSize)
 
 	Timer timer;
 	uint64_t triangleCount = triangles.size();
-	BVHBuildTriangleVector buildTriangles(triangleCount);
+	std::vector<BVHBuildTriangle> buildTriangles(triangleCount);
 	std::vector<BVHSplitCache> cache(triangleCount);
 	BVHSplitOutput splitOutputs[3];
 
@@ -67,7 +67,7 @@ void BVH4::build(std::vector<Triangle>& triangles, uint64_t maxLeafSize)
 		// pop from stack
 		BVH4BuildEntry buildEntry = stack[--stackIndex];
 
-		BVH4Node node;
+		BVHNodeSimd<4> node;
 		node.triangleOffset = uint32_t(buildEntry.start);
 		node.triangleCount = uint32_t(buildEntry.end - buildEntry.start);
 		node.isLeaf = (node.triangleCount <= maxLeafSize);
@@ -174,7 +174,7 @@ bool BVH4::intersect(const Scene& scene, const Ray& ray, Intersection& intersect
 	while (stackIndex > 0)
 	{
 		uint64_t nodeIndex = stack[--stackIndex];
-		const BVH4Node& node = nodes[nodeIndex];
+		const BVHNodeSimd<4>& node = nodes[nodeIndex];
 
 		if (node.isLeaf)
 		{

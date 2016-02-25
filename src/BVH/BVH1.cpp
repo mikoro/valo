@@ -32,7 +32,7 @@ void BVH1::build(std::vector<Triangle>& triangles, uint64_t maxLeafSize)
 
 	Timer timer;
 	uint64_t triangleCount = triangles.size();
-	BVHBuildTriangleVector buildTriangles(triangleCount);
+	std::vector<BVHBuildTriangle> buildTriangles(triangleCount);
 	std::vector<BVHSplitCache> cache(triangleCount);
 	BVHSplitOutput splitOutput;
 
@@ -66,7 +66,7 @@ void BVH1::build(std::vector<Triangle>& triangles, uint64_t maxLeafSize)
 		// pop from stack
 		BVH1BuildEntry buildEntry = stack[--stackIndex];
 
-		BVH1Node node;
+		BVHNode node;
 		node.rightOffset = -3;
 		node.startOffset = uint32_t(buildEntry.start);
 		node.triangleCount = uint32_t(buildEntry.end - buildEntry.start);
@@ -140,7 +140,7 @@ bool BVH1::intersect(const Scene& scene, const Ray& ray, Intersection& intersect
 	while (stackIndex > 0)
 	{
 		uint64_t nodeIndex = stack[--stackIndex];
-		const BVH1Node& node = nodes[nodeIndex];
+		const BVHNode& node = nodes[nodeIndex];
 
 		// leaf node
 		if (node.rightOffset == 0)

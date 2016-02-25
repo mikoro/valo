@@ -11,7 +11,6 @@ namespace Raycer
 {
 	class Ray;
 	class EulerAngle;
-	struct BVH4Node;
 
 	class Aabb
 	{

@@ -39,7 +39,55 @@ namespace Raycer
 		Aabb rightAabb;
 	};
 
-	using BVHBuildTriangleVector = std::vector<BVHBuildTriangle, boost::alignment::aligned_allocator<BVHBuildTriangle, 16>>;
+	struct BVHNode
+	{
+		Aabb aabb;
+		int32_t rightOffset;
+		uint32_t startOffset;
+		uint32_t triangleCount;
+		uint32_t splitAxis;
+
+		template <class Archive>
+		void serialize(Archive& ar)
+		{
+			ar(CEREAL_NVP(aabb),
+				CEREAL_NVP(rightOffset),
+				CEREAL_NVP(startOffset),
+				CEREAL_NVP(triangleCount),
+				CEREAL_NVP(splitAxis));
+		}
+	};
+
+	template <uint64_t N>
+	struct BVHNodeSimd
+	{
+		std::array<float, N> aabbMinX;
+		std::array<float, N> aabbMinY;
+		std::array<float, N> aabbMinZ;
+		std::array<float, N> aabbMaxX;
+		std::array<float, N> aabbMaxY;
+		std::array<float, N> aabbMaxZ;
+		std::array<uint32_t, N-1> rightOffset;
+		std::array<uint16_t, N-1> splitAxis;
+		uint32_t triangleOffset;
+		uint32_t triangleCount;
+		uint32_t isLeaf;
+
+		template <class Archive>
+		void serialize(Archive& ar)
+		{
+			ar(CEREAL_NVP(aabbMinX),
+				CEREAL_NVP(aabbMinY),
+				CEREAL_NVP(aabbMinZ),
+				CEREAL_NVP(aabbMaxX),
+				CEREAL_NVP(aabbMaxY),
+				CEREAL_NVP(aabbMaxZ),
+				CEREAL_NVP(rightOffset),
+				CEREAL_NVP(triangleOffset),
+				CEREAL_NVP(triangleCount),
+				CEREAL_NVP(isLeaf));
+		}
+	};
 
 	class BVH
 	{
@@ -54,6 +102,6 @@ namespace Raycer
 
 	protected:
 
-		static BVHSplitOutput calculateSplit(BVHBuildTriangleVector& buildTriangles, std::vector<BVHSplitCache>& cache, uint64_t start, uint64_t end);
+		static BVHSplitOutput calculateSplit(std::vector<BVHBuildTriangle>& buildTriangles, std::vector<BVHSplitCache>& cache, uint64_t start, uint64_t end);
 	};
 }

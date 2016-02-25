@@ -69,6 +69,7 @@ std::array<uint32_t, 4> Aabb::intersects(const float* __restrict aabbMinX, const
 #ifdef __INTEL_COMPILER
 #pragma vector always assert aligned
 #endif
+//__pragma(loop(no_vector))
 	for (uint32_t i = 0; i < 4; ++i)
 	{
 		const float tx0 = (aabbMinX[i] - originX) * inverseDirectionX;

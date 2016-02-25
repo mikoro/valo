@@ -6,7 +6,6 @@
 #include "BVH/BVH.h"
 #include "BVH/BVH1.h"
 #include "BVH/BVH4.h"
-#include "Tracing/Triangle.h"
 
 using namespace Raycer;
 
@@ -20,7 +19,7 @@ std::unique_ptr<BVH> BVH::getBVH(BVHType type)
 	}
 }
 
-BVHSplitOutput BVH::calculateSplit(BVHBuildTriangleVector& buildTriangles, std::vector<BVHSplitCache>& cache, uint64_t start, uint64_t end)
+BVHSplitOutput BVH::calculateSplit(std::vector<BVHBuildTriangle>& buildTriangles, std::vector<BVHSplitCache>& cache, uint64_t start, uint64_t end)
 {
 	assert(end > start);
 
