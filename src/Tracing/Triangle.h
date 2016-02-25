@@ -24,7 +24,7 @@ namespace Raycer
 		void initialize();
 		bool intersect(const Scene& scene, const Ray& ray, Intersection& intersection) const;
 		Intersection getRandomIntersection(Random& random) const;
-		Aabb getAabb() const;
+		AABB getAABB() const;
 		float getArea() const;
 
 		uint64_t id = 0;

@@ -165,9 +165,9 @@ Intersection Triangle::getRandomIntersection(Random& random) const
 	return intersection;
 }
 
-Aabb Triangle::getAabb() const
+AABB Triangle::getAabb() const
 {
-	return Aabb::createFromVertices(vertices[0], vertices[1], vertices[2]);
+	return AABB::createFromVertices(vertices[0], vertices[1], vertices[2]);
 }
 
 float Triangle::getArea() const

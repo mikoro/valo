@@ -20,13 +20,13 @@ namespace Raycer
 	struct BVHBuildTriangle
 	{
 		Triangle* triangle;
-		Aabb aabb;
+		AABB aabb;
 		Vector3 center;
 	};
 
 	struct BVHSplitCache
 	{
-		Aabb aabb;
+		AABB aabb;
 		float cost;
 	};
 
@@ -34,14 +34,14 @@ namespace Raycer
 	{
 		uint64_t index;
 		uint64_t axis;
-		Aabb fullAabb;
-		Aabb leftAabb;
-		Aabb rightAabb;
+		AABB fullAABB;
+		AABB leftAABB;
+		AABB rightAABB;
 	};
 
 	struct BVHNode
 	{
-		Aabb aabb;
+		AABB aabb;
 		int32_t rightOffset;
 		uint32_t startOffset;
 		uint32_t triangleCount;

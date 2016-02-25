@@ -12,20 +12,20 @@ namespace Raycer
 	class Ray;
 	class EulerAngle;
 
-	class Aabb
+	class AABB
 	{
 	public:
 
-		Aabb();
+		AABB();
 
-		static Aabb createFromMinMax(const Vector3& min, const Vector3& max);
-		static Aabb createFromCenterExtent(const Vector3& center, const Vector3& extent);
-		static Aabb createFromVertices(const Vector3& v0, const Vector3& v1, const Vector3& v2);
+		static AABB createFromMinMax(const Vector3& min, const Vector3& max);
+		static AABB createFromCenterExtent(const Vector3& center, const Vector3& extent);
+		static AABB createFromVertices(const Vector3& v0, const Vector3& v1, const Vector3& v2);
 
 		static std::array<uint32_t, 4> intersects(const float* __restrict aabbMinX, const float* __restrict aabbMinY, const float* __restrict aabbMinZ, const float* __restrict aabbMaxX, const float* __restrict aabbMaxY, const float* __restrict aabbMaxZ, const Ray& ray);
 
 		bool intersects(const Ray& ray) const;
-		void expand(const Aabb& other);
+		void expand(const AABB& other);
 		
 		Vector3 getCenter() const;
 		Vector3 getExtent() const;

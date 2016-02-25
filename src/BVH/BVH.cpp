@@ -25,7 +25,7 @@ BVHSplitOutput BVH::calculateSplit(std::vector<BVHBuildTriangle>& buildTriangles
 
 	BVHSplitOutput output;
 	float lowestCost = std::numeric_limits<float>::max();
-	Aabb fullAabb[3];
+	AABB fullAABB[3];
 
 	for (uint64_t axis = 0; axis <= 2; ++axis)
 	{
@@ -34,27 +34,27 @@ BVHSplitOutput BVH::calculateSplit(std::vector<BVHBuildTriangle>& buildTriangles
 			return (&t1.center.x)[axis] < (&t2.center.x)[axis];
 		});
 
-		Aabb rightAabb;
+		AABB rightAABB;
 		uint64_t rightCount = 0;
 
 		for (int64_t i = end - 1; i >= int64_t(start); --i)
 		{
-			rightAabb.expand(buildTriangles[i].aabb);
+			rightAABB.expand(buildTriangles[i].aabb);
 			rightCount++;
 
-			cache[i].aabb = rightAabb;
-			cache[i].cost = rightAabb.getSurfaceArea() * float(rightCount);
+			cache[i].aabb = rightAABB;
+			cache[i].cost = rightAABB.getSurfaceArea() * float(rightCount);
 		}
 
-		Aabb leftAabb;
+		AABB leftAABB;
 		uint64_t leftCount = 0;
 
 		for (uint64_t i = start; i < end; ++i)
 		{
-			leftAabb.expand(buildTriangles[i].aabb);
+			leftAABB.expand(buildTriangles[i].aabb);
 			leftCount++;
 
-			float cost = leftAabb.getSurfaceArea() * float(leftCount);
+			float cost = leftAABB.getSurfaceArea() * float(leftCount);
 
 			if (i + 1 < end)
 				cost += cache[i + 1].cost;
@@ -63,16 +63,16 @@ BVHSplitOutput BVH::calculateSplit(std::vector<BVHBuildTriangle>& buildTriangles
 			{
 				output.index = i + 1;
 				output.axis = axis;
-				output.leftAabb = leftAabb;
+				output.leftAABB = leftAABB;
 
 				if (output.index < end)
-					output.rightAabb = cache[output.index].aabb;
+					output.rightAABB = cache[output.index].aabb;
 
 				lowestCost = cost;
 			}
 		}
 
-		fullAabb[axis] = leftAabb;
+		fullAABB[axis] = leftAABB;
 	}
 
 	assert(output.index >= start && output.index <= end);
@@ -85,7 +85,7 @@ BVHSplitOutput BVH::calculateSplit(std::vector<BVHBuildTriangle>& buildTriangles
 		});
 	}
 	
-	output.fullAabb = fullAabb[output.axis];
+	output.fullAABB = fullAABB[output.axis];
 
 	return output;
 }

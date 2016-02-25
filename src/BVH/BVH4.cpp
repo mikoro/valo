@@ -39,7 +39,7 @@ void BVH4::build(std::vector<Triangle>& triangles, uint64_t maxLeafSize)
 
 	for (uint64_t i = 0; i < triangleCount; ++i)
 	{
-		Aabb aabb = triangles[i].getAabb();
+		AABB aabb = triangles[i].getAABB();
 
 		buildTriangles[i].triangle = &triangles[i];
 		buildTriangles[i].aabb = aabb;
@@ -95,7 +95,7 @@ void BVH4::build(std::vector<Triangle>& triangles, uint64_t maxLeafSize)
 			node.splitAxis[1] = uint16_t(splitOutputs[1].axis);
 			node.splitAxis[2] = uint16_t(splitOutputs[2].axis);
 
-			auto setAabb = [&node](uint64_t aabbIndex, const Aabb& aabb)
+			auto setAABB = [&node](uint64_t aabbIndex, const AABB& aabb)
 			{
 				node.aabbMinX[aabbIndex] = aabb.min.x;
 				node.aabbMinY[aabbIndex] = aabb.min.y;
@@ -105,10 +105,10 @@ void BVH4::build(std::vector<Triangle>& triangles, uint64_t maxLeafSize)
 				node.aabbMaxZ[aabbIndex] = aabb.max.z;
 			};
 
-			setAabb(0, splitOutputs[0].leftAabb);
-			setAabb(1, splitOutputs[0].rightAabb);
-			setAabb(2, splitOutputs[2].leftAabb);
-			setAabb(3, splitOutputs[2].rightAabb);
+			setAABB(0, splitOutputs[0].leftAABB);
+			setAABB(1, splitOutputs[0].rightAABB);
+			setAABB(2, splitOutputs[2].leftAABB);
+			setAABB(3, splitOutputs[2].rightAABB);
 		}
 
 		nodes.push_back(node);
@@ -192,7 +192,7 @@ bool BVH4::intersect(const Scene& scene, const Ray& ray, Intersection& intersect
 			continue;
 		}
 
-		std::array<uint32_t, 4> intersects = Aabb::intersects(
+		std::array<uint32_t, 4> intersects = AABB::intersects(
 			&node.aabbMinX[0],
 			&node.aabbMinY[0],
 			&node.aabbMinZ[0],

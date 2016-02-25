@@ -38,7 +38,7 @@ void BVH1::build(std::vector<Triangle>& triangles, uint64_t maxLeafSize)
 
 	for (uint64_t i = 0; i < triangleCount; ++i)
 	{
-		Aabb aabb = triangles[i].getAabb();
+		AABB aabb = triangles[i].getAabb();
 
 		buildTriangles[i].triangle = &triangles[i];
 		buildTriangles[i].aabb = aabb;
@@ -90,7 +90,7 @@ void BVH1::build(std::vector<Triangle>& triangles, uint64_t maxLeafSize)
 			splitOutput = calculateSplit(buildTriangles, cache, buildEntry.start, buildEntry.end);
 
 			node.splitAxis = uint32_t(splitOutput.axis);
-			node.aabb = splitOutput.fullAabb;
+			node.aabb = splitOutput.fullAABB;
 		}
 
 		nodes.push_back(node);
