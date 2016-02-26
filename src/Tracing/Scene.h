@@ -245,8 +245,6 @@ namespace Raycer
 		{
 			std::vector<Triangle> triangles;
 			TriangleSOAVector4 triangles4;
-			TriangleSOAVector8 triangles8;
-			TriangleSOAVector16 triangles16;
 			BVH1 bvh1;
 			BVH4 bvh4;
 
@@ -255,8 +253,6 @@ namespace Raycer
 			{
 				ar(CEREAL_NVP(triangles),
 					CEREAL_NVP(triangles4),
-					CEREAL_NVP(triangles8),
-					CEREAL_NVP(triangles16),
 					CEREAL_NVP(bvh1),
 					CEREAL_NVP(bvh4));
 			}
@@ -265,7 +261,6 @@ namespace Raycer
 
 		ImagePool imagePool;
 		
-		std::map<uint64_t, Triangle*> trianglesMap;
 		std::vector<Triangle*> emissiveTriangles;
 		std::vector<Light*> lightsList;
 		std::vector<Texture*> texturesList;

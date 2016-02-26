@@ -31,7 +31,6 @@ namespace Raycer
 		EulerAngle rotate = EulerAngle(0.0f, 0.0f, 0.0f);
 		Vector3 translate = Vector3(0.0f, 0.0f, 0.0f);
 		uint64_t defaultMaterialId = 0;
-		uint64_t idStartOffset = 0;
 		uint64_t triangleCountEstimate = 0;
 		
 		template <class Archive>
@@ -42,7 +41,7 @@ namespace Raycer
 				CEREAL_NVP(rotate),
 				CEREAL_NVP(translate),
 				CEREAL_NVP(defaultMaterialId),
-				CEREAL_NVP(idStartOffset));
+				CEREAL_NVP(triangleCountEstimate));
 		}
 	};
 
@@ -50,13 +49,30 @@ namespace Raycer
 	{
 		std::vector<Triangle> triangles;
 		std::vector<DiffuseSpecularMaterial> diffuseSpecularMaterials;
-		std::vector<ImageTexture> textures;
+		std::vector<ImageTexture> imageTextures;
 	};
 
 	class ModelLoader
 	{
 	public:
 
-		static ModelLoaderResult load(const ModelLoaderInfo& info);
+		ModelLoaderResult loadAll(const ModelLoaderInfo& info);
+		ModelLoaderResult loadMaterials(const ModelLoaderInfo& info);
+
+	private:
+
+		void processMaterialFile(const std::string& rootDirectory, const std::string& mtlFilePath, ModelLoaderResult& result);
+		bool processFace(const char* buffer, uint64_t lineStartIndex, uint64_t lineEndIndex, uint64_t lineNumber, ModelLoaderResult& result);
+
+		uint64_t currentMaterialId = 0;
+		uint64_t materialIdCounter = 1000;
+		uint64_t currentTextureId = 1000;
+
+		std::vector<Vector3> vertices;
+		std::vector<Vector3> normals;
+		std::vector<Vector2> texcoords;
+
+		std::map<std::string, uint64_t> materialsMap;
+		std::map<std::string, uint64_t> externalMaterialsMap;
 	};
 }

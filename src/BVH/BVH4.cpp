@@ -129,7 +129,7 @@ void BVH4::build(Scene& scene)
 				triangleSOA.vertex3X[index] = triangle.vertices[2].x;
 				triangleSOA.vertex3Y[index] = triangle.vertices[2].y;
 				triangleSOA.vertex3Z[index] = triangle.vertices[2].z;
-				triangleSOA.triangleId[index] = uint32_t(triangle.id);
+				triangleSOA.triangleIndex[index] = uint32_t(i);
 
 				index++;
 			}
@@ -263,7 +263,7 @@ bool BVH4::intersect(const Scene& scene, const Ray& ray, Intersection& intersect
 				&triangleSOA.vertex3X[0],
 				&triangleSOA.vertex3Y[0],
 				&triangleSOA.vertex3Z[0],
-				&triangleSOA.triangleId[0],
+				&triangleSOA.triangleIndex[0],
 				scene,
 				ray,
 				intersection))

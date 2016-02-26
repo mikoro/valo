@@ -24,7 +24,7 @@ Scene TestScene::create2()
 
 	scene.camera.position = Vector3(-0.0000f, 0.7808f, 2.9691f);
 	
-	scene.bvhInfo.bvhType = BVHType::BVH1;
+	scene.bvhInfo.bvhType = BVHType::BVH4;
 	scene.bvhInfo.maxLeafSize = 4;
 
 	ModelLoaderInfo model;

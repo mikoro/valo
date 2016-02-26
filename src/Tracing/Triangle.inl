@@ -1,6 +1,9 @@
 ﻿// Copyright © 2016 Mikko Ronkainen <firstname@mikkoronkainen.com>
 // License: MIT, see the LICENSE file.
 
+#include "Tracing/Ray.h"
+#include "Tracing/Intersection.h"
+
 namespace Raycer
 {
 	template <uint64_t N>
@@ -14,11 +17,14 @@ namespace Raycer
 		const float* __restrict vertex3X,
 		const float* __restrict vertex3Y,
 		const float* __restrict vertex3Z,
-		const uint32_t* __restrict triangleIds,
+		const uint32_t* __restrict triangleIndices,
 		const Scene& scene,
 		const Ray& ray,
 		Intersection& intersection)
 	{
+		if (ray.fastOcclusion && intersection.wasFound)
+			return true;
+
 		const float originX = ray.origin.x;
 		const float originY = ray.origin.y;
 		const float originZ = ray.origin.z;
@@ -102,18 +108,22 @@ namespace Raycer
 		}
 
 		float distance, u, v;
-		uint32_t triangleId;
+		uint32_t triangleIndex;
 
 		// if this isn't in its own function, the icc vectorizer gets confused
-		if (!findIntersectionValues<N>(hits, distances, uValues, vValues, triangleIds, distance, u, v, triangleId))
+		if (!findIntersectionValues<N>(hits, distances, uValues, vValues, triangleIndices, distance, u, v, triangleIndex))
 			return false;
 
-		Triangle& triangle = *scene.trianglesMap.at(uint64_t(triangleId));
+		const Triangle& triangle = scene.bvhData.triangles[triangleIndex];
+
+		if (ray.isShadowRay && triangle.material->nonShadowing)
+			return false;
+
 		return calculateIntersectionData(scene, ray, triangle, intersection, distance, u, v);
 	}
 
 	template <uint64_t N>
-	bool Triangle::findIntersectionValues(const uint32_t* hits, const float* distances, const float* uValues, const float* vValues, const uint32_t* triangleIds, float& distance, float& u, float& v, uint32_t& triangleId)
+	bool Triangle::findIntersectionValues(const uint32_t* hits, const float* distances, const float* uValues, const float* vValues, const uint32_t* triangleIndices, float& distance, float& u, float& v, uint32_t& triangleIndex)
 	{
 		bool wasFound = false;
 		distance = std::numeric_limits<float>::max();
@@ -127,7 +137,7 @@ namespace Raycer
 				u = uValues[i];
 				v = vValues[i];
 				distance = distances[i];
-				triangleId = triangleIds[i];
+				triangleIndex = triangleIndices[i];
 			}
 		}
 

@@ -5,7 +5,6 @@
 
 #include "cereal/cereal.hpp"
 
-#include "Tracing/AABB.h"
 #include "Math/Vector3.h"
 #include "Math/Vector2.h"
 
@@ -16,6 +15,7 @@ namespace Raycer
 	class Intersection;
 	class Material;
 	class Random;
+	class AABB;
 
 	template <uint64_t N>
 	struct TriangleSOA
@@ -29,7 +29,7 @@ namespace Raycer
 		std::array<float, N> vertex3X;
 		std::array<float, N> vertex3Y;
 		std::array<float, N> vertex3Z;
-		std::array<uint32_t, N> triangleId;
+		std::array<uint32_t, N> triangleIndex;
 
 		template <class Archive>
 		void serialize(Archive& ar)
@@ -43,7 +43,7 @@ namespace Raycer
 				CEREAL_NVP(vertex3X),
 				CEREAL_NVP(vertex3Y),
 				CEREAL_NVP(vertex3Z),
-				CEREAL_NVP(triangleId));
+				CEREAL_NVP(triangleIndex));
 		}
 	};
 
@@ -62,13 +62,10 @@ namespace Raycer
 		float getArea() const;
 
 		template <uint64_t N>
-		static bool intersect(const float* __restrict vertex1X, const float* __restrict vertex1Y, const float* __restrict vertex1Z, const float* __restrict vertex2X, const float* __restrict vertex2Y, const float* __restrict vertex2Z, const float* __restrict vertex3X, const float* __restrict vertex3Y, const float* __restrict vertex3Z, const uint32_t* __restrict triangleIds, const Scene& scene, const Ray& ray, Intersection& intersection);
+		static bool intersect(const float* __restrict vertex1X, const float* __restrict vertex1Y, const float* __restrict vertex1Z, const float* __restrict vertex2X, const float* __restrict vertex2Y, const float* __restrict vertex2Z, const float* __restrict vertex3X, const float* __restrict vertex3Y, const float* __restrict vertex3Z, const uint32_t* __restrict triangleIndices, const Scene& scene, const Ray& ray, Intersection& intersection);
 
 		template <uint64_t N>
-		static bool findIntersectionValues(const uint32_t* hits, const float* distances, const float* uValues, const float* vValues, const uint32_t* triangleIds, float& distance, float& u, float& v, uint32_t& triangleId);
-
-		uint64_t id = 0;
-		uint64_t materialId = 0;
+		static bool findIntersectionValues(const uint32_t* hits, const float* distances, const float* uValues, const float* vValues, const uint32_t* triangleIndices, float& distance, float& u, float& v, uint32_t& triangleIndex);
 
 		Vector3 vertices[3];
 		Vector3 normals[3];
@@ -77,7 +74,7 @@ namespace Raycer
 		Vector3 tangent;
 		Vector3 bitangent;
 		float area = 0.0f;
-		
+		uint64_t materialId = 0;
 		Material* material = nullptr;
 
 	private:
@@ -89,15 +86,14 @@ namespace Raycer
 		template <class Archive>
 		void serialize(Archive& ar)
 		{
-			ar(CEREAL_NVP(id),
-				CEREAL_NVP(materialId),
-				CEREAL_NVP(vertices),
+			ar(CEREAL_NVP(vertices),
 				CEREAL_NVP(normals),
 				CEREAL_NVP(texcoords),
 				CEREAL_NVP(normal),
 				CEREAL_NVP(tangent),
 				CEREAL_NVP(bitangent),
-				CEREAL_NVP(area));
+				CEREAL_NVP(area),
+				CEREAL_NVP(materialId));
 		}
 	};
 }

@@ -26,11 +26,13 @@ Scene TestScene::create7()
 	scene.camera.position = Vector3(0.0f, 0.6f, 1.5f);
 	scene.camera.orientation = EulerAngle(-8.0f, -0.0f, 0.0f);
 
+	scene.bvhInfo.bvhType = BVHType::BVH4;
+	scene.bvhInfo.maxLeafSize = 4;
+
 	// MODELS //
 
 	ModelLoaderInfo planeModel;
 	planeModel.modelFilePath = "data/models/plane.obj";
-	planeModel.idStartOffset = 1;
 	planeModel.defaultMaterialId = 1;
 	planeModel.scale = Vector3(10.0f, 10.0f, 10.0f);
 
@@ -38,7 +40,6 @@ Scene TestScene::create7()
 
 	ModelLoaderInfo buddhaModel;
 	buddhaModel.modelFilePath = "data/models/buddha.obj";
-	buddhaModel.idStartOffset = 1000;
 	buddhaModel.defaultMaterialId = 2;
 	buddhaModel.triangleCountEstimate = 1087451;
 	buddhaModel.translate = Vector3(0.6f, 0.0f, 0.0f);
@@ -48,7 +49,6 @@ Scene TestScene::create7()
 
 	ModelLoaderInfo dragonModel;
 	dragonModel.modelFilePath = "data/models/dragon.obj";
-	dragonModel.idStartOffset = 10000000;
 	dragonModel.defaultMaterialId = 3;
 	dragonModel.triangleCountEstimate = 871306;
 	dragonModel.translate = Vector3(-0.4f, 0.0f, 0.0f);

@@ -26,6 +26,9 @@ Scene TestScene::create6()
 	scene.camera.position = Vector3(8.92f, 0.68f, -2.02f);
 	scene.camera.orientation = EulerAngle(6.66f, 111.11f, 0.0f);
 
+	scene.bvhInfo.bvhType = BVHType::BVH4;
+	scene.bvhInfo.maxLeafSize = 4;
+
 	scene.bvhInfo.loadFromFile = false;
 	scene.imagePoolInfo.loadFromFile = false;
 
@@ -42,7 +45,6 @@ Scene TestScene::create6()
 	ModelLoaderInfo model;
 	model.modelFilePath = "data/models/plane.obj";
 	model.defaultMaterialId = planeMaterial.id;
-	model.idStartOffset = 1;
 	model.scale = Vector3(9.0f, 1.0f, 2.0f);
 	model.translate = Vector3(-0.6f, 13.0f, -0.3f);
 	model.rotate = EulerAngle(180.0f, 0.0f, 0.0f);
@@ -54,7 +56,6 @@ Scene TestScene::create6()
 
 	model = ModelLoaderInfo();
 	model.modelFilePath = "data/models/crytek-sponza/sponza.obj";
-	model.idStartOffset = 1000000;
 	model.scale = Vector3(0.01f, 0.01f, 0.01f);
 
 	scene.models.push_back(model);

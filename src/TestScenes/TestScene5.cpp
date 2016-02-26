@@ -26,6 +26,9 @@ Scene TestScene::create5()
 	scene.camera.position = Vector3(8.92f, 0.68f, -2.02f);
 	scene.camera.orientation = EulerAngle(6.66f, 111.11f, 0.0f);
 
+	scene.bvhInfo.bvhType = BVHType::BVH4;
+	scene.bvhInfo.maxLeafSize = 4;
+
 	// PLANE MODEL //
 
 	DiffuseSpecularMaterial planeMaterial;
@@ -39,7 +42,6 @@ Scene TestScene::create5()
 	ModelLoaderInfo model;
 	model.modelFilePath = "data/models/plane.obj";
 	model.defaultMaterialId = planeMaterial.id;
-	model.idStartOffset = 1;
 	model.scale = Vector3(11.0f, 1.0f, 3.0f);
 	model.translate = Vector3(0.0f, 15.7f, 0.0f);
 	model.rotate = EulerAngle(180.0f, 0.0f, 0.0f);
@@ -51,7 +53,6 @@ Scene TestScene::create5()
 
 	model = ModelLoaderInfo();
 	model.modelFilePath = "data/models/dabrovic-sponza/sponza.obj";
-	model.idStartOffset = 1000000;
 	//model.scale = Vector3(0.01f, 0.01f, 0.01f);
 
 	scene.models.push_back(model);

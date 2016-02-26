@@ -202,15 +202,24 @@ void Scene::initialize()
 
 	// MODEL LOADING
 
-	if (!bvhInfo.loadFromFile)
+	if (!models.empty())
 	{
+		ModelLoader modelLoader;
+
 		for (const ModelLoaderInfo& modelInfo : models)
 		{
-			ModelLoaderResult result = ModelLoader::load(modelInfo);
+			ModelLoaderResult result;
 
-			bvhData.triangles.insert(bvhData.triangles.end(), result.triangles.begin(), result.triangles.end());
+			if (!bvhInfo.loadFromFile)
+			{
+				result = modelLoader.loadAll(modelInfo);
+				bvhData.triangles.insert(bvhData.triangles.end(), result.triangles.begin(), result.triangles.end());
+			}
+			else
+				result = modelLoader.loadMaterials(modelInfo);
+
 			materials.diffuseSpecularMaterials.insert(materials.diffuseSpecularMaterials.end(), result.diffuseSpecularMaterials.begin(), result.diffuseSpecularMaterials.end());
-			textures.imageTextures.insert(textures.imageTextures.end(), result.textures.begin(), result.textures.end());
+			textures.imageTextures.insert(textures.imageTextures.end(), result.imageTextures.begin(), result.imageTextures.end());
 		}
 	}
 
@@ -316,16 +325,7 @@ void Scene::initialize()
 			throw std::runtime_error(tfm::format("A triangle has a non-existent material id (%d)", triangle.materialId));
 
 		if (!bvhInfo.loadFromFile)
-		{
-			if (triangle.id == 0)
-				throw std::runtime_error(tfm::format("A triangle must have a non-zero id"));
-
-			if (trianglesMap.count(triangle.id))
-				throw std::runtime_error(tfm::format("A duplicate triangle id was found (id: %s)", triangle.id));
-
-			trianglesMap[triangle.id] = &triangle;
 			triangle.initialize();
-		}
 	}
 
 	// BVH BUILDING
@@ -347,13 +347,6 @@ void Scene::initialize()
 		if (triangle.material->isEmissive())
 			emissiveTriangles.push_back(&triangle);
 	}
-
-	// TRIANGLE MAP
-
-	trianglesMap.clear();
-
-	for (Triangle& triangle : bvhData.triangles)
-		trianglesMap[triangle.id] = &triangle;
 
 	// IMAGE POOL LOADING
 
