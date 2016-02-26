@@ -189,7 +189,7 @@ bool BVH1::intersect(const Scene& scene, const Ray& ray, Intersection& intersect
 
 			const TriangleSOA<8>& triangleSOA = scene.bvhData.triangles8[node.triangleOffset];
 
-			if (Triangle::intersect(
+			if (Triangle::intersect<8>(
 				&triangleSOA.vertex1X[0],
 				&triangleSOA.vertex1Y[0],
 				&triangleSOA.vertex1Z[0],

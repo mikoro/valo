@@ -638,5 +638,8 @@
     <None Include="src\Tracing\AABB.inl">
       <Filter>Tracing</Filter>
     </None>
+    <None Include="src\Tracing\Triangle.inl">
+      <Filter>Tracing</Filter>
+    </None>
   </ItemGroup>
 </Project>
