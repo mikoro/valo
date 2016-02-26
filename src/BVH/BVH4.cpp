@@ -47,8 +47,8 @@ void BVH4::build(Scene& scene)
 		buildTriangles[i].center = aabb.getCenter();
 	}
 
-	nodes.clear();
 	nodes.reserve(triangleCount);
+	scene.bvhData.triangles4.reserve(triangleCount / 4);
 
 	BVH4BuildEntry stack[128];
 	uint64_t stackIndex = 0;
@@ -69,9 +69,9 @@ void BVH4::build(Scene& scene)
 		BVH4BuildEntry buildEntry = stack[--stackIndex];
 
 		BVHNodeSOA<4> node;
-		node.triangleOffset = uint32_t(buildEntry.start);
+		node.triangleOffset = 0;
 		node.triangleCount = uint32_t(buildEntry.end - buildEntry.start);
-		node.isLeaf = (node.triangleCount <= scene.bvhInfo.maxLeafSize);
+		node.isLeaf = node.triangleCount <= 4;
 
 		if (buildEntry.parent != -1 && buildEntry.child != -1)
 		{
@@ -81,7 +81,35 @@ void BVH4::build(Scene& scene)
 			nodes[parent].rightOffset[child] = uint32_t(nodeCount - 1 - parent);
 		}
 
-		if (!node.isLeaf)
+		if (node.isLeaf)
+		{
+			TriangleSOA<4> triangleSOA;
+			memset(&triangleSOA, 0, sizeof(TriangleSOA<4>));
+
+			uint64_t index = 0;
+
+			for (uint64_t i = buildEntry.start; i < buildEntry.end; ++i)
+			{
+				Triangle triangle = *buildTriangles[i].triangle;
+
+				triangleSOA.vertex1X[index] = triangle.vertices[0].x;
+				triangleSOA.vertex1Y[index] = triangle.vertices[0].y;
+				triangleSOA.vertex1Z[index] = triangle.vertices[0].z;
+				triangleSOA.vertex2X[index] = triangle.vertices[1].x;
+				triangleSOA.vertex2Y[index] = triangle.vertices[1].y;
+				triangleSOA.vertex2Z[index] = triangle.vertices[1].z;
+				triangleSOA.vertex3X[index] = triangle.vertices[2].x;
+				triangleSOA.vertex3Y[index] = triangle.vertices[2].y;
+				triangleSOA.vertex3Z[index] = triangle.vertices[2].z;
+				triangleSOA.triangleId[index] = uint32_t(triangle.id);
+
+				index++;
+			}
+
+			node.triangleOffset = uint32_t(scene.bvhData.triangles4.size());
+			scene.bvhData.triangles4.push_back(triangleSOA);
+		}
+		else
 		{
 			// middle split
 			splitOutputs[1] = calculateSplit(buildTriangles, cache, buildEntry.start, buildEntry.end);
@@ -179,15 +207,27 @@ bool BVH4::intersect(const Scene& scene, const Ray& ray, Intersection& intersect
 
 		if (node.isLeaf)
 		{
-			for (uint64_t i = 0; i < node.triangleCount; ++i)
-			{
-				if (scene.bvhData.triangles[node.triangleOffset + i].intersect(scene, ray, intersection))
-				{
-					if (ray.fastOcclusion)
-						return true;
+			const TriangleSOA<4>& triangleSOA = scene.bvhData.triangles4[node.triangleOffset];
 
-					wasFound = true;
-				}
+			if (Triangle::intersect<4>(
+				&triangleSOA.vertex1X[0],
+				&triangleSOA.vertex1Y[0],
+				&triangleSOA.vertex1Z[0],
+				&triangleSOA.vertex2X[0],
+				&triangleSOA.vertex2Y[0],
+				&triangleSOA.vertex2Z[0],
+				&triangleSOA.vertex3X[0],
+				&triangleSOA.vertex3Y[0],
+				&triangleSOA.vertex3Z[0],
+				&triangleSOA.triangleId[0],
+				scene,
+				ray,
+				intersection))
+			{
+				if (ray.fastOcclusion)
+					return true;
+
+				wasFound = true;
 			}
 
 			continue;

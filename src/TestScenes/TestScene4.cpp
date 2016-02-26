@@ -16,7 +16,7 @@ Scene TestScene::create4()
 
 	scene.general.tracerType = TracerType::PREVIEW;
 
-	scene.bvhInfo.bvhType = BVHType::BVH1;
+	scene.bvhInfo.bvhType = BVHType::BVH4;
 	scene.bvhInfo.maxLeafSize = 4;
 
 	scene.camera.position = Vector3(-4.6401f, 0.4618f, 2.7327f);
