@@ -1,4 +1,4 @@
-// Copyright © 2015 Mikko Ronkainen <firstname@mikkoronkainen.com>
+// Copyright © 2016 Mikko Ronkainen <firstname@mikkoronkainen.com>
 // License: MIfloat, see the LICENSE file.
 
 #pragma once

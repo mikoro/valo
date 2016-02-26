@@ -2,7 +2,7 @@
 
 WIP
 
-A C++ raytracer and pathtracer with an interactive real-time mode and GPGPU support (CUDA).
+Raytracing and pathtracing using CPU (C++ / OpenMP) and GPU (CUDA).
 
 * Author: [Mikko Ronkainen](http://mikkoronkainen.com)
 * Website: [github.com/mikoro/raycer](https://github.com/mikoro/raycer-ng)
@@ -39,7 +39,7 @@ Websites where the test scene data was sourced from:
 ## License
 
     Raycer
-    Copyright © 2015 Mikko Ronkainen
+    Copyright © 2016 Mikko Ronkainen
     
     Permission is hereby granted, free of charge, to any person obtaining a copy
     of this software and associated documentation files (the "Software"), to deal

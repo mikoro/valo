@@ -17,7 +17,7 @@ BEGIN
       VALUE "ProductVersion", "1.0.0"
       VALUE "FileVersion", "1.0.0"
       VALUE "CompanyName", "Mikko Ronkainen"
-      VALUE "LegalCopyright", "Copyright (C) 2015 Mikko Ronkainen"
+      VALUE "LegalCopyright", "Copyright (C) 2016 Mikko Ronkainen"
       VALUE "OriginalFilename", "raycer.exe"
     END
   END
