@@ -38,6 +38,7 @@ void BVH4::build(Scene& scene)
 	std::vector<BVHSplitCache> cache(triangleCount);
 	BVHSplitOutput splitOutputs[3];
 
+	// build triangles only contain necessary data (will be faster to sort)
 	for (uint64_t i = 0; i < triangleCount; ++i)
 	{
 		AABB aabb = scene.bvhData.triangles[i].getAABB();
@@ -73,6 +74,7 @@ void BVH4::build(Scene& scene)
 		node.triangleCount = uint32_t(buildEntry.end - buildEntry.start);
 		node.isLeaf = node.triangleCount <= 4;
 
+		// if not the leftmost child, adjust the according offset at the parent
 		if (buildEntry.parent != -1 && buildEntry.child != -1)
 		{
 			uint64_t parent = uint64_t(buildEntry.parent);
@@ -80,6 +82,32 @@ void BVH4::build(Scene& scene)
 
 			nodes[parent].rightOffset[child] = uint32_t(nodeCount - 1 - parent);
 		}
+
+		uint64_t splitIndex1 = 0;
+		uint64_t splitIndex2 = 0;
+		uint64_t splitIndex3 = 0;
+		uint64_t splitIndex4 = 0;
+		uint64_t splitIndex5 = 0;
+
+		auto calculateAABB = [&](uint64_t start, uint64_t end)
+		{
+			AABB aabb;
+
+			for (uint64_t i = start; i < end; ++i)
+				aabb.expand(buildTriangles[i].aabb);
+
+			return aabb;
+		};
+
+		auto setAABB = [&node](uint64_t aabbIndex, const AABB& aabb)
+		{
+			node.aabbMinX[aabbIndex] = aabb.min.x;
+			node.aabbMinY[aabbIndex] = aabb.min.y;
+			node.aabbMinZ[aabbIndex] = aabb.min.z;
+			node.aabbMaxX[aabbIndex] = aabb.max.x;
+			node.aabbMaxY[aabbIndex] = aabb.max.y;
+			node.aabbMaxZ[aabbIndex] = aabb.max.z;
+		};
 
 		if (node.isLeaf)
 		{
@@ -106,10 +134,26 @@ void BVH4::build(Scene& scene)
 				index++;
 			}
 
-			node.triangleOffset = uint32_t(scene.bvhData.triangles4.size());
-			scene.bvhData.triangles4.push_back(triangleSOA);
+			if (node.triangleCount > 0)
+			{
+				node.triangleOffset = uint32_t(scene.bvhData.triangles4.size());
+				scene.bvhData.triangles4.push_back(triangleSOA);
+			}
 		}
-		else
+		else if (node.triangleCount <= 16) // try to prevent leafs with small sizes
+		{
+			splitIndex1 = buildEntry.start;
+			splitIndex2 = std::min(buildEntry.start + 4, buildEntry.end);
+			splitIndex3 = std::min(buildEntry.start + 8, buildEntry.end);
+			splitIndex4 = std::min(buildEntry.start + 12, buildEntry.end);
+			splitIndex5 = buildEntry.end;
+
+			setAABB(0, calculateAABB(splitIndex1, splitIndex2));
+			setAABB(1, calculateAABB(splitIndex2, splitIndex3));
+			setAABB(2, calculateAABB(splitIndex3, splitIndex4));
+			setAABB(3, calculateAABB(splitIndex4, splitIndex5));
+		}
+		else // split into four parts using SAH
 		{
 			// middle split
 			splitOutputs[1] = calculateSplit(buildTriangles, cache, buildEntry.start, buildEntry.end);
@@ -120,24 +164,21 @@ void BVH4::build(Scene& scene)
 			// right split
 			splitOutputs[2] = calculateSplit(buildTriangles, cache, splitOutputs[1].index, buildEntry.end);
 
+			// not used atm
 			node.splitAxis[0] = uint16_t(splitOutputs[0].axis);
 			node.splitAxis[1] = uint16_t(splitOutputs[1].axis);
 			node.splitAxis[2] = uint16_t(splitOutputs[2].axis);
-
-			auto setAABB = [&node](uint64_t aabbIndex, const AABB& aabb)
-			{
-				node.aabbMinX[aabbIndex] = aabb.min.x;
-				node.aabbMinY[aabbIndex] = aabb.min.y;
-				node.aabbMinZ[aabbIndex] = aabb.min.z;
-				node.aabbMaxX[aabbIndex] = aabb.max.x;
-				node.aabbMaxY[aabbIndex] = aabb.max.y;
-				node.aabbMaxZ[aabbIndex] = aabb.max.z;
-			};
 
 			setAABB(0, splitOutputs[0].leftAABB);
 			setAABB(1, splitOutputs[0].rightAABB);
 			setAABB(2, splitOutputs[2].leftAABB);
 			setAABB(3, splitOutputs[2].rightAABB);
+
+			splitIndex1 = buildEntry.start;
+			splitIndex2 = splitOutputs[0].index;
+			splitIndex3 = splitOutputs[1].index;
+			splitIndex4 = splitOutputs[2].index;
+			splitIndex5 = buildEntry.end;
 		}
 
 		nodes.push_back(node);
@@ -149,29 +190,29 @@ void BVH4::build(Scene& scene)
 		}
 
 		// push right child 2
-		stack[stackIndex].start = splitOutputs[2].index;
-		stack[stackIndex].end = buildEntry.end;
+		stack[stackIndex].start = splitIndex4;
+		stack[stackIndex].end = splitIndex5;
 		stack[stackIndex].parent = int64_t(nodeCount) - 1;
 		stack[stackIndex].child = 2;
 		stackIndex++;
 
 		// push right child 1
-		stack[stackIndex].start = splitOutputs[1].index;
-		stack[stackIndex].end = splitOutputs[2].index;
+		stack[stackIndex].start = splitIndex3;
+		stack[stackIndex].end = splitIndex4;
 		stack[stackIndex].parent = int64_t(nodeCount) - 1;
 		stack[stackIndex].child = 1;
 		stackIndex++;
 
 		// push right child 0
-		stack[stackIndex].start = splitOutputs[0].index;
-		stack[stackIndex].end = splitOutputs[1].index;
+		stack[stackIndex].start = splitIndex2;
+		stack[stackIndex].end = splitIndex3;
 		stack[stackIndex].parent = int64_t(nodeCount) - 1;
 		stack[stackIndex].child = 0;
 		stackIndex++;
 
 		// push left child
-		stack[stackIndex].start = buildEntry.start;
-		stack[stackIndex].end = splitOutputs[0].index;
+		stack[stackIndex].start = splitIndex1;
+		stack[stackIndex].end = splitIndex2;
 		stack[stackIndex].parent = int64_t(nodeCount) - 1;
 		stack[stackIndex].child = -1;
 		stackIndex++;
@@ -207,6 +248,9 @@ bool BVH4::intersect(const Scene& scene, const Ray& ray, Intersection& intersect
 
 		if (node.isLeaf)
 		{
+			if (node.triangleCount == 0)
+				continue;
+
 			const TriangleSOA<4>& triangleSOA = scene.bvhData.triangles4[node.triangleOffset];
 
 			if (Triangle::intersect<4>(
