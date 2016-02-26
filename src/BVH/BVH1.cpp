@@ -72,16 +72,16 @@ void BVH1::build(Scene& scene)
 
 		BVHNode node;
 		node.rightOffset = -3;
-		node.triangleOffset = 0;
+		node.triangleOffset = uint32_t(buildEntry.start);
 		node.triangleCount = uint32_t(buildEntry.end - buildEntry.start);
 		node.splitAxis = 0;
 
-		if (node.triangleCount <= 4)
+		if (node.triangleCount <= 8)
 		{
 			node.rightOffset = 0;
 
-			TriangleSOA<4> triangleSOA;
-			memset(&triangleSOA, 0, sizeof(TriangleSOA<4>));
+			TriangleSOA<8> triangleSOA;
+			memset(&triangleSOA, 0, sizeof(TriangleSOA<8>));
 
 			uint64_t index = 0;
 
@@ -103,8 +103,8 @@ void BVH1::build(Scene& scene)
 				index++;
 			}
 
-			node.triangleOffset = uint32_t(scene.bvhData.triangles4.size());
-			scene.bvhData.triangles4.push_back(triangleSOA);
+			node.triangleOffset = uint32_t(scene.bvhData.triangles8.size());
+			scene.bvhData.triangles8.push_back(triangleSOA);
 		}
 
 		// update the parent rightOffset when visiting its right child
@@ -176,7 +176,7 @@ bool BVH1::intersect(const Scene& scene, const Ray& ray, Intersection& intersect
 		// leaf node
 		if (node.rightOffset == 0)
 		{
-			for (uint64_t i = 0; i < node.triangleCount; ++i)
+			/*for (uint64_t i = 0; i < node.triangleCount; ++i)
 			{
 				if (scene.bvhData.triangles[node.triangleOffset + i].intersect(scene, ray, intersection))
 				{
@@ -185,6 +185,29 @@ bool BVH1::intersect(const Scene& scene, const Ray& ray, Intersection& intersect
 
 					wasFound = true;
 				}
+			}*/
+
+			const TriangleSOA<8>& triangleSOA = scene.bvhData.triangles8[node.triangleOffset];
+
+			if (Triangle::intersect(
+				&triangleSOA.vertex1X[0],
+				&triangleSOA.vertex1Y[0],
+				&triangleSOA.vertex1Z[0],
+				&triangleSOA.vertex2X[0],
+				&triangleSOA.vertex2Y[0],
+				&triangleSOA.vertex2Z[0],
+				&triangleSOA.vertex3X[0],
+				&triangleSOA.vertex3Y[0],
+				&triangleSOA.vertex3Z[0],
+				&triangleSOA.triangleId[0],
+				scene,
+				ray,
+				intersection))
+			{
+				if (ray.fastOcclusion)
+					return true;
+
+				wasFound = true;
 			}
 
 			continue;

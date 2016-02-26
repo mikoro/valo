@@ -76,65 +76,125 @@ bool Triangle::intersect(const Scene& scene, const Ray& ray, Intersection& inter
 	if (v < 0.0f || (u + v) > 1.0f)
 		return false;
 
-	float t = v0v2.dot(qvec) * invDeterminant;
+	float distance = v0v2.dot(qvec) * invDeterminant;
 
-	if (t < 0.0f)
+	if (distance < 0.0f)
 		return false;
 
-	if (t < ray.minDistance || t > ray.maxDistance)
+	if (distance < ray.minDistance || distance > ray.maxDistance)
 		return false;
 
-	if (t > intersection.distance)
+	if (distance > intersection.distance)
 		return false;
 
-	float w = 1.0f - u - v;
+	return calculateIntersectionData(scene, ray, *this, intersection, distance, u, v);
+}
 
-	Vector3 intersectionPosition = ray.origin + (t * ray.direction);
-	Vector2 texcoord = (w * texcoords[0] + u * texcoords[1] + v * texcoords[2]) * material->texcoordScale;
+bool Triangle::intersect(
+	const float* __restrict vertex1X,
+	const float* __restrict vertex1Y,
+	const float* __restrict vertex1Z,
+	const float* __restrict vertex2X,
+	const float* __restrict vertex2Y,
+	const float* __restrict vertex2Z,
+	const float* __restrict vertex3X,
+	const float* __restrict vertex3Y,
+	const float* __restrict vertex3Z,
+	const uint32_t* __restrict triangleIds,
+	const Scene& scene,
+	const Ray& ray,
+	Intersection& intersection)
+{
+	const float originX = ray.origin.x;
+	const float originY = ray.origin.y;
+	const float originZ = ray.origin.z;
 
-	texcoord.x = texcoord.x - floor(texcoord.x);
-	texcoord.y = texcoord.y - floor(texcoord.y);
+	const float directionX = ray.direction.x;
+	const float directionY = ray.direction.y;
+	const float directionZ = ray.direction.z;
 
-	if (material->maskMapTexture != nullptr)
+	const float minDistance = ray.minDistance;
+	const float maxDistance = ray.maxDistance;
+	const float intersectionDistance = intersection.distance;
+
+	alignas(16) uint32_t hits[8];
+	alignas(16) float distances[8];
+	alignas(16) float uValues[8];
+	alignas(16) float vValues[8];
+
+	memset(hits, 1, sizeof(hits));
+
+#ifdef __INTEL_COMPILER
+#pragma vector always assert aligned
+#endif
+	for (uint32_t i = 0; i < 8; ++i)
 	{
-		if (material->maskMapTexture->getValue(texcoord, intersectionPosition) < 0.5f)
-			return false;
+		const float v0v1X = vertex2X[i] - vertex1X[i];
+		const float v0v1Y = vertex2Y[i] - vertex1Y[i];
+		const float v0v1Z = vertex2Z[i] - vertex1Z[i];
+
+		const float v0v2X = vertex3X[i] - vertex1X[i];
+		const float v0v2Y = vertex3Y[i] - vertex1Y[i];
+		const float v0v2Z = vertex3Z[i] - vertex1Z[i];
+
+		// cross product
+		const float pvecX = directionY * v0v2Z - directionZ * v0v2Y;
+		const float pvecY = directionZ * v0v2X - directionX * v0v2Z;
+		const float pvecZ = directionX * v0v2Y - directionY * v0v2X;
+
+		// dot product
+		const float determinant = v0v1X * pvecX + v0v1Y * pvecY + v0v1Z * pvecZ;
+
+		if (std::abs(determinant) < std::numeric_limits<float>::epsilon())
+			hits[i] = 0;
+
+		const float invDeterminant = 1.0f / determinant;
+
+		const float tvecX = originX - vertex1X[i];
+		const float tvecY = originY - vertex1Y[i];
+		const float tvecZ = originZ - vertex1Z[i];
+
+		// dot product
+		const float u = (tvecX * pvecX + tvecY * pvecY + tvecZ * pvecZ) * invDeterminant;
+
+		if (u < 0.0f || u > 1.0f)
+			hits[i] = 0;
+
+		// cross product
+		const float qvecX = tvecY * v0v1Z - tvecZ * v0v1Y;
+		const float qvecY = tvecZ * v0v1X - tvecX * v0v1Z;
+		const float qvecZ = tvecX * v0v1Y - tvecY * v0v1X;
+
+		// dot product
+		const float v = (directionX * qvecX + directionY * qvecY + directionZ * qvecZ) * invDeterminant;
+
+		if (v < 0.0f || (u + v) > 1.0f)
+			hits[i] = 0;
+
+		const float t = (v0v2X * qvecX + v0v2Y * qvecY + v0v2Z * qvecZ) * invDeterminant;
+
+		if (t < 0.0f)
+			hits[i] = 0;
+
+		if (t < minDistance || t > maxDistance)
+			hits[i] = 0;
+
+		if (t > intersectionDistance)
+			hits[i] = 0;
+
+		uValues[i] = u;
+		vValues[i] = v;
+		distances[i] = t;
 	}
 
-	Vector3 tempNormal = (scene.general.normalInterpolation && material->normalInterpolation) ? (w * normals[0] + u * normals[1] + v * normals[2]) : normal;
+	float distance, u, v;
+	uint32_t triangleId;
 
-	if (material->invertNormal)
-		tempNormal = -tempNormal;
+	if (!findIntersectionValues(hits, distances, uValues, vValues, triangleIds, distance, u, v, triangleId))
+		return false;
 
-	intersection.isBehind = ray.direction.dot(tempNormal) > 0.0f;
-
-	if (material->autoInvertNormal && intersection.isBehind)
-		tempNormal = -tempNormal;
-
-	if (scene.general.normalVisualization)
-	{
-		intersection.color.r = (tempNormal.x + 1.0f) / 2.0f;
-		intersection.color.g = (tempNormal.y + 1.0f) / 2.0f;
-		intersection.color.b = (tempNormal.z + 1.0f) / 2.0f;
-		intersection.hasColor = true;
-	}
-
-	if (scene.general.interpolationVisualization)
-	{
-		intersection.color = w * Color::RED + u * Color::GREEN + v * Color::BLUE;
-		intersection.hasColor = true;
-	}
-
-	intersection.wasFound = true;
-	intersection.distance = t;
-	intersection.position = intersectionPosition;
-	intersection.normal = tempNormal;
-	intersection.texcoord = texcoord;
-	intersection.rayDirection = ray.direction;
-	intersection.onb = ONB(tangent, bitangent, tempNormal);
-	intersection.material = material;
-
-	return true;
+	Triangle& triangle = *scene.trianglesMap.at(uint64_t(triangleId));
+	return calculateIntersectionData(scene, ray, triangle, intersection, distance, u, v);
 }
 
 Intersection Triangle::getRandomIntersection(Random& random) const
@@ -146,7 +206,7 @@ Intersection Triangle::getRandomIntersection(Random& random) const
 	float u = 1.0f - sr1;
 	float v = r2 * sr1;
 	float w = 1.0f - u - v;
-
+	
 	Vector3 position = u * vertices[0] + v * vertices[1] + w * vertices[2];
 	Vector3 tempNormal = material->normalInterpolation ? (w * normals[0] + u * normals[1] + v * normals[2]) : normal;
 	Vector2 texcoord = (w * texcoords[0] + u * texcoords[1] + v * texcoords[2]) * material->texcoordScale;
@@ -179,93 +239,75 @@ float Triangle::getArea() const
 	return 0.5f * cross.length();
 }
 
-bool Triangle::intersect(
-	const float* __restrict vertex1X,
-	const float* __restrict vertex1Y,
-	const float* __restrict vertex1Z,
-	const float* __restrict vertex2X,
-	const float* __restrict vertex2Y,
-	const float* __restrict vertex2Z,
-	const float* __restrict vertex3X,
-	const float* __restrict vertex3Y,
-	const float* __restrict vertex3Z,
-	const uint32_t* __restrict triangleId,
-	const Scene& scene,
-	const Ray& ray,
-	Intersection& intersection)
+bool Triangle::findIntersectionValues(const uint32_t* hits, const float* distances, const float* uValues, const float* vValues, const uint32_t* triangleIds, float& distance, float& u, float& v, uint32_t& triangleId)
 {
-	const float originX = ray.origin.x;
-	const float originY = ray.origin.y;
-	const float originZ = ray.origin.z;
+	bool wasFound = false;
+	distance = std::numeric_limits<float>::max();
 
-	const float directionX = ray.direction.x;
-	const float directionY = ray.direction.y;
-	const float directionZ = ray.direction.z;
-
-	const float minDistance = ray.minDistance;
-	const float maxDistance = ray.maxDistance;
-
-	alignas(16) float result[4];
-	memset(result, 1, sizeof(result));
-
-#ifdef __INTEL_COMPILER
-#pragma vector always assert aligned
-#endif
-	for (uint32_t i = 0; i < 4; ++i)
+	for (uint32_t i = 0; i < 8; ++i)
 	{
-		uint32_t wasFound = 1;
+		if (hits[i] && distances[i] < distance)
+		{
+			wasFound = true;
 
-		const float v0v1X = vertex2X[i] - vertex1X[i];
-		const float v0v1Y = vertex2Y[i] - vertex1Y[i];
-		const float v0v1Z = vertex2Z[i] - vertex1Z[i];
-
-		const float v0v2X = vertex3X[i] - vertex1X[i];
-		const float v0v2Y = vertex3Y[i] - vertex1Y[i];
-		const float v0v2Z = vertex3Z[i] - vertex1Z[i];
-
-		// cross product
-		const float pvecX = directionY * v0v2Z - directionZ * v0v2Y;
-		const float pvecY = directionZ * v0v2X - directionX * v0v2Z;
-		const float pvecZ = directionX * v0v2Y - directionY * v0v2X;
-
-		// dot product
-		const float determinant = v0v1X * pvecX + v0v1Y * pvecY + v0v1Z * pvecZ;
-		
-		wasFound = (std::abs(determinant) < 1.0f) ? 0 : 1;
-
-		/*
-
-		// ray and triangle are parallel -> no intersection
-		if (std::abs(determinant) < std::numeric_limits<float>::epsilon())
-			return false;
-
-		float invDeterminant = 1.0f / determinant;
-
-		Vector3 tvec = ray.origin - vertices[0];
-		float u = tvec.dot(pvec) * invDeterminant;
-
-		if (u < 0.0f || u > 1.0f)
-			return false;
-
-		Vector3 qvec = tvec.cross(v0v1);
-		float v = ray.direction.dot(qvec) * invDeterminant;
-
-		if (v < 0.0f || (u + v) > 1.0f)
-			return false;
-
-		float t = v0v2.dot(qvec) * invDeterminant;
-
-		if (t < 0.0f)
-			return false;
-
-		if (t < ray.minDistance || t > ray.maxDistance)
-			return false;
-
-		if (t > intersection.distance)
-			return false;*/
-
-		result[i] = wasFound;
+			u = uValues[i];
+			v = vValues[i];
+			distance = distances[i];
+			triangleId = triangleIds[i];
+		}
 	}
+
+	return wasFound;
+}
+
+bool Triangle::calculateIntersectionData(const Scene& scene, const Ray& ray, const Triangle& triangle, Intersection& intersection, float distance, float u, float v)
+{
+	float w = 1.0f - u - v;
+
+	Vector3 intersectionPosition = ray.origin + (distance * ray.direction);
+	Vector2 texcoord = (w * triangle.texcoords[0] + u * triangle.texcoords[1] + v * triangle.texcoords[2]) * triangle.material->texcoordScale;
+
+	texcoord.x = texcoord.x - floor(texcoord.x);
+	texcoord.y = texcoord.y - floor(texcoord.y);
+
+	if (triangle.material->maskMapTexture != nullptr)
+	{
+		if (triangle.material->maskMapTexture->getValue(texcoord, intersectionPosition) < 0.5f)
+			return false;
+	}
+
+	Vector3 tempNormal = (scene.general.normalInterpolation && triangle.material->normalInterpolation) ? (w * triangle.normals[0] + u * triangle.normals[1] + v * triangle.normals[2]) : triangle.normal;
+
+	if (triangle.material->invertNormal)
+		tempNormal = -tempNormal;
+
+	intersection.isBehind = ray.direction.dot(tempNormal) > 0.0f;
+
+	if (triangle.material->autoInvertNormal && intersection.isBehind)
+		tempNormal = -tempNormal;
+
+	if (scene.general.normalVisualization)
+	{
+		intersection.color.r = (tempNormal.x + 1.0f) / 2.0f;
+		intersection.color.g = (tempNormal.y + 1.0f) / 2.0f;
+		intersection.color.b = (tempNormal.z + 1.0f) / 2.0f;
+		intersection.hasColor = true;
+	}
+
+	if (scene.general.interpolationVisualization)
+	{
+		intersection.color = w * Color::RED + u * Color::GREEN + v * Color::BLUE;
+		intersection.hasColor = true;
+	}
+
+	intersection.wasFound = true;
+	intersection.distance = distance;
+	intersection.position = intersectionPosition;
+	intersection.normal = tempNormal;
+	intersection.texcoord = texcoord;
+	intersection.rayDirection = ray.direction;
+	intersection.onb = ONB(triangle.tangent, triangle.bitangent, tempNormal);
+	intersection.material = triangle.material;
 
 	return true;
 }
