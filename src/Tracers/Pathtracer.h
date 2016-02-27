@@ -21,6 +21,8 @@ namespace Raycer
 
 	private:
 
+		Color calculateDirectLight(const Scene& scene, const Intersection& intersection, Random& random);
+
 		RandomSampler sampler;
 	};
 }

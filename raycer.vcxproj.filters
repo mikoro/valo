@@ -356,6 +356,9 @@
     <ClCompile Include="src\Tracers\Pathtracer.cpp">
       <Filter>Tracers</Filter>
     </ClCompile>
+    <ClCompile Include="src\Tracers\TracerCommon.cpp">
+      <Filter>Tracers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Utils\FpsCounter.h">
@@ -602,6 +605,9 @@
       <Filter>Materials</Filter>
     </ClInclude>
     <ClInclude Include="src\Tracers\Pathtracer.h">
+      <Filter>Tracers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Tracers\TracerCommon.h">
       <Filter>Tracers</Filter>
     </ClInclude>
   </ItemGroup>

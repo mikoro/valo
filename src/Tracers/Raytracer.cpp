@@ -4,6 +4,7 @@
 #include "Precompiled.h"
 
 #include "Tracers/Raytracer.h"
+#include "Tracers/TracerCommon.h"
 #include "Tracing/Scene.h"
 #include "Tracing/Ray.h"
 #include "Tracing/Intersection.h"
@@ -127,7 +128,7 @@ Color Raytracer::traceRecursive(const Scene& scene, const Ray& ray, Intersection
 		return material->getReflectance(intersection);
 
 	if (scene.general.normalMapping && material->normalTexture != nullptr)
-		calculateNormalMapping(intersection);
+		TracerCommon::calculateNormalMapping(intersection);
 
 	float rayReflectance, rayTransmittance;
 
@@ -245,15 +246,7 @@ Color Raytracer::calculateMaterialColor(const Scene& scene, const Intersection& 
 		return intersection.color;
 
 	if (scene.general.normalVisualization)
-	{
-		Color normalColor;
-
-		normalColor.r = (intersection.normal.x + 1.0f) / 2.0f;
-		normalColor.g = (intersection.normal.y + 1.0f) / 2.0f;
-		normalColor.b = (intersection.normal.z + 1.0f) / 2.0f;
-		
-		return normalColor;
-	}
+		TracerCommon::calculateNormalColor(intersection.normal);
 
 	Material* material = intersection.material;
 

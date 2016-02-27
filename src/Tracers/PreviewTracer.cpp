@@ -4,6 +4,7 @@
 #include "Precompiled.h"
 
 #include "Tracers/PreviewTracer.h"
+#include "Tracers/TracerCommon.h"
 #include "Tracing/Scene.h"
 #include "Tracing/Ray.h"
 #include "Tracing/Intersection.h"
@@ -57,16 +58,11 @@ void PreviewTracer::trace(const Scene& scene, Film& film, const Vector2& pixelCe
 	}
 
 	if (scene.general.normalMapping && intersection.material->normalTexture != nullptr)
-		calculateNormalMapping(intersection);
+		TracerCommon::calculateNormalMapping(intersection);
 
 	if (scene.general.normalVisualization)
 	{
-		Color normalColor;
-
-		normalColor.r = (intersection.normal.x + 1.0f) / 2.0f;
-		normalColor.g = (intersection.normal.y + 1.0f) / 2.0f;
-		normalColor.b = (intersection.normal.z + 1.0f) / 2.0f;
-
+		Color normalColor = TracerCommon::calculateNormalColor(intersection.normal);
 		film.addSample(pixelIndex, normalColor, 1.0f);
 		return;
 	}
