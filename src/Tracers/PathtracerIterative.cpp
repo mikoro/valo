@@ -52,12 +52,14 @@ void PathtracerIterative::trace(const Scene& scene, Film& film, const Vector2& p
 
 	Color color(0.0f, 0.0f, 0.0f);
 	Color sampleBrdf(1.0f, 1.0f, 1.0f);
+	float sampleCosine = 1.0f;
 	float sampleProbability = 1.0f;
+	float continuationProbability = 1.0f;
 	uint64_t depth = 0;
 
 	while (true)
 	{
-		++pathCount;
+		pathCount++;
 
 		Intersection intersection;
 		scene.intersect(ray, intersection);
@@ -68,38 +70,37 @@ void PathtracerIterative::trace(const Scene& scene, Film& film, const Vector2& p
 		if (scene.general.normalMapping && intersection.material->normalTexture != nullptr)
 			calculateNormalMapping(intersection);
 
-		Color emittedLight(0.0f, 0.0f, 0.0f);
-		Color directLight(0.0f, 0.0f, 0.0f);
-
 		if (depth == 0 && !intersection.isBehind && intersection.material->isEmissive())
-			emittedLight = intersection.material->getEmittance(intersection);
-
-		directLight = calculateDirectLight(scene, intersection, random);
-
-		float terminationProbability = 1.0f;
-
-		if (depth >= scene.pathtracing.minPathLength)
 		{
-			terminationProbability = scene.pathtracing.terminationProbability;
-
-			if (random.getFloat() < terminationProbability)
-				break;
+			color = intersection.material->getEmittance(intersection);
+			break;
 		}
 
-		color += sampleBrdf * (emittedLight + directLight) / sampleProbability / terminationProbability;
+		Color directLight = calculateDirectLight(scene, intersection, random);
+
+		if (depth++ >= scene.pathtracing.minPathLength)
+		{
+			if (random.getFloat() < scene.pathtracing.terminationProbability)
+				break;
+
+			continuationProbability *= (1.0f - scene.pathtracing.terminationProbability);
+		}
+
+		color += sampleBrdf * sampleCosine * directLight / sampleProbability / continuationProbability;
 
 		Vector3 sampleDirection = intersection.material->getDirection(intersection, sampler, random);
+		sampleBrdf *= intersection.material->getBrdf(intersection, sampleDirection);
+		sampleCosine *= sampleDirection.dot(intersection.normal);
 		sampleProbability *= intersection.material->getProbability(intersection, sampleDirection);
-		float sampleCosine = sampleDirection.dot(intersection.normal);
-		sampleBrdf *= intersection.material->getBrdf(intersection, sampleDirection) * sampleCosine;
+		
+		if (sampleProbability == 0.0f)
+			break;
 
 		ray = Ray();
 		ray.origin = intersection.position;
 		ray.direction = sampleDirection;
 		ray.minDistance = scene.general.rayMinDistance;
 		ray.precalculate();
-
-		++depth;
 	}
 
 	film.addSample(pixelIndex, color, filterWeight);
