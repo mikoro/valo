@@ -16,13 +16,14 @@ Scene TestScene::create3()
 
 	scene.general.tracerType = TracerType::RAY;
 
-	scene.pathtracing.enableMultiSampling = true;
+	scene.pathtracing.enableMultiSampling = false;
 	scene.pathtracing.multiSamplerFilterType = FilterType::BELL;
 	scene.pathtracing.minPathLength = 3;
 	scene.pathtracing.terminationProbability = 0.2f;
 	scene.pathtracing.pixelSampleCount = 1;
 
 	scene.camera.position = Vector3(0.0f, 1.0f, 0.0f);
+	scene.camera.orientation = EulerAngle(0.0f, 0.0f, 0.0f);
 
 	scene.bvhInfo.bvhType = BVHType::BVH4;
 	scene.bvhInfo.maxLeafSize = 4;

@@ -7,7 +7,7 @@ Ke 0.0 0.0 0.0
 
 newmtl light
 Kd 0.8 0.8 0.8
-Ke 1.0 1.0 1.0
+#Ke 1.0 1.0 1.0
 
 newmtl sphere_1_b
 Kd 0.8 0.8 0.8
@@ -39,4 +39,4 @@ Ke 0.0 0.0 0.0
 
 newmtl sphere_4_t
 Kd 0.8 0.8 0.8
-Ke 0.0 0.0 0.0
+Ke 1.0 1.0 1.0

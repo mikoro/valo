@@ -64,20 +64,16 @@ Color PathtracerRecursive::traceRecursive(const Scene& scene, const Ray& ray, Ra
 	if (!intersection.wasFound)
 		return Color(0.0f, 0.0f, 0.0f);
 
-	Color emittedLight(0.0f, 0.0f, 0.0f);
-	Color directLight(0.0f, 0.0f, 0.0f);
-	Color indirectLight(0.0f, 0.0f, 0.0f);
-
 	if (scene.general.normalMapping && intersection.material->normalTexture != nullptr)
 		calculateNormalMapping(intersection);
 
 	if (depth == 0 && !intersection.isBehind && intersection.material->isEmissive())
-		emittedLight = intersection.material->getEmittance(intersection);
+		return intersection.material->getEmittance(intersection);
 	
-	directLight = calculateDirectLight(scene, intersection, random);
-	indirectLight = calculateIndirectLight(scene, intersection, random, depth, pathCount);
+	Color directLight = calculateDirectLight(scene, intersection, random);
+	Color indirectLight = calculateIndirectLight(scene, intersection, random, depth, pathCount);
 
-	return emittedLight + directLight + indirectLight;
+	return directLight + indirectLight;
 }
 
 Color PathtracerRecursive::calculateIndirectLight(const Scene& scene, const Intersection& intersection, Random& random, uint64_t depth, uint64_t& pathCount)
