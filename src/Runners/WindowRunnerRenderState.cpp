@@ -10,8 +10,7 @@
 #include "Tracing/Camera.h"
 #include "Tracers/TracerState.h"
 #include "Tracers/Raytracer.h"
-#include "Tracers/PathtracerRecursive.h"
-#include "Tracers/PathtracerIterative.h"
+#include "Tracers/Pathtracer.h"
 #include "Tracers/PreviewTracer.h"
 #include "Runners/WindowRunner.h"
 #include "TestScenes/TestScene.h"
@@ -21,8 +20,7 @@ using namespace Raycer;
 WindowRunnerRenderState::WindowRunnerRenderState() : interrupted(false)
 {
 	tracers[TracerType::RAY] = std::make_unique<Raytracer>();
-	tracers[TracerType::PATH_RECURSIVE] = std::make_unique<PathtracerRecursive>();
-	tracers[TracerType::PATH_ITERATIVE] = std::make_unique<PathtracerIterative>();
+	tracers[TracerType::PATH] = std::make_unique<Pathtracer>();
 	tracers[TracerType::PREVIEW] = std::make_unique<PreviewTracer>();
 }
 
@@ -74,7 +72,7 @@ void WindowRunnerRenderState::update(float timeStep)
 
 		if (windowRunner.keyWasPressed(GLFW_KEY_F3))
 		{
-			scene.general.tracerType = TracerType::PATH_RECURSIVE;
+			scene.general.tracerType = TracerType::PATH;
 			film.clear();
 		}
 
@@ -253,7 +251,7 @@ void WindowRunnerRenderState::render(float timeStep, float interpolation)
 
 	if (scene.general.tracerType == TracerType::RAY ||
 		scene.general.tracerType == TracerType::PREVIEW ||
-		((scene.general.tracerType == TracerType::PATH_RECURSIVE || scene.general.tracerType == TracerType::PATH_ITERATIVE) && scene.camera.isMoving()) ||
+		(scene.general.tracerType == TracerType::PATH && scene.camera.isMoving()) ||
 		filmNeedsClearing)
 	{
 		film.clear();
@@ -262,7 +260,7 @@ void WindowRunnerRenderState::render(float timeStep, float interpolation)
 
 	Tracer* tracer = tracers[scene.general.tracerType].get();
 
-	if ((scene.general.tracerType == TracerType::PATH_RECURSIVE || scene.general.tracerType == TracerType::PATH_ITERATIVE) &&
+	if (scene.general.tracerType == TracerType::PATH &&
 		settings.interactive.usePreviewWhileMoving &&
 		scene.camera.isMoving())
 	{

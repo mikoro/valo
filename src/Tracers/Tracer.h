@@ -21,7 +21,7 @@ namespace Raycer
 	class Vector2;
 	class Intersection;
 
-	enum class TracerType { RAY, PATH_RECURSIVE, PATH_ITERATIVE, PREVIEW };
+	enum class TracerType { RAY, PATH, PREVIEW };
 
 	class Tracer
 	{

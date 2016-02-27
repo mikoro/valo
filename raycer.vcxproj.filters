@@ -302,12 +302,6 @@
     <ClCompile Include="src\Lights\AreaPointLight.cpp">
       <Filter>Lights</Filter>
     </ClCompile>
-    <ClCompile Include="src\Tracers\PathtracerRecursive.cpp">
-      <Filter>Tracers</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Tracers\PathtracerIterative.cpp">
-      <Filter>Tracers</Filter>
-    </ClCompile>
     <ClCompile Include="src\Rendering\Color.cpp">
       <Filter>Rendering</Filter>
     </ClCompile>
@@ -358,6 +352,9 @@
     </ClCompile>
     <ClCompile Include="src\Materials\DefaultMaterial.cpp">
       <Filter>Materials</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Tracers\Pathtracer.cpp">
+      <Filter>Tracers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -574,12 +571,6 @@
     <ClInclude Include="src\Lights\AreaPointLight.h">
       <Filter>Lights</Filter>
     </ClInclude>
-    <ClInclude Include="src\Tracers\PathtracerRecursive.h">
-      <Filter>Tracers</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Tracers\PathtracerIterative.h">
-      <Filter>Tracers</Filter>
-    </ClInclude>
     <ClInclude Include="src\Rendering\Color.h">
       <Filter>Rendering</Filter>
     </ClInclude>
@@ -609,6 +600,9 @@
     </ClInclude>
     <ClInclude Include="src\Materials\DefaultMaterial.h">
       <Filter>Materials</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Tracers\Pathtracer.h">
+      <Filter>Tracers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

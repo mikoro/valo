@@ -5,8 +5,7 @@
 
 #include "Tracers/Tracer.h"
 #include "Tracers/Raytracer.h"
-#include "Tracers/PathtracerRecursive.h"
-#include "Tracers/PathtracerIterative.h"
+#include "Tracers/Pathtracer.h"
 #include "Tracers/PreviewTracer.h"
 #include "Tracing/Scene.h"
 #include "App.h"
@@ -162,8 +161,7 @@ std::unique_ptr<Tracer> Tracer::getTracer(TracerType type)
 	switch (type)
 	{
 		case TracerType::RAY: return std::make_unique<Raytracer>();
-		case TracerType::PATH_RECURSIVE: return std::make_unique<PathtracerRecursive>();
-		case TracerType::PATH_ITERATIVE: return std::make_unique<PathtracerIterative>();
+		case TracerType::PATH: return std::make_unique<Pathtracer>();
 		case TracerType::PREVIEW: return std::make_unique<PreviewTracer>();
 		default: throw std::runtime_error("Invalid tracer type");
 	}

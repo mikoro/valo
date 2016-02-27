@@ -3,7 +3,7 @@
 
 #include "Precompiled.h"
 
-#include "Tracers/PathtracerIterative.h"
+#include "Tracers/Pathtracer.h"
 #include "Tracing/Scene.h"
 #include "Tracing/Ray.h"
 #include "Tracing/Intersection.h"
@@ -11,19 +11,19 @@
 
 using namespace Raycer;
 
-uint64_t PathtracerIterative::getPixelSampleCount(const Scene& scene) const
+uint64_t Pathtracer::getPixelSampleCount(const Scene& scene) const
 {
 	return scene.pathtracing.pixelSampleCount;
 }
 
-uint64_t PathtracerIterative::getSamplesPerPixel(const Scene& scene) const
+uint64_t Pathtracer::getSamplesPerPixel(const Scene& scene) const
 {
 	(void)scene;
 
 	return 1;
 }
 
-void PathtracerIterative::trace(const Scene& scene, Film& film, const Vector2& pixelCenter, uint64_t pixelIndex, Random& random, uint64_t& rayCount, uint64_t& pathCount)
+void Pathtracer::trace(const Scene& scene, Film& film, const Vector2& pixelCenter, uint64_t pixelIndex, Random& random, uint64_t& rayCount, uint64_t& pathCount)
 {
 	rayCount = 0;
 

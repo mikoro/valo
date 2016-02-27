@@ -8,7 +8,7 @@
 
 namespace Raycer
 {
-	class PathtracerIterative : public Tracer
+	class Pathtracer : public Tracer
 	{
 	public:
 
