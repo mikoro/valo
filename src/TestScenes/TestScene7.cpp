@@ -29,6 +29,9 @@ Scene TestScene::create7()
 	scene.bvhInfo.bvhType = BVHType::BVH4;
 	scene.bvhInfo.maxLeafSize = 4;
 
+	scene.bvhInfo.loadFromFile = false;
+	scene.imagePoolInfo.loadFromFile = false;
+
 	// MODELS //
 
 	ModelLoaderInfo planeModel;

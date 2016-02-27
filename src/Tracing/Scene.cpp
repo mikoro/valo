@@ -165,12 +165,12 @@ void Scene::saveBvhData(const std::string& fileName) const
 
 void Scene::loadImagePool(const std::string& fileName)
 {
-	App::getLog().logInfo("Loading image pool from %s", fileName);
+	App::getLog().logInfo("Loading image pool data from %s", fileName);
 
 	std::ifstream file(fileName, std::ios::binary);
 
 	if (!file.good())
-		throw std::runtime_error("Could not open the image pool file for loading");
+		throw std::runtime_error("Could not open the image pool data file for loading");
 
 	cereal::BinaryInputArchive archive(file);
 	archive(imagePool);
@@ -180,12 +180,12 @@ void Scene::loadImagePool(const std::string& fileName)
 
 void Scene::saveImagePool(const std::string& fileName) const
 {
-	App::getLog().logInfo("Saving image pool to %s", fileName);
+	App::getLog().logInfo("Saving image pool data to %s", fileName);
 
 	std::ofstream file(fileName, std::ios::binary);
 
 	if (!file.good())
-		throw std::runtime_error("Could not open the image pool file for saving");
+		throw std::runtime_error("Could not open the image pool data file for saving");
 
 	cereal::BinaryOutputArchive archive(file);
 	archive(cereal::make_nvp("imagePool", imagePool));
@@ -196,7 +196,7 @@ void Scene::saveImagePool(const std::string& fileName) const
 void Scene::initialize()
 {
 	Log& log = App::getLog();
-	log.logInfo("Initializing scene");
+	log.logInfo("Initializing the scene");
 
 	Timer timer;
 
@@ -206,18 +206,14 @@ void Scene::initialize()
 	{
 		ModelLoader modelLoader;
 
-		for (const ModelLoaderInfo& modelInfo : models)
+		for (ModelLoaderInfo modelInfo : models)
 		{
-			ModelLoaderResult result;
+			if (bvhInfo.loadFromFile)
+				modelInfo.loadOnlyMaterials = true;
 
-			if (!bvhInfo.loadFromFile)
-			{
-				result = modelLoader.loadAll(modelInfo);
-				bvhData.triangles.insert(bvhData.triangles.end(), result.triangles.begin(), result.triangles.end());
-			}
-			else
-				result = modelLoader.loadMaterials(modelInfo);
+			ModelLoaderResult result = modelLoader.load(modelInfo);
 
+			bvhData.triangles.insert(bvhData.triangles.end(), result.triangles.begin(), result.triangles.end());
 			materials.diffuseSpecularMaterials.insert(materials.diffuseSpecularMaterials.end(), result.diffuseSpecularMaterials.begin(), result.diffuseSpecularMaterials.end());
 			textures.imageTextures.insert(textures.imageTextures.end(), result.imageTextures.begin(), result.imageTextures.end());
 		}

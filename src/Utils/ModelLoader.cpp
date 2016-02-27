@@ -245,11 +245,11 @@ namespace
 	}
 }
 
-ModelLoaderResult ModelLoader::loadAll(const ModelLoaderInfo& info)
+ModelLoaderResult ModelLoader::load(const ModelLoaderInfo& info)
 {
 	Log& log = App::getLog();
 
-	log.logInfo("Reading OBJ file (all) (%s)", info.modelFilePath);
+	log.logInfo("Reading OBJ file %s(%s)", info.loadOnlyMaterials ? "(materials only) " : "", info.modelFilePath);
 
 	Timer timer;
 	std::string rootDirectory = boost::filesystem::absolute(info.modelFilePath).parent_path().string();
@@ -262,7 +262,6 @@ ModelLoaderResult ModelLoader::loadAll(const ModelLoaderInfo& info)
 	Matrix4x4 transformationInvT = transformation.inverted().transposed();
 
 	ModelLoaderResult result;
-	result.triangles.reserve(info.triangleCountEstimate);
 
 	vertices.clear();
 	normals.clear();
@@ -271,14 +270,18 @@ ModelLoaderResult ModelLoader::loadAll(const ModelLoaderInfo& info)
 	materialsMap.clear();
 	externalMaterialsMap.clear();
 
-	vertices.reserve(info.triangleCountEstimate / 2);
-	normals.reserve(info.triangleCountEstimate / 2);
-	texcoords.reserve(info.triangleCountEstimate / 2);
-
+	if (!info.loadOnlyMaterials)
+	{
+		result.triangles.reserve(info.triangleCountEstimate);
+		vertices.reserve(info.triangleCountEstimate / 2);
+		normals.reserve(info.triangleCountEstimate / 2);
+		texcoords.reserve(info.triangleCountEstimate / 2);
+	}
+	
 	std::ifstream file(info.modelFilePath, std::ios::in | std::ios::binary | std::ios::ate);
 
 	if (!file.good())
-		throw std::runtime_error(tfm::format("Could not open the OBJ file: %s", info.modelFilePath));
+		throw std::runtime_error(tfm::format("Could not open the OBJ file"));
 
 	auto size = file.tellg();
 	file.seekg(0, std::ios::beg);
@@ -303,44 +306,64 @@ ModelLoaderResult ModelLoader::loadAll(const ModelLoaderInfo& info)
 
 		getWord(fileBufferPtr, lineEndIndex, wordStartIndex, wordEndIndex);
 
-		if (compareWord(fileBufferPtr, wordStartIndex, wordEndIndex, "f")) // face
+		if (!info.loadOnlyMaterials)
 		{
-			if (!processFace(fileBufferPtr, lineStartIndex + 2, lineEndIndex, lineNumber, result))
-				break;
+			if (compareWord(fileBufferPtr, wordStartIndex, wordEndIndex, "f")) // face
+			{
+				if (!processFace(fileBufferPtr, lineStartIndex + 2, lineEndIndex, lineNumber, result))
+					break;
+			}
+			else if (compareWord(fileBufferPtr, wordStartIndex, wordEndIndex, "v")) // vertex
+			{
+				Vector3 vertex;
+				wordStartIndex += 2;
+
+				vertex.x = getFloat(fileBufferPtr, wordStartIndex, lineEndIndex);
+				vertex.y = getFloat(fileBufferPtr, wordStartIndex, lineEndIndex);
+				vertex.z = getFloat(fileBufferPtr, wordStartIndex, lineEndIndex);
+
+				vertices.push_back(transformation.transformPosition(vertex));
+			}
+			else if (compareWord(fileBufferPtr, wordStartIndex, wordEndIndex, "vn")) // normal
+			{
+				Vector3 normal;
+				wordStartIndex += 3;
+
+				normal.x = getFloat(fileBufferPtr, wordStartIndex, lineEndIndex);
+				normal.y = getFloat(fileBufferPtr, wordStartIndex, lineEndIndex);
+				normal.z = getFloat(fileBufferPtr, wordStartIndex, lineEndIndex);
+
+				normals.push_back(transformationInvT.transformDirection(normal).normalized());
+			}
+			else if (compareWord(fileBufferPtr, wordStartIndex, wordEndIndex, "vt")) // texcoord
+			{
+				Vector2 texcoord;
+				wordStartIndex += 3;
+
+				texcoord.x = getFloat(fileBufferPtr, wordStartIndex, lineEndIndex);
+				texcoord.y = getFloat(fileBufferPtr, wordStartIndex, lineEndIndex);
+
+				texcoords.push_back(texcoord);
+			}
+			else if (compareWord(fileBufferPtr, wordStartIndex, wordEndIndex, "usemtl")) // select material
+			{
+				wordStartIndex = wordEndIndex;
+				getWord(fileBufferPtr, lineEndIndex, wordStartIndex, wordEndIndex);
+				std::string materialName(fileBufferPtr + wordStartIndex, wordEndIndex - wordStartIndex);
+
+				if (externalMaterialsMap.count(materialName))
+					currentMaterialId = externalMaterialsMap[materialName];
+				else if (materialsMap.count(materialName))
+					currentMaterialId = materialsMap[materialName];
+				else
+				{
+					log.logWarning("Could not find material named \"%s\"", materialName);
+					currentMaterialId = info.defaultMaterialId;
+				}
+			}
 		}
-		else if (compareWord(fileBufferPtr, wordStartIndex, wordEndIndex, "v")) // vertex
-		{
-			Vector3 vertex;
-			wordStartIndex += 2;
 
-			vertex.x = getFloat(fileBufferPtr, wordStartIndex, lineEndIndex);
-			vertex.y = getFloat(fileBufferPtr, wordStartIndex, lineEndIndex);
-			vertex.z = getFloat(fileBufferPtr, wordStartIndex, lineEndIndex);
-
-			vertices.push_back(transformation.transformPosition(vertex));
-		}
-		else if (compareWord(fileBufferPtr, wordStartIndex, wordEndIndex, "vn")) // normal
-		{
-			Vector3 normal;
-			wordStartIndex += 3;
-
-			normal.x = getFloat(fileBufferPtr, wordStartIndex, lineEndIndex);
-			normal.y = getFloat(fileBufferPtr, wordStartIndex, lineEndIndex);
-			normal.z = getFloat(fileBufferPtr, wordStartIndex, lineEndIndex);
-
-			normals.push_back(transformationInvT.transformDirection(normal).normalized());
-		}
-		else if (compareWord(fileBufferPtr, wordStartIndex, wordEndIndex, "vt")) // texcoord
-		{
-			Vector2 texcoord;
-			wordStartIndex += 3;
-
-			texcoord.x = getFloat(fileBufferPtr, wordStartIndex, lineEndIndex);
-			texcoord.y = getFloat(fileBufferPtr, wordStartIndex, lineEndIndex);
-
-			texcoords.push_back(texcoord);
-		}
-		else if (compareWord(fileBufferPtr, wordStartIndex, wordEndIndex, "mtllib")) // new material file
+		if (compareWord(fileBufferPtr, wordStartIndex, wordEndIndex, "mtllib")) // new material file
 		{
 			wordStartIndex = wordEndIndex;
 			getWord(fileBufferPtr, lineEndIndex, wordStartIndex, wordEndIndex);
@@ -348,68 +371,11 @@ ModelLoaderResult ModelLoader::loadAll(const ModelLoaderInfo& info)
 
 			processMaterialFile(rootDirectory, mtlFilePath, result);
 		}
-		else if (compareWord(fileBufferPtr, wordStartIndex, wordEndIndex, "usemtl")) // select material
-		{
-			wordStartIndex = wordEndIndex;
-			getWord(fileBufferPtr, lineEndIndex, wordStartIndex, wordEndIndex);
-			std::string materialName(fileBufferPtr + wordStartIndex, wordEndIndex - wordStartIndex);
-
-			if (externalMaterialsMap.count(materialName))
-				currentMaterialId = externalMaterialsMap[materialName];
-			else if (materialsMap.count(materialName))
-				currentMaterialId = materialsMap[materialName];
-			else
-			{
-				log.logWarning("Could not find material named \"%s\"", materialName);
-				currentMaterialId = info.defaultMaterialId;
-			}
-		}
-
+		
 		lineStartIndex = lineEndIndex;
 	}
 
 	log.logInfo("OBJ file reading finished (time: %s, vertices: %s, normals: %s, texcoords: %s, triangles: %s, materials: %s, textures: %s)", timer.getElapsed().getString(true), vertices.size(), normals.size(), texcoords.size(), result.triangles.size(), result.diffuseSpecularMaterials.size(), result.imageTextures.size());
-
-	return result;
-}
-
-ModelLoaderResult ModelLoader::loadMaterials(const ModelLoaderInfo& info)
-{
-	Log& log = App::getLog();
-
-	log.logInfo("Reading OBJ file (materials only) (%s)", info.modelFilePath);
-
-	Timer timer;
-	ModelLoaderResult result;
-	std::string rootDirectory = boost::filesystem::absolute(info.modelFilePath).parent_path().string();
-	currentMaterialId = info.defaultMaterialId;
-
-	materialsMap.clear();
-	externalMaterialsMap.clear();
-
-	std::ifstream file(info.modelFilePath);
-
-	if (!file.good())
-		throw std::runtime_error(tfm::format("Could not open the OBJ file: %s", info.modelFilePath));
-
-	std::string line;
-	std::string part;
-
-	while (std::getline(file, line))
-	{
-		std::stringstream ss(line);
-		ss >> part;
-
-		if (part == "mtllib")
-		{
-			ss >> part;
-			processMaterialFile(rootDirectory, part, result);
-		}
-	}
-
-	file.close();
-
-	log.logInfo("OBJ file reading finished (time: %s, materials: %s, textures: %s)", timer.getElapsed().getString(true), result.diffuseSpecularMaterials.size(), result.imageTextures.size());
 
 	return result;
 }

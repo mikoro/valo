@@ -32,6 +32,7 @@ namespace Raycer
 		Vector3 translate = Vector3(0.0f, 0.0f, 0.0f);
 		uint64_t defaultMaterialId = 0;
 		uint64_t triangleCountEstimate = 0;
+		bool loadOnlyMaterials = false;
 		
 		template <class Archive>
 		void serialize(Archive& ar)
@@ -41,7 +42,8 @@ namespace Raycer
 				CEREAL_NVP(rotate),
 				CEREAL_NVP(translate),
 				CEREAL_NVP(defaultMaterialId),
-				CEREAL_NVP(triangleCountEstimate));
+				CEREAL_NVP(triangleCountEstimate),
+				CEREAL_NVP(loadOnlyMaterials));
 		}
 	};
 
@@ -56,8 +58,7 @@ namespace Raycer
 	{
 	public:
 
-		ModelLoaderResult loadAll(const ModelLoaderInfo& info);
-		ModelLoaderResult loadMaterials(const ModelLoaderInfo& info);
+		ModelLoaderResult load(const ModelLoaderInfo& info);
 
 	private:
 
