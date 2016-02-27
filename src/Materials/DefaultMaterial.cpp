@@ -12,8 +12,9 @@ using namespace Raycer;
 
 Color DefaultMaterial::getColor(const Scene& scene, const Intersection& intersection, const Light& light, Random& random)
 {
+	Color intersectionReflectance = getReflectance(intersection);
 	Color lightColor = light.getColor(scene, intersection, random);
-	Color finalColor = lightColor * getAmbientReflectance(intersection);
+	Color finalColor = lightColor * intersectionReflectance;
 
 	if (light.hasDirection())
 	{
@@ -24,7 +25,7 @@ Color DefaultMaterial::getColor(const Scene& scene, const Intersection& intersec
 
 		if (diffuseAmount > 0.0f)
 		{
-			finalColor += lightColor * diffuseAmount * getDiffuseReflectance(intersection);
+			finalColor += lightColor * diffuseAmount * intersectionReflectance;
 
 			Vector3 reflectionDirection = ((2.0f * diffuseAmount * intersection.normal) - directionToLight).normalized();
 			float specularAmount = reflectionDirection.dot(directionToCamera);

@@ -33,11 +33,9 @@ namespace Raycer
 		virtual Color getBrdf(const Intersection& intersection, const Vector3& out) = 0;
 
 		virtual Color getReflectance(const Intersection& intersection);
-		virtual Color getEmittance(const Intersection& intersection);
-		virtual Color getAmbientReflectance(const Intersection& intersection);
-		virtual Color getDiffuseReflectance(const Intersection& intersection);
 		virtual Color getSpecularReflectance(const Intersection& intersection);
-
+		virtual Color getEmittance(const Intersection& intersection);
+		
 		virtual bool isEmissive();
 
 		uint64_t id = 0;
@@ -58,30 +56,22 @@ namespace Raycer
 		Vector2 texcoordScale = Vector2(1.0f, 1.0f);
 
 		Color reflectance = Color(0.0f, 0.0f, 0.0f);
-		uint64_t reflectanceMapTextureId = 0;
-		Texture* reflectanceMapTexture = nullptr;
-
-		Color emittance = Color(0.0f, 0.0f, 0.0f);
-		uint64_t emittanceMapTextureId = 0;
-		Texture* emittanceMapTexture = nullptr;
-
-		Color ambientReflectance = Color(0.0f, 0.0f, 0.0f);
-		uint64_t ambientMapTextureId = 0;
-		Texture* ambientMapTexture = nullptr;
-
-		Color diffuseReflectance = Color(0.0f, 0.0f, 0.0f);
-		uint64_t diffuseMapTextureId = 0;
-		Texture* diffuseMapTexture = nullptr;
+		uint64_t reflectanceTextureId = 0;
+		Texture* reflectanceTexture = nullptr;
 
 		Color specularReflectance = Color(0.0f, 0.0f, 0.0f);
-		uint64_t specularMapTextureId = 0;
-		Texture* specularMapTexture = nullptr;
+		uint64_t specularReflectanceTextureId = 0;
+		Texture* specularReflectanceTexture = nullptr;
 
-		uint64_t normalMapTextureId = 0;
-		Texture* normalMapTexture = nullptr;
+		Color emittance = Color(0.0f, 0.0f, 0.0f);
+		uint64_t emittanceTextureId = 0;
+		Texture* emittanceTexture = nullptr;
 
-		uint64_t maskMapTextureId = 0;
-		Texture* maskMapTexture = nullptr;
+		uint64_t normalTextureId = 0;
+		Texture* normalTexture = nullptr;
+
+		uint64_t maskTextureId = 0;
+		Texture* maskTexture = nullptr;
 
 	private:
 
@@ -106,17 +96,13 @@ namespace Raycer
 				CEREAL_NVP(attenuationColor),
 				CEREAL_NVP(texcoordScale),
 				CEREAL_NVP(reflectance),
-				CEREAL_NVP(reflectanceMapTextureId),
-				CEREAL_NVP(emittance),
-				CEREAL_NVP(emittanceMapTextureId),
-				CEREAL_NVP(ambientReflectance),
-				CEREAL_NVP(ambientMapTextureId),
-				CEREAL_NVP(diffuseReflectance),
-				CEREAL_NVP(diffuseMapTextureId),
+				CEREAL_NVP(reflectanceTextureId),
 				CEREAL_NVP(specularReflectance),
-				CEREAL_NVP(specularMapTextureId),
-				CEREAL_NVP(normalMapTextureId),
-				CEREAL_NVP(maskMapTextureId));
+				CEREAL_NVP(specularReflectanceTextureId),
+				CEREAL_NVP(emittance),
+				CEREAL_NVP(emittanceTextureId),
+				CEREAL_NVP(normalTextureId),
+				CEREAL_NVP(maskTextureId));
 		}
 	};
 }

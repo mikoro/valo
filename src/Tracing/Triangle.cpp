@@ -101,9 +101,9 @@ bool Triangle::calculateIntersectionData(const Scene& scene, const Ray& ray, con
 	texcoord.x = texcoord.x - floor(texcoord.x);
 	texcoord.y = texcoord.y - floor(texcoord.y);
 
-	if (triangle.material->maskMapTexture != nullptr)
+	if (triangle.material->maskTexture != nullptr)
 	{
-		if (triangle.material->maskMapTexture->getValue(texcoord, intersectionPosition) < 0.5f)
+		if (triangle.material->maskTexture->getValue(texcoord, intersectionPosition) < 0.5f)
 			return false;
 	}
 
@@ -116,14 +116,6 @@ bool Triangle::calculateIntersectionData(const Scene& scene, const Ray& ray, con
 
 	if (triangle.material->autoInvertNormal && intersection.isBehind)
 		tempNormal = -tempNormal;
-
-	if (scene.general.normalVisualization)
-	{
-		intersection.color.r = (tempNormal.x + 1.0f) / 2.0f;
-		intersection.color.g = (tempNormal.y + 1.0f) / 2.0f;
-		intersection.color.b = (tempNormal.z + 1.0f) / 2.0f;
-		intersection.hasColor = true;
-	}
 
 	if (scene.general.interpolationVisualization)
 	{

@@ -452,77 +452,17 @@ void ModelLoader::processMaterialFile(const std::string& rootDirectory, const st
 			ss >> currentMaterial.texcoordScale.x;
 			ss >> currentMaterial.texcoordScale.y;
 		}
-		else if (part == "reflectance" || part == "Kr")
+		else if (part == "reflectance" || part == "Kr" || part == "Kd")
 		{
 			ss >> currentMaterial.reflectance.r;
 			ss >> currentMaterial.reflectance.g;
 			ss >> currentMaterial.reflectance.b;
 		}
-		else if ((part == "reflectanceMap" || part == "map_Kr") && currentMaterial.reflectanceMapTextureId == 0)
+		else if ((part == "reflectanceMap" || part == "map_Kr" || part == "map_Kd") && currentMaterial.reflectanceTextureId == 0)
 		{
 			ImageTexture imageTexture;
 			imageTexture.id = ++currentTextureId;
-			currentMaterial.reflectanceMapTextureId = imageTexture.id;
-
-			ss >> part;
-			imageTexture.imageFilePath = getAbsolutePath(rootDirectory, part);
-			imageTexture.applyGamma = !StringUtils::endsWith(imageTexture.imageFilePath, ".hdr");
-
-			result.imageTextures.push_back(imageTexture);
-		}
-		else if (part == "emittance" || part == "Ke")
-		{
-			ss >> currentMaterial.emittance.r;
-			ss >> currentMaterial.emittance.g;
-			ss >> currentMaterial.emittance.b;
-		}
-		else if ((part == "emittanceMap" || part == "map_Ke") && currentMaterial.emittanceMapTextureId == 0)
-		{
-			ImageTexture imageTexture;
-			imageTexture.id = ++currentTextureId;
-			currentMaterial.emittanceMapTextureId = imageTexture.id;
-
-			ss >> part;
-			imageTexture.imageFilePath = getAbsolutePath(rootDirectory, part);
-			imageTexture.applyGamma = !StringUtils::endsWith(imageTexture.imageFilePath, ".hdr");
-
-			result.imageTextures.push_back(imageTexture);
-		}
-		else if (part == "ambientReflectance" || part == "Ka")
-		{
-			ss >> currentMaterial.ambientReflectance.r;
-			ss >> currentMaterial.ambientReflectance.g;
-			ss >> currentMaterial.ambientReflectance.b;
-		}
-		else if ((part == "ambientMap" || part == "map_Ka") && currentMaterial.ambientMapTextureId == 0)
-		{
-			ImageTexture imageTexture;
-			imageTexture.id = ++currentTextureId;
-			currentMaterial.ambientMapTextureId = imageTexture.id;
-
-			ss >> part;
-			imageTexture.imageFilePath = getAbsolutePath(rootDirectory, part);
-			imageTexture.applyGamma = !StringUtils::endsWith(imageTexture.imageFilePath, ".hdr");
-
-			result.imageTextures.push_back(imageTexture);
-		}
-		else if (part == "diffuseReflectance" || part == "Kd")
-		{
-			ss >> currentMaterial.diffuseReflectance.r;
-			ss >> currentMaterial.diffuseReflectance.g;
-			ss >> currentMaterial.diffuseReflectance.b;
-
-			// for compatability
-			currentMaterial.reflectance.r = currentMaterial.diffuseReflectance.r;
-			currentMaterial.reflectance.g = currentMaterial.diffuseReflectance.g;
-			currentMaterial.reflectance.b = currentMaterial.diffuseReflectance.b;
-		}
-		else if ((part == "diffuseMap" || part == "map_Kd") && currentMaterial.diffuseMapTextureId == 0)
-		{
-			ImageTexture imageTexture;
-			imageTexture.id = ++currentTextureId;
-			currentMaterial.diffuseMapTextureId = imageTexture.id;
-			currentMaterial.reflectanceMapTextureId = imageTexture.id;
+			currentMaterial.reflectanceTextureId = imageTexture.id;
 
 			ss >> part;
 			imageTexture.imageFilePath = getAbsolutePath(rootDirectory, part);
@@ -536,11 +476,11 @@ void ModelLoader::processMaterialFile(const std::string& rootDirectory, const st
 			ss >> currentMaterial.specularReflectance.g;
 			ss >> currentMaterial.specularReflectance.b;
 		}
-		else if ((part == "specularMap" || part == "map_Ks") && currentMaterial.specularMapTextureId == 0)
+		else if ((part == "specularMap" || part == "map_Ks") && currentMaterial.specularReflectanceTextureId == 0)
 		{
 			ImageTexture imageTexture;
 			imageTexture.id = ++currentTextureId;
-			currentMaterial.specularMapTextureId = imageTexture.id;
+			currentMaterial.specularReflectanceTextureId = imageTexture.id;
 
 			ss >> part;
 			imageTexture.imageFilePath = getAbsolutePath(rootDirectory, part);
@@ -548,11 +488,29 @@ void ModelLoader::processMaterialFile(const std::string& rootDirectory, const st
 
 			result.imageTextures.push_back(imageTexture);
 		}
-		else if ((part == "normalMap" || part == "map_normal") && currentMaterial.normalMapTextureId == 0)
+		else if (part == "emittance" || part == "Ke")
+		{
+			ss >> currentMaterial.emittance.r;
+			ss >> currentMaterial.emittance.g;
+			ss >> currentMaterial.emittance.b;
+		}
+		else if ((part == "emittanceMap" || part == "map_Ke") && currentMaterial.emittanceTextureId == 0)
 		{
 			ImageTexture imageTexture;
 			imageTexture.id = ++currentTextureId;
-			currentMaterial.normalMapTextureId = imageTexture.id;
+			currentMaterial.emittanceTextureId = imageTexture.id;
+
+			ss >> part;
+			imageTexture.imageFilePath = getAbsolutePath(rootDirectory, part);
+			imageTexture.applyGamma = !StringUtils::endsWith(imageTexture.imageFilePath, ".hdr");
+
+			result.imageTextures.push_back(imageTexture);
+		}
+		else if ((part == "normalMap" || part == "map_normal") && currentMaterial.normalTextureId == 0)
+		{
+			ImageTexture imageTexture;
+			imageTexture.id = ++currentTextureId;
+			currentMaterial.normalTextureId = imageTexture.id;
 
 			ss >> part;
 			imageTexture.imageFilePath = getAbsolutePath(rootDirectory, part);
@@ -560,11 +518,11 @@ void ModelLoader::processMaterialFile(const std::string& rootDirectory, const st
 
 			result.imageTextures.push_back(imageTexture);
 		}
-		else if ((part == "maskMap" || part == "map_d") && currentMaterial.maskMapTextureId == 0)
+		else if ((part == "maskMap" || part == "map_d") && currentMaterial.maskTextureId == 0)
 		{
 			ImageTexture imageTexture;
 			imageTexture.id = ++currentTextureId;
-			currentMaterial.maskMapTextureId = imageTexture.id;
+			currentMaterial.maskTextureId = imageTexture.id;
 
 			ss >> part;
 			imageTexture.imageFilePath = getAbsolutePath(rootDirectory, part);

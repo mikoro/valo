@@ -33,7 +33,7 @@ Scene TestScene::create5()
 
 	DefaultMaterial planeMaterial;
 	planeMaterial.id = 1;
-	planeMaterial.diffuseReflectance = skyColor;
+	planeMaterial.reflectance = skyColor;
 	planeMaterial.emittance = skyColor * 10.0f;
 	planeMaterial.invertNormal = false;
 	planeMaterial.skipLighting = true;

@@ -171,7 +171,7 @@ std::unique_ptr<Tracer> Tracer::getTracer(TracerType type)
 
 void Tracer::calculateNormalMapping(Intersection& intersection)
 {
-	Color normalColor = intersection.material->normalMapTexture->getColor(intersection.texcoord, intersection.position);
+	Color normalColor = intersection.material->normalTexture->getColor(intersection.texcoord, intersection.position);
 	Vector3 normal(normalColor.r * 2.0f - 1.0f, normalColor.g * 2.0f - 1.0f, normalColor.b);
 	Vector3 mappedNormal = intersection.onb.u * normal.x + intersection.onb.v * normal.y + intersection.onb.w * normal.z;
 	intersection.normal = mappedNormal.normalized();

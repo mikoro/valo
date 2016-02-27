@@ -65,7 +65,7 @@ void PathtracerIterative::trace(const Scene& scene, Film& film, const Vector2& p
 		if (!intersection.wasFound)
 			break;
 
-		if (scene.general.normalMapping && intersection.material->normalMapTexture != nullptr)
+		if (scene.general.normalMapping && intersection.material->normalTexture != nullptr)
 			calculateNormalMapping(intersection);
 
 		Color emittedLight(0.0f, 0.0f, 0.0f);

@@ -56,18 +56,22 @@ void PreviewTracer::trace(const Scene& scene, Film& film, const Vector2& pixelCe
 		return;
 	}
 
-	Color color;
-	Material* material = intersection.material;
+	if (scene.general.normalMapping && intersection.material->normalTexture != nullptr)
+		calculateNormalMapping(intersection);
 
-	if (material->reflectanceMapTexture != nullptr)
-		color = material->reflectanceMapTexture->getColor(intersection.texcoord, intersection.position);
-	else if (material->diffuseMapTexture != nullptr)
-		color = material->diffuseMapTexture->getColor(intersection.texcoord, intersection.position);
-	else if (!material->reflectance.isZero())
-		color = material->reflectance;
-	else if (!material->diffuseReflectance.isZero())
-		color = material->diffuseReflectance;
+	if (scene.general.normalVisualization)
+	{
+		Color normalColor;
 
+		normalColor.r = (intersection.normal.x + 1.0f) / 2.0f;
+		normalColor.g = (intersection.normal.y + 1.0f) / 2.0f;
+		normalColor.b = (intersection.normal.z + 1.0f) / 2.0f;
+
+		film.addSample(pixelIndex, normalColor, 1.0f);
+		return;
+	}
+
+	Color color = intersection.material->getReflectance(intersection);
 	color *= std::abs(ray.direction.dot(intersection.normal));
 	film.addSample(pixelIndex, color, 1.0f);
 }

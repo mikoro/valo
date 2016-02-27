@@ -281,26 +281,20 @@ void Scene::initialize()
 
 		materialsMap[material->id] = material;
 
-		if (texturesMap.count(material->reflectanceMapTextureId))
-			material->reflectanceMapTexture = texturesMap[material->reflectanceMapTextureId];
+		if (texturesMap.count(material->reflectanceTextureId))
+			material->reflectanceTexture = texturesMap[material->reflectanceTextureId];
 
-		if (texturesMap.count(material->emittanceMapTextureId))
-			material->emittanceMapTexture = texturesMap[material->emittanceMapTextureId];
+		if (texturesMap.count(material->specularReflectanceTextureId))
+			material->specularReflectanceTexture = texturesMap[material->specularReflectanceTextureId];
 
-		if (texturesMap.count(material->ambientMapTextureId))
-			material->ambientMapTexture = texturesMap[material->ambientMapTextureId];
+		if (texturesMap.count(material->emittanceTextureId))
+			material->emittanceTexture = texturesMap[material->emittanceTextureId];
 
-		if (texturesMap.count(material->diffuseMapTextureId))
-			material->diffuseMapTexture = texturesMap[material->diffuseMapTextureId];
+		if (texturesMap.count(material->normalTextureId))
+			material->normalTexture = texturesMap[material->normalTextureId];
 
-		if (texturesMap.count(material->specularMapTextureId))
-			material->specularMapTexture = texturesMap[material->specularMapTextureId];
-
-		if (texturesMap.count(material->normalMapTextureId))
-			material->normalMapTexture = texturesMap[material->normalMapTextureId];
-
-		if (texturesMap.count(material->maskMapTextureId))
-			material->maskMapTexture = texturesMap[material->maskMapTextureId];
+		if (texturesMap.count(material->maskTextureId))
+			material->maskTexture = texturesMap[material->maskTextureId];
 	}
 
 	// BVH LOADING
