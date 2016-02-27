@@ -359,6 +359,9 @@
     <ClCompile Include="src\Tracers\TracerCommon.cpp">
       <Filter>Tracers</Filter>
     </ClCompile>
+    <ClCompile Include="src\TestScenes\TestScene8.cpp">
+      <Filter>TestScenes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Utils\FpsCounter.h">
