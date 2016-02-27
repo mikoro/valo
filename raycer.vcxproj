@@ -264,9 +264,8 @@
     <ClCompile Include="src\Lights\AreaPointLight.cpp" />
     <ClCompile Include="src\Lights\DirectionalLight.cpp" />
     <ClCompile Include="src\Lights\PointLight.cpp" />
-    <ClCompile Include="src\Materials\DiffuseMaterial.cpp" />
     <ClCompile Include="src\Materials\Material.cpp" />
-    <ClCompile Include="src\Materials\DiffuseSpecularMaterial.cpp" />
+    <ClCompile Include="src\Materials\DefaultMaterial.cpp" />
     <ClCompile Include="src\Math\AxisAngle.cpp" />
     <ClCompile Include="src\Math\EulerAngle.cpp" />
     <ClCompile Include="src\Math\Matrix4x4.cpp" />
@@ -373,9 +372,8 @@
     <ClInclude Include="src\Lights\DirectionalLight.h" />
     <ClInclude Include="src\Lights\Light.h" />
     <ClInclude Include="src\Lights\PointLight.h" />
-    <ClInclude Include="src\Materials\DiffuseMaterial.h" />
     <ClInclude Include="src\Materials\Material.h" />
-    <ClInclude Include="src\Materials\DiffuseSpecularMaterial.h" />
+    <ClInclude Include="src\Materials\DefaultMaterial.h" />
     <ClInclude Include="src\Math\AxisAngle.h" />
     <ClInclude Include="src\Math\EulerAngle.h" />
     <ClInclude Include="src\Math\Matrix4x4.h" />

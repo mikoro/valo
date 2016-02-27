@@ -299,12 +299,6 @@
     <ClCompile Include="src\Materials\Material.cpp">
       <Filter>Materials</Filter>
     </ClCompile>
-    <ClCompile Include="src\Materials\DiffuseMaterial.cpp">
-      <Filter>Materials</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Materials\DiffuseSpecularMaterial.cpp">
-      <Filter>Materials</Filter>
-    </ClCompile>
     <ClCompile Include="src\Lights\AreaPointLight.cpp">
       <Filter>Lights</Filter>
     </ClCompile>
@@ -361,6 +355,9 @@
     </ClCompile>
     <ClCompile Include="src\Tracing\AABB.cpp">
       <Filter>Tracing</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Materials\DefaultMaterial.cpp">
+      <Filter>Materials</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -574,12 +571,6 @@
     <ClInclude Include="src\Materials\Material.h">
       <Filter>Materials</Filter>
     </ClInclude>
-    <ClInclude Include="src\Materials\DiffuseMaterial.h">
-      <Filter>Materials</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Materials\DiffuseSpecularMaterial.h">
-      <Filter>Materials</Filter>
-    </ClInclude>
     <ClInclude Include="src\Lights\AreaPointLight.h">
       <Filter>Lights</Filter>
     </ClInclude>
@@ -615,6 +606,9 @@
     </ClInclude>
     <ClInclude Include="src\Tracing\AABB.h">
       <Filter>Tracing</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Materials\DefaultMaterial.h">
+      <Filter>Materials</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

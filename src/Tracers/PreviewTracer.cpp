@@ -50,6 +50,12 @@ void PreviewTracer::trace(const Scene& scene, Film& film, const Vector2& pixelCe
 		return;
 	}
 
+	if (intersection.hasColor)
+	{
+		film.addSample(pixelIndex, intersection.color, 1.0f);
+		return;
+	}
+
 	Color color;
 	Material* material = intersection.material;
 

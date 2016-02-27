@@ -61,26 +61,26 @@ Scene TestScene::create7()
 
 	// MATERIALS //
 
-	DiffuseSpecularMaterial planeMaterial;
+	DefaultMaterial planeMaterial;
 	planeMaterial.id = 1;
 	planeMaterial.diffuseReflectance = Color::WHITE;
 	planeMaterial.reflectance = Color::WHITE;
 
-	scene.materials.diffuseSpecularMaterials.push_back(planeMaterial);
+	scene.materials.defaultMaterials.push_back(planeMaterial);
 
-	DiffuseSpecularMaterial buddhaMaterial;
+	DefaultMaterial buddhaMaterial;
 	buddhaMaterial.id = 2;
 	buddhaMaterial.diffuseReflectance = Color::WHITE;
 	buddhaMaterial.reflectance = Color::WHITE;
 
-	scene.materials.diffuseSpecularMaterials.push_back(buddhaMaterial);
+	scene.materials.defaultMaterials.push_back(buddhaMaterial);
 
-	DiffuseSpecularMaterial dragonMaterial;
+	DefaultMaterial dragonMaterial;
 	dragonMaterial.id = 3;
 	dragonMaterial.diffuseReflectance = Color::WHITE;
 	dragonMaterial.reflectance = Color::WHITE;
 
-	scene.materials.diffuseSpecularMaterials.push_back(dragonMaterial);
+	scene.materials.defaultMaterials.push_back(dragonMaterial);
 
 	// LIGHTS //
 

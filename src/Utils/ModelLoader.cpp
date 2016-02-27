@@ -375,7 +375,7 @@ ModelLoaderResult ModelLoader::load(const ModelLoaderInfo& info)
 		lineStartIndex = lineEndIndex;
 	}
 
-	log.logInfo("OBJ file reading finished (time: %s, vertices: %s, normals: %s, texcoords: %s, triangles: %s, materials: %s, textures: %s)", timer.getElapsed().getString(true), vertices.size(), normals.size(), texcoords.size(), result.triangles.size(), result.diffuseSpecularMaterials.size(), result.imageTextures.size());
+	log.logInfo("OBJ file reading finished (time: %s, vertices: %s, normals: %s, texcoords: %s, triangles: %s, materials: %s, textures: %s)", timer.getElapsed().getString(true), vertices.size(), normals.size(), texcoords.size(), result.triangles.size(), result.defaultMaterials.size(), result.imageTextures.size());
 
 	return result;
 }
@@ -389,7 +389,7 @@ void ModelLoader::processMaterialFile(const std::string& rootDirectory, const st
 	if (!file.good())
 		throw std::runtime_error("Could not open the MTL file");
 
-	DiffuseSpecularMaterial currentMaterial;
+	DefaultMaterial currentMaterial;
 	bool materialPending = false;
 
 	std::string line;
@@ -404,12 +404,12 @@ void ModelLoader::processMaterialFile(const std::string& rootDirectory, const st
 		if (part == "newmtl") // new material
 		{
 			if (materialPending)
-				result.diffuseSpecularMaterials.push_back(currentMaterial);
+				result.defaultMaterials.push_back(currentMaterial);
 
 			materialPending = true;
 			currentMaterialId = ++materialIdCounter;
 
-			currentMaterial = DiffuseSpecularMaterial();
+			currentMaterial = DefaultMaterial();
 			currentMaterial.id = currentMaterialId;
 
 			ss >> currentMaterialName;
@@ -577,7 +577,7 @@ void ModelLoader::processMaterialFile(const std::string& rootDirectory, const st
 	file.close();
 
 	if (materialPending)
-		result.diffuseSpecularMaterials.push_back(currentMaterial);
+		result.defaultMaterials.push_back(currentMaterial);
 }
 
 bool ModelLoader::processFace(const char* buffer, uint64_t lineStartIndex, uint64_t lineEndIndex, uint64_t lineNumber, ModelLoaderResult& result)

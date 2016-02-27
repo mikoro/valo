@@ -34,7 +34,7 @@ Scene TestScene::create6()
 
 	// PLANE MODEL //
 
-	DiffuseSpecularMaterial planeMaterial;
+	DefaultMaterial planeMaterial;
 	planeMaterial.id = 1;
 	planeMaterial.diffuseReflectance = skyColor;
 	planeMaterial.emittance = skyColor * 10.0f;
@@ -49,7 +49,7 @@ Scene TestScene::create6()
 	model.translate = Vector3(-0.6f, 13.0f, -0.3f);
 	model.rotate = EulerAngle(180.0f, 0.0f, 0.0f);
 
-	scene.materials.diffuseSpecularMaterials.push_back(planeMaterial);
+	scene.materials.defaultMaterials.push_back(planeMaterial);
 	scene.models.push_back(model);
 
 	// SPONZA MODEL //

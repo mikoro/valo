@@ -21,8 +21,7 @@
 #include "Lights/DirectionalLight.h"
 #include "Lights/PointLight.h"
 #include "Lights/AreaPointLight.h"
-#include "Materials/DiffuseMaterial.h"
-#include "Materials/DiffuseSpecularMaterial.h"
+#include "Materials/DefaultMaterial.h"
 #include "Tracers/Tracer.h"
 #include "Samplers/Sampler.h"
 #include "Filters/Filter.h"
@@ -197,14 +196,12 @@ namespace Raycer
 
 		struct Materials
 		{
-			std::vector<DiffuseMaterial> diffuseMaterials;
-			std::vector<DiffuseSpecularMaterial> diffuseSpecularMaterials;
-
+			std::vector<DefaultMaterial> defaultMaterials;
+			
 			template <class Archive>
 			void serialize(Archive& ar)
 			{
-				ar(CEREAL_NVP(diffuseMaterials),
-					CEREAL_NVP(diffuseSpecularMaterials));
+				ar(CEREAL_NVP(defaultMaterials));
 			}
 
 		} materials;

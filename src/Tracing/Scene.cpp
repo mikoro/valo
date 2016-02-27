@@ -214,7 +214,7 @@ void Scene::initialize()
 			ModelLoaderResult result = modelLoader.load(modelInfo);
 
 			bvhData.triangles.insert(bvhData.triangles.end(), result.triangles.begin(), result.triangles.end());
-			materials.diffuseSpecularMaterials.insert(materials.diffuseSpecularMaterials.end(), result.diffuseSpecularMaterials.begin(), result.diffuseSpecularMaterials.end());
+			materials.defaultMaterials.insert(materials.defaultMaterials.end(), result.defaultMaterials.begin(), result.defaultMaterials.end());
 			textures.imageTextures.insert(textures.imageTextures.end(), result.imageTextures.begin(), result.imageTextures.end());
 		}
 	}
@@ -252,10 +252,7 @@ void Scene::initialize()
 
 	// MATERIAL POINTERS
 
-	for (DiffuseMaterial& material : materials.diffuseMaterials)
-		materialsList.push_back(&material);
-
-	for (DiffuseSpecularMaterial& material : materials.diffuseSpecularMaterials)
+	for (DefaultMaterial& material : materials.defaultMaterials)
 		materialsList.push_back(&material);
 
 	// POINTER ASSIGNMENT

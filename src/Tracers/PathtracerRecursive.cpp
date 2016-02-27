@@ -92,8 +92,8 @@ Color PathtracerRecursive::calculateIndirectLight(const Scene& scene, const Inte
 			return Color(0.0f, 0.0f, 0.0f);
 	}
 
-	Vector3 sampleDirection = intersection.material->getSampleDirection(intersection, sampler, random);
-	float sampleProbability = intersection.material->getDirectionProbability(intersection, sampleDirection);
+	Vector3 sampleDirection = intersection.material->getDirection(intersection, sampler, random);
+	float sampleProbability = intersection.material->getProbability(intersection, sampleDirection);
 
 	if (sampleProbability == 0.0f)
 		return Color(0.0f, 0.0f, 0.0f);

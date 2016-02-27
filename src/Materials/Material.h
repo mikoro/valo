@@ -18,7 +18,7 @@ namespace Raycer
 	class Vector3;
 	class Texture;
 
-	enum class MaterialType { DIFFUSE, DIFFUSE_SPECULAR };
+	enum class MaterialType { DEFAULT };
 
 	class Material
 	{
@@ -28,8 +28,8 @@ namespace Raycer
 
 		virtual Color getColor(const Scene& scene, const Intersection& intersection, const Light& light, Random& random) = 0;
 
-		virtual Vector3 getSampleDirection(const Intersection& intersection, RandomSampler& sampler, Random& random) = 0;
-		virtual float getDirectionProbability(const Intersection& intersection, const Vector3& out) = 0;
+		virtual Vector3 getDirection(const Intersection& intersection, RandomSampler& sampler, Random& random) = 0;
+		virtual float getProbability(const Intersection& intersection, const Vector3& out) = 0;
 		virtual Color getBrdf(const Intersection& intersection, const Vector3& out) = 0;
 
 		virtual Color getReflectance(const Intersection& intersection);

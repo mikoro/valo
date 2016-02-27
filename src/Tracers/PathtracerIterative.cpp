@@ -88,8 +88,8 @@ void PathtracerIterative::trace(const Scene& scene, Film& film, const Vector2& p
 
 		color += sampleBrdf * (emittedLight + directLight) / sampleProbability / terminationProbability;
 
-		Vector3 sampleDirection = intersection.material->getSampleDirection(intersection, sampler, random);
-		sampleProbability *= intersection.material->getDirectionProbability(intersection, sampleDirection);
+		Vector3 sampleDirection = intersection.material->getDirection(intersection, sampler, random);
+		sampleProbability *= intersection.material->getProbability(intersection, sampleDirection);
 		float sampleCosine = sampleDirection.dot(intersection.normal);
 		sampleBrdf *= intersection.material->getBrdf(intersection, sampleDirection) * sampleCosine;
 
