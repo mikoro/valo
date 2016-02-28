@@ -28,26 +28,26 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v120</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugTest|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v120</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v120</PlatformToolset>
     <WholeProgramOptimization>false</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseFull|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v120</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -67,33 +67,33 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>src;include;platform\windows\include;platform\windows\include\freetype;D:\boost_1_60_0-msvc;$(IncludePath)</IncludePath>
+    <IncludePath>src;include;platform\windows\include;platform\windows\include\freetype;D:\boost_1_60_0-msvc-12;$(IncludePath)</IncludePath>
     <GenerateManifest>false</GenerateManifest>
-    <LibraryPath>platform\windows\lib;D:\boost_1_60_0-msvc\stage\lib;$(LibraryPath)</LibraryPath>
+    <LibraryPath>platform\windows\lib;D:\boost_1_60_0-msvc-12\lib64-msvc-12.0;$(LibraryPath)</LibraryPath>
     <OutDir>$(SolutionDir)bin\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)build\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugTest|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>src;include;platform\windows\include;platform\windows\include\freetype;D:\boost_1_60_0-msvc;$(IncludePath)</IncludePath>
+    <IncludePath>src;include;platform\windows\include;platform\windows\include\freetype;D:\boost_1_60_0-msvc-12;$(IncludePath)</IncludePath>
     <GenerateManifest>false</GenerateManifest>
-    <LibraryPath>platform\windows\lib;D:\boost_1_60_0-msvc\stage\lib;$(LibraryPath)</LibraryPath>
+    <LibraryPath>platform\windows\lib;D:\boost_1_60_0-msvc-12\lib64-msvc-12.0;$(LibraryPath)</LibraryPath>
     <OutDir>$(SolutionDir)bin\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)build\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>src;include;platform\windows\include;platform\windows\include\freetype;D:\boost_1_60_0-msvc;$(IncludePath)</IncludePath>
+    <IncludePath>src;include;platform\windows\include;platform\windows\include\freetype;D:\boost_1_60_0-msvc-12;$(IncludePath)</IncludePath>
     <GenerateManifest>false</GenerateManifest>
-    <LibraryPath>platform\windows\lib;D:\boost_1_60_0-msvc\stage\lib;$(LibraryPath)</LibraryPath>
+    <LibraryPath>platform\windows\lib;D:\boost_1_60_0-msvc-12\lib64-msvc-12.0;$(LibraryPath)</LibraryPath>
     <OutDir>$(SolutionDir)bin\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)build\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseFull|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>src;include;platform\windows\include;platform\windows\include\freetype;D:\boost_1_60_0-msvc;$(IncludePath)</IncludePath>
+    <IncludePath>src;include;platform\windows\include;platform\windows\include\freetype;D:\boost_1_60_0-msvc-12;$(IncludePath)</IncludePath>
     <GenerateManifest>false</GenerateManifest>
-    <LibraryPath>platform\windows\lib;D:\boost_1_60_0-msvc\stage\lib;$(LibraryPath)</LibraryPath>
+    <LibraryPath>platform\windows\lib;D:\boost_1_60_0-msvc-12\lib64-msvc-12.0;$(LibraryPath)</LibraryPath>
     <OutDir>$(SolutionDir)bin\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)build\$(Configuration)\</IntDir>
   </PropertyGroup>
@@ -112,7 +112,7 @@
       <FloatingPointExceptions>true</FloatingPointExceptions>
       <AdditionalOptions>/bigobj /Zm200 %(AdditionalOptions)</AdditionalOptions>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <DisableSpecificWarnings>4313</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4313;4127</DisableSpecificWarnings>
       <PrecompiledHeaderFile>Core\Precompiled.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
@@ -141,7 +141,7 @@
       <FloatingPointExceptions>true</FloatingPointExceptions>
       <AdditionalOptions>/bigobj /Zm200 %(AdditionalOptions)</AdditionalOptions>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <DisableSpecificWarnings>4313</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4313;4127</DisableSpecificWarnings>
       <PrecompiledHeaderFile>Core\Precompiled.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
@@ -176,7 +176,7 @@
       <FloatingPointExceptions>false</FloatingPointExceptions>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <AdditionalOptions>/bigobj /Zm200 %(AdditionalOptions)</AdditionalOptions>
-      <DisableSpecificWarnings>4313</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4313;4127</DisableSpecificWarnings>
       <PrecompiledHeaderFile>Core\Precompiled.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
@@ -212,7 +212,7 @@
       <FloatingPointExceptions>false</FloatingPointExceptions>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <AdditionalOptions>/bigobj /Zm200 /Gw /favor:INTEL64 %(AdditionalOptions)</AdditionalOptions>
-      <DisableSpecificWarnings>4313</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4313;4127</DisableSpecificWarnings>
       <PrecompiledHeaderFile>Core\Precompiled.h</PrecompiledHeaderFile>
       <WholeProgramOptimization>true</WholeProgramOptimization>
       <StringPooling>true</StringPooling>
