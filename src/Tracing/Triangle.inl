@@ -37,10 +37,10 @@ namespace Raycer
 		const float maxDistance = ray.maxDistance;
 		const float intersectionDistance = intersection.distance;
 
-		alignas(16) uint32_t hits[N];
-		alignas(16) float distances[N];
-		alignas(16) float uValues[N];
-		alignas(16) float vValues[N];
+		ALIGN(16) uint32_t hits[N];
+		ALIGN(16) float distances[N];
+		ALIGN(16) float uValues[N];
+		ALIGN(16) float vValues[N];
 
 		memset(hits, 1, sizeof(hits));
 

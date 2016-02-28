@@ -29,7 +29,7 @@ namespace Raycer
 		const float minDistance = ray.minDistance;
 		const float maxDistance = ray.maxDistance;
 
-		alignas(16) uint32_t result[N];
+		ALIGN(16) uint32_t result[N];
 
 #ifdef __INTEL_COMPILER
 #pragma vector always assert aligned
