@@ -247,26 +247,14 @@ void WindowRunnerRenderState::render(float timeStep, float interpolation)
 	(void)timeStep;
 	(void)interpolation;
 
-	Settings& settings = App::getSettings();
-
 	if (scene.general.tracerType == TracerType::RAY ||
 		scene.general.tracerType == TracerType::PREVIEW ||
-		(scene.general.tracerType == TracerType::PATH && scene.camera.isMoving()) ||
-		filmNeedsClearing)
+		(scene.general.tracerType == TracerType::PATH && scene.camera.isMoving()))
 	{
 		film.clear();
-		filmNeedsClearing = false;
 	}
 
 	Tracer* tracer = tracers[scene.general.tracerType].get();
-
-	if (scene.general.tracerType == TracerType::PATH &&
-		settings.interactive.usePreviewWhileMoving &&
-		scene.camera.isMoving())
-	{
-		tracer = tracers[TracerType::PREVIEW].get();
-		filmNeedsClearing = true;
-	}
 
 	uint64_t samplesPerPixel = tracer->getPixelSampleCount(scene) * tracer->getSamplesPerPixel(scene);
 	film.increasePixelSampleCount(samplesPerPixel);

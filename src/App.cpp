@@ -8,7 +8,6 @@
 #include "Utils/Log.h"
 #include "Runners/WindowRunner.h"
 #include "Runners/ConsoleRunner.h"
-#include "Runners/NetworkRunner.h"
 
 #ifdef RUN_UNIT_TESTS
 #define CATCH_CONFIG_RUNNER
@@ -33,7 +32,6 @@ BOOL consoleCtrlHandler(DWORD fdwCtrlType)
 	{
 		App::getLog().logInfo("Interrupted!");
 		App::getConsoleRunner().interrupt();
-		App::getNetworkRunner().interrupt();
 
 		return true;
 	}
@@ -47,7 +45,6 @@ void signalHandler(int signal)
 
 	App::getLog().logInfo("Interrupted!");
 	App::getConsoleRunner().interrupt();
-	App::getNetworkRunner().interrupt();
 }
 #endif
 
@@ -66,26 +63,16 @@ int App::run(int argc, char** argv)
 		Settings& settings = getSettings();
 		WindowRunner& windowRunner = getWindowRunner();
 		ConsoleRunner& consoleRunner = getConsoleRunner();
-		NetworkRunner& networkRunner = getNetworkRunner();
 
 		if (!settings.load(argc, argv))
 			return 0;
 
 		log.logInfo(std::string("Raycer v") + RAYCER_VERSION);
 
-		if (settings.network.isClient && settings.network.isServer)
-			throw std::runtime_error("Could not be both a server and a client at the same time");
-
-		if (settings.network.isClient || settings.network.isServer)
-			settings.interactive.enabled = false;
-
 		if (settings.interactive.enabled)
 			return windowRunner.run();
-
-		if (settings.network.isClient || settings.network.isServer)
-			return networkRunner.run();
-		
-		return consoleRunner.run();
+		else
+			return consoleRunner.run();
 	}
 	catch (...)
 	{
@@ -116,10 +103,4 @@ ConsoleRunner& App::getConsoleRunner()
 {
 	static ConsoleRunner consoleRunner;
 	return consoleRunner;
-}
-
-NetworkRunner& App::getNetworkRunner()
-{
-	static NetworkRunner networkRunner;
-	return networkRunner;
 }

@@ -290,7 +290,6 @@
     <ClCompile Include="src\Rendering\InfoPanel.cpp" />
     <ClCompile Include="src\Runners\ConsoleRunner.cpp" />
     <ClCompile Include="src\Runners\WindowRunnerRenderState.cpp" />
-    <ClCompile Include="src\Runners\NetworkRunner.cpp" />
     <ClCompile Include="src\Runners\WindowRunner.cpp" />
     <ClCompile Include="src\Samplers\CenterSampler.cpp" />
     <ClCompile Include="src\Samplers\CMJSampler.cpp" />
@@ -396,7 +395,6 @@
     <ClInclude Include="src\Rendering\InfoPanel.h" />
     <ClInclude Include="src\Runners\ConsoleRunner.h" />
     <ClInclude Include="src\Runners\WindowRunnerRenderState.h" />
-    <ClInclude Include="src\Runners\NetworkRunner.h" />
     <ClInclude Include="src\Runners\WindowRunner.h" />
     <ClInclude Include="src\Samplers\CenterSampler.h" />
     <ClInclude Include="src\Samplers\CMJSampler.h" />
