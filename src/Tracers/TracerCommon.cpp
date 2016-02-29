@@ -15,7 +15,7 @@ using namespace Raycer;
 void TracerCommon::calculateNormalMapping(Intersection& intersection)
 {
 	Color normalColor = intersection.material->normalTexture->getColor(intersection.texcoord, intersection.position);
-	Vector3 normal(normalColor.r * 2.0f - 1.0f, normalColor.g * 2.0f - 1.0f, normalColor.b);
+	Vector3 normal(normalColor.r * 2.0f - 1.0f, normalColor.g * 2.0f - 1.0f, normalColor.b * 2.0f - 1.0f);
 	Vector3 mappedNormal = intersection.onb.u * normal.x + intersection.onb.v * normal.y + intersection.onb.w * normal.z;
 	intersection.normal = mappedNormal.normalized();
 }

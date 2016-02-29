@@ -32,7 +32,7 @@ void Triangle::initialize()
 	{
 		float r = 1.0f / denominator;
 		tangent = (v0tov1 * t0tot2.y - v0tov2 * t0tot1.y) * r;
-		bitangent = (v0tov2 * t0tot1.x - v0tov1 * t0tot2.x) * r;
+		bitangent = (v0tov1 * t0tot2.x - v0tov2 * t0tot1.x) * r;
 		tangent.normalize();
 		bitangent.normalize();
 	}
