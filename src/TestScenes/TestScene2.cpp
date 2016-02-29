@@ -14,7 +14,7 @@ Scene TestScene::create2()
 {
 	Scene scene;
 
-	scene.general.tracerType = TracerType::RAY;
+	scene.general.tracerType = TracerType::PATH;
 	
 	scene.raytracing.maxIterationDepth = 6;
 
@@ -33,20 +33,6 @@ Scene TestScene::create2()
 	model.modelFilePath = "data/models/cornellbox-spheres/cornellbox.obj";
 
 	scene.models.push_back(model);
-	
-	AmbientLight ambientLight;
-	ambientLight.color = Color(1.0f, 1.0f, 1.0f) * 0.01f;
-	ambientLight.occlusion = false;
-	ambientLight.maxSampleDistance = 0.2f;
-	ambientLight.sampleCountSqrt = 4;
-
-	scene.lights.ambientLights.push_back(ambientLight);
-
-	PointLight pointLight;
-	pointLight.color = Color(1.0f, 1.0f, 1.0f) * 0.7f;
-	pointLight.position = Vector3(0.0f, 1.5f, 0.0f);
-
-	scene.lights.pointLights.push_back(pointLight);
 
 	return scene;
 }

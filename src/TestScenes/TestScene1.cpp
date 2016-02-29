@@ -14,7 +14,7 @@ Scene TestScene::create1()
 {
 	Scene scene;
 
-	scene.general.tracerType = TracerType::RAY;
+	scene.general.tracerType = TracerType::PATH;
 
 	scene.pathtracing.enableMultiSampling = true;
 	scene.pathtracing.multiSamplerFilterType = FilterType::BELL;
@@ -31,28 +31,6 @@ Scene TestScene::create1()
 	model.modelFilePath = "data/models/cornellbox-cuboids/cornellbox.obj";
 
 	scene.models.push_back(model);
-	
-	AmbientLight ambientLight;
-	ambientLight.color = Color(1.0f, 1.0f, 1.0f) * 0.01f;
-	ambientLight.occlusion = false;
-	ambientLight.maxSampleDistance = 0.2f;
-	ambientLight.sampleCountSqrt = 4;
-
-	scene.lights.ambientLights.push_back(ambientLight);
-
-	PointLight pointLight;
-	pointLight.color = Color(1.0f, 0.71f, 0.24f) * 1.0f;
-	pointLight.position = Vector3(0.0f, 1.7f, 0.0f);
-
-	scene.lights.pointLights.push_back(pointLight);
-
-	AreaPointLight areaLight;
-	areaLight.color = Color(1.0f, 0.71f, 0.24f) * 1.0f;
-	areaLight.position = Vector3(0.0f, 1.7f, 0.0f);
-	areaLight.radius = 0.2f;
-	areaLight.sampleCountSqrt = 4;
-
-	//scene.lights.areaPointLights.push_back(areaLight);
 
 	return scene;
 }

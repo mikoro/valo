@@ -16,7 +16,7 @@ Scene TestScene::create5()
 
 	Color skyColor(182, 126, 91);
 
-	scene.general.tracerType = TracerType::RAY;
+	scene.general.tracerType = TracerType::PATH;
 	scene.pathtracing.enableMultiSampling = true;
 	scene.pathtracing.multiSamplerFilterType = FilterType::TENT;
 	scene.pathtracing.minPathLength = 3;
@@ -56,25 +56,6 @@ Scene TestScene::create5()
 	//model.scale = Vector3(0.01f, 0.01f, 0.01f);
 
 	scene.models.push_back(model);
-
-	// LIGHTS //
-
-	AmbientLight ambientLight;
-	ambientLight.color = skyColor * 0.05f;
-
-	scene.lights.ambientLights.push_back(ambientLight);
-	
-	PointLight pointLight;
-	pointLight.color = skyColor * 200.0f;
-	pointLight.position = Vector3(0.0f, 18.0f, 0.0f);
-
-	scene.lights.pointLights.push_back(pointLight);
-
-	DirectionalLight directionalLight;
-	directionalLight.color = skyColor * 1.0f;
-	directionalLight.direction = EulerAngle(-80.0f, 0.0f, 0.0f).getDirection();
-
-	//scene.lights.directionalLights.push_back(directionalLight);
 
 	return scene;
 }

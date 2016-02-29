@@ -9,7 +9,6 @@
 #include "Utils/Log.h"
 #include "Tracing/Camera.h"
 #include "Tracers/TracerState.h"
-#include "Tracers/Raytracer.h"
 #include "Tracers/Pathtracer.h"
 #include "Tracers/PreviewTracer.h"
 #include "Runners/WindowRunner.h"
@@ -19,7 +18,6 @@ using namespace Raycer;
 
 WindowRunnerRenderState::WindowRunnerRenderState() : interrupted(false)
 {
-	tracers[TracerType::RAY] = std::make_unique<Raytracer>();
 	tracers[TracerType::PATH] = std::make_unique<Pathtracer>();
 	tracers[TracerType::PREVIEW] = std::make_unique<PreviewTracer>();
 }
@@ -68,15 +66,12 @@ void WindowRunnerRenderState::update(float timeStep)
 	if (!ctrlIsPressed)
 	{
 		if (windowRunner.keyWasPressed(GLFW_KEY_F2))
-			scene.general.tracerType = TracerType::RAY;
-
-		if (windowRunner.keyWasPressed(GLFW_KEY_F3))
 		{
 			scene.general.tracerType = TracerType::PATH;
 			film.clear();
 		}
 
-		if (windowRunner.keyWasPressed(GLFW_KEY_F4))
+		if (windowRunner.keyWasPressed(GLFW_KEY_F3))
 			scene.general.tracerType = TracerType::PREVIEW;
 	}
 
@@ -247,12 +242,8 @@ void WindowRunnerRenderState::render(float timeStep, float interpolation)
 	(void)timeStep;
 	(void)interpolation;
 
-	if (scene.general.tracerType == TracerType::RAY ||
-		scene.general.tracerType == TracerType::PREVIEW ||
-		(scene.general.tracerType == TracerType::PATH && scene.camera.isMoving()))
-	{
+	if ((scene.general.tracerType == TracerType::PATH && scene.camera.isMoving()) || scene.general.tracerType == TracerType::PREVIEW)
 		film.clear();
-	}
 
 	Tracer* tracer = tracers[scene.general.tracerType].get();
 

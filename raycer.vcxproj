@@ -260,10 +260,6 @@
     <ClCompile Include="src\Filters\LanczosSincFilter.cpp" />
     <ClCompile Include="src\Filters\MitchellFilter.cpp" />
     <ClCompile Include="src\Filters\TentFilter.cpp" />
-    <ClCompile Include="src\Lights\AmbientLight.cpp" />
-    <ClCompile Include="src\Lights\AreaPointLight.cpp" />
-    <ClCompile Include="src\Lights\DirectionalLight.cpp" />
-    <ClCompile Include="src\Lights\PointLight.cpp" />
     <ClCompile Include="src\Materials\Material.cpp" />
     <ClCompile Include="src\Materials\DefaultMaterial.cpp" />
     <ClCompile Include="src\Math\AxisAngle.cpp" />
@@ -333,7 +329,6 @@
     <ClCompile Include="src\Tonemappers\Tonemapper.cpp" />
     <ClCompile Include="src\Tracers\Pathtracer.cpp" />
     <ClCompile Include="src\Tracers\PreviewTracer.cpp" />
-    <ClCompile Include="src\Tracers\Raytracer.cpp" />
     <ClCompile Include="src\Tracers\Tracer.cpp" />
     <ClCompile Include="src\Tracers\TracerCommon.cpp" />
     <ClCompile Include="src\Tracing\AABB.cpp" />
@@ -368,11 +363,6 @@
     <ClInclude Include="src\Filters\LanczosSincFilter.h" />
     <ClInclude Include="src\Filters\MitchellFilter.h" />
     <ClInclude Include="src\Filters\TentFilter.h" />
-    <ClInclude Include="src\Lights\AmbientLight.h" />
-    <ClInclude Include="src\Lights\AreaPointLight.h" />
-    <ClInclude Include="src\Lights\DirectionalLight.h" />
-    <ClInclude Include="src\Lights\Light.h" />
-    <ClInclude Include="src\Lights\PointLight.h" />
     <ClInclude Include="src\Materials\Material.h" />
     <ClInclude Include="src\Materials\DefaultMaterial.h" />
     <ClInclude Include="src\Math\AxisAngle.h" />
@@ -417,7 +407,6 @@
     <ClInclude Include="src\Tonemappers\Tonemapper.h" />
     <ClInclude Include="src\Tracers\Pathtracer.h" />
     <ClInclude Include="src\Tracers\PreviewTracer.h" />
-    <ClInclude Include="src\Tracers\Raytracer.h" />
     <ClInclude Include="src\Tracers\Tracer.h" />
     <ClInclude Include="src\Tracers\TracerCommon.h" />
     <ClInclude Include="src\Tracers\TracerState.h" />

@@ -18,8 +18,6 @@ namespace Raycer
 	{
 	public:
 
-		Color getColor(const Scene& scene, const Intersection& intersection, const Light& light, Random& random) override;
-		
 		Vector3 getDirection(const Intersection& intersection, RandomSampler& sampler, Random& random) override;
 		float getProbability(const Intersection& intersection, const Vector3& out) override;
 		Color getBrdf(const Intersection& intersection, const Vector3& out) override;

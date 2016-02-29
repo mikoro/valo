@@ -16,7 +16,7 @@ Scene TestScene::create7()
 
 	Color skyColor(182, 126, 91);
 
-	scene.general.tracerType = TracerType::RAY;
+	scene.general.tracerType = TracerType::PATH;
 	scene.pathtracing.enableMultiSampling = true;
 	scene.pathtracing.multiSamplerFilterType = FilterType::TENT;
 	scene.pathtracing.minPathLength = 3;
@@ -78,19 +78,6 @@ Scene TestScene::create7()
 	dragonMaterial.reflectance = Color::WHITE;
 	
 	scene.materials.defaultMaterials.push_back(dragonMaterial);
-
-	// LIGHTS //
-
-	AmbientLight ambientLight;
-	ambientLight.color = skyColor * 0.05f;
-
-	scene.lights.ambientLights.push_back(ambientLight);
-	
-	PointLight pointLight;
-	pointLight.color = skyColor * 2.0f;
-	pointLight.position = Vector3(0.0f, 2.0f, 2.0f);
-
-	scene.lights.pointLights.push_back(pointLight);
 
 	return scene;
 }

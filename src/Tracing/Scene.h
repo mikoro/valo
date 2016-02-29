@@ -17,10 +17,6 @@
 #include "Textures/CheckerTexture.h"
 #include "Textures/ImageTexture.h"
 #include "Textures/PerlinNoiseTexture.h"
-#include "Lights/AmbientLight.h"
-#include "Lights/DirectionalLight.h"
-#include "Lights/PointLight.h"
-#include "Lights/AreaPointLight.h"
 #include "Materials/DefaultMaterial.h"
 #include "Tracers/Tracer.h"
 #include "Samplers/Sampler.h"
@@ -55,7 +51,7 @@ namespace Raycer
 
 		struct General
 		{
-			TracerType tracerType = TracerType::RAY;
+			TracerType tracerType = TracerType::PATH;
 			float rayMinDistance = 0.0001f;
 			Color backgroundColor = Color(0.0f, 0.0f, 0.0f);
 			Color offLensColor = Color(0.0f, 0.0f, 0.0f);
@@ -156,24 +152,6 @@ namespace Raycer
 
 		} tonemapping;
 
-		struct Lights
-		{
-			std::vector<AmbientLight> ambientLights;
-			std::vector<DirectionalLight> directionalLights;
-			std::vector<PointLight> pointLights;
-			std::vector<AreaPointLight> areaPointLights;
-
-			template <class Archive>
-			void serialize(Archive& ar)
-			{
-				ar(CEREAL_NVP(ambientLights),
-					CEREAL_NVP(directionalLights),
-					CEREAL_NVP(pointLights),
-					CEREAL_NVP(areaPointLights));
-			}
-
-		} lights;
-
 		struct Textures
 		{
 			std::vector<ColorTexture> colorTextures;
@@ -259,7 +237,6 @@ namespace Raycer
 		ImagePool imagePool;
 		
 		std::vector<Triangle*> emissiveTriangles;
-		std::vector<Light*> lightsList;
 		std::vector<Texture*> texturesList;
 		std::vector<Material*> materialsList;
 		
@@ -278,7 +255,6 @@ namespace Raycer
 				CEREAL_NVP(raytracing),
 				CEREAL_NVP(pathtracing),
 				CEREAL_NVP(tonemapping),
-				CEREAL_NVP(lights),
 				CEREAL_NVP(textures),
 				CEREAL_NVP(materials),
 				CEREAL_NVP(bvhInfo),

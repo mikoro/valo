@@ -14,7 +14,7 @@ Scene TestScene::create8()
 {
 	Scene scene;
 
-	scene.general.tracerType = TracerType::RAY;
+	scene.general.tracerType = TracerType::PATH;
 	scene.pathtracing.enableMultiSampling = true;
 	scene.pathtracing.multiSamplerFilterType = FilterType::TENT;
 	scene.pathtracing.minPathLength = 3;
@@ -37,19 +37,6 @@ Scene TestScene::create8()
 	model.scale = Vector3(1.0f, 1.0f, 1.0f);
 
 	scene.models.push_back(model);
-
-	// LIGHTS //
-
-	AmbientLight ambientLight;
-	ambientLight.color = Color::WHITE * 0.05f;
-
-	scene.lights.ambientLights.push_back(ambientLight);
-	
-	PointLight pointLight;
-	pointLight.color = Color::WHITE * 2.0f;
-	pointLight.position = Vector3(0.0f, 2.0f, 2.0f);
-
-	scene.lights.pointLights.push_back(pointLight);
 
 	return scene;
 }

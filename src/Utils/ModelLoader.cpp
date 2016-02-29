@@ -472,21 +472,9 @@ void ModelLoader::processMaterialFile(const std::string& rootDirectory, const st
 		}
 		else if (part == "specularReflectance" || part == "Ks")
 		{
-			ss >> currentMaterial.specularReflectance.r;
-			ss >> currentMaterial.specularReflectance.g;
-			ss >> currentMaterial.specularReflectance.b;
 		}
-		else if ((part == "specularMap" || part == "map_Ks") && currentMaterial.specularReflectanceTextureId == 0)
+		else if ((part == "specularMap" || part == "map_Ks"))
 		{
-			ImageTexture imageTexture;
-			imageTexture.id = ++currentTextureId;
-			currentMaterial.specularReflectanceTextureId = imageTexture.id;
-
-			ss >> part;
-			imageTexture.imageFilePath = getAbsolutePath(rootDirectory, part);
-			imageTexture.applyGamma = !StringUtils::endsWith(imageTexture.imageFilePath, ".hdr");
-
-			result.imageTextures.push_back(imageTexture);
 		}
 		else if (part == "emittance" || part == "Ke")
 		{

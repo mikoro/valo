@@ -232,7 +232,6 @@ void InfoPanel::renderFull(const TracerState& state)
 
 	switch (scene.general.tracerType)
 	{
-		case TracerType::RAY: tracerName = "ray"; break;
 		case TracerType::PATH: tracerName = "path"; break;
 		case TracerType::PREVIEW: tracerName = "preview"; break;
 		default: break;

@@ -219,20 +219,6 @@ void Scene::initialize()
 		}
 	}
 
-	// LIGHT POINTERS
-
-	for (AmbientLight& light : lights.ambientLights)
-		lightsList.push_back(&light);
-
-	for (DirectionalLight& light : lights.directionalLights)
-		lightsList.push_back(&light);
-
-	for (PointLight& light : lights.pointLights)
-		lightsList.push_back(&light);
-
-	for (AreaPointLight& light : lights.areaPointLights)
-		lightsList.push_back(&light);
-
 	// TEXTURE POINTERS
 
 	for (ColorTexture& texture : textures.colorTextures)
@@ -283,9 +269,6 @@ void Scene::initialize()
 
 		if (texturesMap.count(material->reflectanceTextureId))
 			material->reflectanceTexture = texturesMap[material->reflectanceTextureId];
-
-		if (texturesMap.count(material->specularReflectanceTextureId))
-			material->specularReflectanceTexture = texturesMap[material->specularReflectanceTextureId];
 
 		if (texturesMap.count(material->emittanceTextureId))
 			material->emittanceTexture = texturesMap[material->emittanceTextureId];
@@ -341,9 +324,6 @@ void Scene::initialize()
 		loadImagePool(imagePoolInfo.fileName);
 	
 	// MISC INITIALIZATION
-
-	for (Light* light : lightsList)
-		light->initialize();
 
 	for (Texture* texture : texturesList)
 		texture->initialize(*this);	

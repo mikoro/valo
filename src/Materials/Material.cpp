@@ -17,14 +17,6 @@ Color Material::getReflectance(const Intersection& intersection)
 		return reflectance;
 }
 
-Color Material::getSpecularReflectance(const Intersection& intersection)
-{
-	if (specularReflectanceTexture != nullptr)
-		return specularReflectanceTexture->getColor(intersection.texcoord, intersection.position);
-	else
-		return specularReflectance;
-}
-
 Color Material::getEmittance(const Intersection& intersection)
 {
 	if (emittanceTexture != nullptr)

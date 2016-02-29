@@ -12,7 +12,6 @@ namespace Raycer
 {
 	class Scene;
 	class Intersection;
-	class Light;
 	class Random;
 	class RandomSampler;
 	class Vector3;
@@ -26,14 +25,11 @@ namespace Raycer
 
 		virtual ~Material() {}
 
-		virtual Color getColor(const Scene& scene, const Intersection& intersection, const Light& light, Random& random) = 0;
-
 		virtual Vector3 getDirection(const Intersection& intersection, RandomSampler& sampler, Random& random) = 0;
 		virtual float getProbability(const Intersection& intersection, const Vector3& out) = 0;
 		virtual Color getBrdf(const Intersection& intersection, const Vector3& out) = 0;
 
 		virtual Color getReflectance(const Intersection& intersection);
-		virtual Color getSpecularReflectance(const Intersection& intersection);
 		virtual Color getEmittance(const Intersection& intersection);
 		
 		virtual bool isEmissive();
@@ -58,10 +54,6 @@ namespace Raycer
 		Color reflectance = Color(0.0f, 0.0f, 0.0f);
 		uint64_t reflectanceTextureId = 0;
 		Texture* reflectanceTexture = nullptr;
-
-		Color specularReflectance = Color(0.0f, 0.0f, 0.0f);
-		uint64_t specularReflectanceTextureId = 0;
-		Texture* specularReflectanceTexture = nullptr;
 
 		Color emittance = Color(0.0f, 0.0f, 0.0f);
 		uint64_t emittanceTextureId = 0;
@@ -97,8 +89,6 @@ namespace Raycer
 				CEREAL_NVP(texcoordScale),
 				CEREAL_NVP(reflectance),
 				CEREAL_NVP(reflectanceTextureId),
-				CEREAL_NVP(specularReflectance),
-				CEREAL_NVP(specularReflectanceTextureId),
 				CEREAL_NVP(emittance),
 				CEREAL_NVP(emittanceTextureId),
 				CEREAL_NVP(normalTextureId),

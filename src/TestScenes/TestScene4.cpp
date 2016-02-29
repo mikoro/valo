@@ -27,12 +27,6 @@ Scene TestScene::create4()
 	model.modelFilePath = "data/models/conference/conference.obj";
 
 	scene.models.push_back(model);
-	
-	PointLight pointLight;
-	pointLight.color = Color(1.0f, 1.0f, 1.0f) * 2.0f;
-	pointLight.position = Vector3(-0.64f, 1.09f, -0.34f);
-
-	scene.lights.pointLights.push_back(pointLight);
 
 	return scene;
 }
