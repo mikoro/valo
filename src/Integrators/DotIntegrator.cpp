@@ -8,6 +8,7 @@
 #include "Core/Scene.h"
 #include "DotIntegrator.h"
 #include "Materials/Material.h"
+#include "Utils/Random.h"
 
 using namespace Raycer;
 
