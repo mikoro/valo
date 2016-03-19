@@ -28,7 +28,7 @@ namespace Raycer
 
 		std::string getName() const;
 
-		TonemapperType type = TonemapperType::PASSTHROUGH;
+		TonemapperType type = TonemapperType::LINEAR;
 
 		PassthroughTonemapper passthroughTonemapper;
 		LinearTonemapper linearTonemapper;

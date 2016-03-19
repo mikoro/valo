@@ -118,11 +118,17 @@ void Scene::initialize()
 
 	// POINTER ASSIGNMENT & INITIALIZATION
 
-	texturesPtr = static_cast<Texture*>(malloc(allTextures.size() * sizeof(Texture)));
-	materialsPtr = static_cast<Material*>(malloc(allMaterials.size() * sizeof(Material)));
+	if (allTextures.size() > 0)
+	{
+		texturesPtr = static_cast<Texture*>(malloc(allTextures.size() * sizeof(Texture)));
+		memcpy(texturesPtr, &allTextures[0], allTextures.size() * sizeof(Texture));
+	}
 
-	memcpy(texturesPtr, &allTextures[0], allTextures.size() * sizeof(Texture));
-	memcpy(materialsPtr, &allMaterials[0], allMaterials.size() * sizeof(Material));
+	if (allMaterials.size() > 0)
+	{
+		materialsPtr = static_cast<Material*>(malloc(allMaterials.size() * sizeof(Material)));
+		memcpy(materialsPtr, &allMaterials[0], allMaterials.size() * sizeof(Material));
+	}
 
 	std::map<uint64_t, Texture*> texturesMap;
 	std::map<uint64_t, Material*> materialsMap;
@@ -180,21 +186,30 @@ void Scene::initialize()
 			emissiveTriangles.push_back(triangle);
 	}
 
-	emissiveTrianglesPtr = static_cast<Triangle*>(malloc(emissiveTriangles.size() * sizeof(Triangle)));
-	memcpy(emissiveTrianglesPtr, &emissiveTriangles[0], emissiveTriangles.size() * sizeof(Triangle));
-	emissiveTrianglesCount = emissiveTriangles.size();
-	
+	if (emissiveTriangles.size() > 0)
+	{
+		emissiveTrianglesPtr = static_cast<Triangle*>(malloc(emissiveTriangles.size() * sizeof(Triangle)));
+		memcpy(emissiveTrianglesPtr, &emissiveTriangles[0], emissiveTriangles.size() * sizeof(Triangle));
+		emissiveTrianglesCount = emissiveTriangles.size();
+	}
+
 	// BVH BUILD
 
 	std::vector<TriangleSOA<4>> triangles4;
 	bvh.build(allTriangles, triangles4);
 
-	trianglesPtr = static_cast<Triangle*>(malloc(allTriangles.size() * sizeof(Triangle)));
-	memcpy(trianglesPtr, &allTriangles[0], allTriangles.size() * sizeof(Triangle));
+	if (allTriangles.size() > 0)
+	{
+		trianglesPtr = static_cast<Triangle*>(malloc(allTriangles.size() * sizeof(Triangle)));
+		memcpy(trianglesPtr, &allTriangles[0], allTriangles.size() * sizeof(Triangle));
+	}
 
-	triangles4Ptr = static_cast<TriangleSOA<4>*>(malloc(triangles4.size() * sizeof(TriangleSOA<4>)));
-	memcpy(triangles4Ptr, &triangles4[0], triangles4.size() * sizeof(TriangleSOA<4>));
-	
+	if (triangles4.size() > 0)
+	{
+		triangles4Ptr = static_cast<TriangleSOA<4>*>(malloc(triangles4.size() * sizeof(TriangleSOA<4>)));
+		memcpy(triangles4Ptr, &triangles4[0], triangles4.size() * sizeof(TriangleSOA<4>));
+	}
+
 	camera.initialize();
 
 	log.logInfo("Scene initialization finished (time: %s)", timer.getElapsed().getString(true));

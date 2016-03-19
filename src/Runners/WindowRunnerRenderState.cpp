@@ -24,10 +24,11 @@ void WindowRunnerRenderState::initialize()
 
 	renderer.initialize();
 	scene.initialize();
-	resizeFilm();
 	filmQuad.initialize();
 	infoPanel.initialize();
 	infoPanel.setState(InfoPanelState(settings.window.infoPanelState));
+
+	resizeFilm();
 }
 
 void WindowRunnerRenderState::shutdown()
