@@ -34,6 +34,8 @@ namespace Raycer
 		Vector3 getUp() const;
 		Vector3 getForward() const;
 
+		std::string getName() const;
+
 		CameraType type = CameraType::PERSPECTIVE;
 		Vector3 position;
 		EulerAngle orientation;
@@ -61,7 +63,6 @@ namespace Raycer
 	private:
 
 		float aspectRatio = 1.0f;
-		float imagePlaneDistance = 1.0f;
 		float imagePlaneWidth = 0.0f;
 		float imagePlaneHeight = 0.0f;
 
@@ -81,6 +82,9 @@ namespace Raycer
 
 		Vector3 originalPosition;
 		EulerAngle originalOrientation;
+		float originalFov = 0.0f;
+		float originalOrthoSize = 0.0f;
+		float originalFishEyeAngle = 0.0f;
 
 		friend class cereal::access;
 

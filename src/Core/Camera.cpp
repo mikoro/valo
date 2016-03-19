@@ -18,6 +18,9 @@ void Camera::initialize()
 {
 	originalPosition = position;
 	originalOrientation = orientation;
+	originalFov = fov;
+	originalOrthoSize = orthoSize;
+	originalFishEyeAngle = fishEyeAngle;
 }
 
 void Camera::setImagePlaneSize(uint64_t width, uint64_t height)
@@ -31,6 +34,9 @@ void Camera::reset()
 {
 	position = originalPosition;
 	orientation = originalOrientation;
+	fov = originalFov;
+	orthoSize = originalOrthoSize;
+	fishEyeAngle = originalFishEyeAngle;
 	velocity = Vector3(0.0f, 0.0f, 0.0f);
 	smoothVelocity = Vector3(0.0f, 0.0f, 0.0f);
 	smoothAcceleration = Vector3(0.0f, 0.0f, 0.0f);
@@ -43,47 +49,6 @@ void Camera::update(float timeStep)
 {
 	WindowRunner& windowRunner = App::getWindowRunner();
 	MouseInfo mouseInfo = windowRunner.getMouseInfo();
-
-	// LENS STUFF //
-
-	if (windowRunner.keyWasPressed(GLFW_KEY_HOME))
-	{
-		if (type == CameraType::PERSPECTIVE)
-			type = CameraType::ORTHOGRAPHIC;
-		else if (type == CameraType::ORTHOGRAPHIC)
-			type = CameraType::FISHEYE;
-		else if (type == CameraType::FISHEYE)
-			type = CameraType::PERSPECTIVE;
-	}
-
-	if (!windowRunner.keyIsDown(GLFW_KEY_LEFT_CONTROL) && !windowRunner.keyIsDown(GLFW_KEY_RIGHT_CONTROL) &&
-		!windowRunner.keyIsDown(GLFW_KEY_LEFT_SHIFT) && !windowRunner.keyIsDown(GLFW_KEY_RIGHT_SHIFT))
-	{
-		if (windowRunner.keyIsDown(GLFW_KEY_PAGE_DOWN))
-		{
-			if (type == CameraType::PERSPECTIVE)
-				fov -= 50.0f * timeStep;
-			else if (type == CameraType::ORTHOGRAPHIC)
-				orthoSize -= 10.0f * timeStep;
-			else if (type == CameraType::FISHEYE)
-				fishEyeAngle -= 50.0f * timeStep;
-		}
-
-		if (windowRunner.keyIsDown(GLFW_KEY_PAGE_UP))
-		{
-			if (type == CameraType::PERSPECTIVE)
-				fov += 50.0f * timeStep;
-			else if (type == CameraType::ORTHOGRAPHIC)
-				orthoSize += 10.0f * timeStep;
-			else if (type == CameraType::FISHEYE)
-				fishEyeAngle += 50.0f * timeStep;
-		}
-	}
-
-	fov = std::max(1.0f, std::min(fov, 180.0f));
-	orthoSize = std::max(0.0f, orthoSize);
-	fishEyeAngle = std::max(1.0f, std::min(fishEyeAngle, 360.0f));
-	imagePlaneDistance = 0.5f / std::tan(MathUtils::degToRad(fov / 2.0f));
 
 	// SPEED MODIFIERS //
 
@@ -218,6 +183,14 @@ void Camera::update(float timeStep)
 	right = onb.u;
 	up = onb.v;
 	forward = onb.w;
+
+	// MISC
+
+	fov = std::max(1.0f, std::min(fov, 180.0f));
+	orthoSize = std::max(0.0f, orthoSize);
+	fishEyeAngle = std::max(1.0f, std::min(fishEyeAngle, 360.0f));
+
+	float imagePlaneDistance = 0.5f / std::tan(MathUtils::degToRad(fov / 2.0f));
 	imagePlaneCenter = position + (forward * imagePlaneDistance);
 }
 
@@ -331,4 +304,15 @@ Vector3 Camera::getUp() const
 Vector3 Camera::getForward() const
 {
 	return forward;
+}
+
+std::string Camera::getName() const
+{
+	switch (type)
+	{
+		case CameraType::PERSPECTIVE: return "perspective";
+		case CameraType::ORTHOGRAPHIC: return "orthographic";
+		case CameraType::FISHEYE: return "fisheye";
+		default: return "unknown";
+	}
 }

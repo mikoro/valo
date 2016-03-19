@@ -48,7 +48,7 @@ void WindowRunnerRenderState::update(float timeStep)
 	if (!ctrlIsPressed && windowRunner.keyWasPressed(GLFW_KEY_F1))
 		infoPanel.selectNextState();
 
-	// RENDERER / INTEGRATOR / TONEMAPPER //
+	// RENDERER / INTEGRATOR / TONEMAPPER / CAMERA //
 
 	if (!ctrlIsPressed)
 	{
@@ -74,6 +74,18 @@ void WindowRunnerRenderState::update(float timeStep)
 
 		if (windowRunner.keyWasPressed(GLFW_KEY_F4))
 		{
+			if (scene.camera.type == CameraType::PERSPECTIVE)
+				scene.camera.type = CameraType::ORTHOGRAPHIC;
+			else if (scene.camera.type == CameraType::ORTHOGRAPHIC)
+				scene.camera.type = CameraType::FISHEYE;
+			else if (scene.camera.type == CameraType::FISHEYE)
+				scene.camera.type = CameraType::PERSPECTIVE;
+
+			film.clear();
+		}
+
+		if (windowRunner.keyWasPressed(GLFW_KEY_F5))
+		{
 			if (scene.tonemapper.type == TonemapperType::PASSTHROUGH)
 				scene.tonemapper.type = TonemapperType::LINEAR;
 			else if (scene.tonemapper.type == TonemapperType::LINEAR)
@@ -83,13 +95,37 @@ void WindowRunnerRenderState::update(float timeStep)
 			else if (scene.tonemapper.type == TonemapperType::REINHARD)
 				scene.tonemapper.type = TonemapperType::PASSTHROUGH;
 		}
+
+		if (windowRunner.keyIsDown(GLFW_KEY_PAGE_DOWN))
+		{
+			if (scene.camera.type == CameraType::PERSPECTIVE)
+				scene.camera.fov -= 50.0f * timeStep;
+			else if (scene.camera.type == CameraType::ORTHOGRAPHIC)
+				scene.camera.orthoSize -= 10.0f * timeStep;
+			else if (scene.camera.type == CameraType::FISHEYE)
+				scene.camera.fishEyeAngle -= 50.0f * timeStep;
+
+			film.clear();
+		}
+
+		if (windowRunner.keyIsDown(GLFW_KEY_PAGE_UP))
+		{
+			if (scene.camera.type == CameraType::PERSPECTIVE)
+				scene.camera.fov += 50.0f * timeStep;
+			else if (scene.camera.type == CameraType::ORTHOGRAPHIC)
+				scene.camera.orthoSize += 10.0f * timeStep;
+			else if (scene.camera.type == CameraType::FISHEYE)
+				scene.camera.fishEyeAngle += 50.0f * timeStep;
+
+			film.clear();
+		}
 	}
 
 	// RENDER SCALE //
 
 	if (!ctrlIsPressed)
 	{
-		if (windowRunner.keyWasPressed(GLFW_KEY_F5))
+		if (windowRunner.keyWasPressed(GLFW_KEY_F6))
 		{
 			float newScale = settings.window.renderScale * 0.5f;
 			uint64_t newWidth = uint64_t(float(windowRunner.getWindowWidth()) * newScale + 0.5f);
@@ -102,7 +138,7 @@ void WindowRunnerRenderState::update(float timeStep)
 			}
 		}
 
-		if (windowRunner.keyWasPressed(GLFW_KEY_F6))
+		if (windowRunner.keyWasPressed(GLFW_KEY_F7))
 		{
 			if (settings.window.renderScale < 1.0f)
 			{
