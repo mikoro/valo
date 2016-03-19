@@ -15,7 +15,7 @@ TEST_CASE("Filter functionality", "[filter]")
 {
 	Filter filter;
 
-	for (uint64_t k = 0; k <= 5; ++k)
+	for (uint32_t k = 0; k <= 5; ++k)
 	{
 		filter.type = static_cast<FilterType>(k);
 
@@ -23,10 +23,10 @@ TEST_CASE("Filter functionality", "[filter]")
 		std::ofstream file2(tfm::format("filter_%s_2D.txt", filter.getName()));
 
 		float extent = 12.0f;
-		uint64_t steps = 1000;
+		uint32_t steps = 1000;
 		float stepSize = extent / steps;
 
-		for (uint64_t i = 0; i < steps; ++i)
+		for (uint32_t i = 0; i < steps; ++i)
 		{
 			float x = -(extent / 2.0f) + i * stepSize;
 			file1 << tfm::format("%f %f\n", x, filter.getWeight(x));
@@ -35,9 +35,9 @@ TEST_CASE("Filter functionality", "[filter]")
 		steps = 40;
 		stepSize = extent / steps;
 
-		for (uint64_t i = 0; i < steps; ++i)
+		for (uint32_t i = 0; i < steps; ++i)
 		{
-			for (uint64_t j = 0; j < steps; ++j)
+			for (uint32_t j = 0; j < steps; ++j)
 			{
 				float x = -(extent / 2.0f) + j * stepSize;
 				float y = -(extent / 2.0f) + i * stepSize;

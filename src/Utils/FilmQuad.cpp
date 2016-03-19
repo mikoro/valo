@@ -58,7 +58,7 @@ void FilmQuad::initialize()
 	GLHelper::checkError("Could not set OpenGL buffer parameters");
 }
 
-void FilmQuad::resize(uint64_t width_, uint64_t height_)
+void FilmQuad::resize(uint32_t width_, uint32_t height_)
 {
 	width = width_;
 	height = height_;

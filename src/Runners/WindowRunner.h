@@ -26,17 +26,17 @@ namespace Raycer
 		virtual void update(float timeStep) = 0;
 		virtual void render(float timeStep, float interpolation) = 0;
 
-		virtual void windowResized(uint64_t width, uint64_t height) = 0;
+		virtual void windowResized(uint32_t width, uint32_t height) = 0;
 	};
 
 	struct MouseInfo
 	{
-		int64_t windowX = 0;
-		int64_t windowY = 0;
-		int64_t filmX = 0;
-		int64_t filmY = 0;
-		int64_t deltaX = 0;
-		int64_t deltaY = 0;
+		int32_t windowX = 0;
+		int32_t windowY = 0;
+		int32_t filmX = 0;
+		int32_t filmY = 0;
+		int32_t deltaX = 0;
+		int32_t deltaY = 0;
 		float scrollY = 0.0f;
 		bool hasScrolled = false;
 	};
@@ -52,8 +52,8 @@ namespace Raycer
 		void stop();
 
 		GLFWwindow* getGlfwWindow() const;
-		uint64_t getWindowWidth() const;
-		uint64_t getWindowHeight() const;
+		uint32_t getWindowWidth() const;
+		uint32_t getWindowHeight() const;
 		const MouseInfo& getMouseInfo() const;
 		float getElapsedTime() const;
 		const FpsCounter& getFpsCounter() const;
@@ -73,7 +73,7 @@ namespace Raycer
 
 		void checkWindowSize();
 		void printWindowSize();
-		void windowResized(uint64_t width, uint64_t height);
+		void windowResized(uint32_t width, uint32_t height);
 		
 		void mainloop();
 		void update(float timeStep);
@@ -87,12 +87,12 @@ namespace Raycer
 		double startTime = 0.0;
 
 		GLFWwindow* glfwWindow = nullptr;
-		uint64_t windowWidth = 0;
-		uint64_t windowHeight = 0;
+		uint32_t windowWidth = 0;
+		uint32_t windowHeight = 0;
 
 		MouseInfo mouseInfo;
-		int64_t previousMouseX = 0;
-		int64_t previousMouseY = 0;
+		int32_t previousMouseX = 0;
+		int32_t previousMouseY = 0;
 
 		std::map<int32_t, bool> keyStates;
 		std::map<int32_t, bool> mouseStates;

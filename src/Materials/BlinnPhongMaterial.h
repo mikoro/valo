@@ -26,11 +26,11 @@ namespace Raycer
 		Color getGlossiness(const Vector2& texcoord, const Vector3& position) const;
 
 		Color specularReflectance = Color(0.0f, 0.0f, 0.0f);
-		uint64_t specularReflectanceTextureId = 0;
+		uint32_t specularReflectanceTextureId = 0;
 		Texture* specularReflectanceTexture = nullptr;
 
 		Color glossiness = Color(1.0f, 1.0f, 1.0f);
-		uint64_t glossinessTextureId = 0;
+		uint32_t glossinessTextureId = 0;
 		Texture* glossinessTexture = nullptr;
 
 	private:

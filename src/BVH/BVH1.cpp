@@ -18,9 +18,9 @@ namespace
 {
 	struct BVH1BuildEntry
 	{
-		uint64_t start;
-		uint64_t end;
-		int64_t parent;
+		uint32_t start;
+		uint32_t end;
+		int32_t parent;
 	};
 }
 
@@ -38,7 +38,7 @@ void BVH1::build(std::vector<Triangle>& triangles)
 	Log& log = App::getLog();
 
 	Timer timer;
-	uint64_t triangleCount = triangles.size();
+	uint32_t triangleCount = uint32_t(triangles.size());
 
 	log.logInfo("BVH1 building started (triangles: %d)", triangleCount);
 
@@ -46,7 +46,7 @@ void BVH1::build(std::vector<Triangle>& triangles)
 	std::vector<BVHSplitCache> cache(triangleCount);
 	BVHSplitOutput splitOutput;
 
-	for (uint64_t i = 0; i < triangleCount; ++i)
+	for (uint32_t i = 0; i < triangleCount; ++i)
 	{
 		AABB aabb = triangles[i].getAABB();
 
@@ -59,9 +59,9 @@ void BVH1::build(std::vector<Triangle>& triangles)
 	nodes.reserve(triangleCount);
 
 	BVH1BuildEntry stack[128];
-	uint64_t stackIndex = 0;
-	uint64_t nodeCount = 0;
-	uint64_t leafCount = 0;
+	uint32_t stackIndex = 0;
+	uint32_t nodeCount = 0;
+	uint32_t leafCount = 0;
 
 	// push to stack
 	stack[stackIndex].start = 0;
@@ -89,7 +89,7 @@ void BVH1::build(std::vector<Triangle>& triangles)
 		// update the parent rightOffset when visiting its right child
 		if (buildEntry.parent != -1)
 		{
-			uint64_t parent = uint64_t(buildEntry.parent);
+			uint32_t parent = uint32_t(buildEntry.parent);
 
 			if (++nodes[parent].rightOffset == -1)
 				nodes[parent].rightOffset = int32_t(nodeCount - 1 - parent);
@@ -114,13 +114,13 @@ void BVH1::build(std::vector<Triangle>& triangles)
 		// push right child
 		stack[stackIndex].start = splitOutput.index;
 		stack[stackIndex].end = buildEntry.end;
-		stack[stackIndex].parent = int64_t(nodeCount) - 1;
+		stack[stackIndex].parent = int32_t(nodeCount) - 1;
 		stackIndex++;
 
 		// push left child
 		stack[stackIndex].start = buildEntry.start;
 		stack[stackIndex].end = splitOutput.index;
-		stack[stackIndex].parent = int64_t(nodeCount) - 1;
+		stack[stackIndex].parent = int32_t(nodeCount) - 1;
 		stackIndex++;
 	}
 
@@ -129,7 +129,7 @@ void BVH1::build(std::vector<Triangle>& triangles)
 
 	std::vector<Triangle> sortedTriangles(triangleCount);
 	
-	for (uint64_t i = 0; i < triangleCount; ++i)
+	for (uint32_t i = 0; i < triangleCount; ++i)
 		sortedTriangles[i] = *buildTriangles[i].triangle;
 
 	triangles = sortedTriangles;
@@ -142,21 +142,21 @@ bool BVH1::intersect(const Scene& scene, const Ray& ray, Intersection& intersect
 	if (ray.fastOcclusion && intersection.wasFound)
 		return true;
 
-	uint64_t stack[64];
-	uint64_t stackIndex = 0;
+	uint32_t stack[64];
+	uint32_t stackIndex = 0;
 	bool wasFound = false;
 
 	stack[stackIndex++] = 0;
 
 	while (stackIndex > 0)
 	{
-		uint64_t nodeIndex = stack[--stackIndex];
+		uint32_t nodeIndex = stack[--stackIndex];
 		const BVHNode& node = nodesPtr[nodeIndex];
 
 		// leaf node
 		if (node.rightOffset == 0)
 		{
-			for (uint64_t i = 0; i < node.triangleCount; ++i)
+			for (uint32_t i = 0; i < node.triangleCount; ++i)
 			{
 				if (scene.trianglesPtr[node.triangleOffset + i].intersect(scene, ray, intersection))
 				{
@@ -175,11 +175,11 @@ bool BVH1::intersect(const Scene& scene, const Ray& ray, Intersection& intersect
 			if (ray.directionIsNegative[node.splitAxis])
 			{
 				stack[stackIndex++] = nodeIndex + 1; // left child
-				stack[stackIndex++] = nodeIndex + uint64_t(node.rightOffset); // right child
+				stack[stackIndex++] = nodeIndex + uint32_t(node.rightOffset); // right child
 			}
 			else
 			{
-				stack[stackIndex++] = nodeIndex + uint64_t(node.rightOffset); // right child
+				stack[stackIndex++] = nodeIndex + uint32_t(node.rightOffset); // right child
 				stack[stackIndex++] = nodeIndex + 1; // left child
 			}
 		}

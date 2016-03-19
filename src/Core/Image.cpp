@@ -28,17 +28,17 @@ Image::~Image()
 	}
 }
 
-Image::Image(uint64_t length_)
+Image::Image(uint32_t length_)
 {
 	resize(length_);
 }
 
-Image::Image(uint64_t width_, uint64_t height_)
+Image::Image(uint32_t width_, uint32_t height_)
 {
 	resize(width_, height_);
 }
 
-Image::Image(uint64_t width_, uint64_t height_, float* rgbaData)
+Image::Image(uint32_t width_, uint32_t height_, float* rgbaData)
 {
 	load(width_, height_, rgbaData);
 }
@@ -48,13 +48,13 @@ Image::Image(const std::string& fileName)
 	load(fileName);
 }
 
-void Image::load(uint64_t width_, uint64_t height_, float* rgbaData)
+void Image::load(uint32_t width_, uint32_t height_, float* rgbaData)
 {
 	resize(width_, height_);
 
-	for (uint64_t i = 0; i < length; ++i)
+	for (uint32_t i = 0; i < length; ++i)
 	{
-		uint64_t dataIndex = i * 4;
+		uint32_t dataIndex = i * 4;
 
 		pixels[i].r = rgbaData[dataIndex];
 		pixels[i].g = rgbaData[dataIndex + 1];
@@ -75,14 +75,14 @@ void Image::load(const std::string& fileName)
 		if (loadData == nullptr)
 			throw std::runtime_error(tfm::format("Could not load HDR image file: %s", stbi_failure_reason()));
 
-		resize(uint64_t(newWidth), uint64_t(newHeight));
+		resize(uint32_t(newWidth), uint32_t(newHeight));
 
-		for (uint64_t y = 0; y < height; ++y)
+		for (uint32_t y = 0; y < height; ++y)
 		{
-			for (uint64_t x = 0; x < width; ++x)
+			for (uint32_t x = 0; x < width; ++x)
 			{
-				uint64_t pixelIndex = y * width + x;
-				uint64_t dataIndex = (height - 1 - y) * width * 3 + x * 3; // flip vertically
+				uint32_t pixelIndex = y * width + x;
+				uint32_t dataIndex = (height - 1 - y) * width * 3 + x * 3; // flip vertically
 
 				pixels[pixelIndex].r = loadData[dataIndex];
 				pixels[pixelIndex].g = loadData[dataIndex + 1];
@@ -101,11 +101,11 @@ void Image::load(const std::string& fileName)
 		if (loadData == nullptr)
 			throw std::runtime_error(tfm::format("Could not load image file: %s", stbi_failure_reason()));
 
-		resize(uint64_t(newWidth), uint64_t(newHeight));
+		resize(uint32_t(newWidth), uint32_t(newHeight));
 
-		for (uint64_t y = 0; y < height; ++y)
+		for (uint32_t y = 0; y < height; ++y)
 		{
-			for (uint64_t x = 0; x < width; ++x)
+			for (uint32_t x = 0; x < width; ++x)
 				pixels[y * width + x] = Color::fromAbgrValue(loadData[(height - 1 - y) * width + x]); // flip vertically
 		}
 
@@ -124,9 +124,9 @@ void Image::save(const std::string& fileName, bool writeToLog) const
 	{
 		std::vector<uint32_t> saveData(length);
 
-		for (uint64_t y = 0; y < height; ++y)
+		for (uint32_t y = 0; y < height; ++y)
 		{
-			for (uint64_t x = 0; x < width; ++x)
+			for (uint32_t x = 0; x < width; ++x)
 				saveData[(height - 1 - y) * width + x] = pixels[y * width + x].clamped().getAbgrValue(); // flip vertically
 		}
 
@@ -141,12 +141,12 @@ void Image::save(const std::string& fileName, bool writeToLog) const
 	{
 		std::vector<float> saveData(length * 3);
 
-		for (uint64_t y = 0; y < height; ++y)
+		for (uint32_t y = 0; y < height; ++y)
 		{
-			for (uint64_t x = 0; x < width; ++x)
+			for (uint32_t x = 0; x < width; ++x)
 			{
-				uint64_t dataIndex = (height - 1 - y) * width * 3 + x * 3; // flip vertically
-				uint64_t pixelIndex = y * width + x;
+				uint32_t dataIndex = (height - 1 - y) * width * 3 + x * 3; // flip vertically
+				uint32_t pixelIndex = y * width + x;
 
 				saveData[dataIndex] = float(pixels[pixelIndex].r);
 				saveData[dataIndex + 1] = float(pixels[pixelIndex].g);
@@ -163,12 +163,12 @@ void Image::save(const std::string& fileName, bool writeToLog) const
 		throw std::runtime_error(tfm::format("Could not save the image: %s", stbi_failure_reason()));
 }
 
-void Image::resize(uint64_t length_)
+void Image::resize(uint32_t length_)
 {
 	resize(length_, 1);
 }
 
-void Image::resize(uint64_t width_, uint64_t height_)
+void Image::resize(uint32_t width_, uint32_t height_)
 {
 	width = width_;
 	height = height_;
@@ -180,12 +180,12 @@ void Image::resize(uint64_t width_, uint64_t height_)
 	clear();
 }
 
-void Image::setPixel(uint64_t x, uint64_t y, const Color& color)
+void Image::setPixel(uint32_t x, uint32_t y, const Color& color)
 {
 	pixels[y * width + x] = color;
 }
 
-void Image::setPixel(uint64_t index, const Color& color)
+void Image::setPixel(uint32_t index, const Color& color)
 {
 	pixels[index] = color;
 }
@@ -197,25 +197,25 @@ void Image::clear()
 
 void Image::clear(const Color& color)
 {
-	for (uint64_t i = 0; i < length; ++i)
+	for (uint32_t i = 0; i < length; ++i)
 		pixels[i] = color;
 }
 
 void Image::applyGamma(float gamma)
 {
-	for (uint64_t i = 0; i < length; ++i)
+	for (uint32_t i = 0; i < length; ++i)
 		pixels[i] = Color::pow(pixels[i], gamma).clamped();
 }
 
 void Image::applyFastGamma(float gamma)
 {
-	for (uint64_t i = 0; i < length; ++i)
+	for (uint32_t i = 0; i < length; ++i)
 		pixels[i] = Color::fastPow(pixels[i], gamma).clamped();
 }
 
 void Image::swapComponents()
 {
-	for (uint64_t i = 0; i < length; ++i)
+	for (uint32_t i = 0; i < length; ++i)
 	{
 		Color c2 = pixels[i];
 
@@ -228,9 +228,9 @@ void Image::swapComponents()
 
 void Image::fillWithTestPattern()
 {
-	for (uint64_t y = 0; y < height; ++y)
+	for (uint32_t y = 0; y < height; ++y)
 	{
-		for (uint64_t x = 0; x < width; ++x)
+		for (uint32_t x = 0; x < width; ++x)
 		{
 			Color color = Color::BLACK;
 
@@ -242,29 +242,29 @@ void Image::fillWithTestPattern()
 	}
 }
 
-uint64_t Image::getWidth() const
+uint32_t Image::getWidth() const
 {
 	return width;
 }
 
-uint64_t Image::getHeight() const
+uint32_t Image::getHeight() const
 {
 	return height;
 }
 
-uint64_t Image::getLength() const
+uint32_t Image::getLength() const
 {
 	return length;
 }
 
-Color Image::getPixel(uint64_t x, uint64_t y) const
+Color Image::getPixel(uint32_t x, uint32_t y) const
 {
 	assert(x < width && y < height);
 
 	return pixels[y * width + x];
 }
 
-Color Image::getPixel(uint64_t index) const
+Color Image::getPixel(uint32_t index) const
 {
 	assert(index < length);
 
@@ -273,8 +273,8 @@ Color Image::getPixel(uint64_t index) const
 
 Color Image::getPixelNearest(float u, float v) const
 {
-	uint64_t x = uint64_t(u * float(width - 1) + 0.5f);
-	uint64_t y = uint64_t(v * float(height - 1) + 0.5f);
+	uint32_t x = uint32_t(u * float(width - 1) + 0.5f);
+	uint32_t y = uint32_t(v * float(height - 1) + 0.5f);
 
 	return getPixel(x, y);
 }
@@ -284,8 +284,8 @@ Color Image::getPixelBilinear(float u, float v) const
 	float x = u * float(width - 1);
 	float y = v * float(height - 1);
 
-	uint64_t ix = uint64_t(x);
-	uint64_t iy = uint64_t(y);
+	uint32_t ix = uint32_t(x);
+	uint32_t iy = uint32_t(y);
 
 	float tx2 = x - float(ix);
 	float ty2 = y - float(iy);
@@ -296,8 +296,8 @@ Color Image::getPixelBilinear(float u, float v) const
 	float tx1 = 1.0f - tx2;
 	float ty1 = 1.0f - ty2;
 
-	uint64_t ix1 = ix + 1;
-	uint64_t iy1 = iy + 1;
+	uint32_t ix1 = ix + 1;
+	uint32_t iy1 = iy + 1;
 
 	if (ix1 > width - 1)
 		ix1 = width - 1;
@@ -319,8 +319,8 @@ Color Image::getPixelBicubic(float u, float v, Filter& filter) const
 	float x = u * float(width - 1);
 	float y = v * float(height - 1);
 
-	int64_t ix = int64_t(x);
-	int64_t iy = int64_t(y);
+	int32_t ix = int32_t(x);
+	int32_t iy = int32_t(y);
 
 	float fx = x - float(ix);
 	float fy = y - float(iy);
@@ -328,26 +328,26 @@ Color Image::getPixelBicubic(float u, float v, Filter& filter) const
 	Color cumulativeColor;
 	float cumulativeFilterWeight = 0.0f;
 
-	for (int64_t oy = -1; oy <= 2; oy++)
+	for (int32_t oy = -1; oy <= 2; oy++)
 	{
-		for (int64_t ox = -1; ox <= 2; ox++)
+		for (int32_t ox = -1; ox <= 2; ox++)
 		{
-			int64_t sx = ix + ox;
-			int64_t sy = iy + oy;
+			int32_t sx = ix + ox;
+			int32_t sy = iy + oy;
 
 			if (sx < 0)
 				sx = 0;
 
-			if (sx > int64_t(width - 1))
-				sx = int64_t(width - 1);
+			if (sx > int32_t(width - 1))
+				sx = int32_t(width - 1);
 
 			if (sy < 0)
 				sy = 0;
 
-			if (sy > int64_t(height - 1))
-				sy = int64_t(height - 1);
+			if (sy > int32_t(height - 1))
+				sy = int32_t(height - 1);
 
-			Color color = getPixel(uint64_t(sx), uint64_t(sy));
+			Color color = getPixel(uint32_t(sx), uint32_t(sy));
 			float filterWeight = filter.getWeight(Vector2(float(ox) - fx, float(oy) - fy));
 
 			cumulativeColor += color * filterWeight;

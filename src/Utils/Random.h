@@ -17,13 +17,13 @@ namespace Raycer
 	public:
 
 		Random();
-		Random(uint64_t seed);
+		Random(uint32_t seed);
 
 		void initialize();
-		void initialize(uint64_t seed);
+		void initialize(uint32_t seed);
 
-		int64_t getInt64(int64_t min = std::numeric_limits<int64_t>::lowest(), int64_t max = std::numeric_limits<int64_t>::max());
-		uint64_t getUint64(uint64_t min = std::numeric_limits<uint64_t>::lowest(), uint64_t max = std::numeric_limits<uint64_t>::max());
+		int32_t getInt32(int32_t min = std::numeric_limits<int32_t>::lowest(), int32_t max = std::numeric_limits<int32_t>::max());
+		uint32_t getUint32(uint32_t min = std::numeric_limits<uint32_t>::lowest(), uint32_t max = std::numeric_limits<uint32_t>::max());
 		float getFloat(float min = 0.0f, float max = 1.0f);
 		double getDouble(double min = 0.0, double max = 1.0);
 
@@ -31,13 +31,13 @@ namespace Raycer
 		Vector2 getVector2();
 		Vector3 getVector3();
 
-		typedef uint64_t result_type;
+		typedef uint32_t result_type;
 		static result_type min() { return 0; }
-		static result_type max() { return std::numeric_limits<uint64_t>::max(); }
+		static result_type max() { return std::numeric_limits<uint32_t>::max(); }
 		result_type operator()();
 
 	private:
 
-		std::mt19937_64 generator;
+		std::mt19937 generator;
 	};
 }

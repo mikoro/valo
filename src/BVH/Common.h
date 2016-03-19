@@ -24,8 +24,8 @@ namespace Raycer
 
 	struct BVHSplitOutput
 	{
-		uint64_t index;
-		uint64_t axis;
+		uint32_t index;
+		uint32_t axis;
 		AABB fullAABB;
 		AABB leftAABB;
 		AABB rightAABB;
@@ -40,7 +40,7 @@ namespace Raycer
 		uint32_t splitAxis;
 	};
 
-	template <uint64_t N>
+	template <uint32_t N>
 	struct BVHNodeSOA
 	{
 		std::array<float, N> aabbMinX;

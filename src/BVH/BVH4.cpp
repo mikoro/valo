@@ -18,10 +18,10 @@ namespace
 {
 	struct BVH4BuildEntry
 	{
-		uint64_t start;
-		uint64_t end;
-		int64_t parent;
-		int64_t child;
+		uint32_t start;
+		uint32_t end;
+		int32_t parent;
+		int32_t child;
 	};
 }
 
@@ -39,7 +39,7 @@ void BVH4::build(std::vector<Triangle>& triangles, std::vector<TriangleSOA<4>>& 
 	Log& log = App::getLog();
 
 	Timer timer;
-	uint64_t triangleCount = triangles.size();
+	uint32_t triangleCount = uint32_t(triangles.size());
 
 	log.logInfo("BVH4 building started (triangles: %d)", triangleCount);
 
@@ -48,7 +48,7 @@ void BVH4::build(std::vector<Triangle>& triangles, std::vector<TriangleSOA<4>>& 
 	BVHSplitOutput splitOutputs[3];
 
 	// build triangles only contain necessary data (will be faster to sort)
-	for (uint64_t i = 0; i < triangleCount; ++i)
+	for (uint32_t i = 0; i < triangleCount; ++i)
 	{
 		AABB aabb = triangles[i].getAABB();
 
@@ -62,9 +62,9 @@ void BVH4::build(std::vector<Triangle>& triangles, std::vector<TriangleSOA<4>>& 
 	triangles4.reserve(triangleCount / 4);
 
 	BVH4BuildEntry stack[128];
-	uint64_t stackIndex = 0;
-	uint64_t nodeCount = 0;
-	uint64_t leafCount = 0;
+	uint32_t stackIndex = 0;
+	uint32_t nodeCount = 0;
+	uint32_t leafCount = 0;
 
 	// push to stack
 	stack[stackIndex].start = 0;
@@ -87,29 +87,29 @@ void BVH4::build(std::vector<Triangle>& triangles, std::vector<TriangleSOA<4>>& 
 		// if not the leftmost child, adjust the according offset at the parent
 		if (buildEntry.parent != -1 && buildEntry.child != -1)
 		{
-			uint64_t parent = uint64_t(buildEntry.parent);
-			uint64_t child = uint64_t(buildEntry.child);
+			uint32_t parent = uint32_t(buildEntry.parent);
+			uint32_t child = uint32_t(buildEntry.child);
 
 			nodes[parent].rightOffset[child] = uint32_t(nodeCount - 1 - parent);
 		}
 
-		uint64_t splitIndex1 = 0;
-		uint64_t splitIndex2 = 0;
-		uint64_t splitIndex3 = 0;
-		uint64_t splitIndex4 = 0;
-		uint64_t splitIndex5 = 0;
+		uint32_t splitIndex1 = 0;
+		uint32_t splitIndex2 = 0;
+		uint32_t splitIndex3 = 0;
+		uint32_t splitIndex4 = 0;
+		uint32_t splitIndex5 = 0;
 
-		auto calculateAABB = [&](uint64_t start, uint64_t end)
+		auto calculateAABB = [&](uint32_t start, uint32_t end)
 		{
 			AABB aabb;
 
-			for (uint64_t i = start; i < end; ++i)
+			for (uint32_t i = start; i < end; ++i)
 				aabb.expand(buildTriangles[i].aabb);
 
 			return aabb;
 		};
 
-		auto setAABB = [&node](uint64_t aabbIndex, const AABB& aabb)
+		auto setAABB = [&node](uint32_t aabbIndex, const AABB& aabb)
 		{
 			node.aabbMinX[aabbIndex] = aabb.min.x;
 			node.aabbMinY[aabbIndex] = aabb.min.y;
@@ -124,9 +124,9 @@ void BVH4::build(std::vector<Triangle>& triangles, std::vector<TriangleSOA<4>>& 
 			TriangleSOA<4> triangleSOA;
 			memset(&triangleSOA, 0, sizeof(TriangleSOA<4>));
 
-			uint64_t index = 0;
+			uint32_t index = 0;
 
-			for (uint64_t i = buildEntry.start; i < buildEntry.end; ++i)
+			for (uint32_t i = buildEntry.start; i < buildEntry.end; ++i)
 			{
 				Triangle triangle = *buildTriangles[i].triangle;
 
@@ -202,28 +202,28 @@ void BVH4::build(std::vector<Triangle>& triangles, std::vector<TriangleSOA<4>>& 
 		// push right child 2
 		stack[stackIndex].start = splitIndex4;
 		stack[stackIndex].end = splitIndex5;
-		stack[stackIndex].parent = int64_t(nodeCount) - 1;
+		stack[stackIndex].parent = int32_t(nodeCount) - 1;
 		stack[stackIndex].child = 2;
 		stackIndex++;
 
 		// push right child 1
 		stack[stackIndex].start = splitIndex3;
 		stack[stackIndex].end = splitIndex4;
-		stack[stackIndex].parent = int64_t(nodeCount) - 1;
+		stack[stackIndex].parent = int32_t(nodeCount) - 1;
 		stack[stackIndex].child = 1;
 		stackIndex++;
 
 		// push right child 0
 		stack[stackIndex].start = splitIndex2;
 		stack[stackIndex].end = splitIndex3;
-		stack[stackIndex].parent = int64_t(nodeCount) - 1;
+		stack[stackIndex].parent = int32_t(nodeCount) - 1;
 		stack[stackIndex].child = 0;
 		stackIndex++;
 
 		// push left child
 		stack[stackIndex].start = splitIndex1;
 		stack[stackIndex].end = splitIndex2;
-		stack[stackIndex].parent = int64_t(nodeCount) - 1;
+		stack[stackIndex].parent = int32_t(nodeCount) - 1;
 		stack[stackIndex].child = -1;
 		stackIndex++;
 	}
@@ -233,7 +233,7 @@ void BVH4::build(std::vector<Triangle>& triangles, std::vector<TriangleSOA<4>>& 
 
 	std::vector<Triangle> sortedTriangles(triangleCount);
 
-	for (uint64_t i = 0; i < triangleCount; ++i)
+	for (uint32_t i = 0; i < triangleCount; ++i)
 		sortedTriangles[i] = *buildTriangles[i].triangle;
 
 	triangles = sortedTriangles;
@@ -246,15 +246,15 @@ bool BVH4::intersect(const Scene& scene, const Ray& ray, Intersection& intersect
 	if (ray.fastOcclusion && intersection.wasFound)
 		return true;
 
-	uint64_t stack[64];
-	uint64_t stackIndex = 0;
+	uint32_t stack[64];
+	uint32_t stackIndex = 0;
 	bool wasFound = false;
 
 	stack[stackIndex++] = 0;
 
 	while (stackIndex > 0)
 	{
-		uint64_t nodeIndex = stack[--stackIndex];
+		uint32_t nodeIndex = stack[--stackIndex];
 		const BVHNodeSOA<4>& node = nodesPtr[nodeIndex];
 
 		if (node.isLeaf)

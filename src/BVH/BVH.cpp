@@ -37,7 +37,7 @@ bool BVH::intersect(const Scene& scene, const Ray& ray, Intersection& intersecti
 	}
 }
 
-BVHSplitOutput BVH::calculateSplit(std::vector<BVHBuildTriangle>& buildTriangles, std::vector<BVHSplitCache>& cache, uint64_t start, uint64_t end)
+BVHSplitOutput BVH::calculateSplit(std::vector<BVHBuildTriangle>& buildTriangles, std::vector<BVHSplitCache>& cache, uint32_t start, uint32_t end)
 {
 	assert(end > start);
 
@@ -45,7 +45,7 @@ BVHSplitOutput BVH::calculateSplit(std::vector<BVHBuildTriangle>& buildTriangles
 	float lowestCost = std::numeric_limits<float>::max();
 	AABB fullAABB[3];
 
-	for (uint64_t axis = 0; axis <= 2; ++axis)
+	for (uint32_t axis = 0; axis <= 2; ++axis)
 	{
 		PARALLEL_SORT(buildTriangles.begin() + start, buildTriangles.begin() + end, [axis](const BVHBuildTriangle& t1, const BVHBuildTriangle& t2)
 		{
@@ -53,9 +53,9 @@ BVHSplitOutput BVH::calculateSplit(std::vector<BVHBuildTriangle>& buildTriangles
 		});
 
 		AABB rightAABB;
-		uint64_t rightCount = 0;
+		uint32_t rightCount = 0;
 
-		for (int64_t i = end - 1; i >= int64_t(start); --i)
+		for (int32_t i = end - 1; i >= int32_t(start); --i)
 		{
 			rightAABB.expand(buildTriangles[i].aabb);
 			rightCount++;
@@ -65,9 +65,9 @@ BVHSplitOutput BVH::calculateSplit(std::vector<BVHBuildTriangle>& buildTriangles
 		}
 
 		AABB leftAABB;
-		uint64_t leftCount = 0;
+		uint32_t leftCount = 0;
 
-		for (uint64_t i = start; i < end; ++i)
+		for (uint32_t i = start; i < end; ++i)
 		{
 			leftAABB.expand(buildTriangles[i].aabb);
 			leftCount++;

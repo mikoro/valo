@@ -18,7 +18,7 @@ void ReinhardTonemapper::apply(const Image& inputImage, Image& outputImage)
 {
 	const Color* inputPixels = inputImage.getPixelData();
 	Color* outputPixels = outputImage.getPixelData();
-	int64_t pixelCount = inputImage.getLength();
+	int32_t pixelCount = inputImage.getLength();
 
 	float epsilon = 0.01f;
 	float luminanceLogSum = 0.0f;
@@ -31,7 +31,7 @@ void ReinhardTonemapper::apply(const Image& inputImage, Image& outputImage)
 		maxLuminancePrivate = 0.0f;
 
 		#pragma omp for
-		for (int64_t i = 0; i < pixelCount; ++i)
+		for (int32_t i = 0; i < pixelCount; ++i)
 		{
 			float luminance = inputPixels[i].getLuminance();
 			luminanceLogSum += std::log(epsilon + luminance);
@@ -63,7 +63,7 @@ void ReinhardTonemapper::apply(const Image& inputImage, Image& outputImage)
 	const float invGamma = 1.0f / gamma;
 
 	#pragma omp parallel for
-	for (int64_t i = 0; i < pixelCount; ++i)
+	for (int32_t i = 0; i < pixelCount; ++i)
 	{
 		Color inputColor = inputPixels[i];
 

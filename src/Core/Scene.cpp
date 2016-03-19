@@ -130,10 +130,10 @@ void Scene::initialize()
 		memcpy(materialsPtr, &allMaterials[0], allMaterials.size() * sizeof(Material));
 	}
 
-	std::map<uint64_t, Texture*> texturesMap;
-	std::map<uint64_t, Material*> materialsMap;
+	std::map<uint32_t, Texture*> texturesMap;
+	std::map<uint32_t, Material*> materialsMap;
 
-	for (uint64_t i = 0; i < allTextures.size(); ++i)
+	for (uint32_t i = 0; i < allTextures.size(); ++i)
 	{
 		if (texturesPtr[i].id == 0)
 			throw std::runtime_error(tfm::format("A texture must have a non-zero id"));
@@ -144,7 +144,7 @@ void Scene::initialize()
 		texturesMap[texturesPtr[i].id] = &texturesPtr[i];
 	}
 
-	for (uint64_t i = 0; i < allMaterials.size(); ++i)
+	for (uint32_t i = 0; i < allMaterials.size(); ++i)
 	{
 		if (materialsPtr[i].id == 0)
 			throw std::runtime_error(tfm::format("A material must have a non-zero id"));
@@ -190,7 +190,7 @@ void Scene::initialize()
 	{
 		emissiveTrianglesPtr = static_cast<Triangle*>(malloc(emissiveTriangles.size() * sizeof(Triangle)));
 		memcpy(emissiveTrianglesPtr, &emissiveTriangles[0], emissiveTriangles.size() * sizeof(Triangle));
-		emissiveTrianglesCount = emissiveTriangles.size();
+		emissiveTrianglesCount = uint32_t(emissiveTriangles.size());
 	}
 
 	// BVH BUILD

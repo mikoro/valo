@@ -117,12 +117,12 @@ Vector4& Vector4::operator/=(float s)
 	return *this;
 }
 
-float Vector4::operator[](uint64_t index) const
+float Vector4::operator[](uint32_t index) const
 {
 	return (&x)[index];
 }
 
-float Vector4::getElement(uint64_t index) const
+float Vector4::getElement(uint32_t index) const
 {
 	switch (index)
 	{
@@ -134,7 +134,7 @@ float Vector4::getElement(uint64_t index) const
 	}
 }
 
-void Vector4::setElement(uint64_t index, float value)
+void Vector4::setElement(uint32_t index, float value)
 {
 	switch (index)
 	{

@@ -9,7 +9,7 @@ namespace Raycer
 {
 	struct QuadraticResult
 	{
-		uint64_t rootCount = 0;
+		uint32_t rootCount = 0;
 		float roots[2];
 	};
 
@@ -18,6 +18,6 @@ namespace Raycer
 	public:
 
 		static QuadraticResult findQuadraticRoots(float a, float b, float c);
-		static float findRoot(const std::function<float(float)>& f, float begin, float end, uint64_t iterations = 32);
+		static float findRoot(const std::function<float(float)>& f, float begin, float end, uint32_t iterations = 32);
 	};
 }

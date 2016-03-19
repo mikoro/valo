@@ -20,7 +20,7 @@ namespace Raycer
 	private:
 
 		bool initialized = false;
-		std::map<std::string, uint64_t> imageIndexMap;
+		std::map<std::string, uint32_t> imageIndexMap;
 		std::vector<Image> images;
 	};
 }

@@ -23,7 +23,7 @@ void Camera::initialize()
 	originalFishEyeAngle = fishEyeAngle;
 }
 
-void Camera::setImagePlaneSize(uint64_t width, uint64_t height)
+void Camera::setImagePlaneSize(uint32_t width, uint32_t height)
 {
 	imagePlaneWidth = float(width - 1);
 	imagePlaneHeight = float(height - 1);

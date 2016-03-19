@@ -7,7 +7,7 @@
 
 namespace Raycer
 {
-	template <uint64_t N>
+	template <uint32_t N>
 	bool Triangle::intersect(
 		const float* __restrict vertex1X,
 		const float* __restrict vertex1Y,
@@ -123,7 +123,7 @@ namespace Raycer
 		return calculateIntersectionData(scene, ray, triangle, intersection, distance, u, v);
 	}
 
-	template <uint64_t N>
+	template <uint32_t N>
 	bool Triangle::findIntersectionValues(const uint32_t* hits, const float* distances, const float* uValues, const float* vValues, const uint32_t* triangleIndices, float& distance, float& u, float& v, uint32_t& triangleIndex)
 	{
 		bool wasFound = false;

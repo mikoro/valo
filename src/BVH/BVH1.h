@@ -25,7 +25,7 @@ namespace Raycer
 		void build(std::vector<Triangle>& triangles);
 		bool intersect(const Scene& scene, const Ray& ray, Intersection& intersection) const;
 
-		uint64_t maxLeafSize = 4;
+		uint32_t maxLeafSize = 4;
 
 	private:
 

@@ -17,9 +17,9 @@ TEST_CASE("Image save/load functionality", "[image]")
 {
 	Image image(100, 100);
 
-	for (uint64_t y = 0; y < 100; ++y)
+	for (uint32_t y = 0; y < 100; ++y)
 	{
-		for (uint64_t x = 0; x < 100; ++x)
+		for (uint32_t x = 0; x < 100; ++x)
 		{
 			if (y < 50)
 				image.setPixel(x, y, Color(10, 100, 200, 255));
@@ -57,9 +57,9 @@ TEST_CASE("Image interpolation functionality", "[image]")
 
 	Filter filter(FilterType::MITCHELL);
 
-	for (uint64_t y = 0; y <= 200; ++y)
+	for (uint32_t y = 0; y <= 200; ++y)
 	{
-		for (uint64_t x = 0; x <= 200; ++x)
+		for (uint32_t x = 0; x <= 200; ++x)
 		{
 			float u = x / 200.0f;
 			float v = y / 200.0f;

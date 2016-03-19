@@ -7,7 +7,7 @@
 
 namespace Raycer
 {
-	template <uint64_t N>
+	template <uint32_t N>
 	class Polynomial
 	{
 	public:
@@ -20,14 +20,14 @@ namespace Raycer
 
 		std::complex<float> evaluate(const std::complex<float>& x) const;
 
-		const std::complex<float>* findAllRoots(uint64_t maxIterations = 64, float changeThreshold = 0.0001f);
-		const float* findAllPositiveRealRoots(uint64_t& count, uint64_t maxIterations = 64, float changeThreshold = 0.0001f, float imagZeroThreshold = 0.0001f);
-		bool findSmallestPositiveRealRoot(float& result, uint64_t maxIterations = 64, float changeThreshold = 0.0001f, float imagZeroThreshold = 0.0001f);
+		const std::complex<float>* findAllRoots(uint32_t maxIterations = 64, float changeThreshold = 0.0001f);
+		const float* findAllPositiveRealRoots(uint32_t& count, uint32_t maxIterations = 64, float changeThreshold = 0.0001f, float imagZeroThreshold = 0.0001f);
+		bool findSmallestPositiveRealRoot(float& result, uint32_t maxIterations = 64, float changeThreshold = 0.0001f, float imagZeroThreshold = 0.0001f);
 
 	private:
 
-		const uint64_t size = N;
-		const uint64_t degree = N - 1;
+		const uint32_t size = N;
+		const uint32_t degree = N - 1;
 
 		float coefficients[N];
 		std::complex<float> roots[N - 1];

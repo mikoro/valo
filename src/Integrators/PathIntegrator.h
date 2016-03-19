@@ -18,8 +18,8 @@ namespace Raycer
 
 		Color calculateRadiance(const Scene& scene, const Ray& viewRay, Random& random);
 
-		uint64_t pathSamples = 1;
-		uint64_t minPathLength = 3;
+		uint32_t pathSamples = 1;
+		uint32_t minPathLength = 3;
 		float terminationProbability = 0.5f;
 
 	private:

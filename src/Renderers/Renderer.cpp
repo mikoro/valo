@@ -61,7 +61,7 @@ void Renderer::render(RenderJob& job)
 
 	imageAutoWriteTimer.restart();
 
-	for (uint64_t i = 0; i < pixelSamples && !job.interrupted; ++i)
+	for (uint32_t i = 0; i < pixelSamples && !job.interrupted; ++i)
 	{
 		switch (type)
 		{

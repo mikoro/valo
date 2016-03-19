@@ -26,7 +26,7 @@ TEST_CASE("TestScenes functionality", "[testscenes]")
 	scenes.push_back(TestScene::create8());
 	scenes.push_back(TestScene::create9());
 
-	uint64_t sceneCount = 0;
+	uint32_t sceneCount = 0;
 
 	for (const Scene& scene : scenes)
 		scene.save(tfm::format("scene%d.xml", sceneCount++));

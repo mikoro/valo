@@ -17,7 +17,7 @@ namespace Raycer
 	class Random;
 	class AABB;
 
-	template <uint64_t N>
+	template <uint32_t N>
 	struct TriangleSOA
 	{
 		std::array<float, N> vertex1X;
@@ -61,10 +61,10 @@ namespace Raycer
 		AABB getAABB() const;
 		float getArea() const;
 
-		template <uint64_t N>
+		template <uint32_t N>
 		static bool intersect(const float* __restrict vertex1X, const float* __restrict vertex1Y, const float* __restrict vertex1Z, const float* __restrict vertex2X, const float* __restrict vertex2Y, const float* __restrict vertex2Z, const float* __restrict vertex3X, const float* __restrict vertex3Y, const float* __restrict vertex3Z, const uint32_t* __restrict triangleIndices, const Scene& scene, const Ray& ray, Intersection& intersection);
 
-		template <uint64_t N>
+		template <uint32_t N>
 		static bool findIntersectionValues(const uint32_t* hits, const float* distances, const float* uValues, const float* vValues, const uint32_t* triangleIndices, float& distance, float& u, float& v, uint32_t& triangleIndex);
 
 		Vector3 vertices[3];
@@ -74,7 +74,7 @@ namespace Raycer
 		Vector3 tangent;
 		Vector3 bitangent;
 		float area = 0.0f;
-		uint64_t materialId = 0;
+		uint32_t materialId = 0;
 		Material* material = nullptr;
 
 	private:

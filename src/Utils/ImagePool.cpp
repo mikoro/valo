@@ -10,7 +10,7 @@ using namespace Raycer;
 
 namespace
 {
-	const uint64_t MAX_IMAGES = 1000;
+	const uint32_t MAX_IMAGES = 1000;
 }
 
 Image* ImagePool::loadImage(const std::string& fileName, bool applyGamma)
@@ -24,7 +24,7 @@ Image* ImagePool::loadImage(const std::string& fileName, bool applyGamma)
 	if (!imageIndexMap.count(fileName))
 	{
 		images.push_back(Image(fileName));
-		imageIndexMap[fileName] = images.size() - 1;
+		imageIndexMap[fileName] = uint32_t(images.size() - 1);
 
 		if (applyGamma)
 			images.back().applyFastGamma(2.2f);

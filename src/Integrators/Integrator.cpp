@@ -38,7 +38,7 @@ Color Integrator::calculateDirectLight(const Scene& scene, const Intersection& i
 	if (scene.emissiveTrianglesCount == 0)
 		return Color(0.0f, 0.0f, 0.0f);
 
-	Triangle* emitter = &scene.emissiveTrianglesPtr[random.getUint64(0, scene.emissiveTrianglesCount - 1)];
+	Triangle* emitter = &scene.emissiveTrianglesPtr[random.getUint32(0, scene.emissiveTrianglesCount - 1)];
 	Intersection emitterIntersection = emitter->getRandomIntersection(random);
 	Vector3 intersectionToEmitter = emitterIntersection.position - intersection.position;
 	float emitterDistance2 = intersectionToEmitter.lengthSquared();

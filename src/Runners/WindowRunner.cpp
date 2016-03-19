@@ -62,12 +62,12 @@ GLFWwindow* WindowRunner::getGlfwWindow() const
 	return glfwWindow;
 }
 
-uint64_t WindowRunner::getWindowWidth() const
+uint32_t WindowRunner::getWindowWidth() const
 {
 	return windowWidth;
 }
 
-uint64_t WindowRunner::getWindowHeight() const
+uint32_t WindowRunner::getWindowHeight() const
 {
 	return windowHeight;
 }
@@ -185,7 +185,6 @@ void WindowRunner::initialize()
 	if (!glfwWindow)
 		throw std::runtime_error("Could not create the window");
 
-	printWindowSize();
 	glfwSetScrollCallback(glfwWindow, ::glfwMouseWheelScroll);
 
 	const GLFWvidmode* videoMode = glfwGetVideoMode(glfwGetPrimaryMonitor());
@@ -224,10 +223,10 @@ void WindowRunner::checkWindowSize()
 	if (tempFramebufferWidth == 0 || tempFramebufferHeight == 0)
 		return;
 
-	if (uint64_t(tempFramebufferWidth) != windowWidth || uint64_t(tempFramebufferHeight) != windowHeight)
+	if (uint32_t(tempFramebufferWidth) != windowWidth || uint32_t(tempFramebufferHeight) != windowHeight)
 	{
 		printWindowSize();
-		windowResized(uint64_t(tempFramebufferWidth), uint64_t(tempFramebufferHeight));
+		windowResized(uint32_t(tempFramebufferWidth), uint32_t(tempFramebufferHeight));
 	}
 }
 
@@ -238,10 +237,10 @@ void WindowRunner::printWindowSize()
 	glfwGetWindowSize(glfwWindow, &tempWindowWidth, &tempWindowHeight);
 	glfwGetFramebufferSize(glfwWindow, &tempFramebufferWidth, &tempFramebufferHeight);
 
-	App::getLog().logInfo("GLFW window size: %dx%d | framebuffer size: %dx%d", tempWindowWidth, tempWindowHeight, tempFramebufferWidth, tempFramebufferHeight);
+	App::getLog().logInfo("GLFW window size: %dx%d | GLFW framebuffer size: %dx%d", tempWindowWidth, tempWindowHeight, tempFramebufferWidth, tempFramebufferHeight);
 }
 
-void WindowRunner::windowResized(uint64_t width, uint64_t height)
+void WindowRunner::windowResized(uint32_t width, uint32_t height)
 {
 	windowWidth = width;
 	windowHeight = height;
@@ -300,10 +299,10 @@ void WindowRunner::update(float timeStep)
 	double newMouseX, newMouseY;
 	glfwGetCursorPos(glfwWindow, &newMouseX, &newMouseY);
 
-	mouseInfo.windowX = int64_t(newMouseX + 0.5);
-	mouseInfo.windowY = int64_t(double(windowHeight) - newMouseY - 1.0 + 0.5);
-	mouseInfo.filmX = int64_t((mouseInfo.windowX / double(windowWidth)) * (double(windowWidth) * settings.window.renderScale) + 0.5);
-	mouseInfo.filmY = int64_t((mouseInfo.windowY / double(windowHeight)) * (double(windowHeight) * settings.window.renderScale) + 0.5);
+	mouseInfo.windowX = int32_t(newMouseX + 0.5);
+	mouseInfo.windowY = int32_t(double(windowHeight) - newMouseY - 1.0 + 0.5);
+	mouseInfo.filmX = int32_t((mouseInfo.windowX / double(windowWidth)) * (double(windowWidth) * settings.window.renderScale) + 0.5);
+	mouseInfo.filmY = int32_t((mouseInfo.windowY / double(windowHeight)) * (double(windowHeight) * settings.window.renderScale) + 0.5);
 	mouseInfo.deltaX = mouseInfo.windowX - previousMouseX;
 	mouseInfo.deltaY = mouseInfo.windowY - previousMouseY;
 	previousMouseX = mouseInfo.windowX;

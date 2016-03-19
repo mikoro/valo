@@ -26,7 +26,7 @@ namespace Raycer
 		Film* film = nullptr;
 
 		std::atomic<bool> interrupted;
-		std::atomic<uint64_t> sampleCount;
+		std::atomic<uint32_t> sampleCount;
 	};
 
 	class Renderer
@@ -42,20 +42,20 @@ namespace Raycer
 		std::string getName() const;
 
 		RendererType type = RendererType::CPU;
-		uint64_t pixelSamples = 1;
+		uint32_t pixelSamples = 1;
 
 		CpuRenderer cpuRenderer;
 		CudaRenderer cudaRenderer;
 
 		bool enableImageAutoWrite = false;
 		float imageAutoWriteInterval = 60.0f;
-		uint64_t imageAutoWriteMaxNumber = 10;
+		uint32_t imageAutoWriteMaxNumber = 10;
 		std::string imageAutoWriteFileName = "temp_image_%d.png";
 
 	private:
 
 		Timer imageAutoWriteTimer;
-		uint64_t imageAutoWriteNumber = 1;
+		uint32_t imageAutoWriteNumber = 1;
 
 		friend class cereal::access;
 

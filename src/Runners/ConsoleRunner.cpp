@@ -60,7 +60,7 @@ int ConsoleRunner::run()
 	
 	SysUtils::setConsoleTextColor(ConsoleTextColor::WHITE_ON_BLACK);
 
-	uint64_t totalSamples = settings.image.width * settings.image.height * renderer.pixelSamples;
+	uint32_t totalSamples = settings.image.width * settings.image.height * renderer.pixelSamples;
 
 	std::cout << tfm::format("\nRendering started (size: %dx%d, pixels: %s, samples: %s, pixel samples: %d)\n\n",
 		settings.image.width,
@@ -152,21 +152,21 @@ void ConsoleRunner::interrupt()
 	renderJob.interrupted = true;
 }
 
-void ConsoleRunner::printProgress(float percentage_, const TimerData& elapsed, const TimerData& remaining, uint64_t pixelSamples)
+void ConsoleRunner::printProgress(float percentage_, const TimerData& elapsed, const TimerData& remaining, uint32_t pixelSamples)
 {
-	uint64_t percentage = uint64_t(percentage_ + 0.5f);
-	uint64_t barCount = percentage / 4;
+	uint32_t percentage = uint32_t(percentage_ + 0.5f);
+	uint32_t barCount = percentage / 4;
 
     tfm::printf("[");
 
-	for (uint64_t i = 0; i < barCount; ++i)
+	for (uint32_t i = 0; i < barCount; ++i)
         tfm::printf("=");
 
 	if (barCount < 25)
 	{
         tfm::printf(">");
 
-		for (uint64_t i = 0; i < (24 - barCount); ++i)
+		for (uint32_t i = 0; i < (24 - barCount); ++i)
             tfm::printf(" ");
 	}
 

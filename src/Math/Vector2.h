@@ -33,10 +33,10 @@ namespace Raycer
 		Vector2& operator*=(float s);
 		Vector2& operator/=(const Vector2& v);
 		Vector2& operator/=(float s);
-		float operator[](uint64_t index) const;
+		float operator[](uint32_t index) const;
 
-		float getElement(uint64_t index) const;
-		void setElement(uint64_t index, float value);
+		float getElement(uint32_t index) const;
+		void setElement(uint32_t index, float value);
 		float length() const;
 		float lengthSquared() const;
 		void normalize();

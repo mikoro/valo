@@ -20,7 +20,7 @@ Color PathIntegrator::calculateRadiance(const Scene& scene, const Ray& viewRay, 
 	float sampleCosine = 1.0f;
 	float sampleProbability = 1.0f;
 	float continuationProbability = 1.0f;
-	uint64_t depth = 0;
+	uint32_t depth = 0;
 
 	while (true)
 	{

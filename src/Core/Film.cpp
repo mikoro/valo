@@ -25,7 +25,7 @@ void Film::clear()
 	pixelSamples = 0;
 }
 
-void Film::resize(uint64_t width_, uint64_t height_)
+void Film::resize(uint32_t width_, uint32_t height_)
 {
 	width = width_;
 	height = height_;
@@ -42,12 +42,12 @@ void Film::resize(uint64_t width_, uint64_t height_)
 	clear();
 }
 
-void Film::addSample(uint64_t x, uint64_t y, const Color& color, float filterWeight)
+void Film::addSample(uint32_t x, uint32_t y, const Color& color, float filterWeight)
 {
 	addSample(y * width + x, color, filterWeight);
 }
 
-void Film::addSample(uint64_t index, const Color& color, float filterWeight)
+void Film::addSample(uint32_t index, const Color& color, float filterWeight)
 {
 	pixels[index].r += color.r;
 	pixels[index].g += color.g;
@@ -55,12 +55,12 @@ void Film::addSample(uint64_t index, const Color& color, float filterWeight)
 	pixels[index].a += filterWeight;
 }
 
-Color Film::getLinearColor(uint64_t x, uint64_t y) const
+Color Film::getLinearColor(uint32_t x, uint32_t y) const
 {
 	return linearImage.getPixel(x, y);
 }
 
-Color Film::getOutputColor(uint64_t x, uint64_t y) const
+Color Film::getOutputColor(uint32_t x, uint32_t y) const
 {
 	return outputImage.getPixel(x, y);
 }
@@ -68,7 +68,7 @@ Color Film::getOutputColor(uint64_t x, uint64_t y) const
 void Film::generateImage(Tonemapper& tonemapper)
 {
 	#pragma omp parallel for
-	for (int64_t i = 0; i < int64_t(length); ++i)
+	for (int32_t i = 0; i < int32_t(length); ++i)
 		linearImage.setPixel(i, pixels[i] / pixels[i].a);
 
 	tonemapper.apply(linearImage, outputImage);
@@ -79,12 +79,12 @@ const Image& Film::getImage() const
 	return outputImage;
 }
 
-uint64_t Film::getWidth() const
+uint32_t Film::getWidth() const
 {
 	return width;
 }
 
-uint64_t Film::getHeight() const
+uint32_t Film::getHeight() const
 {
 	return height;
 }

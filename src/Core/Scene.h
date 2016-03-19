@@ -73,7 +73,7 @@ namespace Raycer
 		Triangle* trianglesPtr = nullptr;
 		TriangleSOA<4>* triangles4Ptr = nullptr;
 		Triangle* emissiveTrianglesPtr = nullptr;
-		uint64_t emissiveTrianglesCount = 0;
+		uint32_t emissiveTrianglesCount = 0;
 
 	private:
 

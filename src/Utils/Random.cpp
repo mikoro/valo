@@ -15,7 +15,7 @@ Random::Random()
 	initialize();
 }
 
-Random::Random(uint64_t seed)
+Random::Random(uint32_t seed)
 {
 	initialize(seed);
 }
@@ -26,19 +26,19 @@ void Random::initialize()
 	initialize(rd());
 }
 
-void Random::initialize(uint64_t seed)
+void Random::initialize(uint32_t seed)
 {
 	generator.seed(uint32_t(seed));
 }
 
-int64_t Random::getInt64(int64_t min, int64_t max)
+int32_t Random::getInt32(int32_t min, int32_t max)
 {
-	return std::uniform_int_distribution<int64_t>(min, max)(generator);
+	return std::uniform_int_distribution<int32_t>(min, max)(generator);
 }
 
-uint64_t Random::getUint64(uint64_t min, uint64_t max)
+uint32_t Random::getUint32(uint32_t min, uint32_t max)
 {
-	return std::uniform_int_distribution<uint64_t>(min, max)(generator);
+	return std::uniform_int_distribution<uint32_t>(min, max)(generator);
 }
 
 float Random::getFloat(float min, float max)
@@ -86,5 +86,5 @@ Vector3 Random::getVector3()
 
 Random::result_type Random::operator()()
 {
-	return std::uniform_int_distribution<uint64_t>(0, std::numeric_limits<uint64_t>::max())(generator);
+	return std::uniform_int_distribution<uint32_t>(0, std::numeric_limits<uint32_t>::max())(generator);
 }

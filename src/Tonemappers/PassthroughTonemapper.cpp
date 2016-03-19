@@ -13,8 +13,8 @@ void PassthroughTonemapper::apply(const Image& inputImage, Image& outputImage)
 {
 	const Color* inputPixels = inputImage.getPixelData();
 	Color* outputPixels = outputImage.getPixelData();
-	int64_t pixelCount = inputImage.getLength();
+	int32_t pixelCount = inputImage.getLength();
 
-	for (int64_t i = 0; i < pixelCount; ++i)
+	for (int32_t i = 0; i < pixelCount; ++i)
 		outputPixels[i] = inputPixels[i];
 }

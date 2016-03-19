@@ -10,7 +10,7 @@
 
 using namespace Raycer;
 
-Scene TestScene::create(uint64_t number)
+Scene TestScene::create(uint32_t number)
 {
 	App::getLog().logInfo("Creating test scene number %d", number);
 

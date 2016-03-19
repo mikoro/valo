@@ -11,7 +11,7 @@ namespace Raycer
 	{
 	public:
 
-		static Scene create(uint64_t number);
+		static Scene create(uint32_t number);
 		static Scene create1();
 		static Scene create2();
 		static Scene create3();
@@ -22,6 +22,6 @@ namespace Raycer
 		static Scene create8();
 		static Scene create9();
 
-		static const uint64_t TEST_SCENE_COUNT = 8;
+		static const uint32_t TEST_SCENE_COUNT = 8;
 	};
 }

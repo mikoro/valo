@@ -20,7 +20,7 @@ void CpuRenderer::render(RenderJob& job)
 	Film& film = *job.film;
 
 	omp_set_num_threads(maxThreadCount);
-	uint64_t maxThreads = std::max(1, omp_get_max_threads());
+	uint32_t maxThreads = std::max(1, omp_get_max_threads());
 
 	assert(maxThreads >= 1);
 
@@ -35,20 +35,20 @@ void CpuRenderer::render(RenderJob& job)
 	std::mutex ompThreadExceptionMutex;
 	std::exception_ptr ompThreadException = nullptr;
 
-	const uint64_t filmWidth = film.getWidth();
-	const uint64_t filmHeight = film.getHeight();
-	const int64_t pixelCount = int64_t(filmWidth * filmHeight);
+	const uint32_t filmWidth = film.getWidth();
+	const uint32_t filmHeight = film.getHeight();
+	const int32_t pixelCount = int32_t(filmWidth * filmHeight);
 
 	#pragma omp parallel for schedule(dynamic, 1000)
-	for (int64_t pixelIndex = 0; pixelIndex < pixelCount; ++pixelIndex)
+	for (int32_t pixelIndex = 0; pixelIndex < pixelCount; ++pixelIndex)
 	{
 		try
 		{
 			if (job.interrupted)
 				continue;
 
-			float x = float(uint64_t(pixelIndex) % filmWidth);
-			float y = float(uint64_t(pixelIndex) / filmWidth);
+			float x = float(uint32_t(pixelIndex) % filmWidth);
+			float y = float(uint32_t(pixelIndex) / filmWidth);
 			
 			Vector2 pixel = Vector2(x, y);
 			Random& random = randoms[omp_get_thread_num()];

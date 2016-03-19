@@ -63,12 +63,12 @@ namespace Raycer
 		operator float*();
 		operator const float*() const;
 
-		float get(uint64_t row, uint64_t column) const;
-		void set(uint64_t row, uint64_t column, float value);
-		Vector4 getRow(uint64_t index) const;
-		void setRow(uint64_t index, const Vector4& v);
-		Vector4 getColumn(uint64_t index) const;
-		void setColumn(uint64_t index, const Vector4& v);
+		float get(uint32_t row, uint32_t column) const;
+		void set(uint32_t row, uint32_t column, float value);
+		Vector4 getRow(uint32_t index) const;
+		void setRow(uint32_t index, const Vector4& v);
+		Vector4 getColumn(uint32_t index) const;
+		void setColumn(uint32_t index, const Vector4& v);
 
 		void transpose();
 		Matrix4x4 transposed() const;

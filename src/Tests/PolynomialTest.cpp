@@ -19,7 +19,7 @@ TEST_CASE("Polynomial functionality", "[polynomial]")
 	float coefficients[5] = { 2.0f, 7.0f, 5.0f, 3.0f, -10.0f };
 	polynomial.setCoefficients(coefficients);
 
-	uint64_t count;
+	uint32_t count;
 	const float* result = polynomial.findAllPositiveRealRoots(count, 32, 0.0001f);
 
 	REQUIRE(count == 1);

@@ -9,7 +9,7 @@
 
 namespace Raycer
 {
-	template <uint64_t N>
+	template <uint32_t N>
 	std::array<uint32_t, N> AABB::intersects(
 		const float* __restrict aabbMinX,
 		const float* __restrict aabbMinY,

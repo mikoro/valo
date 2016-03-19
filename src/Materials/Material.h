@@ -28,7 +28,7 @@ namespace Raycer
 		Color getEmittance(const Vector2& texcoord, const Vector3& position) const;
 		Color getReflectance(const Vector2& texcoord, const Vector3& position) const;
 
-		uint64_t id = 0;
+		uint32_t id = 0;
 		MaterialType type = MaterialType::DIFFUSE;
 
 		bool nonShadowing = false;
@@ -39,17 +39,17 @@ namespace Raycer
 		Vector2 texcoordScale = Vector2(1.0f, 1.0f);
 
 		Color emittance = Color(0.0f, 0.0f, 0.0f);
-		uint64_t emittanceTextureId = 0;
+		uint32_t emittanceTextureId = 0;
 		Texture* emittanceTexture = nullptr;
 
 		Color reflectance = Color(0.0f, 0.0f, 0.0f);
-		uint64_t reflectanceTextureId = 0;
+		uint32_t reflectanceTextureId = 0;
 		Texture* reflectanceTexture = nullptr;
 
-		uint64_t normalTextureId = 0;
+		uint32_t normalTextureId = 0;
 		Texture* normalTexture = nullptr;
 
-		uint64_t maskTextureId = 0;
+		uint32_t maskTextureId = 0;
 		Texture* maskTexture = nullptr;
 
 		DiffuseMaterial diffuseMaterial;

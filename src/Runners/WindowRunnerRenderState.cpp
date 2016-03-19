@@ -142,8 +142,8 @@ void WindowRunnerRenderState::update(float timeStep)
 		if (windowRunner.keyWasPressed(GLFW_KEY_F6))
 		{
 			float newScale = settings.window.renderScale * 0.5f;
-			uint64_t newWidth = uint64_t(float(windowRunner.getWindowWidth()) * newScale + 0.5f);
-			uint64_t newHeight = uint64_t(float(windowRunner.getWindowHeight()) * newScale + 0.5f);
+			uint32_t newWidth = uint32_t(float(windowRunner.getWindowWidth()) * newScale + 0.5f);
+			uint32_t newHeight = uint32_t(float(windowRunner.getWindowHeight()) * newScale + 0.5f);
 
 			if (newWidth >= 2 && newHeight >= 2)
 			{
@@ -254,7 +254,7 @@ void WindowRunnerRenderState::update(float timeStep)
 
 	// TEST SCENE LOADING //
 
-	int64_t testSceneIndex = -1;
+	int32_t testSceneIndex = -1;
 
 	if (windowRunner.keyWasPressed(GLFW_KEY_1)) testSceneIndex = 1;
 	if (windowRunner.keyWasPressed(GLFW_KEY_2)) testSceneIndex = 2;
@@ -316,7 +316,7 @@ void WindowRunnerRenderState::render(float timeStep, float interpolation)
 	infoPanel.render(renderer, job);
 }
 
-void WindowRunnerRenderState::windowResized(uint64_t width, uint64_t height)
+void WindowRunnerRenderState::windowResized(uint32_t width, uint32_t height)
 {
 	(void)width;
 	(void)height;
@@ -329,11 +329,11 @@ void WindowRunnerRenderState::resizeFilm()
 	Settings& settings = App::getSettings();
 	WindowRunner& windowRunner = App::getWindowRunner();
 
-	uint64_t filmWidth = uint64_t(float(windowRunner.getWindowWidth()) * settings.window.renderScale + 0.5);
-	uint64_t filmHeight = uint64_t(float(windowRunner.getWindowHeight()) * settings.window.renderScale + 0.5);
+	uint32_t filmWidth = uint32_t(float(windowRunner.getWindowWidth()) * settings.window.renderScale + 0.5);
+	uint32_t filmHeight = uint32_t(float(windowRunner.getWindowHeight()) * settings.window.renderScale + 0.5);
 
-    filmWidth = std::max(uint64_t(1), filmWidth);
-    filmHeight = std::max(uint64_t(1), filmHeight);
+    filmWidth = std::max(uint32_t(1), filmWidth);
+    filmHeight = std::max(uint32_t(1), filmHeight);
 
 	film->resize(filmWidth, filmHeight);
 	filmQuad.resize(filmWidth, filmHeight);

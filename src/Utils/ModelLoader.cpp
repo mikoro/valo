@@ -27,7 +27,7 @@ namespace
 		return tempPathString;
 	}
 
-	bool getLine(const char* buffer, uint64_t bufferLength, uint64_t& lineStartIndex, uint64_t& lineEndIndex)
+	bool getLine(const char* buffer, uint32_t bufferLength, uint32_t& lineStartIndex, uint32_t& lineEndIndex)
 	{
 		while (lineStartIndex < bufferLength)
 		{
@@ -57,7 +57,7 @@ namespace
 		return true;
 	}
 
-	bool getWord(const char* buffer, uint64_t lineEndIndex, uint64_t& wordStartIndex, uint64_t& wordEndIndex)
+	bool getWord(const char* buffer, uint32_t lineEndIndex, uint32_t& wordStartIndex, uint32_t& wordEndIndex)
 	{
 		while (wordStartIndex < lineEndIndex)
 		{
@@ -87,7 +87,7 @@ namespace
 		return true;
 	}
 
-	int64_t getInt(const char* buffer, uint64_t& startIndex, uint64_t endIndex)
+	int32_t getInt(const char* buffer, uint32_t& startIndex, uint32_t endIndex)
 	{
 		char c = 0;
 
@@ -104,8 +104,8 @@ namespace
 		if (startIndex >= endIndex)
 			return 0;
 
-		int64_t sign = 1;
-		int64_t accumulator = 0;
+		int32_t sign = 1;
+		int32_t accumulator = 0;
 
 		if (c == '-')
 		{
@@ -130,7 +130,7 @@ namespace
 		return sign * accumulator;
 	}
 
-	float getFloat(const char* buffer, uint64_t& startIndex, uint64_t endIndex)
+	float getFloat(const char* buffer, uint32_t& startIndex, uint32_t endIndex)
 	{
 		char c = 0;
 
@@ -193,15 +193,15 @@ namespace
 		return sign * accumulator;
 	}
 
-	bool compareWord(const char* buffer, uint64_t wordStartIndex, uint64_t wordEndIndex, const char* otherWord)
+	bool compareWord(const char* buffer, uint32_t wordStartIndex, uint32_t wordEndIndex, const char* otherWord)
 	{
-		uint64_t wordLength = wordEndIndex - wordStartIndex;
-		uint64_t otherWordLength = strlen(otherWord);
+		uint32_t wordLength = wordEndIndex - wordStartIndex;
+		uint32_t otherWordLength = uint32_t(strlen(otherWord));
 
 		if (wordLength != otherWordLength)
 			return false;
 
-		for (uint64_t i = wordStartIndex; i < wordEndIndex; ++i)
+		for (uint32_t i = wordStartIndex; i < wordEndIndex; ++i)
 		{
 			if (buffer[i] != otherWord[i - wordStartIndex])
 				return false;
@@ -210,12 +210,12 @@ namespace
 		return true;
 	}
 
-	void checkIndices(const char* buffer, uint64_t wordStartIndex, uint64_t wordEndIndex, bool& hasNormals, bool& hasTexcoords)
+	void checkIndices(const char* buffer, uint32_t wordStartIndex, uint32_t wordEndIndex, bool& hasNormals, bool& hasTexcoords)
 	{
-		uint64_t slashCount = 0;
-		uint64_t doubleSlashCount = 0;
+		uint32_t slashCount = 0;
+		uint32_t doubleSlashCount = 0;
 
-		for (uint64_t i = wordStartIndex; i < wordEndIndex; ++i)
+		for (uint32_t i = wordStartIndex; i < wordEndIndex; ++i)
 		{
 			if (buffer[i] == '/')
 			{
@@ -233,7 +233,7 @@ namespace
 		hasTexcoords = (slashCount > 0 && doubleSlashCount == 0);
 	}
 
-	void getIndices(const char* buffer, uint64_t wordStartIndex, uint64_t wordEndIndex, bool hasNormals, bool hasTexcoords, int64_t& vertexIndex, int64_t& normalIndex, int64_t& texcoordIndex)
+	void getIndices(const char* buffer, uint32_t wordStartIndex, uint32_t wordEndIndex, bool hasNormals, bool hasTexcoords, int32_t& vertexIndex, int32_t& normalIndex, int32_t& texcoordIndex)
 	{
 		vertexIndex = getInt(buffer, wordStartIndex, wordEndIndex);
 
@@ -292,17 +292,17 @@ ModelLoaderResult ModelLoader::load(const ModelLoaderInfo& info)
 	file.close();
 
 	char* fileBufferPtr = &fileBuffer[0];
-	uint64_t fileBufferLength = fileBuffer.size();
-	uint64_t lineStartIndex = 0;
-	uint64_t lineEndIndex = 0;
-	uint64_t lineNumber = 0;
+	uint32_t fileBufferLength = uint32_t(fileBuffer.size());
+	uint32_t lineStartIndex = 0;
+	uint32_t lineEndIndex = 0;
+	uint32_t lineNumber = 0;
 
 	while (getLine(fileBufferPtr, fileBufferLength, lineStartIndex, lineEndIndex))
 	{
 		lineNumber++;
 
-		uint64_t wordStartIndex = lineStartIndex;
-		uint64_t wordEndIndex = 0;
+		uint32_t wordStartIndex = lineStartIndex;
+		uint32_t wordEndIndex = 0;
 
 		getWord(fileBufferPtr, lineEndIndex, wordStartIndex, wordEndIndex);
 
@@ -502,22 +502,22 @@ void ModelLoader::processMaterialFile(const std::string& rootDirectory, const st
 		result.materials.push_back(currentMaterial);
 }
 
-bool ModelLoader::processFace(const char* buffer, uint64_t lineStartIndex, uint64_t lineEndIndex, uint64_t lineNumber, ModelLoaderResult& result)
+bool ModelLoader::processFace(const char* buffer, uint32_t lineStartIndex, uint32_t lineEndIndex, uint32_t lineNumber, ModelLoaderResult& result)
 {
 	Log& log = App::getLog();
 
-	uint64_t vertexIndices[4];
-	uint64_t normalIndices[4];
-	uint64_t texcoordIndices[4];
-	uint64_t vertexCount = 0;
+	uint32_t vertexIndices[4];
+	uint32_t normalIndices[4];
+	uint32_t texcoordIndices[4];
+	uint32_t vertexCount = 0;
 
 	bool hasNormals = false;
 	bool hasTexcoords = false;
 
-	uint64_t wordStartIndex = lineStartIndex;
-	uint64_t wordEndIndex = 0;
+	uint32_t wordStartIndex = lineStartIndex;
+	uint32_t wordEndIndex = 0;
 
-	for (uint64_t i = 0; i < 4; ++i)
+	for (uint32_t i = 0; i < 4; ++i)
 	{
 		if (!getWord(buffer, lineEndIndex, wordStartIndex, wordEndIndex))
 			break;
@@ -527,55 +527,55 @@ bool ModelLoader::processFace(const char* buffer, uint64_t lineStartIndex, uint6
 
 		vertexCount++;
 
-		int64_t vertexIndex;
-		int64_t texcoordIndex;
-		int64_t normalIndex;
+		int32_t vertexIndex;
+		int32_t texcoordIndex;
+		int32_t normalIndex;
 
 		getIndices(buffer, wordStartIndex, wordEndIndex, hasNormals, hasTexcoords, vertexIndex, normalIndex, texcoordIndex);
 
 		if (vertexIndex < 0)
-			vertexIndex = int64_t(vertices.size()) + vertexIndex;
+			vertexIndex = int32_t(vertices.size()) + vertexIndex;
 		else
 			vertexIndex--;
 
-		if (vertexIndex < 0 || vertexIndex >= int64_t(vertices.size()))
+		if (vertexIndex < 0 || vertexIndex >= int32_t(vertices.size()))
 		{
 			log.logWarning("Vertex index (%s) was out of bounds (line: %s)", vertexIndex, lineNumber);
 			return false;
 		}
 
-		vertexIndices[i] = uint64_t(vertexIndex);
+		vertexIndices[i] = uint32_t(vertexIndex);
 
 		if (hasTexcoords)
 		{
 			if (texcoordIndex < 0)
-				texcoordIndex = int64_t(texcoords.size()) + texcoordIndex;
+				texcoordIndex = int32_t(texcoords.size()) + texcoordIndex;
 			else
 				texcoordIndex--;
 
-			if (texcoordIndex < 0 || texcoordIndex >= int64_t(texcoords.size()))
+			if (texcoordIndex < 0 || texcoordIndex >= int32_t(texcoords.size()))
 			{
 				log.logWarning("Texcoord index (%s) was out of bounds (line: %s)", texcoordIndex, lineNumber);
 				return false;
 			}
 
-			texcoordIndices[i] = uint64_t(texcoordIndex);
+			texcoordIndices[i] = uint32_t(texcoordIndex);
 		}
 
 		if (hasNormals)
 		{
 			if (normalIndex < 0)
-				normalIndex = int64_t(normals.size()) + normalIndex;
+				normalIndex = int32_t(normals.size()) + normalIndex;
 			else
 				normalIndex--;
 
-			if (normalIndex < 0 || normalIndex >= int64_t(normals.size()))
+			if (normalIndex < 0 || normalIndex >= int32_t(normals.size()))
 			{
 				log.logWarning("Normal index (%s) was out of bounds (line: %s)", normalIndex, lineNumber);
 				return false;
 			}
 
-			normalIndices[i] = uint64_t(normalIndex);
+			normalIndices[i] = uint32_t(normalIndex);
 		}
 
 		wordStartIndex = wordEndIndex;
@@ -588,7 +588,7 @@ bool ModelLoader::processFace(const char* buffer, uint64_t lineStartIndex, uint6
 	}
 
 	// triangulate
-	for (uint64_t i = 2; i < vertexCount; ++i)
+	for (uint32_t i = 2; i < vertexCount; ++i)
 	{
 		Triangle triangle;
 		triangle.materialId = currentMaterialId;

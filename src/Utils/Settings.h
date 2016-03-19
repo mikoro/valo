@@ -14,21 +14,21 @@ namespace Raycer
 		struct Window
 		{
 			bool enabled;
-			uint64_t width;
-			uint64_t height;
+			uint32_t width;
+			uint32_t height;
 			bool fullscreen;
 			bool vsync;
 			bool hideCursor;
 			float renderScale;
-			uint64_t infoPanelState;
-			uint64_t infoPanelFontSize;
+			uint32_t infoPanelState;
+			uint32_t infoPanelFontSize;
 			bool checkGLErrors;
 		} window;
 
 		struct Image
 		{
-			uint64_t width;
-			uint64_t height;
+			uint32_t width;
+			uint32_t height;
 			std::string fileName;
 			bool autoView;
 		} image;
@@ -37,7 +37,7 @@ namespace Raycer
 		{
 			std::string fileName;
 			bool useTestScene;
-			uint64_t testSceneNumber;
+			uint32_t testSceneNumber;
 		} scene;
 
 		struct Renderer

@@ -24,7 +24,7 @@ namespace Raycer
 
 		Color getColor(const Vector2& texcoord, const Vector3& position);
 		
-		uint64_t id = 0;
+		uint32_t id = 0;
 		TextureType type = TextureType::CHECKER;
 
 		CheckerTexture checkerTexture;

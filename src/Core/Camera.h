@@ -22,7 +22,7 @@ namespace Raycer
 	public:
 
 		void initialize();
-		void setImagePlaneSize(uint64_t width, uint64_t height);
+		void setImagePlaneSize(uint32_t width, uint32_t height);
 		void update(float timeStep);
 		void reset();
 		bool isMoving() const;
