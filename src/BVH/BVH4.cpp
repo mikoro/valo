@@ -25,6 +25,15 @@ namespace
 	};
 }
 
+BVH4::~BVH4()
+{
+	if (nodesPtr != nullptr)
+	{
+		free(nodesPtr);
+		nodesPtr = nullptr;
+	}
+}
+
 void BVH4::build(std::vector<Triangle>& triangles, std::vector<TriangleSOA<4>>& triangles4)
 {
 	Log& log = App::getLog();

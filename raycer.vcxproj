@@ -344,7 +344,7 @@
     <ClInclude Include="src\BVH\BVH.h" />
     <ClInclude Include="src\BVH\BVH1.h" />
     <ClInclude Include="src\BVH\BVH4.h" />
-    <ClInclude Include="src\BVH\BVHCommon.h" />
+    <ClInclude Include="src\BVH\Common.h" />
     <ClInclude Include="src\Core\AABB.h" />
     <ClInclude Include="src\Core\App.h" />
     <ClInclude Include="src\Core\Camera.h" />

@@ -18,6 +18,18 @@
 using namespace Raycer;
 using namespace std::chrono;
 
+ConsoleRunner::ConsoleRunner()
+{
+	scene = new Scene();
+	film = new Film();
+}
+
+ConsoleRunner::~ConsoleRunner()
+{
+	delete scene;
+	delete film;
+}
+
 int ConsoleRunner::run()
 {
 	Settings& settings = App::getSettings();
@@ -27,24 +39,22 @@ int ConsoleRunner::run()
 
 	Timer totalElapsedTimer;
 	Renderer renderer;
-	Scene scene;
-	Film film;
+
+	if (settings.scene.useTestScene)
+		*scene = TestScene::create(settings.scene.testSceneNumber);
+	else
+		*scene = Scene::load(settings.scene.fileName);
 
 	renderer.initialize();
 
-	if (settings.scene.useTestScene)
-		scene = TestScene::create(settings.scene.testSceneNumber);
-	else
-		scene = Scene::load(settings.scene.fileName);
+	scene->initialize();
+	scene->camera.setImagePlaneSize(settings.image.width, settings.image.height);
+	scene->camera.update(0.0f);
 
-	scene.initialize();
-	scene.camera.setImagePlaneSize(settings.image.width, settings.image.height);
-	scene.camera.update(0.0f);
+	film->resize(settings.image.width, settings.image.height);
 
-	film.resize(settings.image.width, settings.image.height);
-
-	renderJob.scene = &scene;
-	renderJob.film = &film;
+	renderJob.scene = scene;
+	renderJob.film = film;
 	renderJob.interrupted = false;
 	renderJob.sampleCount = 0;
 	
@@ -92,7 +102,7 @@ int ConsoleRunner::run()
 		if (elapsed.totalMilliseconds > 0)
 			samplesPerSecondAverage.addMeasurement(float(renderJob.sampleCount) / (float(elapsed.totalMilliseconds) / 1000.0f));
 
-		printProgress(renderingElapsedTimer.getPercentage(), elapsed, remaining, film.pixelSamples);
+		printProgress(renderingElapsedTimer.getPercentage(), elapsed, remaining, film->pixelSamples);
 		std::this_thread::sleep_for(std::chrono::milliseconds(250));
 	}
 
@@ -106,7 +116,7 @@ int ConsoleRunner::run()
 	auto elapsed = renderingElapsedTimer.getElapsed();
 	auto remaining = renderingElapsedTimer.getRemaining();
 
-	printProgress(renderingElapsedTimer.getPercentage(), elapsed, remaining, film.pixelSamples);
+	printProgress(renderingElapsedTimer.getPercentage(), elapsed, remaining, film->pixelSamples);
 
 	float totalSamplesPerSecond = 0.0f;
 
@@ -120,19 +130,19 @@ int ConsoleRunner::run()
 
 	SysUtils::setConsoleTextColor(ConsoleTextColor::DEFAULT);
 
-	film.generateImage(scene.tonemapper);
+	film->generateImage(scene->tonemapper);
 
 	log.logInfo("Total elapsed time: %s", totalElapsedTimer.getElapsed().getString(true));
 
 	if (!renderJob.interrupted)
 	{
-		film.getImage().save(settings.image.fileName);
+		film->getImage().save(settings.image.fileName);
 
 		if (settings.image.autoView)
 			SysUtils::openFileExternally(settings.image.fileName);
 	}
 	else
-		film.getImage().save("partial_image.png");
+		film->getImage().save("partial_image.png");
 
 	return 0;
 }

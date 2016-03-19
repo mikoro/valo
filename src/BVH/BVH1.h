@@ -7,7 +7,7 @@
 
 #include "cereal/cereal.hpp"
 
-#include "BVH/BVHCommon.h"
+#include "BVH/Common.h"
 
 namespace Raycer
 {
@@ -19,6 +19,8 @@ namespace Raycer
 	class BVH1
 	{
 	public:
+
+		~BVH1();
 
 		void build(std::vector<Triangle>& triangles);
 		bool intersect(const Scene& scene, const Ray& ray, Intersection& intersection) const;

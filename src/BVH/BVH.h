@@ -9,13 +9,15 @@
 
 #include "BVH/BVH1.h"
 #include "BVH/BVH4.h"
-#include "BVH/BVHCommon.h"
+#include "BVH/Common.h"
 
 namespace Raycer
 {
 	class Scene;
 	class Ray;
 	class Intersection;
+
+	enum class BVHType { BVH1, BVH4 };
 
 	class BVH
 	{

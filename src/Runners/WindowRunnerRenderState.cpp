@@ -5,6 +5,8 @@
 
 #include "Core/App.h"
 #include "Core/Camera.h"
+#include "Core/Film.h"
+#include "Core/Scene.h"
 #include "Runners/WindowRunner.h"
 #include "Runners/WindowRunnerRenderState.h"
 #include "TestScenes/TestScene.h"
@@ -13,17 +15,29 @@
 
 using namespace Raycer;
 
+WindowRunnerRenderState::WindowRunnerRenderState()
+{
+	scene = new Scene();
+	film = new Film();
+}
+
+WindowRunnerRenderState::~WindowRunnerRenderState()
+{
+	delete scene;
+	delete film;
+}
+
 void WindowRunnerRenderState::initialize()
 {
 	Settings& settings = App::getSettings();
 	
 	if (settings.scene.useTestScene)
-		scene = TestScene::create(settings.scene.testSceneNumber);
+		*scene = TestScene::create(settings.scene.testSceneNumber);
 	else
-		scene = Scene::load(settings.scene.fileName);
+		*scene = Scene::load(settings.scene.fileName);
 
+	scene->initialize();
 	renderer.initialize();
-	scene.initialize();
 	filmQuad.initialize();
 	infoPanel.initialize();
 	infoPanel.setState(InfoPanelState(settings.window.infoPanelState));
@@ -59,65 +73,65 @@ void WindowRunnerRenderState::update(float timeStep)
 			else if (renderer.type == RendererType::CUDA)
 				renderer.type = RendererType::CPU;
 
-			film.clear();
+			film->clear();
 		}
 
 		if (windowRunner.keyWasPressed(GLFW_KEY_F3))
 		{
-			if (scene.integrator.type == IntegratorType::DOT)
-				scene.integrator.type = IntegratorType::PATH;
-			else if (scene.integrator.type == IntegratorType::PATH)
-				scene.integrator.type = IntegratorType::DOT;
+			if (scene->integrator.type == IntegratorType::DOT)
+				scene->integrator.type = IntegratorType::PATH;
+			else if (scene->integrator.type == IntegratorType::PATH)
+				scene->integrator.type = IntegratorType::DOT;
 
-			film.clear();
+			film->clear();
 		}
 
 		if (windowRunner.keyWasPressed(GLFW_KEY_F4))
 		{
-			if (scene.camera.type == CameraType::PERSPECTIVE)
-				scene.camera.type = CameraType::ORTHOGRAPHIC;
-			else if (scene.camera.type == CameraType::ORTHOGRAPHIC)
-				scene.camera.type = CameraType::FISHEYE;
-			else if (scene.camera.type == CameraType::FISHEYE)
-				scene.camera.type = CameraType::PERSPECTIVE;
+			if (scene->camera.type == CameraType::PERSPECTIVE)
+				scene->camera.type = CameraType::ORTHOGRAPHIC;
+			else if (scene->camera.type == CameraType::ORTHOGRAPHIC)
+				scene->camera.type = CameraType::FISHEYE;
+			else if (scene->camera.type == CameraType::FISHEYE)
+				scene->camera.type = CameraType::PERSPECTIVE;
 
-			film.clear();
+			film->clear();
 		}
 
 		if (windowRunner.keyWasPressed(GLFW_KEY_F5))
 		{
-			if (scene.tonemapper.type == TonemapperType::PASSTHROUGH)
-				scene.tonemapper.type = TonemapperType::LINEAR;
-			else if (scene.tonemapper.type == TonemapperType::LINEAR)
-				scene.tonemapper.type = TonemapperType::SIMPLE;
-			else if (scene.tonemapper.type == TonemapperType::SIMPLE)
-				scene.tonemapper.type = TonemapperType::REINHARD;
-			else if (scene.tonemapper.type == TonemapperType::REINHARD)
-				scene.tonemapper.type = TonemapperType::PASSTHROUGH;
+			if (scene->tonemapper.type == TonemapperType::PASSTHROUGH)
+				scene->tonemapper.type = TonemapperType::LINEAR;
+			else if (scene->tonemapper.type == TonemapperType::LINEAR)
+				scene->tonemapper.type = TonemapperType::SIMPLE;
+			else if (scene->tonemapper.type == TonemapperType::SIMPLE)
+				scene->tonemapper.type = TonemapperType::REINHARD;
+			else if (scene->tonemapper.type == TonemapperType::REINHARD)
+				scene->tonemapper.type = TonemapperType::PASSTHROUGH;
 		}
 
 		if (windowRunner.keyIsDown(GLFW_KEY_PAGE_DOWN))
 		{
-			if (scene.camera.type == CameraType::PERSPECTIVE)
-				scene.camera.fov -= 50.0f * timeStep;
-			else if (scene.camera.type == CameraType::ORTHOGRAPHIC)
-				scene.camera.orthoSize -= 10.0f * timeStep;
-			else if (scene.camera.type == CameraType::FISHEYE)
-				scene.camera.fishEyeAngle -= 50.0f * timeStep;
+			if (scene->camera.type == CameraType::PERSPECTIVE)
+				scene->camera.fov -= 50.0f * timeStep;
+			else if (scene->camera.type == CameraType::ORTHOGRAPHIC)
+				scene->camera.orthoSize -= 10.0f * timeStep;
+			else if (scene->camera.type == CameraType::FISHEYE)
+				scene->camera.fishEyeAngle -= 50.0f * timeStep;
 
-			film.clear();
+			film->clear();
 		}
 
 		if (windowRunner.keyIsDown(GLFW_KEY_PAGE_UP))
 		{
-			if (scene.camera.type == CameraType::PERSPECTIVE)
-				scene.camera.fov += 50.0f * timeStep;
-			else if (scene.camera.type == CameraType::ORTHOGRAPHIC)
-				scene.camera.orthoSize += 10.0f * timeStep;
-			else if (scene.camera.type == CameraType::FISHEYE)
-				scene.camera.fishEyeAngle += 50.0f * timeStep;
+			if (scene->camera.type == CameraType::PERSPECTIVE)
+				scene->camera.fov += 50.0f * timeStep;
+			else if (scene->camera.type == CameraType::ORTHOGRAPHIC)
+				scene->camera.orthoSize += 10.0f * timeStep;
+			else if (scene->camera.type == CameraType::FISHEYE)
+				scene->camera.fishEyeAngle += 50.0f * timeStep;
 
-			film.clear();
+			film->clear();
 		}
 	}
 
@@ -156,57 +170,65 @@ void WindowRunnerRenderState::update(float timeStep)
 	
 	if (windowRunner.keyWasPressed(GLFW_KEY_R))
 	{
-		scene.camera.reset();
-		film.clear();
+		scene->camera.reset();
+		film->clear();
 	}
 
 	if (windowRunner.keyWasPressed(GLFW_KEY_P))
-		scene.camera.enableMovement = !scene.camera.enableMovement;
+		scene->camera.enableMovement = !scene->camera.enableMovement;
 
 	if (windowRunner.keyWasPressed(GLFW_KEY_M))
-		scene.general.normalMapping = !scene.general.normalMapping;
+	{
+		scene->general.normalMapping = !scene->general.normalMapping;
+		film->clear();
+	}
 
 	if (windowRunner.keyWasPressed(GLFW_KEY_N))
-		scene.general.normalInterpolation = !scene.general.normalInterpolation;
+	{
+		scene->general.normalInterpolation = !scene->general.normalInterpolation;
+		film->clear();
+	}
 
 	if (windowRunner.keyWasPressed(GLFW_KEY_B))
 	{
-		scene.general.normalVisualization = !scene.general.normalVisualization;
-		scene.general.interpolationVisualization = false;
+		scene->general.normalVisualization = !scene->general.normalVisualization;
+		scene->general.interpolationVisualization = false;
+		film->clear();
 	}
 
 	if (windowRunner.keyWasPressed(GLFW_KEY_V))
 	{
-		scene.general.interpolationVisualization = !scene.general.interpolationVisualization;
-		scene.general.normalVisualization = false;
+		scene->general.interpolationVisualization = !scene->general.interpolationVisualization;
+		scene->general.normalVisualization = false;
+		film->clear();
 	}
 
 	// EXPOSURE & KEY //
 
 	if (ctrlIsPressed)
 	{
-		if(scene.tonemapper.type == TonemapperType::LINEAR)
+		if(scene->tonemapper.type == TonemapperType::LINEAR)
 		{
 			if (windowRunner.keyIsDown(GLFW_KEY_PAGE_DOWN))
-				scene.tonemapper.linearTonemapper.exposure -= 2.0f * timeStep;
+				scene->tonemapper.linearTonemapper.exposure -= 2.0f * timeStep;
 			else if (windowRunner.keyIsDown(GLFW_KEY_PAGE_UP))
-				scene.tonemapper.linearTonemapper.exposure += 2.0f * timeStep;
+				scene->tonemapper.linearTonemapper.exposure += 2.0f * timeStep;
 		}
-		else if (scene.tonemapper.type == TonemapperType::SIMPLE)
+		else if (scene->tonemapper.type == TonemapperType::SIMPLE)
 		{
 			if (windowRunner.keyIsDown(GLFW_KEY_PAGE_DOWN))
-				scene.tonemapper.simpleTonemapper.exposure -= 2.0f * timeStep;
+				scene->tonemapper.simpleTonemapper.exposure -= 2.0f * timeStep;
 			else if (windowRunner.keyIsDown(GLFW_KEY_PAGE_UP))
-				scene.tonemapper.simpleTonemapper.exposure += 2.0f * timeStep;
+				scene->tonemapper.simpleTonemapper.exposure += 2.0f * timeStep;
 		}
-		else if (scene.tonemapper.type == TonemapperType::REINHARD)
+		else if (scene->tonemapper.type == TonemapperType::REINHARD)
 		{
 			if (windowRunner.keyIsDown(GLFW_KEY_PAGE_DOWN))
-				scene.tonemapper.reinhardTonemapper.key -= 0.1f * timeStep;
+				scene->tonemapper.reinhardTonemapper.key -= 0.1f * timeStep;
 			else if (windowRunner.keyIsDown(GLFW_KEY_PAGE_UP))
-				scene.tonemapper.reinhardTonemapper.key += 0.1f * timeStep;
+				scene->tonemapper.reinhardTonemapper.key += 0.1f * timeStep;
 
-			scene.tonemapper.reinhardTonemapper.key = std::max(0.0f, scene.tonemapper.reinhardTonemapper.key);
+			scene->tonemapper.reinhardTonemapper.key = std::max(0.0f, scene->tonemapper.reinhardTonemapper.key);
 		}
 	}
 
@@ -215,18 +237,18 @@ void WindowRunnerRenderState::update(float timeStep)
 	if (ctrlIsPressed)
 	{
 		if (windowRunner.keyWasPressed(GLFW_KEY_F1))
-			scene.save("scene.xml");
+			scene->save("scene->xml");
 
 		if (windowRunner.keyWasPressed(GLFW_KEY_F2))
 			renderer.save("renderer.xml");
 
 		if (windowRunner.keyWasPressed(GLFW_KEY_F3))
-			scene.camera.saveState("camera.txt");
+			scene->camera.saveState("camera.txt");
 
 		if (windowRunner.keyWasPressed(GLFW_KEY_F4))
 		{
-			film.generateImage(scene.tonemapper);
-			film.getImage().save("image.png");
+			film->generateImage(scene->tonemapper);
+			film->getImage().save("image.png");
 		}
 	}
 
@@ -250,24 +272,27 @@ void WindowRunnerRenderState::update(float timeStep)
 		if (ctrlIsPressed)
 			testSceneIndex += 10;
 
+		delete scene;
+		scene = new Scene();
+
 		try
 		{
-			scene = TestScene::create(testSceneIndex);
-			scene.initialize();
+			*scene = TestScene::create(testSceneIndex);
+			scene->initialize();
 		}
 		catch (const std::exception& ex)
 		{
 			log.logWarning("Could not create test scene: %s", ex.what());
 
-			scene = Scene();
-			scene.initialize();
+			*scene = Scene();
+			scene->initialize();
 		}
 
-		scene.camera.setImagePlaneSize(film.getWidth(), film.getHeight());
-		film.clear();
+		scene->camera.setImagePlaneSize(film->getWidth(), film->getHeight());
+		film->clear();
 	}
 
-	scene.camera.update(timeStep);
+	scene->camera.update(timeStep);
 }
 
 void WindowRunnerRenderState::render(float timeStep, float interpolation)
@@ -275,18 +300,18 @@ void WindowRunnerRenderState::render(float timeStep, float interpolation)
 	(void)timeStep;
 	(void)interpolation;
 
-	if ((scene.integrator.type == IntegratorType::PATH && scene.camera.isMoving()) || scene.integrator.type == IntegratorType::DOT)
-		film.clear();
+	if ((scene->integrator.type == IntegratorType::PATH && scene->camera.isMoving()) || scene->integrator.type == IntegratorType::DOT)
+		film->clear();
 
 	RenderJob job;
-	job.scene = &scene;
-	job.film = &film;
+	job.scene = scene;
+	job.film = film;
 	job.interrupted = false;
 	job.sampleCount = 0;
 	
 	renderer.render(job);
-	film.generateImage(scene.tonemapper);
-	filmQuad.upload(film);
+	film->generateImage(scene->tonemapper);
+	filmQuad.upload(*film);
 	filmQuad.render();
 	infoPanel.render(renderer, job);
 }
@@ -310,7 +335,8 @@ void WindowRunnerRenderState::resizeFilm()
     filmWidth = std::max(uint64_t(1), filmWidth);
     filmHeight = std::max(uint64_t(1), filmHeight);
 
-	film.resize(filmWidth, filmHeight);
+	film->resize(filmWidth, filmHeight);
 	filmQuad.resize(filmWidth, filmHeight);
-	scene.camera.setImagePlaneSize(filmWidth, filmHeight);
+
+	scene->camera.setImagePlaneSize(filmWidth, filmHeight);
 }

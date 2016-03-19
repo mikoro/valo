@@ -9,8 +9,6 @@ namespace Raycer
 {
 	class Triangle;
 
-	enum class BVHType { BVH1, BVH4 };
-
 	struct BVHBuildTriangle
 	{
 		Triangle* triangle;

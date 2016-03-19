@@ -9,9 +9,15 @@
 
 namespace Raycer
 {
+	class Scene;
+	class Film;
+
 	class ConsoleRunner
 	{
 	public:
+
+		ConsoleRunner();
+		~ConsoleRunner();
 
 		int run();
 		void interrupt();
@@ -22,5 +28,8 @@ namespace Raycer
 		
 		RenderJob renderJob;
 		MovingAverage samplesPerSecondAverage;
+
+		Scene* scene = nullptr;
+		Film* film = nullptr;
 	};
 }

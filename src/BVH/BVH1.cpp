@@ -24,6 +24,15 @@ namespace
 	};
 }
 
+BVH1::~BVH1()
+{
+	if (nodesPtr != nullptr)
+	{
+		free(nodesPtr);
+		nodesPtr = nullptr;
+	}
+}
+
 void BVH1::build(std::vector<Triangle>& triangles)
 {
 	Log& log = App::getLog();

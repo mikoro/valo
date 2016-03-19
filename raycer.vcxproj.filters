@@ -516,11 +516,11 @@
     <ClInclude Include="src\Core\Precompiled.h">
       <Filter>Core</Filter>
     </ClInclude>
-    <ClInclude Include="src\BVH\BVHCommon.h">
-      <Filter>BVH</Filter>
-    </ClInclude>
     <ClInclude Include="src\Utils\ImagePool.h">
       <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BVH\Common.h">
+      <Filter>BVH</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
