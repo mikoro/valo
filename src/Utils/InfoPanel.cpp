@@ -208,40 +208,11 @@ void InfoPanel::renderFull(const Renderer& renderer, const RenderJob& job)
 	nvgText(context, currentX, currentY, tfm::format("Moving: %s", scene.camera.isMoving()).c_str(), nullptr);
 	currentY += lineSpacing;
 
-	std::string rendererName = "unknown";
-
-	switch (renderer.type)
-	{
-		case RendererType::CPU: rendererName = "cpu"; break;
-		case RendererType::CUDA: rendererName = "cuda"; break;
-		default: break;
-	}
-
-	nvgText(context, currentX, currentY, tfm::format("Renderer: %s", rendererName).c_str(), nullptr);
+	nvgText(context, currentX, currentY, tfm::format("Renderer: %s", renderer.getName()).c_str(), nullptr);
 	currentY += lineSpacing;
 
-	std::string integratorName = "unknown";
-
-	switch (scene.integrator.type)
-	{
-		case IntegratorType::DOT: integratorName = "dot"; break;
-		case IntegratorType::PATH: integratorName = "path"; break;
-		default: break;
-	}
-
-	nvgText(context, currentX, currentY, tfm::format("Integrator: %s", integratorName).c_str(), nullptr);
+	nvgText(context, currentX, currentY, tfm::format("Integrator: %s", scene.integrator.getName()).c_str(), nullptr);
 	currentY += lineSpacing;
 
-	std::string tonemapperName = "unknown";
-
-	switch (scene.tonemapper.type)
-	{
-		case TonemapperType::PASSTHROUGH: tonemapperName = "passthrough"; break;
-		case TonemapperType::LINEAR: tonemapperName = "linear"; break;
-		case TonemapperType::SIMPLE: tonemapperName = "simple"; break;
-		case TonemapperType::REINHARD: tonemapperName = "reinhard"; break;
-		default: break;
-	}
-
-	nvgText(context, currentX, currentY, tfm::format("Tonemapper: %s", tonemapperName).c_str(), nullptr);
+	nvgText(context, currentX, currentY, tfm::format("Tonemapper: %s", scene.tonemapper.getName()).c_str(), nullptr);
 }

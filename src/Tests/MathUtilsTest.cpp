@@ -13,12 +13,12 @@ using namespace Raycer;
 
 TEST_CASE("MathUtils functionality", "[mathutils]")
 {
-	const double epsilon = std::numeric_limits<double>::epsilon();
-	const double min = std::numeric_limits<double>::min();
+	const float epsilon = std::numeric_limits<float>::epsilon();
+	const float min = std::numeric_limits<float>::min();
 
-	REQUIRE(MathUtils::almostZero(0.0, epsilon) == true);
-	REQUIRE(MathUtils::almostZero(0.0001, epsilon) == false);
-	REQUIRE(MathUtils::almostZero(-0.0001, epsilon) == false);
+	REQUIRE(MathUtils::almostZero(0.0f, epsilon) == true);
+	REQUIRE(MathUtils::almostZero(0.0001f, epsilon) == false);
+	REQUIRE(MathUtils::almostZero(-0.0001f, epsilon) == false);
 	REQUIRE(MathUtils::almostZero(epsilon / 2, epsilon) == true);
 	REQUIRE(MathUtils::almostZero(epsilon, 2 * epsilon) == true);
 	REQUIRE(MathUtils::almostZero(epsilon * 2, epsilon) == false);
@@ -32,8 +32,8 @@ TEST_CASE("MathUtils functionality", "[mathutils]")
 	REQUIRE(MathUtils::almostSame(epsilon, epsilon * 2, epsilon) == false);
 	REQUIRE(MathUtils::almostSame(epsilon, epsilon * 2, 10 * epsilon) == true);
 
-	REQUIRE(MathUtils::almostSame(MathUtils::degToRad(90.0), M_PI / 2.0));
-	REQUIRE(MathUtils::almostSame(MathUtils::degToRad(180.0), M_PI));
+	REQUIRE(MathUtils::almostSame(MathUtils::degToRad(90.0f), float(M_PI) / 2.0f));
+	REQUIRE(MathUtils::almostSame(MathUtils::degToRad(180.0f), float(M_PI)));
 }
 
 #endif

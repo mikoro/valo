@@ -39,6 +39,8 @@ namespace Raycer
 		void initialize();
 		void render(RenderJob& job);
 
+		std::string getName() const;
+
 		RendererType type = RendererType::CPU;
 		uint64_t pixelSamples = 1;
 

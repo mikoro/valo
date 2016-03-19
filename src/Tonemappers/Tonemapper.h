@@ -26,6 +26,8 @@ namespace Raycer
 
 		void apply(const Image& inputImage, Image& outputImage);
 
+		std::string getName() const;
+
 		TonemapperType type = TonemapperType::PASSTHROUGH;
 
 		PassthroughTonemapper passthroughTonemapper;

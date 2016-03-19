@@ -8,6 +8,7 @@
 #include "cereal/cereal.hpp"
 
 #include "Core/Triangle.h"
+#include "Materials/Material.h"
 #include "Math/EulerAngle.h"
 #include "Math/Vector3.h"
 #include "Textures/Texture.h"

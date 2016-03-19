@@ -8,50 +8,28 @@
 #include "catch/catch.hpp"
 
 #include "Filters/Filter.h"
-#include "Filters/BoxFilter.h"
-#include "Filters/TentFilter.h"
-#include "Filters/BellFilter.h"
-#include "Filters/GaussianFilter.h"
-#include "Filters/MitchellFilter.h"
-#include "Filters/LanczosSincFilter.h"
 
 using namespace Raycer;
 
 TEST_CASE("Filter functionality", "[filter]")
 {
-	BoxFilter boxFilter;
-	TentFilter tentFilter;
-	BellFilter bellFilter;
-	GaussianFilter gaussianFilter;
-	MitchellFilter mitchellFilter;
-	LanczosSincFilter lanczosSincFilter;
+	Filter filter;
 
-	std::map<std::string, Filter*> filters;
-	filters["box"] = &boxFilter;
-	filters["tent"] = &tentFilter;
-	filters["bell"] = &bellFilter;
-	filters["gaussian"] = &gaussianFilter;
-	filters["mitchell"] = &mitchellFilter;
-	filters["lanczos_sinc"] = &lanczosSincFilter;
-
-	boxFilter.setRadius(2.0, 2.0);
-	tentFilter.setRadius(2.0, 2.0);
-	gaussianFilter.setStandardDeviations(0.1, 0.1);
-	lanczosSincFilter.setRadius(6, 6);
-
-	for (const auto &filter : filters)
+	for (uint64_t k = 0; k <= 5; ++k)
 	{
-		std::ofstream file1(tfm::format("filter_%s_1D.txt", filter.first));
-		std::ofstream file2(tfm::format("filter_%s_2D.txt", filter.first));
+		filter.type = static_cast<FilterType>(k);
 
-		double extent = 12.0;
+		std::ofstream file1(tfm::format("filter_%s_1D.txt", filter.getName()));
+		std::ofstream file2(tfm::format("filter_%s_2D.txt", filter.getName()));
+
+		float extent = 12.0f;
 		uint64_t steps = 1000;
-		double stepSize = extent / steps;
+		float stepSize = extent / steps;
 
 		for (uint64_t i = 0; i < steps; ++i)
 		{
-			double x = -(extent / 2.0) + i * stepSize;
-			file1 << tfm::format("%f %f\n", x, filter.second->getWeightX(x));
+			float x = -(extent / 2.0f) + i * stepSize;
+			file1 << tfm::format("%f %f\n", x, filter.getWeight(x));
 		}
 
 		steps = 40;
@@ -61,9 +39,9 @@ TEST_CASE("Filter functionality", "[filter]")
 		{
 			for (uint64_t j = 0; j < steps; ++j)
 			{
-				double x = -(extent / 2.0) + j * stepSize;
-				double y = -(extent / 2.0) + i * stepSize;
-				file2 << tfm::format("%f %f %f\n", x, y, filter.second->getWeight(x, y));
+				float x = -(extent / 2.0f) + j * stepSize;
+				float y = -(extent / 2.0f) + i * stepSize;
+				file2 << tfm::format("%f %f %f\n", x, y, filter.getWeight(Vector2(x, y)));
 			}
 		}
 

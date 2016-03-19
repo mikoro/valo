@@ -54,3 +54,17 @@ Vector2 Filter::getRadius()
 		default: return Vector2(0.0f, 0.0f);
 	}
 }
+
+std::string Filter::getName() const
+{
+	switch (type)
+	{
+		case FilterType::BOX: return "box";
+		case FilterType::TENT: return "tent";
+		case FilterType::BELL: return "bell";
+		case FilterType::GAUSSIAN: return "gaussian";
+		case FilterType::MITCHELL: return "mitchell";
+		case FilterType::LANCZOS_SINC: return "lanczos_sinc";
+		default: return "unknown";
+	}
+}

@@ -7,8 +7,9 @@
 
 #include "catch/catch.hpp"
 
-#include "Rendering/Image.h"
-#include "Rendering/Color.h"
+#include "Core/Image.h"
+#include "Filters/Filter.h"
+#include "Math/Color.h"
 
 using namespace Raycer;
 
@@ -54,14 +55,14 @@ TEST_CASE("Image interpolation functionality", "[image]")
 
 	image1.fillWithTestPattern();
 
-	auto filter = Filter::getFilter(FilterType::MITCHELL);
+	Filter filter(FilterType::MITCHELL);
 
 	for (uint64_t y = 0; y <= 200; ++y)
 	{
 		for (uint64_t x = 0; x <= 200; ++x)
 		{
-			double u = x / 200.0;
-			double v = y / 200.0;
+			float u = x / 200.0f;
+			float v = y / 200.0f;
 
 			Color c = image1.getPixelNearest(u, v);
 			image2.setPixel(x, y, c);
@@ -69,7 +70,7 @@ TEST_CASE("Image interpolation functionality", "[image]")
 			c = image1.getPixelBilinear(u, v);
 			image3.setPixel(x, y, c);
 
-			c = image1.getPixelBicubic(u, v, filter.get());
+			c = image1.getPixelBicubic(u, v, filter);
 			image4.setPixel(x, y, c);
 		}
 	}

@@ -16,14 +16,14 @@ TEST_CASE("Polynomial functionality", "[polynomial]")
 {
 	Polynomial<5> polynomial;
 
-	double coefficients[5] = { 2.0, 7.0, 5.0, 3.0, -10.0 };
+	float coefficients[5] = { 2.0f, 7.0f, 5.0f, 3.0f, -10.0f };
 	polynomial.setCoefficients(coefficients);
 
 	uint64_t count;
-	const double* result = polynomial.findAllPositiveRealRoots(count, 32, 0.0001);
+	const float* result = polynomial.findAllPositiveRealRoots(count, 32, 0.0001f);
 
 	REQUIRE(count == 1);
-	REQUIRE(MathUtils::almostSame(result[0], 0.79988784795406020));
+	REQUIRE(MathUtils::almostSame(result[0], 0.79988784795406020f));
 }
 
 #endif

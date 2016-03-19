@@ -23,6 +23,16 @@ Color Integrator::calculateRadiance(const Scene& scene, const Ray& viewRay, Rand
 	}
 }
 
+std::string Integrator::getName() const
+{
+	switch (type)
+	{
+		case IntegratorType::DOT: return "dot";
+		case IntegratorType::PATH: return "path";
+		default: return "unknown";
+	}
+}
+
 Color Integrator::calculateDirectLight(const Scene& scene, const Intersection& intersection, Random& random)
 {
 	if (scene.emissiveTrianglesCount == 0)

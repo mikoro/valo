@@ -29,6 +29,8 @@ namespace Raycer
 
 		Vector2 getRadius();
 
+		std::string getName() const;
+
 		FilterType type = FilterType::BOX;
 
 		BoxFilter boxFilter;

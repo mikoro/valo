@@ -14,9 +14,12 @@ using namespace Raycer;
 TEST_CASE("ModelLoader functionality", "[modelloader]")
 {
 	ModelLoaderInfo info;
-	info.modelFilePath = "data/models/cornellbox/cornellbox.obj";
-	ModelLoaderResult result = ModelLoader::load(info);
-	REQUIRE(result.triangles.size() == 36);
+	ModelLoader modelLoader;
+
+	info.modelFileName = "data/models/cornellbox-cuboids/cornellbox.obj";
+	ModelLoaderResult result = modelLoader.load(info);
+	
+	REQUIRE(result.triangles.size() == 158);
 }
 
 #endif

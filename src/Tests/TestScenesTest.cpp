@@ -8,6 +8,7 @@
 #include "catch/catch.hpp"
 
 #include "Core/Scene.h"
+#include "TestScenes/TestScene.h"
 
 using namespace Raycer;
 
@@ -15,20 +16,20 @@ TEST_CASE("TestScenes functionality", "[testscenes]")
 {
 	std::vector<Scene> scenes;
 
-	scenes.push_back(Scene::createTestScene1());
-	scenes.push_back(Scene::createTestScene2());
-	scenes.push_back(Scene::createTestScene3());
+	scenes.push_back(TestScene::create1());
+	scenes.push_back(TestScene::create2());
+	scenes.push_back(TestScene::create3());
+	scenes.push_back(TestScene::create4());
+	scenes.push_back(TestScene::create5());
+	scenes.push_back(TestScene::create6());
+	scenes.push_back(TestScene::create7());
+	scenes.push_back(TestScene::create8());
+	scenes.push_back(TestScene::create9());
 
 	uint64_t sceneCount = 0;
 
 	for (const Scene& scene : scenes)
-	{
-		sceneCount++;
-
-		scene.saveToFile(tfm::format("scene%d.json", sceneCount));
-		scene.saveToFile(tfm::format("scene%d.xml", sceneCount));
-		scene.saveToFile(tfm::format("scene%d.bin", sceneCount));
-	}
+		scene.save(tfm::format("scene%d.xml", sceneCount++));
 }
 
 #endif

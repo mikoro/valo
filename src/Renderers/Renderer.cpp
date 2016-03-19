@@ -84,3 +84,13 @@ void Renderer::render(RenderJob& job)
 		}
 	}
 }
+
+std::string Renderer::getName() const
+{
+	switch (type)
+	{
+		case RendererType::CPU: return "cpu";
+		case RendererType::CUDA: return "cuda";
+		default: return "unknown";
+	}
+}

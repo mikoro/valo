@@ -14,16 +14,16 @@ using namespace Raycer;
 
 TEST_CASE("Solver functionality", "[solver]")
 {
-	QuadraticResult result1 = Solver::findQuadraticRoots(1.5, 4.0, -3.0);
+	QuadraticResult result1 = Solver::findQuadraticRoots(1.5f, 4.0f, -3.0f);
 
 	REQUIRE(result1.rootCount == 2);
-	REQUIRE(MathUtils::almostSame(result1.roots[0], -3.2769839649484336));
-	REQUIRE(MathUtils::almostSame(result1.roots[1], 0.61031729828176684));
+	REQUIRE(MathUtils::almostSame(result1.roots[0], -3.2769839649484336f));
+	REQUIRE(MathUtils::almostSame(result1.roots[1], 0.61031729828176684f));
 
-	auto f1 = [](double x) { return cos(x) - x * x * x; };
-	double result2 = Solver::findRoot(f1, -2.0, 2.0, 32);
+	auto f1 = [](float x) { return std::cos(x) - x * x * x; };
+	float result2 = Solver::findRoot(f1, -2.0f, 2.0f, 32);
 
-	REQUIRE(MathUtils::almostSame(result2, 0.86547378345385151));
+	REQUIRE(MathUtils::almostSame(result2, 0.86547378345385151f));
 }
 
 #endif

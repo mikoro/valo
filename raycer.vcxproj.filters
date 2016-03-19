@@ -186,9 +186,6 @@
     <ClCompile Include="src\Runners\WindowRunnerRenderState.cpp">
       <Filter>Runners</Filter>
     </ClCompile>
-    <ClCompile Include="src\Tests\ColorGradientTest.cpp">
-      <Filter>Tests</Filter>
-    </ClCompile>
     <ClCompile Include="src\Tests\EulerAngleTest.cpp">
       <Filter>Tests</Filter>
     </ClCompile>
@@ -211,9 +208,6 @@
       <Filter>Tests</Filter>
     </ClCompile>
     <ClCompile Include="src\Tests\PolynomialTest.cpp">
-      <Filter>Tests</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Tests\SamplerTest.cpp">
       <Filter>Tests</Filter>
     </ClCompile>
     <ClCompile Include="src\Tests\SolverTest.cpp">
