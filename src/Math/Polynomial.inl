@@ -1,6 +1,8 @@
 // Copyright © 2016 Mikko Ronkainen <firstname@mikkoronkainen.com>
 // License: MIT, see the LICENSE file.
 
+#include <algorithm>
+
 #include "Math/MathUtils.h"
 
 namespace Raycer

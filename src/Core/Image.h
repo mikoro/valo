@@ -20,6 +20,8 @@ namespace Raycer
 	public:
 
 		Image();
+		~Image();
+
 		explicit Image(uint64_t length);
 		Image(uint64_t width, uint64_t height);
 		Image(uint64_t width, uint64_t height, float* rgbaData);

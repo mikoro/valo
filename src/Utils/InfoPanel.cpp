@@ -218,5 +218,4 @@ void InfoPanel::renderFull(const Renderer& renderer, const RenderJob& job)
 	currentY += lineSpacing;
 
 	nvgText(context, currentX, currentY, tfm::format("Tonemapper: %s", scene.tonemapper.getName()).c_str(), nullptr);
-	currentY += lineSpacing;
 }

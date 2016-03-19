@@ -17,6 +17,10 @@ using namespace Raycer;
 
 Image::Image()
 {
+}
+
+Image::~Image()
+{
 	if (pixels != nullptr)
 	{
 		free(pixels);
@@ -170,9 +174,7 @@ void Image::resize(uint64_t width_, uint64_t height_)
 	height = height_;
 	length = width * height;
 
-	if (pixels != nullptr)
-		free(pixels);
-
+	free(pixels);
 	pixels = static_cast<Color*>(malloc(length * sizeof(Color)));
 
 	clear();
