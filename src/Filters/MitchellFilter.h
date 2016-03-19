@@ -3,26 +3,35 @@
 
 #pragma once
 
-#include "Filters/Filter.h"
+#include "cereal/cereal.hpp"
+
+#include "Math/Vector2.h"
 
 namespace Raycer
 {
 	class Vector2;
 
-	class MitchellFilter : public Filter
+	class MitchellFilter
 	{
 	public:
 
-		explicit MitchellFilter(float B = (1.0f / 3.0f), float C = (1.0f / 3.0f));
+		float getWeight(float s);
+		float getWeight(const Vector2& point);
 
-		void setCoefficients(float B, float C);
+		Vector2 getRadius();
 
-		float getWeightX(float x) override;
-		float getWeightY(float y) override;
+		float B = (1.0f / 3.0f);
+		float C = (1.0f / 3.0f);
 
 	private:
 
-		float B = 0.0f;
-		float C = 0.0f;
+		friend class cereal::access;
+
+		template <class Archive>
+		void serialize(Archive& ar)
+		{
+			ar(CEREAL_NVP(B),
+				CEREAL_NVP(C));
+		}
 	};
 }

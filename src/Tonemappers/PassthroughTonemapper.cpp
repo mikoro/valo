@@ -1,23 +1,20 @@
 // Copyright © 2016 Mikko Ronkainen <firstname@mikkoronkainen.com>
 // License: MIT, see the LICENSE file.
 
-#include "Precompiled.h"
+#include "Core/Precompiled.h"
 
+#include "Core/Image.h"
+#include "Math/Color.h"
 #include "Tonemappers/PassthroughTonemapper.h"
-#include "Tracing/Scene.h"
-#include "Rendering/Image.h"
-#include "Rendering/Color.h"
 
 using namespace Raycer;
 
-void PassthroughTonemapper::apply(const Scene& scene, const Image& inputImage, Image& outputImage)
+void PassthroughTonemapper::apply(const Image& inputImage, Image& outputImage)
 {
-	(void)scene;
+	const Color* inputPixels = inputImage.getPixelData();
+	Color* outputPixels = outputImage.getPixelData();
+	int64_t pixelCount = inputImage.getLength();
 
-	auto& inputPixelData = inputImage.getPixelDataConst();
-	auto& outputPixelData = outputImage.getPixelData();
-
-	#pragma omp parallel for
-	for (int64_t i = 0; i < int64_t(inputPixelData.size()); ++i)
-		outputPixelData[i] = inputPixelData.at(i);
+	for (int64_t i = 0; i < pixelCount; ++i)
+		outputPixels[i] = inputPixels[i];
 }

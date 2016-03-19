@@ -3,16 +3,25 @@
 
 #pragma once
 
-#include "Tonemappers/Tonemapper.h"
+#include "cereal/cereal.hpp"
 
 namespace Raycer
 {
-	class Scene;
+	class Image;
 
-	class PassthroughTonemapper : public Tonemapper
+	class PassthroughTonemapper
 	{
 	public:
 
-		void apply(const Scene& scene, const Image& inputImage, Image& outputImage) override;
+		void apply(const Image& inputImage, Image& outputImage);
+
+	private:
+
+		friend class cereal::access;
+
+		template <class Archive>
+		void serialize(Archive& ar)
+		{
+		}
 	};
 }

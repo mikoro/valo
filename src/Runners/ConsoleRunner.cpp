@@ -1,20 +1,19 @@
 ﻿// Copyright © 2016 Mikko Ronkainen <firstname@mikkoronkainen.com>
 // License: MIT, see the LICENSE file.
 
-#include "Precompiled.h"
+#include "Core/Precompiled.h"
 
+#include "Core/App.h"
+#include "Core/Camera.h"
+#include "Core/Film.h"
+#include "Core/Scene.h"
+#include "Renderers/Renderer.h"
 #include "Runners/ConsoleRunner.h"
-#include "App.h"
+#include "TestScenes/TestScene.h"
 #include "Utils/Log.h"
 #include "Utils/Settings.h"
 #include "Utils/StringUtils.h"
 #include "Utils/SysUtils.h"
-#include "Rendering/Film.h"
-#include "Tracing/Scene.h"
-#include "Tracers/Tracer.h"
-#include "Tracers/TracerState.h"
-#include "Tracing/Camera.h"
-#include "TestScenes/TestScene.h"
 
 using namespace Raycer;
 using namespace std::chrono;
@@ -24,85 +23,45 @@ int ConsoleRunner::run()
 	Settings& settings = App::getSettings();
 	Log& log = App::getLog();
 
-	Timer totalElapsedTimer;
-
-	interrupted = false;
-
 	samplesPerSecondAverage.setAlpha(0.05f);
-	pixelsPerSecondAverage.setAlpha(0.05f);
-	raysPerSecondAverage.setAlpha(0.05f);
-	pathsPerSecondAverage.setAlpha(0.05f);
 
+	Timer totalElapsedTimer;
+	Renderer renderer;
 	Scene scene;
+	Film film;
 
-	if (settings.scene.enableTestScenes)
+	renderer.initialize();
+
+	if (settings.scene.useTestScene)
 		scene = TestScene::create(settings.scene.testSceneNumber);
 	else
-		scene = Scene::loadFromFile(settings.scene.fileName);
+		scene = Scene::load(settings.scene.fileName);
 
 	scene.initialize();
 	scene.camera.setImagePlaneSize(settings.image.width, settings.image.height);
 	scene.camera.update(0.0f);
 
-	Film film;
 	film.resize(settings.image.width, settings.image.height);
 
-	if (settings.film.restoreFromFile)
-		film.load(settings.film.restoreFileName);
-
-	TracerState state;
-	state.scene = &scene;
-	state.film = &film;
-	state.filmWidth = settings.image.width;
-	state.filmHeight = settings.image.height;
-	state.filmPixelOffset = 0;
-	state.filmPixelCount = state.filmWidth * state.filmHeight;
-
-	run(state);
-
-	log.logInfo("Total elapsed time: %s", totalElapsedTimer.getElapsed().getString(true));
-
-	if (!interrupted)
-	{
-		film.getOutputImage().save(settings.image.fileName);
-
-		if (settings.image.autoView)
-			SysUtils::openFileExternally(settings.image.fileName);
-	}
-	else
-		film.getOutputImage().save("partial_result.png");
-
-	return 0;
-}
-
-void ConsoleRunner::run(TracerState& state)
-{
-	interrupted = false;
-
+	renderJob.scene = &scene;
+	renderJob.film = &film;
+	renderJob.interrupted = false;
+	renderJob.sampleCount = 0;
+	
 	SysUtils::setConsoleTextColor(ConsoleTextColor::WHITE_ON_BLACK);
 
-	Settings& settings = App::getSettings();
-	Scene& scene = *state.scene;
-	auto tracer = Tracer::getTracer(state.scene->general.tracerType);
-	
-	uint64_t totalSamples =
-		state.filmPixelCount *
-		tracer->getPixelSampleCount(scene) *
-		tracer->getSamplesPerPixel(scene);
+	uint64_t totalSamples = settings.image.width * settings.image.height * renderer.pixelSamples;
 
-	std::cout << tfm::format("\nTracing started (threads: %d, dimensions: %dx%d, offset: %d, pixels: %d, samples: %s, pixel samples: %d)\n\n",
-		settings.general.maxThreadCount,
-		state.filmWidth,
-		state.filmHeight,
-		state.filmPixelOffset,
-		state.filmPixelCount,
-		StringUtils::humanizeNumber(float(totalSamples)),
-		tracer->getPixelSampleCount(scene)
-		);
+	std::cout << tfm::format("\nRendering started (size: %dx%d, pixels: %s, samples: %s, pixel samples: %d)\n\n",
+		settings.image.width,
+		settings.image.height,
+		StringUtils::humanizeNumber(double(settings.image.width * settings.image.height)),
+		StringUtils::humanizeNumber(double(totalSamples)),
+		renderer.pixelSamples);
 
-	Timer tracingElapsedTimer;
-	tracingElapsedTimer.setAveragingAlpha(0.05f);
-	tracingElapsedTimer.setTargetValue(float(totalSamples));
+	Timer renderingElapsedTimer;
+	renderingElapsedTimer.setAveragingAlpha(0.05f);
+	renderingElapsedTimer.setTargetValue(float(totalSamples));
 
 	std::atomic<bool> renderThreadFinished(false);
 	std::exception_ptr renderThreadException = nullptr;
@@ -111,7 +70,7 @@ void ConsoleRunner::run(TracerState& state)
 	{
 		try
 		{
-			tracer->run(state, interrupted);
+			renderer.render(renderJob);
 		}
 		catch (...)
 		{
@@ -125,21 +84,16 @@ void ConsoleRunner::run(TracerState& state)
 
 	while (!renderThreadFinished)
 	{
-		tracingElapsedTimer.updateCurrentValue(float(state.sampleCount));
+		renderingElapsedTimer.updateCurrentValue(float(renderJob.sampleCount));
 
-		auto elapsed = tracingElapsedTimer.getElapsed();
-		auto remaining = tracingElapsedTimer.getRemaining();
+		auto elapsed = renderingElapsedTimer.getElapsed();
+		auto remaining = renderingElapsedTimer.getRemaining();
 
 		if (elapsed.totalMilliseconds > 0)
-		{
-			samplesPerSecondAverage.addMeasurement(float(state.sampleCount) / (float(elapsed.totalMilliseconds) / 1000.0f));
-			pixelsPerSecondAverage.addMeasurement(float(state.pixelCount) / (float(elapsed.totalMilliseconds) / 1000.0f));
-			raysPerSecondAverage.addMeasurement(float(state.rayCount) / (float(elapsed.totalMilliseconds) / 1000.0f));
-			pathsPerSecondAverage.addMeasurement(float(state.pathCount) / (float(elapsed.totalMilliseconds) / 1000.0f));
-		}
+			samplesPerSecondAverage.addMeasurement(float(renderJob.sampleCount) / (float(elapsed.totalMilliseconds) / 1000.0f));
 
-		printProgress(tracingElapsedTimer.getPercentage(), elapsed, remaining, state.pixelSampleCount);
-		std::this_thread::sleep_for(std::chrono::milliseconds(100));
+		printProgress(renderingElapsedTimer.getPercentage(), elapsed, remaining, film.pixelSamples);
+		std::this_thread::sleep_for(std::chrono::milliseconds(250));
 	}
 
 	renderThread.join();
@@ -147,42 +101,45 @@ void ConsoleRunner::run(TracerState& state)
 	if (renderThreadException != nullptr)
 		std::rethrow_exception(renderThreadException);
 
-	tracingElapsedTimer.updateCurrentValue(float(state.sampleCount));
+	renderingElapsedTimer.updateCurrentValue(float(renderJob.sampleCount));
 
-	auto elapsed = tracingElapsedTimer.getElapsed();
-	auto remaining = tracingElapsedTimer.getRemaining();
+	auto elapsed = renderingElapsedTimer.getElapsed();
+	auto remaining = renderingElapsedTimer.getRemaining();
 
-	printProgress(tracingElapsedTimer.getPercentage(), elapsed, remaining, state.pixelSampleCount);
+	printProgress(renderingElapsedTimer.getPercentage(), elapsed, remaining, film.pixelSamples);
 
 	float totalSamplesPerSecond = 0.0f;
-	float totalPixelsPerSecond = 0.0f;
-	float totalRaysPerSecond = 0.0f;
-	float totalPathsPerSecond = 0.0f;
 
 	if (elapsed.totalMilliseconds > 0)
-	{
-		totalSamplesPerSecond = float(state.sampleCount) / (float(elapsed.totalMilliseconds) / 1000.0f);
-		totalPixelsPerSecond = float(state.pixelCount) / (float(elapsed.totalMilliseconds) / 1000.0f);
-		totalRaysPerSecond = float(state.rayCount) / (float(elapsed.totalMilliseconds) / 1000.0f);
-		totalPathsPerSecond = float(state.pathCount) / (float(elapsed.totalMilliseconds) / 1000.0f);
-	}
+		totalSamplesPerSecond = float(renderJob.sampleCount) / (float(elapsed.totalMilliseconds) / 1000.0f);
 
-	std::cout << tfm::format("\n\nTracing %s (time: %s, samples/s: %s, pixels/s: %s, rays/s: %s, paths/s: %s)\n\n",
-		interrupted ? "interrupted" : "finished",
+	std::cout << tfm::format("\n\nRendering %s (time: %s, samples/s: %s)\n\n",
+		renderJob.interrupted ? "interrupted" : "finished",
 		elapsed.getString(true),
-		StringUtils::humanizeNumber(totalSamplesPerSecond),
-		StringUtils::humanizeNumber(totalPixelsPerSecond),
-		StringUtils::humanizeNumber(totalRaysPerSecond),
-		StringUtils::humanizeNumber(totalPathsPerSecond));
+		StringUtils::humanizeNumber(totalSamplesPerSecond));
 
 	SysUtils::setConsoleTextColor(ConsoleTextColor::DEFAULT);
 
-	state.film->generateOutputImage(*state.scene);
+	film.generateImage(scene.tonemapper);
+
+	log.logInfo("Total elapsed time: %s", totalElapsedTimer.getElapsed().getString(true));
+
+	if (!renderJob.interrupted)
+	{
+		film.getImage().save(settings.image.fileName);
+
+		if (settings.image.autoView)
+			SysUtils::openFileExternally(settings.image.fileName);
+	}
+	else
+		film.getImage().save("partial_image.png");
+
+	return 0;
 }
 
 void ConsoleRunner::interrupt()
 {
-	interrupted = true;
+	renderJob.interrupted = true;
 }
 
 void ConsoleRunner::printProgress(float percentage_, const TimerData& elapsed, const TimerData& remaining, uint64_t pixelSamples)
@@ -208,9 +165,6 @@ void ConsoleRunner::printProgress(float percentage_, const TimerData& elapsed, c
     tfm::printf("Elapsed: %s | ", elapsed.getString());
     tfm::printf("Remaining: %s | ", remaining.getString());
 	tfm::printf("Samples/s: %s | ", StringUtils::humanizeNumber(samplesPerSecondAverage.getAverage()));
-	tfm::printf("Pixels/s: %s | ", StringUtils::humanizeNumber(pixelsPerSecondAverage.getAverage()));
-	tfm::printf("Rays/s: %s | ", StringUtils::humanizeNumber(raysPerSecondAverage.getAverage()));
-	tfm::printf("Paths/s: %s | ", StringUtils::humanizeNumber(pathsPerSecondAverage.getAverage()));
 	tfm::printf("Pixel samples: %d", pixelSamples);
     tfm::printf("          \r");
 }

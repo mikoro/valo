@@ -3,16 +3,34 @@
 
 #pragma once
 
-#include "Tonemappers/Tonemapper.h"
+#include "cereal/cereal.hpp"
 
 namespace Raycer
 {
-	class Scene;
+	class Image;
 
-	class LinearTonemapper : public Tonemapper
+	class LinearTonemapper
 	{
 	public:
 
-		void apply(const Scene& scene, const Image& inputImage, Image& outputImage) override;
+		void apply(const Image& inputImage, Image& outputImage);
+
+		bool applyGamma = true;
+		bool shouldClamp = true;
+		float gamma = 2.2f;
+		float exposure = 0.0f;
+
+	private:
+
+		friend class cereal::access;
+
+		template <class Archive>
+		void serialize(Archive& ar)
+		{
+			ar(CEREAL_NVP(applyGamma),
+				CEREAL_NVP(shouldClamp),
+				CEREAL_NVP(gamma),
+				CEREAL_NVP(exposure));
+		}
 	};
 }

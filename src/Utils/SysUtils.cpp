@@ -1,30 +1,30 @@
 // Copyright © 2016 Mikko Ronkainen <firstname@mikkoronkainen.com>
 // License: MIT, see the LICENSE file.
 
-#include "Precompiled.h"
+#include "Core/Precompiled.h"
 
 #include "Utils/SysUtils.h"
-#include "App.h"
+#include "Core/App.h"
 #include "Utils/Log.h"
 
 using namespace Raycer;
 
-void SysUtils::openFileExternally(const std::string& filePath)
+void SysUtils::openFileExternally(const std::string& fileName)
 {
 	Log& log = App::getLog();
-	log.logInfo("Opening file in an external viewer (%s)", filePath);
+	log.logInfo("Opening file in an external viewer (%s)", fileName);
 
 #ifdef _WIN32
-	ShellExecuteA(nullptr, "open", filePath.c_str(), nullptr, nullptr, SW_SHOWNORMAL);
+	ShellExecuteA(nullptr, "open", fileName.c_str(), nullptr, nullptr, SW_SHOWNORMAL);
 #else
 	int32_t pid = fork();
 
 	if (pid == 0)
 	{
 #ifdef __linux
-		char* arg[] = { (char*)"xdg-open", (char*)filePath.c_str(), (char*)nullptr };
+		char* arg[] = { (char*)"xdg-open", (char*)fileName.c_str(), (char*)nullptr };
 #elif __APPLE__
-        char* arg[] = { (char*)"open", (char*)filePath.c_str(), (char*)nullptr };
+        char* arg[] = { (char*)"open", (char*)fileName.c_str(), (char*)nullptr };
 #endif
 		if (execvp(arg[0], arg) == -1)
 			log.logWarning("Could not open file externally (%d)", errno);

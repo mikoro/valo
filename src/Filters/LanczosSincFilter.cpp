@@ -1,7 +1,7 @@
 // Copyright © 2016 Mikko Ronkainen <firstname@mikkoronkainen.com>
 // License: MIT, see the LICENSE file.
 
-#include "Precompiled.h"
+#include "Core/Precompiled.h"
 
 #include "Filters/LanczosSincFilter.h"
 
@@ -28,23 +28,17 @@ namespace
 	}
 }
 
-LanczosSincFilter::LanczosSincFilter(uint64_t radiusX_, uint64_t radiusY_)
+float LanczosSincFilter::getWeight(float s)
 {
-	setRadius(radiusX_, radiusY_);
+	return calculateWeight(s, radius.x);
 }
 
-void LanczosSincFilter::setRadius(uint64_t radiusX_, uint64_t radiusY_)
+float LanczosSincFilter::getWeight(const Vector2& point)
 {
-	radiusX = float(radiusX_);
-	radiusY = float(radiusY_);
+	return calculateWeight(point.x, radius.x) * calculateWeight(point.y, radius.y);
 }
 
-float LanczosSincFilter::getWeightX(float x)
+Vector2 LanczosSincFilter::getRadius()
 {
-	return calculateWeight(x, radiusX);
-}
-
-float LanczosSincFilter::getWeightY(float y)
-{
-	return calculateWeight(y, radiusY);
+	return radius;
 }

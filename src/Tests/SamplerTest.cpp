@@ -1,7 +1,7 @@
 ﻿// Copyright © 2016 Mikko Ronkainen <firstname@mikkoronkainen.com>
 // License: MIT, see the LICENSE file.
 
-#include "Precompiled.h"
+#include "Core/Precompiled.h"
 
 #ifdef RUN_UNIT_TESTS
 
@@ -14,13 +14,13 @@
 #include "Samplers/CMJSampler.h"
 #include "Samplers/PoissonDiscSampler.h"
 #include "Rendering/Image.h"
-#include "Tracing/ONB.h"
+#include "Core/ONB.h"
 #include "Rendering/Color.h"
 #include "Math/Vector2.h"
 #include "Math/Vector3.h"
 #include "Utils/Random.h"
-#include "Tracing/Triangle.h"
-#include "Tracing/Intersection.h"
+#include "Core/Triangle.h"
+#include "Core/Intersection.h"
 #include "Materials/DiffuseSpecularMaterial.h"
 
 using namespace Raycer;

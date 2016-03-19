@@ -1,27 +1,27 @@
 // Copyright © 2016 Mikko Ronkainen <firstname@mikkoronkainen.com>
 // License: MIT, see the LICENSE file.
 
-#include "Precompiled.h"
+#include "Core/Precompiled.h"
 
-#include "Utils/ModelLoader.h"
-#include "App.h"
-#include "Utils/Log.h"
-#include "Utils/StringUtils.h"
-#include "Utils/Timer.h"
+#include "Core/App.h"
+#include "Math/Matrix4x4.h"
 #include "Math/Vector2.h"
 #include "Math/Vector3.h"
-#include "Rendering/Color.h"
-#include "Math/Matrix4x4.h"
+#include "Utils/Log.h"
+#include "Utils/ModelLoader.h"
+#include "Utils/StringUtils.h"
+#include "Utils/Timer.h"
+#include <Materials/Material.h>
 
 using namespace Raycer;
 using namespace boost::filesystem;
 
 namespace
 {
-	std::string getAbsolutePath(const std::string& rootDirectory, const std::string& relativeFilePath)
+	std::string getAbsolutePath(const std::string& rootDirectory, const std::string& relativeFileName)
 	{
 		path tempPath(rootDirectory);
-		tempPath.append(relativeFilePath.begin(), relativeFilePath.end());
+		tempPath.append(relativeFileName.begin(), relativeFileName.end());
 		std::string tempPathString = tempPath.string();
 		std::replace(tempPathString.begin(), tempPathString.end(), '\\', '/');
 		return tempPathString;
@@ -249,10 +249,10 @@ ModelLoaderResult ModelLoader::load(const ModelLoaderInfo& info)
 {
 	Log& log = App::getLog();
 
-	log.logInfo("Reading OBJ file %s(%s)", info.loadOnlyMaterials ? "(materials only) " : "", info.modelFilePath);
+	log.logInfo("Reading OBJ file %s(%s)", info.loadOnlyMaterials ? "(materials only) " : "", info.modelFileName);
 
 	Timer timer;
-	std::string rootDirectory = boost::filesystem::absolute(info.modelFilePath).parent_path().string();
+	std::string rootDirectory = boost::filesystem::absolute(info.modelFileName).parent_path().string();
 	currentMaterialId = info.defaultMaterialId;
 
 	Matrix4x4 scaling = Matrix4x4::scale(info.scale);
@@ -278,7 +278,7 @@ ModelLoaderResult ModelLoader::load(const ModelLoaderInfo& info)
 		texcoords.reserve(info.triangleCountEstimate / 2);
 	}
 	
-	std::ifstream file(info.modelFilePath, std::ios::in | std::ios::binary | std::ios::ate);
+	std::ifstream file(info.modelFileName, std::ios::in | std::ios::binary | std::ios::ate);
 
 	if (!file.good())
 		throw std::runtime_error(tfm::format("Could not open the OBJ file"));
@@ -367,29 +367,29 @@ ModelLoaderResult ModelLoader::load(const ModelLoaderInfo& info)
 		{
 			wordStartIndex = wordEndIndex;
 			getWord(fileBufferPtr, lineEndIndex, wordStartIndex, wordEndIndex);
-			std::string mtlFilePath(fileBufferPtr + wordStartIndex, wordEndIndex - wordStartIndex);
+			std::string mtlFileName(fileBufferPtr + wordStartIndex, wordEndIndex - wordStartIndex);
 
-			processMaterialFile(rootDirectory, mtlFilePath, result);
+			processMaterialFile(rootDirectory, mtlFileName, result);
 		}
 		
 		lineStartIndex = lineEndIndex;
 	}
 
-	log.logInfo("OBJ file reading finished (time: %s, vertices: %s, normals: %s, texcoords: %s, triangles: %s, materials: %s, textures: %s)", timer.getElapsed().getString(true), vertices.size(), normals.size(), texcoords.size(), result.triangles.size(), result.defaultMaterials.size(), result.imageTextures.size());
+	log.logInfo("OBJ file reading finished (time: %s, vertices: %s, normals: %s, texcoords: %s, triangles: %s, materials: %s, textures: %s)", timer.getElapsed().getString(true), vertices.size(), normals.size(), texcoords.size(), result.triangles.size(), result.materials.size(), result.textures.size());
 
 	return result;
 }
 
-void ModelLoader::processMaterialFile(const std::string& rootDirectory, const std::string& mtlFilePath, ModelLoaderResult& result)
+void ModelLoader::processMaterialFile(const std::string& rootDirectory, const std::string& mtlFileName, ModelLoaderResult& result)
 {
-	std::string absoluteMtlFilePath = getAbsolutePath(rootDirectory, mtlFilePath);
-	App::getLog().logInfo("Reading MTL file (%s)", absoluteMtlFilePath);
-	std::ifstream file(absoluteMtlFilePath);
+	std::string absoluteMtlFileName = getAbsolutePath(rootDirectory, mtlFileName);
+	App::getLog().logInfo("Reading MTL file (%s)", absoluteMtlFileName);
+	std::ifstream file(absoluteMtlFileName);
 
 	if (!file.good())
 		throw std::runtime_error("Could not open the MTL file");
 
-	DefaultMaterial currentMaterial;
+	Material currentMaterial;
 	bool materialPending = false;
 
 	std::string line;
@@ -404,12 +404,12 @@ void ModelLoader::processMaterialFile(const std::string& rootDirectory, const st
 		if (part == "newmtl") // new material
 		{
 			if (materialPending)
-				result.defaultMaterials.push_back(currentMaterial);
+				result.materials.push_back(currentMaterial);
 
 			materialPending = true;
 			currentMaterialId = ++materialIdCounter;
 
-			currentMaterial = DefaultMaterial();
+			currentMaterial = Material();
 			currentMaterial.id = currentMaterialId;
 
 			ss >> currentMaterialName;
@@ -417,8 +417,6 @@ void ModelLoader::processMaterialFile(const std::string& rootDirectory, const st
 		}
 		else if (part == "materialId")
 			ss >> externalMaterialsMap[currentMaterialName];
-		else if (part == "skipLighting")
-			ss >> currentMaterial.skipLighting;
 		else if (part == "nonShadowing")
 			ss >> currentMaterial.nonShadowing;
 		else if (part == "normalInterpolation")
@@ -427,54 +425,10 @@ void ModelLoader::processMaterialFile(const std::string& rootDirectory, const st
 			ss >> currentMaterial.autoInvertNormal;
 		else if (part == "invertNormal")
 			ss >> currentMaterial.invertNormal;
-		else if (part == "fresnelReflection")
-			ss >> currentMaterial.fresnelReflection;
-		else if (part == "attenuating")
-			ss >> currentMaterial.attenuating;
-		else if (part == "shininess" || part == "Ns")
-			ss >> currentMaterial.shininess;
-		else if (part == "refractiveIndex" || part == "Ni")
-			ss >> currentMaterial.refractiveIndex;
-		else if (part == "rayReflectance")
-			ss >> currentMaterial.rayReflectance;
-		else if (part == "rayTransmittance")
-			ss >> currentMaterial.rayTransmittance;
-		else if (part == "attenuationFactor")
-			ss >> currentMaterial.attenuationFactor;
-		else if (part == "attenuationColor")
-		{
-			ss >> currentMaterial.attenuationColor.r;
-			ss >> currentMaterial.attenuationColor.g;
-			ss >> currentMaterial.attenuationColor.b;
-		}
 		else if (part == "texcoordScale")
 		{
 			ss >> currentMaterial.texcoordScale.x;
 			ss >> currentMaterial.texcoordScale.y;
-		}
-		else if (part == "reflectance" || part == "Kr" || part == "Kd")
-		{
-			ss >> currentMaterial.reflectance.r;
-			ss >> currentMaterial.reflectance.g;
-			ss >> currentMaterial.reflectance.b;
-		}
-		else if ((part == "reflectanceMap" || part == "map_Kr" || part == "map_Kd") && currentMaterial.reflectanceTextureId == 0)
-		{
-			ImageTexture imageTexture;
-			imageTexture.id = ++currentTextureId;
-			currentMaterial.reflectanceTextureId = imageTexture.id;
-
-			ss >> part;
-			imageTexture.imageFilePath = getAbsolutePath(rootDirectory, part);
-			imageTexture.applyGamma = !StringUtils::endsWith(imageTexture.imageFilePath, ".hdr");
-
-			result.imageTextures.push_back(imageTexture);
-		}
-		else if (part == "specularReflectance" || part == "Ks")
-		{
-		}
-		else if ((part == "specularMap" || part == "map_Ks"))
-		{
 		}
 		else if (part == "emittance" || part == "Ke")
 		{
@@ -484,46 +438,68 @@ void ModelLoader::processMaterialFile(const std::string& rootDirectory, const st
 		}
 		else if ((part == "emittanceMap" || part == "map_Ke") && currentMaterial.emittanceTextureId == 0)
 		{
-			ImageTexture imageTexture;
-			imageTexture.id = ++currentTextureId;
-			currentMaterial.emittanceTextureId = imageTexture.id;
+			Texture texture;
+			texture.type = TextureType::IMAGE;
+			texture.id = ++currentTextureId;
+			currentMaterial.emittanceTextureId = texture.id;
 
 			ss >> part;
-			imageTexture.imageFilePath = getAbsolutePath(rootDirectory, part);
-			imageTexture.applyGamma = !StringUtils::endsWith(imageTexture.imageFilePath, ".hdr");
+			texture.imageTexture.imageFileName = getAbsolutePath(rootDirectory, part);
+			texture.imageTexture.applyGamma = !StringUtils::endsWith(texture.imageTexture.imageFileName, ".hdr");
 
-			result.imageTextures.push_back(imageTexture);
+			result.textures.push_back(texture);
+		}
+		else if (part == "reflectance" || part == "Kr" || part == "Kd")
+		{
+			ss >> currentMaterial.reflectance.r;
+			ss >> currentMaterial.reflectance.g;
+			ss >> currentMaterial.reflectance.b;
+		}
+		else if ((part == "reflectanceMap" || part == "map_Kr" || part == "map_Kd") && currentMaterial.reflectanceTextureId == 0)
+		{
+			Texture texture;
+			texture.type = TextureType::IMAGE;
+			texture.id = ++currentTextureId;
+			currentMaterial.reflectanceTextureId = texture.id;
+
+			ss >> part;
+			texture.imageTexture.imageFileName = getAbsolutePath(rootDirectory, part);
+			texture.imageTexture.applyGamma = !StringUtils::endsWith(texture.imageTexture.imageFileName, ".hdr");
+
+			result.textures.push_back(texture);
 		}
 		else if ((part == "normalMap" || part == "map_normal") && currentMaterial.normalTextureId == 0)
 		{
-			ImageTexture imageTexture;
-			imageTexture.id = ++currentTextureId;
-			currentMaterial.normalTextureId = imageTexture.id;
+			Texture texture;
+			texture.type = TextureType::IMAGE;
+			texture.id = ++currentTextureId;
+			currentMaterial.normalTextureId = texture.id;
 
 			ss >> part;
-			imageTexture.imageFilePath = getAbsolutePath(rootDirectory, part);
-			imageTexture.applyGamma = false;
+			texture.imageTexture.imageFileName = getAbsolutePath(rootDirectory, part);
+			texture.imageTexture.applyGamma = false;
 
-			result.imageTextures.push_back(imageTexture);
+			result.textures.push_back(texture);
 		}
 		else if ((part == "maskMap" || part == "map_d") && currentMaterial.maskTextureId == 0)
 		{
-			ImageTexture imageTexture;
-			imageTexture.id = ++currentTextureId;
-			currentMaterial.maskTextureId = imageTexture.id;
+			Texture texture;
+			texture.type = TextureType::IMAGE;
+			texture.id = ++currentTextureId;
+			currentMaterial.maskTextureId = texture.id;
 
 			ss >> part;
-			imageTexture.imageFilePath = getAbsolutePath(rootDirectory, part);
-			imageTexture.applyGamma = false;
+			texture.imageTexture.imageFileName = getAbsolutePath(rootDirectory, part);
+			texture.imageTexture.applyGamma = false;
 
-			result.imageTextures.push_back(imageTexture);
+			result.textures.push_back(texture);
 		}
 	}
 
 	file.close();
 
 	if (materialPending)
-		result.defaultMaterials.push_back(currentMaterial);
+		result.materials.push_back(currentMaterial);
 }
 
 bool ModelLoader::processFace(const char* buffer, uint64_t lineStartIndex, uint64_t lineEndIndex, uint64_t lineNumber, ModelLoaderResult& result)

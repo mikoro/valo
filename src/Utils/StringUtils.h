@@ -10,7 +10,7 @@ namespace Raycer
 	public:
 
 		static bool endsWith(const std::string& input, const std::string& end);
-		static std::string readFileToString(const std::string& filePath);
+		static std::string readFileToString(const std::string& fileName);
 		static std::string humanizeNumber(double value, bool usePowerOfTwo = false);
 	};
 }

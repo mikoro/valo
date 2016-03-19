@@ -7,28 +7,34 @@
 
 #include "cereal/cereal.hpp"
 
-#include "BVH/BVH.h"
-#include "Tracing/AABB.h"
+#include "BVH/BVHCommon.h"
 
 namespace Raycer
 {
-	class BVH1 : public BVH
+	class Triangle;
+	class Scene;
+	class Ray;
+	class Intersection;
+
+	class BVH1
 	{
 	public:
 
-		void build(Scene& scene) override;
-		bool intersect(const Scene& scene, const Ray& ray, Intersection& intersection) const override;
+		void build(std::vector<Triangle>& triangles);
+		bool intersect(const Scene& scene, const Ray& ray, Intersection& intersection) const;
+
+		uint64_t maxLeafSize = 4;
 
 	private:
 
-		std::vector<BVHNode> nodes;
+		BVHNode* nodesPtr = nullptr;
 
 		friend class cereal::access;
 
 		template <class Archive>
 		void serialize(Archive& ar)
 		{
-			ar(CEREAL_NVP(nodes));
+			ar(CEREAL_NVP(maxLeafSize));
 		}
 	};
 }

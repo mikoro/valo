@@ -1,9 +1,10 @@
 // Copyright © 2016 Mikko Ronkainen <firstname@mikkoronkainen.com>
 // License: MIT, see the LICENSE file.
 
-#include "Precompiled.h"
+#include "Core/Precompiled.h"
 
 #include "Filters/BellFilter.h"
+#include "Math/Vector2.h"
 
 using namespace Raycer;
 
@@ -15,25 +16,25 @@ namespace
 
 		if (s < 0.5f)
 			return 0.75f - (s * s);
-		else if (s <= 1.5f)
+		
+		if (s <= 1.5f)
 			return 0.5f * std::pow(s - 1.5f, 2.0f);
-		else
-			return 0.0f;
+		
+		return 0.0f;
 	}
 }
 
-BellFilter::BellFilter()
+float BellFilter::getWeight(float s)
 {
-	radiusX = 1.5;
-	radiusY = 1.5;
+	return calculateWeight(s);
 }
 
-float BellFilter::getWeightX(float x)
+float BellFilter::getWeight(const Vector2& point)
 {
-	return calculateWeight(x);
+	return calculateWeight(point.x) * calculateWeight(point.y);
 }
 
-float BellFilter::getWeightY(float y)
+Vector2 BellFilter::getRadius()
 {
-	return calculateWeight(y);
+	return Vector2(1.5f, 1.5f);
 }

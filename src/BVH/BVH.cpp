@@ -1,7 +1,7 @@
 ﻿// Copyright © 2016 Mikko Ronkainen <firstname@mikkoronkainen.com>
 // License: MIT, see the LICENSE file.
 
-#include "Precompiled.h"
+#include "Core/Precompiled.h"
 
 #include "BVH/BVH.h"
 #include "BVH/BVH1.h"
@@ -17,13 +17,23 @@
 
 using namespace Raycer;
 
-std::unique_ptr<BVH> BVH::getBVH(BVHType type)
+void BVH::build(std::vector<Triangle>& triangles, std::vector<TriangleSOA<4>>& triangles4)
 {
 	switch (type)
 	{
-		case BVHType::BVH1: return std::make_unique<BVH1>();
-		case BVHType::BVH4: return std::make_unique<BVH4>();
-		default: throw std::runtime_error("Unknown BVH type");
+		case BVHType::BVH1: bvh1.build(triangles); break;
+		case BVHType::BVH4: bvh4.build(triangles, triangles4); break;
+		default: break;
+	}
+}
+
+bool BVH::intersect(const Scene& scene, const Ray& ray, Intersection& intersection) const
+{
+	switch (type)
+	{
+		case BVHType::BVH1: return bvh1.intersect(scene, ray, intersection);
+		case BVHType::BVH4: return bvh4.intersect(scene, ray, intersection);
+		default: return false;
 	}
 }
 

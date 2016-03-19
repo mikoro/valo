@@ -5,23 +5,20 @@
 
 #include "cereal/cereal.hpp"
 
-#include "Textures/Texture.h"
-#include "Rendering/Color.h"
+#include "Math/Color.h"
 
 namespace Raycer
 {
-	class Scene;
 	class Vector2;
 	class Vector3;
 
-	class CheckerTexture : public Texture
+	class CheckerTexture
 	{
 	public:
 
-		void initialize(Scene& scene) override;
+		void initialize();
 
-		Color getColor(const Vector2& texcoord, const Vector3& position) const override;
-		float getValue(const Vector2& texcoord, const Vector3& position) const override;
+		Color getColor(const Vector2& texcoord, const Vector3& position);
 		
 		Color color1;
 		Color color2;
@@ -35,8 +32,7 @@ namespace Raycer
 		template <class Archive>
 		void serialize(Archive& ar)
 		{
-			ar(cereal::make_nvp("texture", cereal::base_class<Texture>(this)),
-				CEREAL_NVP(color1),
+			ar(CEREAL_NVP(color1),
 				CEREAL_NVP(color2),
 				CEREAL_NVP(stripeMode),
 				CEREAL_NVP(stripeWidth));

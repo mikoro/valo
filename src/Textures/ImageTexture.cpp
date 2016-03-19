@@ -1,32 +1,25 @@
 // Copyright © 2016 Mikko Ronkainen <firstname@mikkoronkainen.com>
 // License: MIT, see the LICENSE file.
 
-#include "Precompiled.h"
+#include "Core/Precompiled.h"
 
-#include "Textures/ImageTexture.h"
+#include "Core/App.h"
+#include "Core/Scene.h"
 #include "Math/Vector2.h"
 #include "Math/Vector3.h"
-#include "Rendering/Color.h"
-#include "Rendering/ImagePool.h"
-#include "Tracing/Scene.h"
+#include "Textures/ImageTexture.h"
+#include "Utils/ImagePool.h"
 
 using namespace Raycer;
 
-void ImageTexture::initialize(Scene& scene)
+void ImageTexture::initialize()
 {
-	image = scene.imagePool.getImage(imageFilePath, applyGamma);
+	image = App::getImagePool().loadImage(imageFileName, applyGamma);
 }
 
-Color ImageTexture::getColor(const Vector2& texcoord, const Vector3& position) const
+Color ImageTexture::getColor(const Vector2& texcoord, const Vector3& position)
 {
 	(void)position;
 
-	return image->getPixelBilinear(texcoord.x, texcoord.y) * intensity;
-}
-
-float ImageTexture::getValue(const Vector2& texcoord, const Vector3& position) const
-{
-	(void)position;
-
-	return image->getPixelBilinear(texcoord.x, texcoord.y).r * intensity;
+	return image->getPixelBilinear(texcoord.x, texcoord.y);
 }

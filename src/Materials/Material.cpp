@@ -1,31 +1,61 @@
 // Copyright © 2016 Mikko Ronkainen <firstname@mikkoronkainen.com>
 // License: MIT, see the LICENSE file.
 
-#include "Precompiled.h"
+#include "Core/Precompiled.h"
 
+#include "Core/Scene.h"
 #include "Materials/Material.h"
-#include "Tracing/Intersection.h"
 #include "Textures/Texture.h"
 
 using namespace Raycer;
 
-Color Material::getReflectance(const Intersection& intersection)
+Vector3 Material::getDirection(const Intersection& intersection, Random& random)
 {
-	if (reflectanceTexture != nullptr)
-		return reflectanceTexture->getColor(intersection.texcoord, intersection.position);
-	else
-		return reflectance;
+	switch (type)
+	{
+		case MaterialType::DIFFUSE: return diffuseMaterial.getDirection(*this, intersection, random);
+		case MaterialType::BLINN_PHONG: return blinnPhongMaterial.getDirection(*this, intersection, random);
+		default: return Vector3();
+	}
 }
 
-Color Material::getEmittance(const Intersection& intersection)
+Color Material::getBrdf(const Intersection& intersection, const Vector3& out)
+{
+	switch (type)
+	{
+		case MaterialType::DIFFUSE: return diffuseMaterial.getBrdf(*this, intersection, out);
+		case MaterialType::BLINN_PHONG: return blinnPhongMaterial.getBrdf(*this, intersection, out);
+		default: return Color::BLACK;
+	}
+}
+
+float Material::getPdf(const Intersection& intersection, const Vector3& out)
+{
+	switch (type)
+	{
+		case MaterialType::DIFFUSE: return diffuseMaterial.getPdf(*this, intersection, out);
+		case MaterialType::BLINN_PHONG: return blinnPhongMaterial.getPdf(*this, intersection, out);
+		default: return 0.0f;
+	}
+}
+
+bool Material::isEmissive() const
+{
+	return emittanceTexture != nullptr || !emittance.isZero();
+}
+
+Color Material::getEmittance(const Vector2& texcoord, const Vector3& position) const
 {
 	if (emittanceTexture != nullptr)
-		return emittanceTexture->getColor(intersection.texcoord, intersection.position);
+		return emittanceTexture->getColor(texcoord, position);
 	else
 		return emittance;
 }
 
-bool Material::isEmissive()
+Color Material::getReflectance(const Vector2& texcoord, const Vector3& position) const
 {
-	return (emittanceTexture != nullptr) || (!emittance.isZero());
+	if (reflectanceTexture != nullptr)
+		return reflectanceTexture->getColor(texcoord, position);
+	else
+		return reflectance;
 }

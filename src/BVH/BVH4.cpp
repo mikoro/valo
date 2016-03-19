@@ -1,16 +1,16 @@
 ﻿// Copyright © 2016 Mikko Ronkainen <firstname@mikkoronkainen.com>
 // License: MIT, see the LICENSE file.
 
-#include "Precompiled.h"
+#include "Core/Precompiled.h"
 
 #include "BVH/BVH4.h"
-#include "App.h"
+#include "Core/App.h"
 #include "Utils/Log.h"
 #include "Utils/Timer.h"
-#include "Tracing/Scene.h"
-#include "Tracing/Triangle.h"
-#include "Tracing/Ray.h"
-#include "Tracing/Intersection.h"
+#include "Core/Scene.h"
+#include "Core/Triangle.h"
+#include "Core/Ray.h"
+#include "Core/Intersection.h"
 
 using namespace Raycer;
 
@@ -25,12 +25,12 @@ namespace
 	};
 }
 
-void BVH4::build(Scene& scene)
+void BVH4::build(std::vector<Triangle>& triangles, std::vector<TriangleSOA<4>>& triangles4)
 {
 	Log& log = App::getLog();
 
 	Timer timer;
-	uint64_t triangleCount = scene.bvhData.triangles.size();
+	uint64_t triangleCount = triangles.size();
 
 	log.logInfo("BVH4 building started (triangles: %d)", triangleCount);
 
@@ -41,15 +41,16 @@ void BVH4::build(Scene& scene)
 	// build triangles only contain necessary data (will be faster to sort)
 	for (uint64_t i = 0; i < triangleCount; ++i)
 	{
-		AABB aabb = scene.bvhData.triangles[i].getAABB();
+		AABB aabb = triangles[i].getAABB();
 
-		buildTriangles[i].triangle = &scene.bvhData.triangles[i];
+		buildTriangles[i].triangle = &triangles[i];
 		buildTriangles[i].aabb = aabb;
 		buildTriangles[i].center = aabb.getCenter();
 	}
 
+	std::vector<BVHNodeSOA<4>> nodes;
 	nodes.reserve(triangleCount);
-	scene.bvhData.triangles4.reserve(triangleCount / 4);
+	triangles4.reserve(triangleCount / 4);
 
 	BVH4BuildEntry stack[128];
 	uint64_t stackIndex = 0;
@@ -136,8 +137,8 @@ void BVH4::build(Scene& scene)
 
 			if (node.triangleCount > 0)
 			{
-				node.triangleOffset = uint32_t(scene.bvhData.triangles4.size());
-				scene.bvhData.triangles4.push_back(triangleSOA);
+				node.triangleOffset = uint32_t(triangles4.size());
+				triangles4.push_back(triangleSOA);
 			}
 		}
 		else if (node.triangleCount <= 16) // try to prevent leafs with small sizes
@@ -156,13 +157,13 @@ void BVH4::build(Scene& scene)
 		else // split into four parts using SAH
 		{
 			// middle split
-			splitOutputs[1] = calculateSplit(buildTriangles, cache, buildEntry.start, buildEntry.end);
+			splitOutputs[1] = BVH::calculateSplit(buildTriangles, cache, buildEntry.start, buildEntry.end);
 
 			// left split
-			splitOutputs[0] = calculateSplit(buildTriangles, cache, buildEntry.start, splitOutputs[1].index);
+			splitOutputs[0] = BVH::calculateSplit(buildTriangles, cache, buildEntry.start, splitOutputs[1].index);
 
 			// right split
-			splitOutputs[2] = calculateSplit(buildTriangles, cache, splitOutputs[1].index, buildEntry.end);
+			splitOutputs[2] = BVH::calculateSplit(buildTriangles, cache, splitOutputs[1].index, buildEntry.end);
 
 			// not used atm
 			node.splitAxis[0] = uint16_t(splitOutputs[0].axis);
@@ -218,14 +219,15 @@ void BVH4::build(Scene& scene)
 		stackIndex++;
 	}
 
-	nodes.shrink_to_fit();
+	nodesPtr = static_cast<BVHNodeSOA<4>*>(malloc(nodes.size() * sizeof(BVHNodeSOA<4>)));
+	memcpy(nodesPtr, &nodes[0], nodes.size() * sizeof(BVHNodeSOA<4>));
 
 	std::vector<Triangle> sortedTriangles(triangleCount);
 
 	for (uint64_t i = 0; i < triangleCount; ++i)
 		sortedTriangles[i] = *buildTriangles[i].triangle;
 
-	scene.bvhData.triangles = sortedTriangles;
+	triangles = sortedTriangles;
 
 	log.logInfo("BVH4 building finished (time: %s, nodes: %d, leafs: %d, triangles/leaf: %.2f)", timer.getElapsed().getString(true), nodeCount - leafCount, leafCount, float(triangleCount) / float(leafCount));
 }
@@ -244,14 +246,14 @@ bool BVH4::intersect(const Scene& scene, const Ray& ray, Intersection& intersect
 	while (stackIndex > 0)
 	{
 		uint64_t nodeIndex = stack[--stackIndex];
-		const BVHNodeSOA<4>& node = nodes[nodeIndex];
+		const BVHNodeSOA<4>& node = nodesPtr[nodeIndex];
 
 		if (node.isLeaf)
 		{
 			if (node.triangleCount == 0)
 				continue;
 
-			const TriangleSOA<4>& triangleSOA = scene.bvhData.triangles4[node.triangleOffset];
+			const TriangleSOA<4>& triangleSOA = scene.triangles4Ptr[node.triangleOffset];
 
 			if (Triangle::intersect<4>(
 				&triangleSOA.vertex1X[0],

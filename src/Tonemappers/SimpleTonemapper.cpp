@@ -1,38 +1,38 @@
 ﻿// Copyright © 2016 Mikko Ronkainen <firstname@mikkoronkainen.com>
 // License: MIT, see the LICENSE file.
 
-#include "Precompiled.h"
+#include "Core/Precompiled.h"
 
-#include "Tonemappers/SimpleTonemapper.h"
-#include "Tracing/Scene.h"
-#include "Rendering/Image.h"
-#include "Rendering/Color.h"
+#include "Core/Image.h"
+#include "Math/Color.h"
 #include "Math/MathUtils.h"
+#include "Tonemappers/SimpleTonemapper.h"
 
 using namespace Raycer;
 
-void SimpleTonemapper::apply(const Scene& scene, const Image& inputImage, Image& outputImage)
+void SimpleTonemapper::apply(const Image& inputImage, Image& outputImage)
 {
-	auto& inputPixelData = inputImage.getPixelDataConst();
-	auto& outputPixelData = outputImage.getPixelData();
+	const Color* inputPixels = inputImage.getPixelData();
+	Color* outputPixels = outputImage.getPixelData();
+	int64_t pixelCount = inputImage.getLength();
 
-	const float invGamma = 1.0f / scene.tonemapping.gamma;
+	const float invGamma = 1.0f / gamma;
 
 	#pragma omp parallel for
-	for (int64_t i = 0; i < int64_t(inputPixelData.size()); ++i)
+	for (int64_t i = 0; i < pixelCount; ++i)
 	{
-		Color outputColor = inputPixelData.at(i);
-		outputColor *= MathUtils::fastPow(2.0f, scene.tonemapping.exposure);
+		Color outputColor = inputPixels[i];
+		outputColor *= MathUtils::fastPow(2.0f, exposure);
 
 		outputColor = outputColor / (Color(1.0f, 1.0f, 1.0f, 1.0f) + outputColor);
 
-		if (scene.tonemapping.shouldClamp)
+		if (shouldClamp)
 			outputColor.clamp();
 
-		if (scene.tonemapping.applyGamma)
+		if (applyGamma)
 			outputColor = Color::fastPow(outputColor, invGamma);
 
 		outputColor.a = 1.0f;
-		outputPixelData[i] = outputColor;
+		outputPixels[i] = outputColor;
 	}
 }

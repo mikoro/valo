@@ -19,9 +19,6 @@
     <Filter Include="Filters">
       <UniqueIdentifier>{27c18fe1-4130-47f8-8031-68bbc1b98e86}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Rendering">
-      <UniqueIdentifier>{5bd90a75-800b-404c-bb10-7b8d45dc6e4b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Runners">
       <UniqueIdentifier>{98d38d86-cf0a-48ff-99a9-2f5e07dd9e37}</UniqueIdentifier>
     </Filter>
@@ -30,15 +27,6 @@
     </Filter>
     <Filter Include="Tonemappers">
       <UniqueIdentifier>{f1d7ad80-b17d-483a-ad99-e358751ad907}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Tracing">
-      <UniqueIdentifier>{e41086c1-aec0-4f77-8f9d-6a045ee94c85}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Samplers">
-      <UniqueIdentifier>{0eb52790-23f1-4bb2-a552-2cb8295f9600}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Tracers">
-      <UniqueIdentifier>{c8a02df5-aad0-4513-b378-f3433b100713}</UniqueIdentifier>
     </Filter>
     <Filter Include="External">
       <UniqueIdentifier>{b2657f2b-747d-4206-a809-796eb405a2cd}</UniqueIdentifier>
@@ -52,101 +40,34 @@
     <Filter Include="TestScenes">
       <UniqueIdentifier>{aadc1842-3364-421c-a353-9ae76ee61b4e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Integrators">
+      <UniqueIdentifier>{26505275-a838-47a9-873e-04a209c4e483}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Renderers">
+      <UniqueIdentifier>{68b90cbe-fa97-4c7b-9f5c-ebd80ba8d982}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core">
+      <UniqueIdentifier>{349ac0fd-0e47-4a26-9332-8b69ba1d2c25}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Utils\FpsCounter.cpp">
-      <Filter>Utils</Filter>
+    <ClCompile Include="src\External\gl3w.cpp">
+      <Filter>External</Filter>
     </ClCompile>
-    <ClCompile Include="src\Utils\Log.cpp">
-      <Filter>Utils</Filter>
+    <ClCompile Include="src\External\nanovg.cpp">
+      <Filter>External</Filter>
     </ClCompile>
-    <ClCompile Include="src\Math\Vector3.cpp">
-      <Filter>Math</Filter>
+    <ClCompile Include="src\External\stb.cpp">
+      <Filter>External</Filter>
     </ClCompile>
-    <ClCompile Include="src\Math\Matrix4x4.cpp">
-      <Filter>Math</Filter>
+    <ClCompile Include="src\BVH\BVH.cpp">
+      <Filter>BVH</Filter>
     </ClCompile>
-    <ClCompile Include="src\Math\MathUtils.cpp">
-      <Filter>Math</Filter>
+    <ClCompile Include="src\BVH\BVH1.cpp">
+      <Filter>BVH</Filter>
     </ClCompile>
-    <ClCompile Include="src\Math\EulerAngle.cpp">
-      <Filter>Math</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Math\Vector2.cpp">
-      <Filter>Math</Filter>
-    </ClCompile>
-    <ClCompile Include="src\App.cpp" />
-    <ClCompile Include="src\Math\Quaternion.cpp">
-      <Filter>Math</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Math\AxisAngle.cpp">
-      <Filter>Math</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Utils\PerlinNoise.cpp">
-      <Filter>Utils</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Math\MovingAverage.cpp">
-      <Filter>Math</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Utils\PoissonDisc.cpp">
-      <Filter>Utils</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Tests\ColorGradientTest.cpp">
-      <Filter>Tests</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Tests\EulerAngleTest.cpp">
-      <Filter>Tests</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Tests\ImageTest.cpp">
-      <Filter>Tests</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Tests\MathUtilsTest.cpp">
-      <Filter>Tests</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Tests\Matrix4x4Test.cpp">
-      <Filter>Tests</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Tests\Vector3Test.cpp">
-      <Filter>Tests</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Utils\StringUtils.cpp">
-      <Filter>Utils</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Tests\SamplerTest.cpp">
-      <Filter>Tests</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Tests\TestScenesTest.cpp">
-      <Filter>Tests</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Utils\ColorGradient.cpp">
-      <Filter>Utils</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Utils\GLHelper.cpp">
-      <Filter>Utils</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Tests\FilterTest.cpp">
-      <Filter>Tests</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Math\Solver.cpp">
-      <Filter>Math</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Tests\SolverTest.cpp">
-      <Filter>Tests</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Tests\PolynomialTest.cpp">
-      <Filter>Tests</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Tests\ModelLoaderTest.cpp">
-      <Filter>Tests</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Utils\Timer.cpp">
-      <Filter>Utils</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Utils\SysUtils.cpp">
-      <Filter>Utils</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Math\Vector4.cpp">
-      <Filter>Math</Filter>
+    <ClCompile Include="src\BVH\BVH4.cpp">
+      <Filter>BVH</Filter>
     </ClCompile>
     <ClCompile Include="src\Filters\BellFilter.cpp">
       <Filter>Filters</Filter>
@@ -169,11 +90,179 @@
     <ClCompile Include="src\Filters\TentFilter.cpp">
       <Filter>Filters</Filter>
     </ClCompile>
-    <ClCompile Include="src\Tracing\Camera.cpp">
-      <Filter>Tracing</Filter>
+    <ClCompile Include="src\Integrators\DotIntegrator.cpp">
+      <Filter>Integrators</Filter>
     </ClCompile>
-    <ClCompile Include="src\Tracing\Ray.cpp">
-      <Filter>Tracing</Filter>
+    <ClCompile Include="src\Integrators\Integrator.cpp">
+      <Filter>Integrators</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Integrators\PathIntegrator.cpp">
+      <Filter>Integrators</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Materials\BlinnPhongMaterial.cpp">
+      <Filter>Materials</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Materials\DiffuseMaterial.cpp">
+      <Filter>Materials</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Materials\Material.cpp">
+      <Filter>Materials</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Math\AxisAngle.cpp">
+      <Filter>Math</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Math\Color.cpp">
+      <Filter>Math</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Math\EulerAngle.cpp">
+      <Filter>Math</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Math\Mapper.cpp">
+      <Filter>Math</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Math\MathUtils.cpp">
+      <Filter>Math</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Math\Matrix4x4.cpp">
+      <Filter>Math</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Math\MovingAverage.cpp">
+      <Filter>Math</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Math\ONB.cpp">
+      <Filter>Math</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Math\Quaternion.cpp">
+      <Filter>Math</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Math\Solver.cpp">
+      <Filter>Math</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Math\Vector2.cpp">
+      <Filter>Math</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Math\Vector3.cpp">
+      <Filter>Math</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Math\Vector4.cpp">
+      <Filter>Math</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Core\AABB.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Core\Camera.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Core\Film.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Core\Image.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Core\Ray.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Core\Scene.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Core\Triangle.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Renderers\CpuRenderer.cpp">
+      <Filter>Renderers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Renderers\CudaRenderer.cpp">
+      <Filter>Renderers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Renderers\Renderer.cpp">
+      <Filter>Renderers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Runners\ConsoleRunner.cpp">
+      <Filter>Runners</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Runners\WindowRunner.cpp">
+      <Filter>Runners</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Runners\WindowRunnerRenderState.cpp">
+      <Filter>Runners</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Tests\ColorGradientTest.cpp">
+      <Filter>Tests</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Tests\EulerAngleTest.cpp">
+      <Filter>Tests</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Tests\FilterTest.cpp">
+      <Filter>Tests</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Tests\ImageTest.cpp">
+      <Filter>Tests</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Tests\MathUtilsTest.cpp">
+      <Filter>Tests</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Tests\Matrix4x4Test.cpp">
+      <Filter>Tests</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Tests\ModelLoaderTest.cpp">
+      <Filter>Tests</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Tests\OnbTest.cpp">
+      <Filter>Tests</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Tests\PolynomialTest.cpp">
+      <Filter>Tests</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Tests\SamplerTest.cpp">
+      <Filter>Tests</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Tests\SolverTest.cpp">
+      <Filter>Tests</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Tests\TestScenesTest.cpp">
+      <Filter>Tests</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Tests\Vector3Test.cpp">
+      <Filter>Tests</Filter>
+    </ClCompile>
+    <ClCompile Include="src\TestScenes\TestScene.cpp">
+      <Filter>TestScenes</Filter>
+    </ClCompile>
+    <ClCompile Include="src\TestScenes\TestScene1.cpp">
+      <Filter>TestScenes</Filter>
+    </ClCompile>
+    <ClCompile Include="src\TestScenes\TestScene2.cpp">
+      <Filter>TestScenes</Filter>
+    </ClCompile>
+    <ClCompile Include="src\TestScenes\TestScene3.cpp">
+      <Filter>TestScenes</Filter>
+    </ClCompile>
+    <ClCompile Include="src\TestScenes\TestScene4.cpp">
+      <Filter>TestScenes</Filter>
+    </ClCompile>
+    <ClCompile Include="src\TestScenes\TestScene5.cpp">
+      <Filter>TestScenes</Filter>
+    </ClCompile>
+    <ClCompile Include="src\TestScenes\TestScene6.cpp">
+      <Filter>TestScenes</Filter>
+    </ClCompile>
+    <ClCompile Include="src\TestScenes\TestScene7.cpp">
+      <Filter>TestScenes</Filter>
+    </ClCompile>
+    <ClCompile Include="src\TestScenes\TestScene8.cpp">
+      <Filter>TestScenes</Filter>
+    </ClCompile>
+    <ClCompile Include="src\TestScenes\TestScene9.cpp">
+      <Filter>TestScenes</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Textures\CheckerTexture.cpp">
+      <Filter>Textures</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Textures\ImageTexture.cpp">
+      <Filter>Textures</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Textures\Texture.cpp">
+      <Filter>Textures</Filter>
     </ClCompile>
     <ClCompile Include="src\Tonemappers\LinearTonemapper.cpp">
       <Filter>Tonemappers</Filter>
@@ -190,226 +279,56 @@
     <ClCompile Include="src\Tonemappers\Tonemapper.cpp">
       <Filter>Tonemappers</Filter>
     </ClCompile>
-    <ClCompile Include="src\Textures\CheckerTexture.cpp">
-      <Filter>Textures</Filter>
+    <ClCompile Include="src\Utils\FilmQuad.cpp">
+      <Filter>Utils</Filter>
     </ClCompile>
-    <ClCompile Include="src\Textures\ColorGradientTexture.cpp">
-      <Filter>Textures</Filter>
+    <ClCompile Include="src\Utils\FpsCounter.cpp">
+      <Filter>Utils</Filter>
     </ClCompile>
-    <ClCompile Include="src\Textures\ColorTexture.cpp">
-      <Filter>Textures</Filter>
+    <ClCompile Include="src\Utils\GLHelper.cpp">
+      <Filter>Utils</Filter>
     </ClCompile>
-    <ClCompile Include="src\Textures\ImageTexture.cpp">
-      <Filter>Textures</Filter>
+    <ClCompile Include="src\Utils\InfoPanel.cpp">
+      <Filter>Utils</Filter>
     </ClCompile>
-    <ClCompile Include="src\Textures\PerlinNoiseTexture.cpp">
-      <Filter>Textures</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Runners\ConsoleRunner.cpp">
-      <Filter>Runners</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Runners\WindowRunner.cpp">
-      <Filter>Runners</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Rendering\Film.cpp">
-      <Filter>Rendering</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Rendering\FilmRenderer.cpp">
-      <Filter>Rendering</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Rendering\ImagePool.cpp">
-      <Filter>Rendering</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Samplers\CenterSampler.cpp">
-      <Filter>Samplers</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Samplers\CMJSampler.cpp">
-      <Filter>Samplers</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Samplers\JitteredSampler.cpp">
-      <Filter>Samplers</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Samplers\PoissonDiscSampler.cpp">
-      <Filter>Samplers</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Samplers\RandomSampler.cpp">
-      <Filter>Samplers</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Samplers\RegularSampler.cpp">
-      <Filter>Samplers</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Samplers\Sampler.cpp">
-      <Filter>Samplers</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Tracing\Triangle.cpp">
-      <Filter>Tracing</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Tracing\ONB.cpp">
-      <Filter>Tracing</Filter>
+    <ClCompile Include="src\Utils\Log.cpp">
+      <Filter>Utils</Filter>
     </ClCompile>
     <ClCompile Include="src\Utils\ModelLoader.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
-    <ClCompile Include="src\Tracers\PreviewTracer.cpp">
-      <Filter>Tracers</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Tracers\Tracer.cpp">
-      <Filter>Tracers</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Tests\OnbTest.cpp">
-      <Filter>Tests</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Precompiled.cpp" />
-    <ClCompile Include="src\Utils\Settings.cpp">
-      <Filter>Utils</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Rendering\InfoPanel.cpp">
-      <Filter>Rendering</Filter>
-    </ClCompile>
     <ClCompile Include="src\Utils\Random.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
-    <ClCompile Include="src\External\gl3w.cpp">
-      <Filter>External</Filter>
+    <ClCompile Include="src\Utils\Settings.cpp">
+      <Filter>Utils</Filter>
     </ClCompile>
-    <ClCompile Include="src\External\nanovg.cpp">
-      <Filter>External</Filter>
+    <ClCompile Include="src\Utils\StringUtils.cpp">
+      <Filter>Utils</Filter>
     </ClCompile>
-    <ClCompile Include="src\External\stb.cpp">
-      <Filter>External</Filter>
+    <ClCompile Include="src\Utils\SysUtils.cpp">
+      <Filter>Utils</Filter>
     </ClCompile>
-    <ClCompile Include="src\Materials\Material.cpp">
-      <Filter>Materials</Filter>
+    <ClCompile Include="src\Utils\Timer.cpp">
+      <Filter>Utils</Filter>
     </ClCompile>
-    <ClCompile Include="src\Rendering\Color.cpp">
-      <Filter>Rendering</Filter>
+    <ClCompile Include="src\Core\App.cpp">
+      <Filter>Core</Filter>
     </ClCompile>
-    <ClCompile Include="src\Rendering\Image.cpp">
-      <Filter>Rendering</Filter>
-    </ClCompile>
-    <ClCompile Include="src\BVH\BVH.cpp">
-      <Filter>BVH</Filter>
-    </ClCompile>
-    <ClCompile Include="src\BVH\BVH1.cpp">
-      <Filter>BVH</Filter>
-    </ClCompile>
-    <ClCompile Include="src\BVH\BVH4.cpp">
-      <Filter>BVH</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Tracing\Scene.cpp">
-      <Filter>Tracing</Filter>
-    </ClCompile>
-    <ClCompile Include="src\TestScenes\TestScene1.cpp">
-      <Filter>TestScenes</Filter>
-    </ClCompile>
-    <ClCompile Include="src\TestScenes\TestScene2.cpp">
-      <Filter>TestScenes</Filter>
-    </ClCompile>
-    <ClCompile Include="src\TestScenes\TestScene3.cpp">
-      <Filter>TestScenes</Filter>
-    </ClCompile>
-    <ClCompile Include="src\TestScenes\TestScene.cpp">
-      <Filter>TestScenes</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Runners\WindowRunnerRenderState.cpp">
-      <Filter>Runners</Filter>
-    </ClCompile>
-    <ClCompile Include="src\TestScenes\TestScene4.cpp">
-      <Filter>TestScenes</Filter>
-    </ClCompile>
-    <ClCompile Include="src\TestScenes\TestScene5.cpp">
-      <Filter>TestScenes</Filter>
-    </ClCompile>
-    <ClCompile Include="src\TestScenes\TestScene6.cpp">
-      <Filter>TestScenes</Filter>
-    </ClCompile>
-    <ClCompile Include="src\TestScenes\TestScene7.cpp">
-      <Filter>TestScenes</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Tracing\AABB.cpp">
-      <Filter>Tracing</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Materials\DefaultMaterial.cpp">
-      <Filter>Materials</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Tracers\Pathtracer.cpp">
-      <Filter>Tracers</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Tracers\TracerCommon.cpp">
-      <Filter>Tracers</Filter>
-    </ClCompile>
-    <ClCompile Include="src\TestScenes\TestScene8.cpp">
-      <Filter>TestScenes</Filter>
-    </ClCompile>
-    <ClCompile Include="src\TestScenes\TestScene9.cpp">
-      <Filter>TestScenes</Filter>
+    <ClCompile Include="src\Main.cpp" />
+    <ClCompile Include="src\Utils\ImagePool.cpp">
+      <Filter>Utils</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Utils\FpsCounter.h">
-      <Filter>Utils</Filter>
+    <ClInclude Include="src\BVH\BVH.h">
+      <Filter>BVH</Filter>
     </ClInclude>
-    <ClInclude Include="src\Utils\Log.h">
-      <Filter>Utils</Filter>
+    <ClInclude Include="src\BVH\BVH1.h">
+      <Filter>BVH</Filter>
     </ClInclude>
-    <ClInclude Include="src\Math\Vector3.h">
-      <Filter>Math</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Math\Matrix4x4.h">
-      <Filter>Math</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Math\MathUtils.h">
-      <Filter>Math</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Math\EulerAngle.h">
-      <Filter>Math</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Math\Vector2.h">
-      <Filter>Math</Filter>
-    </ClInclude>
-    <ClInclude Include="src\App.h" />
-    <ClInclude Include="src\Math\Quaternion.h">
-      <Filter>Math</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Math\AxisAngle.h">
-      <Filter>Math</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Utils\PerlinNoise.h">
-      <Filter>Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Math\MovingAverage.h">
-      <Filter>Math</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Utils\PoissonDisc.h">
-      <Filter>Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Utils\StringUtils.h">
-      <Filter>Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Utils\ColorGradient.h">
-      <Filter>Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Utils\GLHelper.h">
-      <Filter>Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Math\Solver.h">
-      <Filter>Math</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Math\Polynomial.h">
-      <Filter>Math</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Utils\ModelLoader.h">
-      <Filter>Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Common.h" />
-    <ClInclude Include="src\Utils\Timer.h">
-      <Filter>Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Utils\SysUtils.h">
-      <Filter>Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Math\Vector4.h">
-      <Filter>Math</Filter>
+    <ClInclude Include="src\BVH\BVH4.h">
+      <Filter>BVH</Filter>
     </ClInclude>
     <ClInclude Include="src\Filters\BellFilter.h">
       <Filter>Filters</Filter>
@@ -432,14 +351,119 @@
     <ClInclude Include="src\Filters\TentFilter.h">
       <Filter>Filters</Filter>
     </ClInclude>
-    <ClInclude Include="src\Tracing\Camera.h">
-      <Filter>Tracing</Filter>
+    <ClInclude Include="src\Integrators\DotIntegrator.h">
+      <Filter>Integrators</Filter>
     </ClInclude>
-    <ClInclude Include="src\Tracing\Intersection.h">
-      <Filter>Tracing</Filter>
+    <ClInclude Include="src\Integrators\Integrator.h">
+      <Filter>Integrators</Filter>
     </ClInclude>
-    <ClInclude Include="src\Tracing\Ray.h">
-      <Filter>Tracing</Filter>
+    <ClInclude Include="src\Integrators\PathIntegrator.h">
+      <Filter>Integrators</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Materials\BlinnPhongMaterial.h">
+      <Filter>Materials</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Materials\DiffuseMaterial.h">
+      <Filter>Materials</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Materials\Material.h">
+      <Filter>Materials</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Math\AxisAngle.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Math\Color.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Math\EulerAngle.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Math\Mapper.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Math\MathUtils.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Math\Matrix4x4.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Math\MovingAverage.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Math\ONB.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Math\Polynomial.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Math\Quaternion.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Math\Solver.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Math\Vector2.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Math\Vector3.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Math\Vector4.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Core\AABB.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Core\Camera.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Core\Film.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Core\Image.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Core\Intersection.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Core\Ray.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Core\Scene.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Core\Triangle.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Renderers\CpuRenderer.h">
+      <Filter>Renderers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Renderers\CudaRenderer.h">
+      <Filter>Renderers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Renderers\Renderer.h">
+      <Filter>Renderers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Runners\ConsoleRunner.h">
+      <Filter>Runners</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Runners\WindowRunner.h">
+      <Filter>Runners</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Runners\WindowRunnerRenderState.h">
+      <Filter>Runners</Filter>
+    </ClInclude>
+    <ClInclude Include="src\TestScenes\TestScene.h">
+      <Filter>TestScenes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Textures\CheckerTexture.h">
+      <Filter>Textures</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Textures\ImageTexture.h">
+      <Filter>Textures</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Textures\Texture.h">
+      <Filter>Textures</Filter>
     </ClInclude>
     <ClInclude Include="src\Tonemappers\LinearTonemapper.h">
       <Filter>Tonemappers</Filter>
@@ -456,123 +480,53 @@
     <ClInclude Include="src\Tonemappers\Tonemapper.h">
       <Filter>Tonemappers</Filter>
     </ClInclude>
-    <ClInclude Include="src\Textures\CheckerTexture.h">
-      <Filter>Textures</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Textures\ColorGradientTexture.h">
-      <Filter>Textures</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Textures\ColorTexture.h">
-      <Filter>Textures</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Textures\ImageTexture.h">
-      <Filter>Textures</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Textures\PerlinNoiseTexture.h">
-      <Filter>Textures</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Textures\Texture.h">
-      <Filter>Textures</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Runners\ConsoleRunner.h">
-      <Filter>Runners</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Runners\WindowRunner.h">
-      <Filter>Runners</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Rendering\Film.h">
-      <Filter>Rendering</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Rendering\FilmRenderer.h">
-      <Filter>Rendering</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Rendering\ImagePool.h">
-      <Filter>Rendering</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Samplers\CenterSampler.h">
-      <Filter>Samplers</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Samplers\CMJSampler.h">
-      <Filter>Samplers</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Samplers\JitteredSampler.h">
-      <Filter>Samplers</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Samplers\PoissonDiscSampler.h">
-      <Filter>Samplers</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Samplers\RandomSampler.h">
-      <Filter>Samplers</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Samplers\RegularSampler.h">
-      <Filter>Samplers</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Samplers\Sampler.h">
-      <Filter>Samplers</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Tracing\Triangle.h">
-      <Filter>Tracing</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Tracing\ONB.h">
-      <Filter>Tracing</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Tracers\PreviewTracer.h">
-      <Filter>Tracers</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Tracers\Tracer.h">
-      <Filter>Tracers</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Tracers\TracerState.h">
-      <Filter>Tracers</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Precompiled.h" />
-    <ClInclude Include="src\Utils\Settings.h">
+    <ClInclude Include="src\Utils\FilmQuad.h">
       <Filter>Utils</Filter>
     </ClInclude>
-    <ClInclude Include="src\Rendering\InfoPanel.h">
-      <Filter>Rendering</Filter>
+    <ClInclude Include="src\Utils\FpsCounter.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Utils\GLHelper.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Utils\InfoPanel.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Utils\Log.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Utils\ModelLoader.h">
+      <Filter>Utils</Filter>
     </ClInclude>
     <ClInclude Include="src\Utils\Random.h">
       <Filter>Utils</Filter>
     </ClInclude>
-    <ClInclude Include="src\Materials\Material.h">
-      <Filter>Materials</Filter>
+    <ClInclude Include="src\Utils\Settings.h">
+      <Filter>Utils</Filter>
     </ClInclude>
-    <ClInclude Include="src\Rendering\Color.h">
-      <Filter>Rendering</Filter>
+    <ClInclude Include="src\Utils\StringUtils.h">
+      <Filter>Utils</Filter>
     </ClInclude>
-    <ClInclude Include="src\Rendering\Image.h">
-      <Filter>Rendering</Filter>
+    <ClInclude Include="src\Utils\SysUtils.h">
+      <Filter>Utils</Filter>
     </ClInclude>
-    <ClInclude Include="src\BVH\BVH.h">
+    <ClInclude Include="src\Utils\Timer.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Core\App.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Core\Common.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Core\Precompiled.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BVH\BVHCommon.h">
       <Filter>BVH</Filter>
     </ClInclude>
-    <ClInclude Include="src\BVH\BVH1.h">
-      <Filter>BVH</Filter>
-    </ClInclude>
-    <ClInclude Include="src\BVH\BVH4.h">
-      <Filter>BVH</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Tracing\Scene.h">
-      <Filter>Tracing</Filter>
-    </ClInclude>
-    <ClInclude Include="src\TestScenes\TestScene.h">
-      <Filter>TestScenes</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Runners\WindowRunnerRenderState.h">
-      <Filter>Runners</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Tracing\AABB.h">
-      <Filter>Tracing</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Materials\DefaultMaterial.h">
-      <Filter>Materials</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Tracers\Pathtracer.h">
-      <Filter>Tracers</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Tracers\TracerCommon.h">
-      <Filter>Tracers</Filter>
+    <ClInclude Include="src\Utils\ImagePool.h">
+      <Filter>Utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -581,23 +535,23 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="src\Utils\Log.inl">
-      <Filter>Utils</Filter>
-    </None>
-    <None Include="src\Math\Polynomial.inl">
-      <Filter>Math</Filter>
-    </None>
     <None Include="data\shaders\film.frag">
       <Filter>Shaders</Filter>
     </None>
     <None Include="data\shaders\film.vert">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="src\Tracing\AABB.inl">
-      <Filter>Tracing</Filter>
+    <None Include="src\Math\Polynomial.inl">
+      <Filter>Math</Filter>
     </None>
-    <None Include="src\Tracing\Triangle.inl">
-      <Filter>Tracing</Filter>
+    <None Include="src\Core\AABB.inl">
+      <Filter>Core</Filter>
+    </None>
+    <None Include="src\Core\Triangle.inl">
+      <Filter>Core</Filter>
+    </None>
+    <None Include="src\Utils\Log.inl">
+      <Filter>Utils</Filter>
     </None>
   </ItemGroup>
 </Project>

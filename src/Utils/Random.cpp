@@ -1,11 +1,12 @@
 // Copyright © 2016 Mikko Ronkainen <firstname@mikkoronkainen.com>
 // License: MIT, see the LICENSE file.
 
-#include "Precompiled.h"
+#include "Core/Precompiled.h"
 
-#include "Utils/Random.h"
+#include "Math/Color.h"
 #include "Math/Vector2.h"
 #include "Math/Vector3.h"
+#include "Utils/Random.h"
 
 using namespace Raycer;
 

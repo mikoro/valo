@@ -7,11 +7,10 @@
 
 #include "cereal/cereal.hpp"
 
-#include "Tracing/Triangle.h"
-#include "Textures/ImageTexture.h"
-#include "Materials/DefaultMaterial.h"
-#include "Math/Vector3.h"
+#include "Core/Triangle.h"
 #include "Math/EulerAngle.h"
+#include "Math/Vector3.h"
+#include "Textures/Texture.h"
 
 /*
 
@@ -26,7 +25,7 @@ namespace Raycer
 {
 	struct ModelLoaderInfo
 	{
-		std::string modelFilePath;
+		std::string modelFileName;
 		Vector3 scale = Vector3(1.0f, 1.0f, 1.0f);
 		EulerAngle rotate = EulerAngle(0.0f, 0.0f, 0.0f);
 		Vector3 translate = Vector3(0.0f, 0.0f, 0.0f);
@@ -37,7 +36,7 @@ namespace Raycer
 		template <class Archive>
 		void serialize(Archive& ar)
 		{
-			ar(CEREAL_NVP(modelFilePath),
+			ar(CEREAL_NVP(modelFileName),
 				CEREAL_NVP(scale),
 				CEREAL_NVP(rotate),
 				CEREAL_NVP(translate),
@@ -49,9 +48,9 @@ namespace Raycer
 
 	struct ModelLoaderResult
 	{
+		std::vector<Texture> textures;
+		std::vector<Material> materials;
 		std::vector<Triangle> triangles;
-		std::vector<DefaultMaterial> defaultMaterials;
-		std::vector<ImageTexture> imageTextures;
 	};
 
 	class ModelLoader
@@ -62,7 +61,7 @@ namespace Raycer
 
 	private:
 
-		void processMaterialFile(const std::string& rootDirectory, const std::string& mtlFilePath, ModelLoaderResult& result);
+		void processMaterialFile(const std::string& rootDirectory, const std::string& mtlFileName, ModelLoaderResult& result);
 		bool processFace(const char* buffer, uint64_t lineStartIndex, uint64_t lineEndIndex, uint64_t lineNumber, ModelLoaderResult& result);
 
 		uint64_t currentMaterialId = 0;

@@ -3,21 +3,33 @@
 
 #pragma once
 
-#include "Filters/Filter.h"
+#include "cereal/cereal.hpp"
+
+#include "Math/Vector2.h"
 
 namespace Raycer
 {
 	class Vector2;
 
-	class LanczosSincFilter : public Filter
+	class LanczosSincFilter
 	{
 	public:
 
-		explicit LanczosSincFilter(uint64_t radiusX = 2, uint64_t radiusY = 2);
+		float getWeight(float s);
+		float getWeight(const Vector2& point);
 
-		void setRadius(uint64_t radiusX, uint64_t radiusY);
+		Vector2 getRadius();
 
-		float getWeightX(float x) override;
-		float getWeightY(float y) override;
+		Vector2 radius = Vector2(2.0f, 2.0f);
+
+	private:
+
+		friend class cereal::access;
+
+		template <class Archive>
+		void serialize(Archive& ar)
+		{
+			ar(CEREAL_NVP(radius));
+		}
 	};
 }

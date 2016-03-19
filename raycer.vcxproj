@@ -113,7 +113,7 @@
       <AdditionalOptions>/bigobj /Zm200 %(AdditionalOptions)</AdditionalOptions>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <DisableSpecificWarnings>4313</DisableSpecificWarnings>
-      <PrecompiledHeaderFile>Precompiled.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>Core\Precompiled.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -142,7 +142,7 @@
       <AdditionalOptions>/bigobj /Zm200 %(AdditionalOptions)</AdditionalOptions>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <DisableSpecificWarnings>4313</DisableSpecificWarnings>
-      <PrecompiledHeaderFile>Precompiled.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>Core\Precompiled.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -177,7 +177,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <AdditionalOptions>/bigobj /Zm200 %(AdditionalOptions)</AdditionalOptions>
       <DisableSpecificWarnings>4313</DisableSpecificWarnings>
-      <PrecompiledHeaderFile>Precompiled.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>Core\Precompiled.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -213,7 +213,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <AdditionalOptions>/bigobj /Zm200 /Gw /favor:INTEL64 %(AdditionalOptions)</AdditionalOptions>
       <DisableSpecificWarnings>4313</DisableSpecificWarnings>
-      <PrecompiledHeaderFile>Precompiled.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>Core\Precompiled.h</PrecompiledHeaderFile>
       <WholeProgramOptimization>true</WholeProgramOptimization>
       <StringPooling>true</StringPooling>
       <ControlFlowGuard>false</ControlFlowGuard>
@@ -231,10 +231,17 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\App.cpp" />
     <ClCompile Include="src\BVH\BVH.cpp" />
     <ClCompile Include="src\BVH\BVH1.cpp" />
     <ClCompile Include="src\BVH\BVH4.cpp" />
+    <ClCompile Include="src\Core\AABB.cpp" />
+    <ClCompile Include="src\Core\App.cpp" />
+    <ClCompile Include="src\Core\Camera.cpp" />
+    <ClCompile Include="src\Core\Film.cpp" />
+    <ClCompile Include="src\Core\Image.cpp" />
+    <ClCompile Include="src\Core\Ray.cpp" />
+    <ClCompile Include="src\Core\Scene.cpp" />
+    <ClCompile Include="src\Core\Triangle.cpp" />
     <ClCompile Include="src\External\gl3w.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='DebugTest|x64'">NotUsing</PrecompiledHeader>
@@ -260,40 +267,37 @@
     <ClCompile Include="src\Filters\LanczosSincFilter.cpp" />
     <ClCompile Include="src\Filters\MitchellFilter.cpp" />
     <ClCompile Include="src\Filters\TentFilter.cpp" />
+    <ClCompile Include="src\Integrators\DotIntegrator.cpp" />
+    <ClCompile Include="src\Integrators\Integrator.cpp" />
+    <ClCompile Include="src\Integrators\PathIntegrator.cpp" />
+    <ClCompile Include="src\Main.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='ReleaseFull|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='DebugTest|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="src\Materials\BlinnPhongMaterial.cpp" />
+    <ClCompile Include="src\Materials\DiffuseMaterial.cpp" />
     <ClCompile Include="src\Materials\Material.cpp" />
-    <ClCompile Include="src\Materials\DefaultMaterial.cpp" />
     <ClCompile Include="src\Math\AxisAngle.cpp" />
+    <ClCompile Include="src\Math\Color.cpp" />
     <ClCompile Include="src\Math\EulerAngle.cpp" />
-    <ClCompile Include="src\Math\Matrix4x4.cpp" />
+    <ClCompile Include="src\Math\Mapper.cpp" />
     <ClCompile Include="src\Math\MathUtils.cpp" />
+    <ClCompile Include="src\Math\Matrix4x4.cpp" />
     <ClCompile Include="src\Math\MovingAverage.cpp" />
+    <ClCompile Include="src\Math\ONB.cpp" />
     <ClCompile Include="src\Math\Quaternion.cpp" />
     <ClCompile Include="src\Math\Solver.cpp" />
     <ClCompile Include="src\Math\Vector2.cpp" />
     <ClCompile Include="src\Math\Vector3.cpp" />
     <ClCompile Include="src\Math\Vector4.cpp" />
-    <ClCompile Include="src\Precompiled.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='DebugTest|x64'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='ReleaseFull|x64'">Create</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="src\Rendering\Color.cpp" />
-    <ClCompile Include="src\Rendering\Film.cpp" />
-    <ClCompile Include="src\Rendering\FilmRenderer.cpp" />
-    <ClCompile Include="src\Rendering\Image.cpp" />
-    <ClCompile Include="src\Rendering\ImagePool.cpp" />
-    <ClCompile Include="src\Rendering\InfoPanel.cpp" />
+    <ClCompile Include="src\Renderers\CpuRenderer.cpp" />
+    <ClCompile Include="src\Renderers\CudaRenderer.cpp" />
+    <ClCompile Include="src\Renderers\Renderer.cpp" />
     <ClCompile Include="src\Runners\ConsoleRunner.cpp" />
-    <ClCompile Include="src\Runners\WindowRunnerRenderState.cpp" />
     <ClCompile Include="src\Runners\WindowRunner.cpp" />
-    <ClCompile Include="src\Samplers\CenterSampler.cpp" />
-    <ClCompile Include="src\Samplers\CMJSampler.cpp" />
-    <ClCompile Include="src\Samplers\JitteredSampler.cpp" />
-    <ClCompile Include="src\Samplers\PoissonDiscSampler.cpp" />
-    <ClCompile Include="src\Samplers\RandomSampler.cpp" />
-    <ClCompile Include="src\Samplers\RegularSampler.cpp" />
-    <ClCompile Include="src\Samplers\Sampler.cpp" />
+    <ClCompile Include="src\Runners\WindowRunnerRenderState.cpp" />
     <ClCompile Include="src\TestScenes\TestScene.cpp" />
     <ClCompile Include="src\TestScenes\TestScene1.cpp" />
     <ClCompile Include="src\TestScenes\TestScene2.cpp" />
@@ -318,32 +322,20 @@
     <ClCompile Include="src\Tests\TestScenesTest.cpp" />
     <ClCompile Include="src\Tests\Vector3Test.cpp" />
     <ClCompile Include="src\Textures\CheckerTexture.cpp" />
-    <ClCompile Include="src\Textures\ColorGradientTexture.cpp" />
-    <ClCompile Include="src\Textures\ColorTexture.cpp" />
     <ClCompile Include="src\Textures\ImageTexture.cpp" />
-    <ClCompile Include="src\Textures\PerlinNoiseTexture.cpp" />
+    <ClCompile Include="src\Textures\Texture.cpp" />
     <ClCompile Include="src\Tonemappers\LinearTonemapper.cpp" />
     <ClCompile Include="src\Tonemappers\PassthroughTonemapper.cpp" />
     <ClCompile Include="src\Tonemappers\ReinhardTonemapper.cpp" />
     <ClCompile Include="src\Tonemappers\SimpleTonemapper.cpp" />
     <ClCompile Include="src\Tonemappers\Tonemapper.cpp" />
-    <ClCompile Include="src\Tracers\Pathtracer.cpp" />
-    <ClCompile Include="src\Tracers\PreviewTracer.cpp" />
-    <ClCompile Include="src\Tracers\Tracer.cpp" />
-    <ClCompile Include="src\Tracers\TracerCommon.cpp" />
-    <ClCompile Include="src\Tracing\AABB.cpp" />
-    <ClCompile Include="src\Tracing\Camera.cpp" />
-    <ClCompile Include="src\Tracing\ONB.cpp" />
-    <ClCompile Include="src\Tracing\Ray.cpp" />
-    <ClCompile Include="src\Tracing\Scene.cpp" />
-    <ClCompile Include="src\Tracing\Triangle.cpp" />
-    <ClCompile Include="src\Utils\ColorGradient.cpp" />
+    <ClCompile Include="src\Utils\FilmQuad.cpp" />
     <ClCompile Include="src\Utils\FpsCounter.cpp" />
     <ClCompile Include="src\Utils\GLHelper.cpp" />
+    <ClCompile Include="src\Utils\ImagePool.cpp" />
+    <ClCompile Include="src\Utils\InfoPanel.cpp" />
     <ClCompile Include="src\Utils\Log.cpp" />
     <ClCompile Include="src\Utils\ModelLoader.cpp" />
-    <ClCompile Include="src\Utils\PerlinNoise.cpp" />
-    <ClCompile Include="src\Utils\PoissonDisc.cpp" />
     <ClCompile Include="src\Utils\Random.cpp" />
     <ClCompile Include="src\Utils\Settings.cpp" />
     <ClCompile Include="src\Utils\StringUtils.cpp" />
@@ -351,11 +343,21 @@
     <ClCompile Include="src\Utils\Timer.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\App.h" />
     <ClInclude Include="src\BVH\BVH.h" />
     <ClInclude Include="src\BVH\BVH1.h" />
     <ClInclude Include="src\BVH\BVH4.h" />
-    <ClInclude Include="src\Common.h" />
+    <ClInclude Include="src\BVH\BVHCommon.h" />
+    <ClInclude Include="src\Core\AABB.h" />
+    <ClInclude Include="src\Core\App.h" />
+    <ClInclude Include="src\Core\Camera.h" />
+    <ClInclude Include="src\Core\Common.h" />
+    <ClInclude Include="src\Core\Film.h" />
+    <ClInclude Include="src\Core\Image.h" />
+    <ClInclude Include="src\Core\Intersection.h" />
+    <ClInclude Include="src\Core\Precompiled.h" />
+    <ClInclude Include="src\Core\Ray.h" />
+    <ClInclude Include="src\Core\Scene.h" />
+    <ClInclude Include="src\Core\Triangle.h" />
     <ClInclude Include="src\Filters\BellFilter.h" />
     <ClInclude Include="src\Filters\BoxFilter.h" />
     <ClInclude Include="src\Filters\Filter.h" />
@@ -363,67 +365,48 @@
     <ClInclude Include="src\Filters\LanczosSincFilter.h" />
     <ClInclude Include="src\Filters\MitchellFilter.h" />
     <ClInclude Include="src\Filters\TentFilter.h" />
+    <ClInclude Include="src\Integrators\DotIntegrator.h" />
+    <ClInclude Include="src\Integrators\Integrator.h" />
+    <ClInclude Include="src\Integrators\PathIntegrator.h" />
+    <ClInclude Include="src\Materials\BlinnPhongMaterial.h" />
+    <ClInclude Include="src\Materials\DiffuseMaterial.h" />
     <ClInclude Include="src\Materials\Material.h" />
-    <ClInclude Include="src\Materials\DefaultMaterial.h" />
     <ClInclude Include="src\Math\AxisAngle.h" />
+    <ClInclude Include="src\Math\Color.h" />
     <ClInclude Include="src\Math\EulerAngle.h" />
-    <ClInclude Include="src\Math\Matrix4x4.h" />
+    <ClInclude Include="src\Math\Mapper.h" />
     <ClInclude Include="src\Math\MathUtils.h" />
+    <ClInclude Include="src\Math\Matrix4x4.h" />
     <ClInclude Include="src\Math\MovingAverage.h" />
+    <ClInclude Include="src\Math\ONB.h" />
     <ClInclude Include="src\Math\Polynomial.h" />
     <ClInclude Include="src\Math\Quaternion.h" />
     <ClInclude Include="src\Math\Solver.h" />
     <ClInclude Include="src\Math\Vector2.h" />
     <ClInclude Include="src\Math\Vector3.h" />
     <ClInclude Include="src\Math\Vector4.h" />
-    <ClInclude Include="src\Precompiled.h" />
-    <ClInclude Include="src\Rendering\Color.h" />
-    <ClInclude Include="src\Rendering\Film.h" />
-    <ClInclude Include="src\Rendering\FilmRenderer.h" />
-    <ClInclude Include="src\Rendering\Image.h" />
-    <ClInclude Include="src\Rendering\ImagePool.h" />
-    <ClInclude Include="src\Rendering\InfoPanel.h" />
+    <ClInclude Include="src\Renderers\CpuRenderer.h" />
+    <ClInclude Include="src\Renderers\CudaRenderer.h" />
+    <ClInclude Include="src\Renderers\Renderer.h" />
     <ClInclude Include="src\Runners\ConsoleRunner.h" />
-    <ClInclude Include="src\Runners\WindowRunnerRenderState.h" />
     <ClInclude Include="src\Runners\WindowRunner.h" />
-    <ClInclude Include="src\Samplers\CenterSampler.h" />
-    <ClInclude Include="src\Samplers\CMJSampler.h" />
-    <ClInclude Include="src\Samplers\JitteredSampler.h" />
-    <ClInclude Include="src\Samplers\PoissonDiscSampler.h" />
-    <ClInclude Include="src\Samplers\RandomSampler.h" />
-    <ClInclude Include="src\Samplers\RegularSampler.h" />
-    <ClInclude Include="src\Samplers\Sampler.h" />
+    <ClInclude Include="src\Runners\WindowRunnerRenderState.h" />
     <ClInclude Include="src\TestScenes\TestScene.h" />
     <ClInclude Include="src\Textures\CheckerTexture.h" />
-    <ClInclude Include="src\Textures\ColorGradientTexture.h" />
-    <ClInclude Include="src\Textures\ColorTexture.h" />
     <ClInclude Include="src\Textures\ImageTexture.h" />
-    <ClInclude Include="src\Textures\PerlinNoiseTexture.h" />
     <ClInclude Include="src\Textures\Texture.h" />
     <ClInclude Include="src\Tonemappers\LinearTonemapper.h" />
     <ClInclude Include="src\Tonemappers\PassthroughTonemapper.h" />
     <ClInclude Include="src\Tonemappers\ReinhardTonemapper.h" />
     <ClInclude Include="src\Tonemappers\SimpleTonemapper.h" />
     <ClInclude Include="src\Tonemappers\Tonemapper.h" />
-    <ClInclude Include="src\Tracers\Pathtracer.h" />
-    <ClInclude Include="src\Tracers\PreviewTracer.h" />
-    <ClInclude Include="src\Tracers\Tracer.h" />
-    <ClInclude Include="src\Tracers\TracerCommon.h" />
-    <ClInclude Include="src\Tracers\TracerState.h" />
-    <ClInclude Include="src\Tracing\AABB.h" />
-    <ClInclude Include="src\Tracing\Camera.h" />
-    <ClInclude Include="src\Tracing\Intersection.h" />
-    <ClInclude Include="src\Tracing\ONB.h" />
-    <ClInclude Include="src\Tracing\Ray.h" />
-    <ClInclude Include="src\Tracing\Scene.h" />
-    <ClInclude Include="src\Tracing\Triangle.h" />
-    <ClInclude Include="src\Utils\ColorGradient.h" />
+    <ClInclude Include="src\Utils\FilmQuad.h" />
     <ClInclude Include="src\Utils\FpsCounter.h" />
     <ClInclude Include="src\Utils\GLHelper.h" />
+    <ClInclude Include="src\Utils\ImagePool.h" />
+    <ClInclude Include="src\Utils\InfoPanel.h" />
     <ClInclude Include="src\Utils\Log.h" />
     <ClInclude Include="src\Utils\ModelLoader.h" />
-    <ClInclude Include="src\Utils\PerlinNoise.h" />
-    <ClInclude Include="src\Utils\PoissonDisc.h" />
     <ClInclude Include="src\Utils\Random.h" />
     <ClInclude Include="src\Utils\Settings.h" />
     <ClInclude Include="src\Utils\StringUtils.h" />
@@ -436,9 +419,9 @@
   <ItemGroup>
     <None Include="data\shaders\film.frag" />
     <None Include="data\shaders\film.vert" />
+    <None Include="src\Core\AABB.inl" />
+    <None Include="src\Core\Triangle.inl" />
     <None Include="src\Math\Polynomial.inl" />
-    <None Include="src\Tracing\AABB.inl" />
-    <None Include="src\Tracing\Triangle.inl" />
     <None Include="src\Utils\Log.inl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

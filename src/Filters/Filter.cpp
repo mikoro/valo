@@ -1,54 +1,56 @@
 // Copyright © 2016 Mikko Ronkainen <firstname@mikkoronkainen.com>
 // License: MIT, see the LICENSE file.
 
-#include "Precompiled.h"
+#include "Core/Precompiled.h"
 
 #include "Filters/Filter.h"
-#include "Filters/BoxFilter.h"
-#include "Filters/TentFilter.h"
-#include "Filters/BellFilter.h"
-#include "Filters/GaussianFilter.h"
-#include "Filters/MitchellFilter.h"
-#include "Filters/LanczosSincFilter.h"
 #include "Math/Vector2.h"
 
 using namespace Raycer;
 
-std::unique_ptr<Filter> Filter::getFilter(FilterType type)
+Filter::Filter(FilterType type_)
+{
+	type = type_;
+}
+
+float Filter::getWeight(float s)
 {
 	switch (type)
 	{
-		case FilterType::BOX: return std::make_unique<BoxFilter>();
-		case FilterType::TENT: return std::make_unique<TentFilter>();
-		case FilterType::BELL: return std::make_unique<BellFilter>();
-		case FilterType::GAUSSIAN: return std::make_unique<GaussianFilter>();
-		case FilterType::MITCHELL: return std::make_unique<MitchellFilter>();
-		case FilterType::LANCZOS_SINC: return std::make_unique<LanczosSincFilter>();
-		default: throw std::runtime_error("Unknown filter type");
+		case FilterType::BOX: return boxFilter.getWeight(s);
+		case FilterType::TENT: return tentFilter.getWeight(s);
+		case FilterType::BELL: return bellFilter.getWeight(s);
+		case FilterType::GAUSSIAN: return gaussianFilter.getWeight(s);
+		case FilterType::MITCHELL: return mitchellFilter.getWeight(s);
+		case FilterType::LANCZOS_SINC: return lanczosSincFilter.getWeight(s);
+		default: return 0.0f;
 	}
-}
-
-float Filter::getWeight(float x, float y)
-{
-	return getWeightX(x) * getWeightY(y);
 }
 
 float Filter::getWeight(const Vector2& point)
 {
-	return getWeightX(point.x) * getWeightY(point.y);
+	switch (type)
+	{
+		case FilterType::BOX: return boxFilter.getWeight(point);
+		case FilterType::TENT: return tentFilter.getWeight(point);
+		case FilterType::BELL: return bellFilter.getWeight(point);
+		case FilterType::GAUSSIAN: return gaussianFilter.getWeight(point);
+		case FilterType::MITCHELL: return mitchellFilter.getWeight(point);
+		case FilterType::LANCZOS_SINC: return lanczosSincFilter.getWeight(point);
+		default: return 0.0f;
+	}
 }
 
-float Filter::getRadiusX() const
+Vector2 Filter::getRadius()
 {
-	return radiusX;
-}
-
-float Filter::getRadiusY() const
-{
-	return radiusY;
-}
-
-Vector2 Filter::getRadius() const
-{
-	return Vector2(radiusX, radiusY);
+	switch (type)
+	{
+		case FilterType::BOX: return boxFilter.getRadius();
+		case FilterType::TENT: return tentFilter.getRadius();
+		case FilterType::BELL: return bellFilter.getRadius();
+		case FilterType::GAUSSIAN: return gaussianFilter.getRadius();
+		case FilterType::MITCHELL: return mitchellFilter.getRadius();
+		case FilterType::LANCZOS_SINC: return lanczosSincFilter.getRadius();
+		default: return Vector2(0.0f, 0.0f);
+	}
 }

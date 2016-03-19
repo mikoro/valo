@@ -11,26 +11,19 @@ namespace Raycer
 
 		bool load(int argc, char** argv);
 
-		struct General
-		{
-			int32_t maxThreadCount;
-		} general;
-
-		struct Interactive
+		struct Window
 		{
 			bool enabled;
-			bool checkGLErrors;
+			uint64_t width;
+			uint64_t height;
+			bool fullscreen;
+			bool vsync;
+			bool hideCursor;
 			float renderScale;
 			uint64_t infoPanelState;
 			uint64_t infoPanelFontSize;
-		} interactive;
-
-		struct Scene
-		{
-			std::string fileName;
-			bool enableTestScenes;
-			uint64_t testSceneNumber;
-		} scene;
+			bool checkGLErrors;
+		} window;
 
 		struct Image
 		{
@@ -38,44 +31,18 @@ namespace Raycer
 			uint64_t height;
 			std::string fileName;
 			bool autoView;
-			bool autoWrite;
-			float autoWriteInterval;
-			uint64_t autoWriteCount;
-			std::string autoWriteFileName;
 		} image;
 
-		struct Window
+		struct Scene
 		{
-			uint64_t width;
-			uint64_t height;
-			bool enableFullscreen;
-			bool enableVsync;
-			bool hideCursor;
-		} window;
+			std::string fileName;
+			bool useTestScene;
+			uint64_t testSceneNumber;
+		} scene;
 
-		struct Film
+		struct Renderer
 		{
-			bool restoreFromFile;
-			std::string restoreFileName;
-			bool autoWrite;
-			float autoWriteInterval;
-			uint64_t autoWriteCount;
-			std::string autoWriteFileName;
-		} film;
-
-		struct Camera
-		{
-			bool enableMovement;
-			bool smoothMovement;
-			bool freeLook;
-			float moveSpeed;
-			float mouseSpeed;
-			float moveDrag;
-			float mouseDrag;
-			float autoStopSpeed;
-			float slowSpeedModifier;
-			float fastSpeedModifier;
-			float veryFastSpeedModifier;
-		} camera;
+			std::string fileName;
+		} renderer;
 	};
 }

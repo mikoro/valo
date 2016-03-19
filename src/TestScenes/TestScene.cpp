@@ -1,11 +1,11 @@
 // Copyright © 2016 Mikko Ronkainen <firstname@mikkoronkainen.com>
 // License: MIT, see the LICENSE file.
 
-#include "Precompiled.h"
+#include "Core/Precompiled.h"
 
+#include "Core/App.h"
+#include "Core/Scene.h"
 #include "TestScenes/TestScene.h"
-#include "Tracing/Scene.h"
-#include "App.h"
 #include "Utils/Log.h"
 
 using namespace Raycer;

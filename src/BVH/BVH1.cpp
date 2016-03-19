@@ -1,16 +1,16 @@
 ﻿// Copyright © 2016 Mikko Ronkainen <firstname@mikkoronkainen.com>
 // License: MIT, see the LICENSE file.
 
-#include "Precompiled.h"
+#include "Core/Precompiled.h"
 
 #include "BVH/BVH1.h"
-#include "App.h"
+#include "Core/App.h"
 #include "Utils/Log.h"
 #include "Utils/Timer.h"
-#include "Tracing/Scene.h"
-#include "Tracing/Triangle.h"
-#include "Tracing/Ray.h"
-#include "Tracing/Intersection.h"
+#include "Core/Scene.h"
+#include "Core/Triangle.h"
+#include "Core/Ray.h"
+#include "Core/Intersection.h"
 
 using namespace Raycer;
 
@@ -24,12 +24,12 @@ namespace
 	};
 }
 
-void BVH1::build(Scene& scene)
+void BVH1::build(std::vector<Triangle>& triangles)
 {
 	Log& log = App::getLog();
 
 	Timer timer;
-	uint64_t triangleCount = scene.bvhData.triangles.size();
+	uint64_t triangleCount = triangles.size();
 
 	log.logInfo("BVH1 building started (triangles: %d)", triangleCount);
 
@@ -39,13 +39,14 @@ void BVH1::build(Scene& scene)
 
 	for (uint64_t i = 0; i < triangleCount; ++i)
 	{
-		AABB aabb = scene.bvhData.triangles[i].getAABB();
+		AABB aabb = triangles[i].getAABB();
 
-		buildTriangles[i].triangle = &scene.bvhData.triangles[i];
+		buildTriangles[i].triangle = &triangles[i];
 		buildTriangles[i].aabb = aabb;
 		buildTriangles[i].center = aabb.getCenter();
 	}
 
+	std::vector<BVHNode> nodes;
 	nodes.reserve(triangleCount);
 
 	BVH1BuildEntry stack[128];
@@ -73,7 +74,7 @@ void BVH1::build(Scene& scene)
 		node.splitAxis = 0;
 
 		// leaf node
-		if (node.triangleCount <= scene.bvhInfo.maxLeafSize)
+		if (node.triangleCount <= maxLeafSize)
 			node.rightOffset = 0;
 
 		// update the parent rightOffset when visiting its right child
@@ -87,7 +88,7 @@ void BVH1::build(Scene& scene)
 
 		if (node.rightOffset != 0)
 		{
-			splitOutput = calculateSplit(buildTriangles, cache, buildEntry.start, buildEntry.end);
+			splitOutput = BVH::calculateSplit(buildTriangles, cache, buildEntry.start, buildEntry.end);
 
 			node.splitAxis = uint32_t(splitOutput.axis);
 			node.aabb = splitOutput.fullAABB;
@@ -114,14 +115,15 @@ void BVH1::build(Scene& scene)
 		stackIndex++;
 	}
 
-	nodes.shrink_to_fit();
+	nodesPtr = static_cast<BVHNode*>(malloc(nodes.size() * sizeof(BVHNode)));
+	memcpy(nodesPtr, &nodes[0], nodes.size() * sizeof(BVHNode));
 
 	std::vector<Triangle> sortedTriangles(triangleCount);
 	
 	for (uint64_t i = 0; i < triangleCount; ++i)
 		sortedTriangles[i] = *buildTriangles[i].triangle;
 
-	scene.bvhData.triangles = sortedTriangles;
+	triangles = sortedTriangles;
 
 	log.logInfo("BVH1 building finished (time: %s, nodes: %d, leafs: %d, triangles/leaf: %.2f)", timer.getElapsed().getString(true), nodeCount - leafCount, leafCount, float(triangleCount) / float(leafCount));
 }
@@ -140,14 +142,14 @@ bool BVH1::intersect(const Scene& scene, const Ray& ray, Intersection& intersect
 	while (stackIndex > 0)
 	{
 		uint64_t nodeIndex = stack[--stackIndex];
-		const BVHNode& node = nodes[nodeIndex];
+		const BVHNode& node = nodesPtr[nodeIndex];
 
 		// leaf node
 		if (node.rightOffset == 0)
 		{
 			for (uint64_t i = 0; i < node.triangleCount; ++i)
 			{
-				if (scene.bvhData.triangles[node.triangleOffset + i].intersect(scene, ray, intersection))
+				if (scene.trianglesPtr[node.triangleOffset + i].intersect(scene, ray, intersection))
 				{
 					if (ray.fastOcclusion)
 						return true;

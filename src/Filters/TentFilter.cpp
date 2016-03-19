@@ -1,7 +1,7 @@
 // Copyright © 2016 Mikko Ronkainen <firstname@mikkoronkainen.com>
 // License: MIT, see the LICENSE file.
 
-#include "Precompiled.h"
+#include "Core/Precompiled.h"
 
 #include "Filters/TentFilter.h"
 
@@ -20,25 +20,22 @@ namespace
 	}
 }
 
-TentFilter::TentFilter(float radiusX_, float radiusY_)
+float TentFilter::getWeight(float s)
 {
-	setRadius(radiusX_, radiusY_);
+	float radiusInv = 1.0f / radius.x;
+
+	return calculateWeight(s * radiusInv) * radiusInv;
 }
 
-void TentFilter::setRadius(float radiusX_, float radiusY_)
+float TentFilter::getWeight(const Vector2& point)
 {
-	radiusX = radiusX_;
-	radiusY = radiusY_;
-	radiusXInv = 1.0f / radiusX;
-	radiusYInv = 1.0f / radiusY;
+	float radiusXInv = 1.0f / radius.x;
+	float radiusYInv = 1.0f / radius.y;
+
+	return calculateWeight(point.x * radiusXInv) * radiusXInv * calculateWeight(point.y * radiusYInv) * radiusYInv;
 }
 
-float TentFilter::getWeightX(float x)
+Vector2 TentFilter::getRadius()
 {
-	return calculateWeight(x * radiusXInv) * radiusXInv;
-}
-
-float TentFilter::getWeightY(float y)
-{
-	return calculateWeight(y * radiusYInv) * radiusYInv;
+	return radius;
 }

@@ -5,38 +5,34 @@
 
 #include "cereal/cereal.hpp"
 
-#include "Textures/Texture.h"
-#include "Rendering/Image.h"
+#include "Core/Image.h"
 
 namespace Raycer
 {
-	class Scene;
 	class Vector2;
 	class Vector3;
 
-	class ImageTexture : public Texture
+	class ImageTexture
 	{
 	public:
 
-		void initialize(Scene& scene) override;
+		void initialize();
 
-		Color getColor(const Vector2& texcoord, const Vector3& position) const override;
-		float getValue(const Vector2& texcoord, const Vector3& position) const override;
+		Color getColor(const Vector2& texcoord, const Vector3& position);
 		
-		std::string imageFilePath;
+		std::string imageFileName;
 		bool applyGamma = false;
 
 	private:
 
-		const Image* image = nullptr;
+		Image* image = nullptr;
 
 		friend class cereal::access;
 
 		template <class Archive>
 		void serialize(Archive& ar)
 		{
-			ar(cereal::make_nvp("texture", cereal::base_class<Texture>(this)),
-				CEREAL_NVP(imageFilePath),
+			ar(CEREAL_NVP(imageFileName),
 				CEREAL_NVP(applyGamma));
 		}
 	};

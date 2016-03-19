@@ -3,26 +3,33 @@
 
 #pragma once
 
-#include "Filters/Filter.h"
+#include "cereal/cereal.hpp"
+
+#include "Math/Vector2.h"
 
 namespace Raycer
 {
 	class Vector2;
 
-	class BoxFilter : public Filter
+	class BoxFilter
 	{
 	public:
 
-		explicit BoxFilter(float radiusX = 0.5f, float radiusY = 0.5f);
+		float getWeight(float s);
+		float getWeight(const Vector2& point);
 
-		void setRadius(float radiusX, float radiusY);
+		Vector2 getRadius();
 
-		float getWeightX(float x) override;
-		float getWeightY(float y) override;
+		Vector2 radius = Vector2(0.5f, 0.5f);
 
 	private:
 
-		float weightX = 0.0f;
-		float weightY = 0.0f;
+		friend class cereal::access;
+
+		template <class Archive>
+		void serialize(Archive& ar)
+		{
+			ar(CEREAL_NVP(radius));
+		}
 	};
 }

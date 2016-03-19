@@ -5,27 +5,30 @@
 
 #include "cereal/cereal.hpp"
 
-#include "Rendering/Color.h"
+#include "Math/Color.h"
+#include "Textures/CheckerTexture.h"
+#include "Textures/ImageTexture.h"
 
 namespace Raycer
 {
-	class Scene;
 	class Vector2;
 	class Vector3;
+
+	enum class TextureType { CHECKER, IMAGE };
 
 	class Texture
 	{
 	public:
 
-		virtual ~Texture() {}
+		void initialize();
 
-		virtual void initialize(Scene& scene) = 0;
-
-		virtual Color getColor(const Vector2& texcoord, const Vector3& position) const = 0;
-		virtual float getValue(const Vector2& texcoord, const Vector3& position) const = 0;
-
+		Color getColor(const Vector2& texcoord, const Vector3& position);
+		
 		uint64_t id = 0;
-		float intensity = 1.0f;
+		TextureType type = TextureType::CHECKER;
+
+		CheckerTexture checkerTexture;
+		ImageTexture imageTexture;
 
 	private:
 
@@ -35,7 +38,9 @@ namespace Raycer
 		void serialize(Archive& ar)
 		{
 			ar(CEREAL_NVP(id),
-				CEREAL_NVP(intensity));
+				CEREAL_NVP(type),
+				CEREAL_NVP(checkerTexture),
+				CEREAL_NVP(imageTexture));
 		}
 	};
 }

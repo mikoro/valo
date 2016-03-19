@@ -3,6 +3,15 @@
 
 #pragma once
 
+#include "cereal/cereal.hpp"
+
+#include "Filters/BoxFilter.h"
+#include "Filters/TentFilter.h"
+#include "Filters/BellFilter.h"
+#include "Filters/GaussianFilter.h"
+#include "Filters/MitchellFilter.h"
+#include "Filters/LanczosSincFilter.h"
+
 namespace Raycer
 {
 	class Vector2;
@@ -13,23 +22,36 @@ namespace Raycer
 	{
 	public:
 
-		virtual ~Filter() {}
+		explicit Filter(FilterType type = FilterType::BOX);
 
-		virtual float getWeightX(float x) = 0;
-		virtual float getWeightY(float y) = 0;
-
-		float getWeight(float x, float y);
+		float getWeight(float s);
 		float getWeight(const Vector2& point);
-		
-		float getRadiusX() const;
-		float getRadiusY() const;
-		Vector2 getRadius() const;
 
-		static std::unique_ptr<Filter> getFilter(FilterType type);
+		Vector2 getRadius();
 
-	protected:
+		FilterType type = FilterType::BOX;
 
-		float radiusX = 0.0f;
-		float radiusY = 0.0f;
+		BoxFilter boxFilter;
+		TentFilter tentFilter;
+		BellFilter bellFilter;
+		GaussianFilter gaussianFilter;
+		MitchellFilter mitchellFilter;
+		LanczosSincFilter lanczosSincFilter;
+
+	private:
+
+		friend class cereal::access;
+
+		template <class Archive>
+		void serialize(Archive& ar)
+		{
+			ar(CEREAL_NVP(type),
+				CEREAL_NVP(boxFilter),
+				CEREAL_NVP(tentFilter),
+				CEREAL_NVP(bellFilter),
+				CEREAL_NVP(gaussianFilter),
+				CEREAL_NVP(mitchellFilter),
+				CEREAL_NVP(lanczosSincFilter));
+		}
 	};
 }

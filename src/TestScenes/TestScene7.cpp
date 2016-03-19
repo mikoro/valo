@@ -1,10 +1,10 @@
 ﻿// Copyright © 2016 Mikko Ronkainen <firstname@mikkoronkainen.com>
 // License: MIT, see the LICENSE file.
 
-#include "Precompiled.h"
+#include "Core/Precompiled.h"
 
 #include "TestScenes/TestScene.h"
-#include "Tracing/Scene.h"
+#include "Core/Scene.h"
 
 using namespace Raycer;
 
@@ -16,33 +16,22 @@ Scene TestScene::create7()
 
 	Color skyColor(182, 126, 91);
 
-	scene.general.tracerType = TracerType::PATH;
-	scene.pathtracing.enableMultiSampling = true;
-	scene.pathtracing.multiSamplerFilterType = FilterType::TENT;
-	scene.pathtracing.minPathLength = 3;
-	scene.pathtracing.terminationProbability = 0.5f;
-	scene.pathtracing.pixelSampleCount = 1;
-
+	scene.integrator.type = IntegratorType::DOT;
+	
 	scene.camera.position = Vector3(0.0f, 0.6f, 1.5f);
 	scene.camera.orientation = EulerAngle(-8.0f, -0.0f, 0.0f);
-
-	scene.bvhInfo.bvhType = BVHType::BVH4;
-	scene.bvhInfo.maxLeafSize = 4;
-
-	scene.bvhInfo.loadFromFile = false;
-	scene.imagePoolInfo.loadFromFile = false;
 
 	// MODELS //
 
 	ModelLoaderInfo planeModel;
-	planeModel.modelFilePath = "data/models/plane.obj";
+	planeModel.modelFileName = "data/models/plane.obj";
 	planeModel.defaultMaterialId = 1;
 	planeModel.scale = Vector3(10.0f, 10.0f, 10.0f);
 
 	scene.models.push_back(planeModel);
 
 	ModelLoaderInfo buddhaModel;
-	buddhaModel.modelFilePath = "data/models/buddha.obj";
+	buddhaModel.modelFileName = "data/models/buddha.obj";
 	buddhaModel.defaultMaterialId = 2;
 	buddhaModel.triangleCountEstimate = 1087451;
 	buddhaModel.translate = Vector3(0.6f, 0.0f, 0.0f);
@@ -51,7 +40,7 @@ Scene TestScene::create7()
 	scene.models.push_back(buddhaModel);
 
 	ModelLoaderInfo dragonModel;
-	dragonModel.modelFilePath = "data/models/dragon.obj";
+	dragonModel.modelFileName = "data/models/dragon.obj";
 	dragonModel.defaultMaterialId = 3;
 	dragonModel.triangleCountEstimate = 871306;
 	dragonModel.translate = Vector3(-0.4f, 0.0f, 0.0f);
@@ -61,23 +50,23 @@ Scene TestScene::create7()
 
 	// MATERIALS //
 
-	DefaultMaterial planeMaterial;
+	Material planeMaterial;
 	planeMaterial.id = 1;
 	planeMaterial.reflectance = Color::WHITE;
 	
-	scene.materials.defaultMaterials.push_back(planeMaterial);
+	scene.materials.push_back(planeMaterial);
 
-	DefaultMaterial buddhaMaterial;
+	Material buddhaMaterial;
 	buddhaMaterial.id = 2;
 	buddhaMaterial.reflectance = Color::WHITE;
 	
-	scene.materials.defaultMaterials.push_back(buddhaMaterial);
+	scene.materials.push_back(buddhaMaterial);
 
-	DefaultMaterial dragonMaterial;
+	Material dragonMaterial;
 	dragonMaterial.id = 3;
 	dragonMaterial.reflectance = Color::WHITE;
 	
-	scene.materials.defaultMaterials.push_back(dragonMaterial);
+	scene.materials.push_back(dragonMaterial);
 
 	return scene;
 }

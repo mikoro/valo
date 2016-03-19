@@ -1,15 +1,15 @@
 ﻿// Copyright © 2016 Mikko Ronkainen <firstname@mikkoronkainen.com>
 // License: MIT, see the LICENSE file.
 
-#include "Precompiled.h"
+#include "Core/Precompiled.h"
 
+#include "Core/App.h"
+#include "Core/Image.h"
 #include "Runners/WindowRunner.h"
-#include "App.h"
-#include "Utils/Settings.h"
-#include "Utils/Log.h"
-#include "Utils/GLHelper.h"
-#include "Rendering/Image.h"
 #include "Runners/WindowRunnerRenderState.h"
+#include "Utils/GLHelper.h"
+#include "Utils/Log.h"
+#include "Utils/Settings.h"
 
 using namespace Raycer;
 
@@ -171,7 +171,7 @@ void WindowRunner::initialize()
 	glfwInitialized = true;
 	startTime = glfwGetTime();
 
-	log.logInfo("Creating window and OpenGL context (%sx%s, fullscreen: %s)", settings.window.width, settings.window.height, settings.window.enableFullscreen);
+	log.logInfo("Creating window and OpenGL context (%sx%s, fullscreen: %s)", settings.window.width, settings.window.height, settings.window.fullscreen);
 
 #ifdef __APPLE__
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -180,7 +180,7 @@ void WindowRunner::initialize()
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 #endif
 
-	glfwWindow = glfwCreateWindow(int32_t(settings.window.width), int32_t(settings.window.height), "Raycer", settings.window.enableFullscreen ? glfwGetPrimaryMonitor() : nullptr, nullptr);
+	glfwWindow = glfwCreateWindow(int32_t(settings.window.width), int32_t(settings.window.height), "Raycer", settings.window.fullscreen ? glfwGetPrimaryMonitor() : nullptr, nullptr);
 
 	if (!glfwWindow)
 		throw std::runtime_error("Could not create the window");
@@ -201,7 +201,7 @@ void WindowRunner::initialize()
 
 	log.logInfo("OpenGL Vendor: %s | Renderer: %s | Version: %s | GLSL: %s", glGetString(GL_VENDOR), glGetString(GL_RENDERER), glGetString(GL_VERSION), glGetString(GL_SHADING_LANGUAGE_VERSION));
 
-	glfwSwapInterval(settings.window.enableVsync ? 1 : 0);
+	glfwSwapInterval(settings.window.vsync ? 1 : 0);
 
 	if (settings.window.hideCursor)
 		glfwSetInputMode(glfwWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
@@ -302,8 +302,8 @@ void WindowRunner::update(float timeStep)
 
 	mouseInfo.windowX = int64_t(newMouseX + 0.5);
 	mouseInfo.windowY = int64_t(double(windowHeight) - newMouseY - 1.0 + 0.5);
-	mouseInfo.filmX = int64_t((mouseInfo.windowX / double(windowWidth)) * (double(windowWidth) * settings.interactive.renderScale) + 0.5);
-	mouseInfo.filmY = int64_t((mouseInfo.windowY / double(windowHeight)) * (double(windowHeight) * settings.interactive.renderScale) + 0.5);
+	mouseInfo.filmX = int64_t((mouseInfo.windowX / double(windowWidth)) * (double(windowWidth) * settings.window.renderScale) + 0.5);
+	mouseInfo.filmY = int64_t((mouseInfo.windowY / double(windowHeight)) * (double(windowHeight) * settings.window.renderScale) + 0.5);
 	mouseInfo.deltaX = mouseInfo.windowX - previousMouseX;
 	mouseInfo.deltaY = mouseInfo.windowY - previousMouseY;
 	previousMouseX = mouseInfo.windowX;

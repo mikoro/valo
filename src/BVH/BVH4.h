@@ -5,32 +5,34 @@
 
 #include <vector>
 
-#include <boost/align/aligned_allocator.hpp>
-
 #include "cereal/cereal.hpp"
 
-#include "BVH/BVH.h"
-#include "Tracing/AABB.h"
+#include "BVH/BVHCommon.h"
+#include "Core/Triangle.h"
 
 namespace Raycer
 {
-	class BVH4 : public BVH
+	class Triangle;
+	class Scene;
+	class Ray;
+	class Intersection;
+
+	class BVH4
 	{
 	public:
 
-		void build(Scene& scene) override;
-		bool intersect(const Scene& scene, const Ray& ray, Intersection& intersection) const override;
+		void build(std::vector<Triangle>& triangles, std::vector<TriangleSOA<4>>& triangles4);
+		bool intersect(const Scene& scene, const Ray& ray, Intersection& intersection) const;
 
 	private:
 
-		std::vector<BVHNodeSOA<4>, boost::alignment::aligned_allocator<BVHNodeSOA<4>, 16>> nodes;
+		BVHNodeSOA<4>* nodesPtr = nullptr;
 
 		friend class cereal::access;
 
 		template <class Archive>
 		void serialize(Archive& ar)
 		{
-			ar(CEREAL_NVP(nodes));
 		}
 	};
 }

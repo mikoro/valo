@@ -1,37 +1,32 @@
 // Copyright © 2016 Mikko Ronkainen <firstname@mikkoronkainen.com>
 // License: MIT, see the LICENSE file.
 
-#include "Precompiled.h"
+#include "Core/Precompiled.h"
 
 #include "Filters/BoxFilter.h"
 
 using namespace Raycer;
 
-BoxFilter::BoxFilter(float radiusX_, float radiusY_)
+namespace
 {
-	setRadius(radiusX_, radiusY_);
+	float calculateWeight(float s, float radius)
+	{
+		float weight = 1.0f / (2.0f * radius);
+		return (s >= -radius && s < radius) ? weight : 0.0f;
+	}
 }
 
-void BoxFilter::setRadius(float radiusX_, float radiusY_)
+float BoxFilter::getWeight(float s)
 {
-	radiusX = radiusX_;
-	radiusY = radiusY_;
-	weightX = 1.0f / (2.0f * radiusX);
-	weightY = 1.0f / (2.0f * radiusY);
+	return calculateWeight(s, radius.x);
 }
 
-float BoxFilter::getWeightX(float x)
+float BoxFilter::getWeight(const Vector2& point)
 {
-	if (x >= -radiusX && x < radiusX)
-		return weightX;
-	else
-		return 0.0f;
+	return calculateWeight(point.x, radius.x) * calculateWeight(point.y, radius.y);
 }
 
-float BoxFilter::getWeightY(float y)
+Vector2 BoxFilter::getRadius()
 {
-	if (y >= -radiusY && y < radiusY)
-		return weightY;
-	else
-		return 0.0f;
+	return radius;
 }

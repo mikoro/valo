@@ -1,47 +1,33 @@
 ﻿// Copyright © 2016 Mikko Ronkainen <firstname@mikkoronkainen.com>
 // License: MIT, see the LICENSE file.
 
-#include "Precompiled.h"
+#include "Core/Precompiled.h"
 
-#include "Runners/WindowRunnerRenderState.h"
-#include "App.h"
-#include "Utils/Settings.h"
-#include "Utils/Log.h"
-#include "Tracing/Camera.h"
-#include "Tracers/TracerState.h"
-#include "Tracers/Pathtracer.h"
-#include "Tracers/PreviewTracer.h"
+#include "Core/App.h"
+#include "Core/Camera.h"
 #include "Runners/WindowRunner.h"
+#include "Runners/WindowRunnerRenderState.h"
 #include "TestScenes/TestScene.h"
+#include "Utils/Log.h"
+#include "Utils/Settings.h"
 
 using namespace Raycer;
-
-WindowRunnerRenderState::WindowRunnerRenderState() : interrupted(false)
-{
-	tracers[TracerType::PATH] = std::make_unique<Pathtracer>();
-	tracers[TracerType::PREVIEW] = std::make_unique<PreviewTracer>();
-}
 
 void WindowRunnerRenderState::initialize()
 {
 	Settings& settings = App::getSettings();
-	WindowRunner& windowRunner = App::getWindowRunner();
-
-	if (settings.scene.enableTestScenes)
+	
+	if (settings.scene.useTestScene)
 		scene = TestScene::create(settings.scene.testSceneNumber);
 	else
-		scene = Scene::loadFromFile(settings.scene.fileName);
+		scene = Scene::load(settings.scene.fileName);
 
-	filmRenderer.initialize();
-	windowResized(windowRunner.getWindowWidth(), windowRunner.getWindowHeight());
-
-	if (settings.film.restoreFromFile)
-		film.load(settings.film.restoreFileName);
-
+	renderer.initialize();
 	scene.initialize();
-
+	resizeFilm();
+	filmQuad.initialize();
 	infoPanel.initialize();
-	infoPanel.setState(InfoPanelState(settings.interactive.infoPanelState));
+	infoPanel.setState(InfoPanelState(settings.window.infoPanelState));
 }
 
 void WindowRunnerRenderState::shutdown()
@@ -61,59 +47,71 @@ void WindowRunnerRenderState::update(float timeStep)
 	if (!ctrlIsPressed && windowRunner.keyWasPressed(GLFW_KEY_F1))
 		infoPanel.selectNextState();
 
-	// TRACER //
+	// RENDERER / INTEGRATOR / TONEMAPPER //
 
 	if (!ctrlIsPressed)
 	{
 		if (windowRunner.keyWasPressed(GLFW_KEY_F2))
 		{
-			scene.general.tracerType = TracerType::PATH;
+			if (renderer.type == RendererType::CPU)
+				renderer.type = RendererType::CUDA;
+			else if (renderer.type == RendererType::CUDA)
+				renderer.type = RendererType::CPU;
+
 			film.clear();
 		}
 
 		if (windowRunner.keyWasPressed(GLFW_KEY_F3))
-			scene.general.tracerType = TracerType::PREVIEW;
-	}
+		{
+			if (scene.integrator.type == IntegratorType::DOT)
+				scene.integrator.type = IntegratorType::PATH;
+			else if (scene.integrator.type == IntegratorType::PATH)
+				scene.integrator.type = IntegratorType::DOT;
 
-	// TONEMAPPER //
+			film.clear();
+		}
 
-	if (!ctrlIsPressed && windowRunner.keyWasPressed(GLFW_KEY_F5))
-	{
-		if (scene.tonemapping.type == TonemapperType::PASSTHROUGH)
-			scene.tonemapping.type = TonemapperType::LINEAR;
-		else if (scene.tonemapping.type == TonemapperType::LINEAR)
-			scene.tonemapping.type = TonemapperType::SIMPLE;
-		else if (scene.tonemapping.type == TonemapperType::SIMPLE)
-			scene.tonemapping.type = TonemapperType::REINHARD;
-		else if (scene.tonemapping.type == TonemapperType::REINHARD)
-			scene.tonemapping.type = TonemapperType::PASSTHROUGH;
+		if (windowRunner.keyWasPressed(GLFW_KEY_F4))
+		{
+			if (scene.tonemapper.type == TonemapperType::PASSTHROUGH)
+				scene.tonemapper.type = TonemapperType::LINEAR;
+			else if (scene.tonemapper.type == TonemapperType::LINEAR)
+				scene.tonemapper.type = TonemapperType::SIMPLE;
+			else if (scene.tonemapper.type == TonemapperType::SIMPLE)
+				scene.tonemapper.type = TonemapperType::REINHARD;
+			else if (scene.tonemapper.type == TonemapperType::REINHARD)
+				scene.tonemapper.type = TonemapperType::PASSTHROUGH;
+		}
 	}
 
 	// RENDER SCALE //
 
-	if (!ctrlIsPressed && windowRunner.keyWasPressed(GLFW_KEY_F6))
+	if (!ctrlIsPressed)
 	{
-		float newScale = settings.interactive.renderScale * 0.5f;
-		uint64_t newWidth = uint64_t(float(windowRunner.getWindowWidth()) * newScale + 0.5f);
-		uint64_t newHeight = uint64_t(float(windowRunner.getWindowHeight()) * newScale + 0.5f);
-
-		if (newWidth >= 2 && newHeight >= 2)
+		if (windowRunner.keyWasPressed(GLFW_KEY_F5))
 		{
-			settings.interactive.renderScale = newScale;
-			resizeFilm();
+			float newScale = settings.window.renderScale * 0.5f;
+			uint64_t newWidth = uint64_t(float(windowRunner.getWindowWidth()) * newScale + 0.5f);
+			uint64_t newHeight = uint64_t(float(windowRunner.getWindowHeight()) * newScale + 0.5f);
+
+			if (newWidth >= 2 && newHeight >= 2)
+			{
+				settings.window.renderScale = newScale;
+				resizeFilm();
+			}
 		}
-	}
 
-	if (!ctrlIsPressed && windowRunner.keyWasPressed(GLFW_KEY_F7))
-	{
-		if (settings.interactive.renderScale < 1.0f)
+		if (windowRunner.keyWasPressed(GLFW_KEY_F6))
 		{
-			settings.interactive.renderScale *= 2.0f;
+			if (settings.window.renderScale < 1.0f)
+			{
+				settings.window.renderScale *= 2.0f;
 
-			if (settings.interactive.renderScale > 1.0f)
-				settings.interactive.renderScale = 1.0f;
+				if (settings.window.renderScale > 1.0f)
+					settings.window.renderScale = 1.0f;
 
-			resizeFilm();
+				resizeFilm();
+			}
 		}
 	}
 
@@ -126,7 +124,7 @@ void WindowRunnerRenderState::update(float timeStep)
 	}
 
 	if (windowRunner.keyWasPressed(GLFW_KEY_P))
-		settings.camera.enableMovement = !settings.camera.enableMovement;
+		scene.camera.enableMovement = !scene.camera.enableMovement;
 
 	if (windowRunner.keyWasPressed(GLFW_KEY_M))
 		scene.general.normalMapping = !scene.general.normalMapping;
@@ -150,51 +148,49 @@ void WindowRunnerRenderState::update(float timeStep)
 
 	if (ctrlIsPressed)
 	{
-		if (scene.tonemapping.type == TonemapperType::REINHARD)
+		if(scene.tonemapper.type == TonemapperType::LINEAR)
 		{
 			if (windowRunner.keyIsDown(GLFW_KEY_PAGE_DOWN))
-				scene.tonemapping.key -= 0.1f * timeStep;
+				scene.tonemapper.linearTonemapper.exposure -= 2.0f * timeStep;
 			else if (windowRunner.keyIsDown(GLFW_KEY_PAGE_UP))
-				scene.tonemapping.key += 0.1f * timeStep;
-
-			scene.tonemapping.key = std::max(0.0f, scene.tonemapping.key);
+				scene.tonemapper.linearTonemapper.exposure += 2.0f * timeStep;
 		}
-		else
+		else if (scene.tonemapper.type == TonemapperType::SIMPLE)
 		{
 			if (windowRunner.keyIsDown(GLFW_KEY_PAGE_DOWN))
-				scene.tonemapping.exposure -= 2.0f * timeStep;
+				scene.tonemapper.simpleTonemapper.exposure -= 2.0f * timeStep;
 			else if (windowRunner.keyIsDown(GLFW_KEY_PAGE_UP))
-				scene.tonemapping.exposure += 2.0f * timeStep;
+				scene.tonemapper.simpleTonemapper.exposure += 2.0f * timeStep;
+		}
+		else if (scene.tonemapper.type == TonemapperType::REINHARD)
+		{
+			if (windowRunner.keyIsDown(GLFW_KEY_PAGE_DOWN))
+				scene.tonemapper.reinhardTonemapper.key -= 0.1f * timeStep;
+			else if (windowRunner.keyIsDown(GLFW_KEY_PAGE_UP))
+				scene.tonemapper.reinhardTonemapper.key += 0.1f * timeStep;
+
+			scene.tonemapper.reinhardTonemapper.key = std::max(0.0f, scene.tonemapper.reinhardTonemapper.key);
 		}
 	}
 
-	// SCENE/CAMERA/FILM SAVING //
+	// SCENE SAVING //
 
 	if (ctrlIsPressed)
 	{
 		if (windowRunner.keyWasPressed(GLFW_KEY_F1))
-			scene.saveToFile("scene.xml");
+			scene.save("scene.xml");
 
 		if (windowRunner.keyWasPressed(GLFW_KEY_F2))
-			scene.saveToFile("scene.json");
+			renderer.save("renderer.xml");
 
 		if (windowRunner.keyWasPressed(GLFW_KEY_F3))
 			scene.camera.saveState("camera.txt");
 
 		if (windowRunner.keyWasPressed(GLFW_KEY_F4))
 		{
-			film.generateOutputImage(scene);
-			film.getOutputImage().save("output.png");
+			film.generateImage(scene.tonemapper);
+			film.getImage().save("image.png");
 		}
-
-		if (windowRunner.keyWasPressed(GLFW_KEY_F5))
-			film.save("film.bin");
-
-		if (windowRunner.keyWasPressed(GLFW_KEY_F6))
-			scene.saveBvhData("bvh.bin");
-
-		if (windowRunner.keyWasPressed(GLFW_KEY_F7))
-			scene.saveImagePool("imagepool.bin");
 	}
 
 	// TEST SCENE LOADING //
@@ -242,33 +238,27 @@ void WindowRunnerRenderState::render(float timeStep, float interpolation)
 	(void)timeStep;
 	(void)interpolation;
 
-	if ((scene.general.tracerType == TracerType::PATH && scene.camera.isMoving()) || scene.general.tracerType == TracerType::PREVIEW)
+	if ((scene.integrator.type == IntegratorType::PATH && scene.camera.isMoving()) || scene.integrator.type == IntegratorType::DOT)
 		film.clear();
 
-	Tracer* tracer = tracers[scene.general.tracerType].get();
-
-	uint64_t samplesPerPixel = tracer->getPixelSampleCount(scene) * tracer->getSamplesPerPixel(scene);
-	film.increasePixelSampleCount(samplesPerPixel);
-
-	TracerState state;
-	state.scene = &scene;
-	state.film = &film;
-	state.filmWidth = film.getWidth();
-	state.filmHeight = film.getHeight();
-	state.filmPixelOffset = 0;
-	state.filmPixelCount = state.filmWidth * state.filmHeight;
+	RenderJob job;
+	job.scene = &scene;
+	job.film = &film;
+	job.interrupted = false;
+	job.sampleCount = 0;
 	
-	tracer->run(state, interrupted);
-
-	film.generateOutputImage(scene);
-	filmRenderer.uploadFilmData(film);
-	filmRenderer.render();
-	infoPanel.render(state);
+	renderer.render(job);
+	film.generateImage(scene.tonemapper);
+	filmQuad.upload(film);
+	filmQuad.render();
+	infoPanel.render(renderer, job);
 }
 
 void WindowRunnerRenderState::windowResized(uint64_t width, uint64_t height)
 {
-	filmRenderer.setWindowSize(width, height);
+	(void)width;
+	(void)height;
+
 	resizeFilm();
 }
 
@@ -277,13 +267,13 @@ void WindowRunnerRenderState::resizeFilm()
 	Settings& settings = App::getSettings();
 	WindowRunner& windowRunner = App::getWindowRunner();
 
-	uint64_t filmWidth = uint64_t(float(windowRunner.getWindowWidth()) * settings.interactive.renderScale + 0.5);
-	uint64_t filmHeight = uint64_t(float(windowRunner.getWindowHeight()) * settings.interactive.renderScale + 0.5);
+	uint64_t filmWidth = uint64_t(float(windowRunner.getWindowWidth()) * settings.window.renderScale + 0.5);
+	uint64_t filmHeight = uint64_t(float(windowRunner.getWindowHeight()) * settings.window.renderScale + 0.5);
 
     filmWidth = std::max(uint64_t(1), filmWidth);
     filmHeight = std::max(uint64_t(1), filmHeight);
 
 	film.resize(filmWidth, filmHeight);
-	filmRenderer.setFilmSize(filmWidth, filmHeight);
+	filmQuad.resize(filmWidth, filmHeight);
 	scene.camera.setImagePlaneSize(filmWidth, filmHeight);
 }

@@ -3,23 +3,19 @@
 
 #pragma once
 
-#include <atomic>
-#include <memory>
-
 #include "Runners/WindowRunner.h"
-#include "Tracers/Tracer.h"
-#include "Tracing/Scene.h"
-#include "Rendering/Film.h"
-#include "Rendering/FilmRenderer.h"
-#include "Rendering/InfoPanel.h"
+
+#include "Core/Film.h"
+#include "Core/Scene.h"
+#include "Renderers/Renderer.h"
+#include "Utils/FilmQuad.h"
+#include "Utils/InfoPanel.h"
 
 namespace Raycer
 {
 	class WindowRunnerRenderState : public WindowRunnerState
 	{
 	public:
-
-		WindowRunnerRenderState();
 
 		void initialize() override;
 		void shutdown() override;
@@ -33,13 +29,10 @@ namespace Raycer
 
 		void resizeFilm();
 
+		Renderer renderer;
 		Scene scene;
 		Film film;
-		FilmRenderer filmRenderer;
+		FilmQuad filmQuad;
 		InfoPanel infoPanel;
-
-		std::map<TracerType, std::unique_ptr<Tracer>> tracers;
-
-		std::atomic<bool> interrupted;
 	};
 }

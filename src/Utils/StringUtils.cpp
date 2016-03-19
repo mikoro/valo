@@ -1,7 +1,7 @@
 // Copyright © 2016 Mikko Ronkainen <firstname@mikkoronkainen.com>
 // License: MIT, see the LICENSE file.
 
-#include "Precompiled.h"
+#include "Core/Precompiled.h"
 
 #include "Utils/StringUtils.h"
 
@@ -12,12 +12,12 @@ bool StringUtils::endsWith(const std::string& input, const std::string& end)
 	return input.rfind(end) == (input.size() - end.size());
 }
 
-std::string StringUtils::readFileToString(const std::string& filePath)
+std::string StringUtils::readFileToString(const std::string& fileName)
 {
-	std::ifstream file(filePath, std::ios::in | std::ios::binary | std::ios::ate);
+	std::ifstream file(fileName, std::ios::in | std::ios::binary | std::ios::ate);
 
 	if (!file.good())
-		throw std::runtime_error(tfm::format("Could not open file: %s", filePath));
+		throw std::runtime_error(tfm::format("Could not open file: %s", fileName));
 
 	auto size = file.tellg();
 	file.seekg(0, std::ios::beg);

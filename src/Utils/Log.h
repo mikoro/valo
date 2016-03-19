@@ -20,9 +20,9 @@ namespace Raycer
 	public:
 
 		Log();
-		explicit Log(const std::string& logFilePath);
+		explicit Log(const std::string& logFileName);
 
-		void setLogFile(const std::string& logFilePath);
+		void setLogFile(const std::string& logFileName);
 		void setMinimumMessageLevel(LogMessageLevel value);
 
 		void logMessage(LogMessageLevel messageLevel, const std::string& message);

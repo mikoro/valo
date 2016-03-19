@@ -1,33 +1,42 @@
 // Copyright © 2016 Mikko Ronkainen <firstname@mikkoronkainen.com>
 // License: MIT, see the LICENSE file.
 
-#include "Precompiled.h"
+#include "Core/Precompiled.h"
 
 #include "Filters/GaussianFilter.h"
 
 using namespace Raycer;
 
-GaussianFilter::GaussianFilter(float stdDevX, float stdDevY)
+namespace
 {
-	setStandardDeviations(stdDevX, stdDevY);
+	float calculateWeight(float s, float alpha, float beta)
+	{
+		return alpha * std::exp(s * s * beta);
+	}
 }
 
-void GaussianFilter::setStandardDeviations(float stdDevX, float stdDevY)
+float GaussianFilter::getWeight(float s)
 {
-	alphaX = 1.0f / (std::sqrt(2.0f * float(M_PI)) * stdDevX);
-	alphaY = 1.0f / (std::sqrt(2.0f * float(M_PI)) * stdDevY);
-	betaX = -1.0f / (2.0f * stdDevX * stdDevX);
-	betaY = -1.0f / (2.0f * stdDevY * stdDevY);
-	radiusX = (7.43384f * stdDevX) / 2.0f; // from full width at thousandth of maximum
-	radiusY = (7.43384f * stdDevY) / 2.0f;
+	float alpha = 1.0f / (std::sqrt(2.0f * float(M_PI)) * stdDeviation.x);
+	float beta = -1.0f / (2.0f * stdDeviation.x * stdDeviation.x);
+
+	return calculateWeight(s, alpha, beta);
 }
 
-float GaussianFilter::getWeightX(float x)
+float GaussianFilter::getWeight(const Vector2& point)
 {
-	return alphaX * std::exp(x * x * betaX);
+	float alphaX = 1.0f / (std::sqrt(2.0f * float(M_PI)) * stdDeviation.x);
+	float alphaY = 1.0f / (std::sqrt(2.0f * float(M_PI)) * stdDeviation.y);
+	float betaX = -1.0f / (2.0f * stdDeviation.x * stdDeviation.x);
+	float betaY = -1.0f / (2.0f * stdDeviation.y * stdDeviation.y);
+
+	return calculateWeight(point.x, alphaX, betaX) * calculateWeight(point.y, alphaY, betaY);
 }
 
-float GaussianFilter::getWeightY(float y)
+Vector2 GaussianFilter::getRadius()
 {
-	return alphaY * std::exp(y * y * betaY);
+	float radiusX = (7.43384f * stdDeviation.x) / 2.0f; // from full width at thousandth of maximum
+	float radiusY = (7.43384f * stdDeviation.y) / 2.0f;
+
+	return Vector2(radiusX, radiusY);
 }

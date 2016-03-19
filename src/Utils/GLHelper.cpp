@@ -1,10 +1,10 @@
 // Copyright © 2016 Mikko Ronkainen <firstname@mikkoronkainen.com>
 // License: MIT, see the LICENSE file.
 
-#include "Precompiled.h"
+#include "Core/Precompiled.h"
 
 #include "Utils/GLHelper.h"
-#include "App.h"
+#include "Core/App.h"
 #include "Utils/Settings.h"
 #include "Utils/Log.h"
 #include "Utils/StringUtils.h"
@@ -99,7 +99,7 @@ void GLHelper::checkError(const std::string& message)
 
 	int32_t result = glGetError();
 
-	if (result != GL_NO_ERROR && settings.interactive.checkGLErrors)
+	if (result != GL_NO_ERROR && settings.window.checkGLErrors)
 		throw std::runtime_error(tfm::format("OpenGL error: %s: %s", message, getErrorMessage(result)));
 }
 

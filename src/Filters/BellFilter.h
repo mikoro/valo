@@ -3,19 +3,28 @@
 
 #pragma once
 
-#include "Filters/Filter.h"
+#include "cereal/cereal.hpp"
 
 namespace Raycer
 {
 	class Vector2;
 
-	class BellFilter : public Filter
+	class BellFilter
 	{
 	public:
 
-		BellFilter();
+		float getWeight(float s);
+		float getWeight(const Vector2& point);
 
-		float getWeightX(float x) override;
-		float getWeightY(float y) override;
+		Vector2 getRadius();
+
+	private:
+
+		friend class cereal::access;
+
+		template <class Archive>
+		void serialize(Archive& ar)
+		{
+		}
 	};
 }

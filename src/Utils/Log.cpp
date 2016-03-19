@@ -1,7 +1,7 @@
 // Copyright © 2016 Mikko Ronkainen <firstname@mikkoronkainen.com>
 // License: MIT, see the LICENSE file.
 
-#include "Precompiled.h"
+#include "Core/Precompiled.h"
 
 #include "Utils/Log.h"
 #include "Utils/SysUtils.h"
@@ -40,14 +40,14 @@ Log::Log()
 {
 }
 
-Log::Log(const std::string& logFilePath)
+Log::Log(const std::string& logFileName)
 {
-	setLogFile(logFilePath);
+	setLogFile(logFileName);
 }
 
-void Log::setLogFile(const std::string& logFilePath)
+void Log::setLogFile(const std::string& logFileName)
 {
-	logFile = std::ofstream(logFilePath);
+	logFile = std::ofstream(logFileName);
 }
 
 void Log::setMinimumMessageLevel(LogMessageLevel value)
