@@ -18,6 +18,8 @@ namespace Raycer
 
 		Color calculateRadiance(const Scene& scene, const Ray& viewRay, Random& random);
 
+		uint32_t getSampleCount() const;
+
 	private:
 
 		friend class cereal::access;

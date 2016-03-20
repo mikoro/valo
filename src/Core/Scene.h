@@ -36,7 +36,7 @@ namespace Raycer
 			float rayMinDistance = 0.0001f;
 			Color backgroundColor = Color(0.0f, 0.0f, 0.0f);
 			Color offLensColor = Color(0.0f, 0.0f, 0.0f);
-			bool pixelFiltering = false;
+			bool pixelFiltering = true;
 			bool normalMapping = true;
 			bool normalInterpolation = true;
 			bool normalVisualization = false;

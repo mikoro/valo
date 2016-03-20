@@ -74,7 +74,7 @@ void CpuRenderer::render(RenderJob& job)
 			film.addSample(pixelIndex, color, filterWeight);
 
 			if ((pixelIndex + 1) % 100 == 0)
-				job.sampleCount += 100;
+				job.sampleCount += 100 * scene.integrator.getSampleCount();
 		}
 		catch (...)
 		{

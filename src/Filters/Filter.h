@@ -22,7 +22,7 @@ namespace Raycer
 	{
 	public:
 
-		explicit Filter(FilterType type = FilterType::BOX);
+		explicit Filter(FilterType type = FilterType::BELL);
 
 		float getWeight(float s);
 		float getWeight(const Vector2& point);
@@ -31,7 +31,7 @@ namespace Raycer
 
 		std::string getName() const;
 
-		FilterType type = FilterType::BOX;
+		FilterType type = FilterType::BELL;
 
 		BoxFilter boxFilter;
 		TentFilter tentFilter;

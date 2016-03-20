@@ -164,10 +164,9 @@ bool Color::isNegative() const
 	return (r < 0.0f || g < 0.0f || b < 0.0f || a < 0.0f);
 }
 
-Color& Color::clamp()
+void Color::clamp()
 {
 	*this = clamped();
-	return *this;
 }
 
 Color Color::clamped() const
@@ -178,6 +177,23 @@ Color Color::clamped() const
 	c.g = std::max(0.0f, std::min(g, 1.0f));
 	c.b = std::max(0.0f, std::min(b, 1.0f));
 	c.a = std::max(0.0f, std::min(a, 1.0f));
+
+	return c;
+}
+
+void Color::clampPositive()
+{
+	*this = clampedPositive();
+}
+
+Color Color::clampedPositive() const
+{
+	Color c;
+
+	c.r = (r < 0.0f) ? 0.0f : r;
+	c.g = (g < 0.0f) ? 0.0f : g;
+	c.b = (b < 0.0f) ? 0.0f : b;
+	c.a = (a < 0.0f) ? 0.0f : a;
 
 	return c;
 }

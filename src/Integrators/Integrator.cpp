@@ -23,6 +23,16 @@ Color Integrator::calculateRadiance(const Scene& scene, const Ray& viewRay, Rand
 	}
 }
 
+uint32_t Integrator::getSampleCount() const
+{
+	switch (type)
+	{
+		case IntegratorType::DOT: return dotIntegrator.getSampleCount();
+		case IntegratorType::PATH: return pathIntegrator.getSampleCount();
+		default: return 0;
+	}
+}
+
 std::string Integrator::getName() const
 {
 	switch (type)

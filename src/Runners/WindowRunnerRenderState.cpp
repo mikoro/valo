@@ -62,7 +62,7 @@ void WindowRunnerRenderState::update(float timeStep)
 	if (!ctrlIsPressed && windowRunner.keyWasPressed(GLFW_KEY_F1))
 		infoPanel.selectNextState();
 
-	// RENDERER / INTEGRATOR / TONEMAPPER / CAMERA //
+	// RENDERER / CAMERA / INTEGRATOR / FILTER / TONEMAPPER //
 
 	if (!ctrlIsPressed)
 	{
@@ -78,16 +78,6 @@ void WindowRunnerRenderState::update(float timeStep)
 
 		if (windowRunner.keyWasPressed(GLFW_KEY_F3))
 		{
-			if (scene->integrator.type == IntegratorType::DOT)
-				scene->integrator.type = IntegratorType::PATH;
-			else if (scene->integrator.type == IntegratorType::PATH)
-				scene->integrator.type = IntegratorType::DOT;
-
-			film->clear();
-		}
-
-		if (windowRunner.keyWasPressed(GLFW_KEY_F4))
-		{
 			if (scene->camera.type == CameraType::PERSPECTIVE)
 				scene->camera.type = CameraType::ORTHOGRAPHIC;
 			else if (scene->camera.type == CameraType::ORTHOGRAPHIC)
@@ -98,7 +88,35 @@ void WindowRunnerRenderState::update(float timeStep)
 			film->clear();
 		}
 
+		if (windowRunner.keyWasPressed(GLFW_KEY_F4))
+		{
+			if (scene->integrator.type == IntegratorType::DOT)
+				scene->integrator.type = IntegratorType::PATH;
+			else if (scene->integrator.type == IntegratorType::PATH)
+				scene->integrator.type = IntegratorType::DOT;
+
+			film->clear();
+		}
+
 		if (windowRunner.keyWasPressed(GLFW_KEY_F5))
+		{
+			if (scene->filter.type == FilterType::BOX)
+				scene->filter.type = FilterType::TENT;
+			else if (scene->filter.type == FilterType::TENT)
+				scene->filter.type = FilterType::BELL;
+			else if (scene->filter.type == FilterType::BELL)
+				scene->filter.type = FilterType::GAUSSIAN;
+			else if (scene->filter.type == FilterType::GAUSSIAN)
+				scene->filter.type = FilterType::MITCHELL;
+			else if (scene->filter.type == FilterType::MITCHELL)
+				scene->filter.type = FilterType::LANCZOS_SINC;
+			else if (scene->filter.type == FilterType::LANCZOS_SINC)
+				scene->filter.type = FilterType::BOX;
+
+			film->clear();
+		}
+
+		if (windowRunner.keyWasPressed(GLFW_KEY_F6))
 		{
 			if (scene->tonemapper.type == TonemapperType::PASSTHROUGH)
 				scene->tonemapper.type = TonemapperType::LINEAR;
@@ -139,7 +157,7 @@ void WindowRunnerRenderState::update(float timeStep)
 
 	if (!ctrlIsPressed)
 	{
-		if (windowRunner.keyWasPressed(GLFW_KEY_F6))
+		if (windowRunner.keyWasPressed(GLFW_KEY_F7))
 		{
 			float newScale = settings.window.renderScale * 0.5f;
 			uint32_t newWidth = uint32_t(float(windowRunner.getWindowWidth()) * newScale + 0.5f);
@@ -152,7 +170,7 @@ void WindowRunnerRenderState::update(float timeStep)
 			}
 		}
 
-		if (windowRunner.keyWasPressed(GLFW_KEY_F7))
+		if (windowRunner.keyWasPressed(GLFW_KEY_F8))
 		{
 			if (settings.window.renderScale < 1.0f)
 			{
@@ -171,6 +189,12 @@ void WindowRunnerRenderState::update(float timeStep)
 	if (windowRunner.keyWasPressed(GLFW_KEY_R))
 	{
 		scene->camera.reset();
+		film->clear();
+	}
+
+	if (windowRunner.keyWasPressed(GLFW_KEY_F))
+	{
+		scene->general.pixelFiltering = !scene->general.pixelFiltering;
 		film->clear();
 	}
 
@@ -300,7 +324,7 @@ void WindowRunnerRenderState::render(float timeStep, float interpolation)
 	(void)timeStep;
 	(void)interpolation;
 
-	if ((scene->integrator.type == IntegratorType::PATH && scene->camera.isMoving()) || scene->integrator.type == IntegratorType::DOT)
+	if (scene->camera.isMoving())
 		film->clear();
 
 	RenderJob job;

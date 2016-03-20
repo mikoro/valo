@@ -40,8 +40,10 @@ namespace Raycer
 		bool isClamped() const;
 		bool isNan() const;
 		bool isNegative() const;
-		Color& clamp();
+		void clamp();
 		Color clamped() const;
+		void clampPositive();
+		Color clampedPositive() const;
 		
 		static Color fromRgbaValue(uint32_t rgba);
 		static Color fromAbgrValue(uint32_t abgr);

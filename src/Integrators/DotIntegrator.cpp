@@ -33,3 +33,8 @@ Color DotIntegrator::calculateRadiance(const Scene& scene, const Ray& viewRay, R
 
 	return intersection.material->getReflectance(intersection.texcoord, intersection.position) * std::abs(viewRay.direction.dot(intersection.normal));
 }
+
+uint32_t DotIntegrator::getSampleCount() const
+{
+	return 1;
+}

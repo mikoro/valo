@@ -14,7 +14,7 @@ Scene TestScene::create1()
 {
 	Scene scene;
 
-	scene.integrator.type = IntegratorType::DOT;
+	scene.integrator.type = IntegratorType::PATH;
 
 	scene.camera.position = Vector3(0.0f, 1.0f, 3.5f);
 

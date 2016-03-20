@@ -26,7 +26,7 @@ namespace Raycer
 		float gamma = 2.2f;
 		float key = 0.18f;
 		bool enableAveraging = true;
-		float averagingAlpha = 0.1f;
+		float averagingAlpha = 0.001f;
 
 	private:
 

@@ -49,9 +49,9 @@ void Film::addSample(uint32_t x, uint32_t y, const Color& color, float filterWei
 
 void Film::addSample(uint32_t index, const Color& color, float filterWeight)
 {
-	pixels[index].r += color.r;
-	pixels[index].g += color.g;
-	pixels[index].b += color.b;
+	pixels[index].r += color.r * filterWeight;
+	pixels[index].g += color.g * filterWeight;
+	pixels[index].b += color.b * filterWeight;
 	pixels[index].a += filterWeight;
 }
 
@@ -69,7 +69,13 @@ void Film::generateImage(Tonemapper& tonemapper)
 {
 	#pragma omp parallel for
 	for (int32_t i = 0; i < int32_t(length); ++i)
-		linearImage.setPixel(i, pixels[i] / pixels[i].a);
+	{
+		Color color = pixels[i] / pixels[i].a;
+		color.clampPositive();
+		color.a = 1.0f;
+
+		linearImage.setPixel(i, color);
+	}
 
 	tonemapper.apply(linearImage, outputImage);
 }

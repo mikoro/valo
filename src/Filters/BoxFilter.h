@@ -20,7 +20,7 @@ namespace Raycer
 
 		Vector2 getRadius();
 
-		Vector2 radius = Vector2(0.5f, 0.5f);
+		Vector2 radius = Vector2(1.0f, 1.0f);
 
 	private:
 

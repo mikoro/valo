@@ -24,6 +24,7 @@ namespace Raycer
 
 		Color calculateRadiance(const Scene& scene, const Ray& viewRay, Random& random);
 
+		uint32_t getSampleCount() const;
 		std::string getName() const;
 
 		static Color calculateDirectLight(const Scene& scene, const Intersection& intersection, Random& random);

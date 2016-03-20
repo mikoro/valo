@@ -67,3 +67,8 @@ Color PathIntegrator::calculateRadiance(const Scene& scene, const Ray& viewRay, 
 
 	return color;
 }
+
+uint32_t PathIntegrator::getSampleCount() const
+{
+	return pathSamples;
+}
