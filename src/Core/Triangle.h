@@ -47,10 +47,6 @@ namespace Raycer
 		}
 	};
 
-	using TriangleSOAVector4 = std::vector<TriangleSOA<4>, boost::alignment::aligned_allocator<TriangleSOA<4>, 16>>;
-	using TriangleSOAVector8 = std::vector<TriangleSOA<8>, boost::alignment::aligned_allocator<TriangleSOA<8>, 16>>;
-	using TriangleSOAVector16 = std::vector<TriangleSOA<16>, boost::alignment::aligned_allocator<TriangleSOA<16>, 16>>;
-
 	class Triangle
 	{
 	public:

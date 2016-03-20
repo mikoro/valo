@@ -11,12 +11,21 @@ QMAKE_POST_LINK += platform/linux/post-build.sh
 INCLUDEPATH += include \
                src
 
-HEADERS += src/App.h \
-           src/Common.h \
-           src/Precompiled.h \
-           src/BVH/BVH.h \
+HEADERS += src/BVH/BVH.h \
            src/BVH/BVH1.h \
            src/BVH/BVH4.h \
+           src/BVH/Common.h \
+           src/Core/AABB.h \
+           src/Core/App.h \
+           src/Core/Camera.h \
+           src/Core/Common.h \
+           src/Core/Film.h \
+           src/Core/Image.h \
+           src/Core/Intersection.h \
+           src/Core/Precompiled.h \
+           src/Core/Ray.h \
+           src/Core/Scene.h \
+           src/Core/Triangle.h \
            src/Filters/BellFilter.h \
            src/Filters/BoxFilter.h \
            src/Filters/Filter.h \
@@ -24,85 +33,66 @@ HEADERS += src/App.h \
            src/Filters/LanczosSincFilter.h \
            src/Filters/MitchellFilter.h \
            src/Filters/TentFilter.h \
-           src/Lights/AmbientLight.h \
-           src/Lights/AreaPointLight.h \
-           src/Lights/DirectionalLight.h \
-           src/Lights/Light.h \
-           src/Lights/PointLight.h \
+           src/Integrators/DotIntegrator.h \
+           src/Integrators/Integrator.h \
+           src/Integrators/PathIntegrator.h \
+           src/Materials/BlinnPhongMaterial.h \
            src/Materials/DiffuseMaterial.h \
-           src/Materials/DiffuseSpecularMaterial.h \
            src/Materials/Material.h \
            src/Math/AxisAngle.h \
+           src/Math/Color.h \
            src/Math/EulerAngle.h \
+           src/Math/Mapper.h \
            src/Math/MathUtils.h \
            src/Math/Matrix4x4.h \
            src/Math/MovingAverage.h \
+           src/Math/ONB.h \
            src/Math/Polynomial.h \
            src/Math/Quaternion.h \
            src/Math/Solver.h \
            src/Math/Vector2.h \
            src/Math/Vector3.h \
            src/Math/Vector4.h \
-           src/Rendering/Color.h \
-           src/Rendering/Film.h \
-           src/Rendering/FilmRenderer.h \
-           src/Rendering/Image.h \
-           src/Rendering/ImagePool.h \
-           src/Rendering/InfoPanel.h \
+           src/Renderers/CpuRenderer.h \
+           src/Renderers/CudaRenderer.h \
+           src/Renderers/Renderer.h \
            src/Runners/ConsoleRunner.h \
-           src/Runners/NetworkRunner.h \
            src/Runners/WindowRunner.h \
            src/Runners/WindowRunnerRenderState.h \
-           src/Samplers/CenterSampler.h \
-           src/Samplers/CMJSampler.h \
-           src/Samplers/JitteredSampler.h \
-           src/Samplers/PoissonDiscSampler.h \
-           src/Samplers/RandomSampler.h \
-           src/Samplers/RegularSampler.h \
-           src/Samplers/Sampler.h \
            src/TestScenes/TestScene.h \
            src/Textures/CheckerTexture.h \
-           src/Textures/ColorGradientTexture.h \
-           src/Textures/ColorTexture.h \
            src/Textures/ImageTexture.h \
-           src/Textures/PerlinNoiseTexture.h \
            src/Textures/Texture.h \
            src/Tonemappers/LinearTonemapper.h \
            src/Tonemappers/PassthroughTonemapper.h \
            src/Tonemappers/ReinhardTonemapper.h \
            src/Tonemappers/SimpleTonemapper.h \
            src/Tonemappers/Tonemapper.h \
-           src/Tracers/PathtracerIterative.h \
-           src/Tracers/PathtracerRecursive.h \
-           src/Tracers/PreviewTracer.h \
-           src/Tracers/Raytracer.h \
-           src/Tracers/Tracer.h \
-           src/Tracers/TracerState.h \
-           src/Tracing/AABB.h \
-           src/Tracing/Camera.h \
-           src/Tracing/Intersection.h \
-           src/Tracing/ONB.h \
-           src/Tracing/Ray.h \
-           src/Tracing/Scene.h \
-           src/Tracing/Triangle.h \
-           src/Utils/ColorGradient.h \
+           src/Utils/FilmQuad.h \
            src/Utils/FpsCounter.h \
            src/Utils/GLHelper.h \
+           src/Utils/ImagePool.h \
+           src/Utils/InfoPanel.h \
            src/Utils/Log.h \
            src/Utils/ModelLoader.h \
-           src/Utils/PerlinNoise.h \
-           src/Utils/PoissonDisc.h \
            src/Utils/Random.h \
            src/Utils/Settings.h \
            src/Utils/StringUtils.h \
            src/Utils/SysUtils.h \
            src/Utils/Timer.h
 
-SOURCES += src/App.cpp \
-           src/Precompiled.cpp \
+SOURCES += src/Main.cpp \
            src/BVH/BVH.cpp \
            src/BVH/BVH1.cpp \
            src/BVH/BVH4.cpp \
+           src/Core/AABB.cpp \
+           src/Core/App.cpp \
+           src/Core/Camera.cpp \
+           src/Core/Film.cpp \
+           src/Core/Image.cpp \
+           src/Core/Ray.cpp \
+           src/Core/Scene.cpp \
+           src/Core/Triangle.cpp \
            src/External/gl3w.cpp \
            src/External/nanovg.cpp \
            src/External/stb.cpp \
@@ -113,41 +103,31 @@ SOURCES += src/App.cpp \
            src/Filters/LanczosSincFilter.cpp \
            src/Filters/MitchellFilter.cpp \
            src/Filters/TentFilter.cpp \
-           src/Lights/AmbientLight.cpp \
-           src/Lights/AreaPointLight.cpp \
-           src/Lights/DirectionalLight.cpp \
-           src/Lights/PointLight.cpp \
+           src/Integrators/DotIntegrator.cpp \
+           src/Integrators/Integrator.cpp \
+           src/Integrators/PathIntegrator.cpp \
+           src/Materials/BlinnPhongMaterial.cpp \
            src/Materials/DiffuseMaterial.cpp \
-           src/Materials/DiffuseSpecularMaterial.cpp \
            src/Materials/Material.cpp \
            src/Math/AxisAngle.cpp \
+           src/Math/Color.cpp \
            src/Math/EulerAngle.cpp \
+           src/Math/Mapper.cpp \
            src/Math/MathUtils.cpp \
            src/Math/Matrix4x4.cpp \
            src/Math/MovingAverage.cpp \
+           src/Math/ONB.cpp \
            src/Math/Quaternion.cpp \
            src/Math/Solver.cpp \
            src/Math/Vector2.cpp \
            src/Math/Vector3.cpp \
            src/Math/Vector4.cpp \
-           src/Rendering/Color.cpp \
-           src/Rendering/Film.cpp \
-           src/Rendering/FilmRenderer.cpp \
-           src/Rendering/Image.cpp \
-           src/Rendering/ImagePool.cpp \
-           src/Rendering/InfoPanel.cpp \
+           src/Renderers/CpuRenderer.cpp \
+           src/Renderers/CudaRenderer.cpp \
+           src/Renderers/Renderer.cpp \
            src/Runners/ConsoleRunner.cpp \
-           src/Runners/NetworkRunner.cpp \
            src/Runners/WindowRunner.cpp \
            src/Runners/WindowRunnerRenderState.cpp \
-           src/Samplers/CenterSampler.cpp \
-           src/Samplers/CMJSampler.cpp \
-           src/Samplers/JitteredSampler.cpp \
-           src/Samplers/PoissonDiscSampler.cpp \
-           src/Samplers/RandomSampler.cpp \
-           src/Samplers/RegularSampler.cpp \
-           src/Samplers/Sampler.cpp \
-           src/Tests/ColorGradientTest.cpp \
            src/Tests/EulerAngleTest.cpp \
            src/Tests/FilterTest.cpp \
            src/Tests/ImageTest.cpp \
@@ -156,7 +136,6 @@ SOURCES += src/App.cpp \
            src/Tests/ModelLoaderTest.cpp \
            src/Tests/OnbTest.cpp \
            src/Tests/PolynomialTest.cpp \
-           src/Tests/SamplerTest.cpp \
            src/Tests/SolverTest.cpp \
            src/Tests/TestScenesTest.cpp \
            src/Tests/Vector3Test.cpp \
@@ -168,34 +147,23 @@ SOURCES += src/App.cpp \
            src/TestScenes/TestScene5.cpp \
            src/TestScenes/TestScene6.cpp \
            src/TestScenes/TestScene7.cpp \
+           src/TestScenes/TestScene8.cpp \
+           src/TestScenes/TestScene9.cpp \
            src/Textures/CheckerTexture.cpp \
-           src/Textures/ColorGradientTexture.cpp \
-           src/Textures/ColorTexture.cpp \
            src/Textures/ImageTexture.cpp \
-           src/Textures/PerlinNoiseTexture.cpp \
+           src/Textures/Texture.cpp \
            src/Tonemappers/LinearTonemapper.cpp \
            src/Tonemappers/PassthroughTonemapper.cpp \
            src/Tonemappers/ReinhardTonemapper.cpp \
            src/Tonemappers/SimpleTonemapper.cpp \
            src/Tonemappers/Tonemapper.cpp \
-           src/Tracers/PathtracerIterative.cpp \
-           src/Tracers/PathtracerRecursive.cpp \
-           src/Tracers/PreviewTracer.cpp \
-           src/Tracers/Raytracer.cpp \
-           src/Tracers/Tracer.cpp \
-           src/Tracing/AABB.cpp \
-           src/Tracing/Camera.cpp \
-           src/Tracing/ONB.cpp \
-           src/Tracing/Ray.cpp \
-           src/Tracing/Scene.cpp \
-           src/Tracing/Triangle.cpp \
-           src/Utils/ColorGradient.cpp \
+           src/Utils/FilmQuad.cpp \
            src/Utils/FpsCounter.cpp \
            src/Utils/GLHelper.cpp \
+           src/Utils/ImagePool.cpp \
+           src/Utils/InfoPanel.cpp \
            src/Utils/Log.cpp \
            src/Utils/ModelLoader.cpp \
-           src/Utils/PerlinNoise.cpp \
-           src/Utils/PoissonDisc.cpp \
            src/Utils/Random.cpp \
            src/Utils/Settings.cpp \
            src/Utils/StringUtils.cpp \

@@ -3,8 +3,8 @@
 
 #include "Core/Precompiled.h"
 
-#include "Core/Scene.h"
 #include "Materials/Material.h"
+#include "Math/Vector3.h"
 #include "Textures/Texture.h"
 
 using namespace Raycer;
