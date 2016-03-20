@@ -27,8 +27,7 @@ namespace Raycer
 		uint32_t getSampleCount() const;
 		std::string getName() const;
 
-		static Color calculateDirectLight(const Scene& scene, const Intersection& intersection, Random& random);
-		static void calculateNormalMapping(Intersection& intersection);
+		static Color calculateDirectLight(const Scene& scene, const Intersection& intersection, const Vector3& in, Random& random);
 
 		IntegratorType type = IntegratorType::DOT;
 

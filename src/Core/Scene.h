@@ -30,6 +30,7 @@ namespace Raycer
 
 		void initialize();
 		bool intersect(const Ray& ray, Intersection& intersection) const;
+		void calculateNormalMapping(Intersection& intersection) const;
 
 		struct General
 		{

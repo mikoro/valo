@@ -27,7 +27,6 @@ namespace Raycer
 		Vector3 position;
 		Vector3 normal;
 		Vector2 texcoord;
-		Vector3 rayDirection;
 		Color color;
 
 		ONB onb;

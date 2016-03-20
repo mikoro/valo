@@ -139,7 +139,7 @@ void BVH1::build(std::vector<Triangle>& triangles)
 
 bool BVH1::intersect(const Scene& scene, const Ray& ray, Intersection& intersection) const
 {
-	if (ray.fastOcclusion && intersection.wasFound)
+	if (ray.isVisibilityRay && intersection.wasFound)
 		return true;
 
 	uint32_t stack[64];
@@ -160,7 +160,7 @@ bool BVH1::intersect(const Scene& scene, const Ray& ray, Intersection& intersect
 			{
 				if (scene.trianglesPtr[node.triangleOffset + i].intersect(scene, ray, intersection))
 				{
-					if (ray.fastOcclusion)
+					if (ray.isVisibilityRay)
 						return true;
 
 					wasFound = true;

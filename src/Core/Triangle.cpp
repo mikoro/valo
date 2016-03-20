@@ -47,10 +47,7 @@ void Triangle::initialize()
 // http://www.scratchapixel.com/lessons/3d-basic-rendering/ray-tracing-rendering-a-triangle/moller-trumbore-ray-triangle-intersection
 bool Triangle::intersect(const Scene& scene, const Ray& ray, Intersection& intersection) const
 {
-	if (ray.isShadowRay && material->nonShadowing)
-		return false;
-
-	if (ray.fastOcclusion && intersection.wasFound)
+	if (ray.isVisibilityRay && intersection.wasFound)
 		return true;
 
 	Vector3 v0v1 = vertices[1] - vertices[0];
@@ -128,7 +125,6 @@ bool Triangle::calculateIntersectionData(const Scene& scene, const Ray& ray, con
 	intersection.position = intersectionPosition;
 	intersection.normal = tempNormal;
 	intersection.texcoord = texcoord;
-	intersection.rayDirection = ray.direction;
 	intersection.onb = ONB(triangle.tangent, triangle.bitangent, tempNormal);
 	intersection.material = triangle.material;
 

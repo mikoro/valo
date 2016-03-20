@@ -23,7 +23,7 @@ namespace Raycer
 		const Ray& ray,
 		Intersection& intersection)
 	{
-		if (ray.fastOcclusion && intersection.wasFound)
+		if (ray.isVisibilityRay && intersection.wasFound)
 			return true;
 
 		const float originX = ray.origin.x;
@@ -115,12 +115,7 @@ namespace Raycer
 		if (!findIntersectionValues<N>(hits, distances, uValues, vValues, triangleIndices, distance, u, v, triangleIndex))
 			return false;
 
-		const Triangle& triangle = scene.trianglesPtr[triangleIndex];
-
-		if (ray.isShadowRay && triangle.material->nonShadowing)
-			return false;
-
-		return calculateIntersectionData(scene, ray, triangle, intersection, distance, u, v);
+		return calculateIntersectionData(scene, ray, scene.trianglesPtr[triangleIndex], intersection, distance, u, v);
 	}
 
 	template <uint32_t N>

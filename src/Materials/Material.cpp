@@ -19,12 +19,12 @@ Vector3 Material::getDirection(const Intersection& intersection, Random& random)
 	}
 }
 
-Color Material::getBrdf(const Intersection& intersection, const Vector3& out)
+Color Material::getBrdf(const Intersection& intersection, const Vector3& in, const Vector3& out)
 {
 	switch (type)
 	{
-		case MaterialType::DIFFUSE: return diffuseMaterial.getBrdf(*this, intersection, out);
-		case MaterialType::BLINN_PHONG: return blinnPhongMaterial.getBrdf(*this, intersection, out);
+		case MaterialType::DIFFUSE: return diffuseMaterial.getBrdf(*this, intersection, in, out);
+		case MaterialType::BLINN_PHONG: return blinnPhongMaterial.getBrdf(*this, intersection, in, out);
 		default: return Color::BLACK;
 	}
 }

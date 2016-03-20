@@ -19,8 +19,9 @@ Vector3 BlinnPhongMaterial::getDirection(const Material& material, const Interse
 	return Mapper::mapToCosineHemisphere(random.getVector2(), intersection.onb);
 }
 
-Color BlinnPhongMaterial::getBrdf(const Material& material, const Intersection& intersection, const Vector3& out)
+Color BlinnPhongMaterial::getBrdf(const Material& material, const Intersection& intersection, const Vector3& in, const Vector3& out)
 {
+	(void)in;
 	(void)out;
 
 	return material.getReflectance(intersection.texcoord, intersection.position) / float(M_PI);

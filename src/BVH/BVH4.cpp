@@ -243,7 +243,7 @@ void BVH4::build(std::vector<Triangle>& triangles, std::vector<TriangleSOA<4>>& 
 
 bool BVH4::intersect(const Scene& scene, const Ray& ray, Intersection& intersection) const
 {
-	if (ray.fastOcclusion && intersection.wasFound)
+	if (ray.isVisibilityRay && intersection.wasFound)
 		return true;
 
 	uint32_t stack[64];
@@ -279,7 +279,7 @@ bool BVH4::intersect(const Scene& scene, const Ray& ray, Intersection& intersect
 				ray,
 				intersection))
 			{
-				if (ray.fastOcclusion)
+				if (ray.isVisibilityRay)
 					return true;
 
 				wasFound = true;

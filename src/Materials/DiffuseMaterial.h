@@ -16,7 +16,7 @@ namespace Raycer
 	public:
 
 		Vector3 getDirection(const Material& material, const Intersection& intersection, Random& random);
-		Color getBrdf(const Material& material, const Intersection& intersection, const Vector3& out);
+		Color getBrdf(const Material& material, const Intersection& intersection, const Vector3& in, const Vector3& out);
 		float getPdf(const Material& material, const Intersection& intersection, const Vector3& out);
 	};
 }

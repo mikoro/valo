@@ -18,8 +18,9 @@ Vector3 DiffuseMaterial::getDirection(const Material& material, const Intersecti
 	return Mapper::mapToCosineHemisphere(random.getVector2(), intersection.onb);
 }
 
-Color DiffuseMaterial::getBrdf(const Material& material, const Intersection& intersection, const Vector3& out)
+Color DiffuseMaterial::getBrdf(const Material& material, const Intersection& intersection, const Vector3& in, const Vector3& out)
 {
+	(void)in;
 	(void)out;
 
 	return material.getReflectance(intersection.texcoord, intersection.position) / float(M_PI);

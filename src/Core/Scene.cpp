@@ -219,3 +219,14 @@ bool Scene::intersect(const Ray& ray, Intersection& intersection) const
 {
 	return bvh.intersect(*this, ray, intersection);
 }
+
+void Scene::calculateNormalMapping(Intersection& intersection) const
+{
+	if (!general.normalMapping || intersection.material->normalTexture == nullptr)
+		return;
+
+	Color normalColor = intersection.material->normalTexture->getColor(intersection.texcoord, intersection.position);
+	Vector3 normal(normalColor.r * 2.0f - 1.0f, normalColor.g * 2.0f - 1.0f, normalColor.b * 2.0f - 1.0f);
+	Vector3 mappedNormal = intersection.onb.u * normal.x + intersection.onb.v * normal.y + intersection.onb.w * normal.z;
+	intersection.normal = mappedNormal.normalized();
+}

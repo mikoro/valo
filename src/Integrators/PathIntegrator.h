@@ -22,6 +22,7 @@ namespace Raycer
 
 		uint32_t pathSamples = 1;
 		uint32_t minPathLength = 3;
+		uint32_t maxPathLength = 10;
 		float terminationProbability = 0.5f;
 
 	private:
@@ -33,6 +34,7 @@ namespace Raycer
 		{
 			ar(CEREAL_NVP(pathSamples),
 				CEREAL_NVP(minPathLength),
+				CEREAL_NVP(maxPathLength),
 				CEREAL_NVP(terminationProbability));
 		}
 	};

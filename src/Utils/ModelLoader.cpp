@@ -417,8 +417,6 @@ void ModelLoader::processMaterialFile(const std::string& rootDirectory, const st
 		}
 		else if (part == "materialId")
 			ss >> externalMaterialsMap[currentMaterialName];
-		else if (part == "nonShadowing")
-			ss >> currentMaterial.nonShadowing;
 		else if (part == "normalInterpolation")
 			ss >> currentMaterial.normalInterpolation;
 		else if (part == "autoInvertNormal")

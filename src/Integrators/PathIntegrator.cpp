@@ -14,58 +14,63 @@ using namespace Raycer;
 
 Color PathIntegrator::calculateRadiance(const Scene& scene, const Ray& viewRay, Random& random)
 {
-	Ray sampleRay = viewRay;
-	Color color(0.0f, 0.0f, 0.0f);
-	Color sampleBrdf(1.0f, 1.0f, 1.0f);
-	float sampleCosine = 1.0f;
-	float sampleProbability = 1.0f;
-	float continuationProbability = 1.0f;
-	uint32_t depth = 0;
-
-	while (true)
+	Ray pathRay = viewRay;
+	Color result(0.0f, 0.0f, 0.0f);
+	
+	for (uint32_t i = 0; i < scene.integrator.pathIntegrator.pathSamples; ++i)
 	{
-		Intersection intersection;
-		scene.intersect(sampleRay, intersection);
+		Color throughput(1.0f, 1.0f, 1.0f);
+		uint32_t pathLength = 0;
 
-		if (!intersection.wasFound)
-			break;
-
-		if (scene.general.normalMapping && intersection.material->normalTexture != nullptr)
-			Integrator::calculateNormalMapping(intersection);
-
-		if (depth == 0 && !intersection.isBehind && intersection.material->isEmissive())
+		while (true)
 		{
-			color = intersection.material->getEmittance(intersection.texcoord, intersection.position);
-			break;
-		}
+			Intersection intersection;
+			
+			if (!scene.intersect(pathRay, intersection))
+			{
+				result += throughput * scene.general.backgroundColor;
+				break;
+			}
 
-		if (depth++ >= minPathLength)
-		{
-			if (random.getFloat() < terminationProbability)
+			scene.calculateNormalMapping(intersection);
+
+			if (++pathLength == 1 && !intersection.isBehind && intersection.material->isEmissive())
+				result += throughput * intersection.material->getEmittance(intersection.texcoord, intersection.position);
+
+			Vector3 in = -pathRay.direction;
+			Vector3 out = intersection.material->getDirection(intersection, random);
+
+			result += throughput * Integrator::calculateDirectLight(scene, intersection, in, random);
+
+			Color brdf = intersection.material->getBrdf(intersection, in, out);
+			float cosine = out.dot(intersection.normal);
+			float pdf = intersection.material->getPdf(intersection, out);
+
+			if (pdf == 0.0f)
 				break;
 
-			continuationProbability *= (1.0f - terminationProbability);
+			throughput *= brdf * cosine / pdf;
+
+			if (pathLength >= minPathLength)
+			{
+				if (random.getFloat() < terminationProbability)
+					break;
+
+				throughput /= (1.0f - terminationProbability);
+			}
+
+			if (pathLength >= maxPathLength)
+				break;
+
+			pathRay = Ray();
+			pathRay.origin = intersection.position;
+			pathRay.direction = out;
+			pathRay.minDistance = scene.general.rayMinDistance;
+			pathRay.precalculate();
 		}
-
-		Color directLight = Integrator::calculateDirectLight(scene, intersection, random);
-		color += sampleBrdf * sampleCosine * directLight / sampleProbability / continuationProbability;
-
-		Vector3 sampleDirection = intersection.material->getDirection(intersection, random);
-		sampleBrdf *= intersection.material->getBrdf(intersection, sampleDirection);
-		sampleCosine *= sampleDirection.dot(intersection.normal);
-		sampleProbability *= intersection.material->getPdf(intersection, sampleDirection);
-
-		if (sampleProbability == 0.0f)
-			break;
-
-		sampleRay = Ray();
-		sampleRay.origin = intersection.position;
-		sampleRay.direction = sampleDirection;
-		sampleRay.minDistance = scene.general.rayMinDistance;
-		sampleRay.precalculate();
 	}
 
-	return color;
+	return result / float(scene.integrator.pathIntegrator.pathSamples);
 }
 
 uint32_t PathIntegrator::getSampleCount() const

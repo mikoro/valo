@@ -17,21 +17,20 @@ Color DotIntegrator::calculateRadiance(const Scene& scene, const Ray& viewRay, R
 	(void)random;
 
 	Intersection intersection;
-	scene.intersect(viewRay, intersection);
 
-	if (!intersection.wasFound)
+	if (!scene.intersect(viewRay, intersection))
 		return scene.general.backgroundColor;
 
 	if (intersection.hasColor)
 		return intersection.color;
 
-	if (scene.general.normalMapping && intersection.material->normalTexture != nullptr)
-		Integrator::calculateNormalMapping(intersection);
+	scene.calculateNormalMapping(intersection);
 
 	if (scene.general.normalVisualization)
 		return Color::fromNormal(intersection.normal);
 
-	return intersection.material->getReflectance(intersection.texcoord, intersection.position) * std::abs(viewRay.direction.dot(intersection.normal));
+	float dot = std::abs(viewRay.direction.dot(intersection.normal));
+	return dot * intersection.material->getReflectance(intersection.texcoord, intersection.position);
 }
 
 uint32_t DotIntegrator::getSampleCount() const

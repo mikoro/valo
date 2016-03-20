@@ -21,7 +21,7 @@ namespace Raycer
 	public:
 
 		Vector3 getDirection(const Intersection& intersection, Random& random);
-		Color getBrdf(const Intersection& intersection, const Vector3& out);
+		Color getBrdf(const Intersection& intersection, const Vector3& in, const Vector3& out);
 		float getPdf(const Intersection& intersection, const Vector3& out);
 
 		bool isEmissive() const;
@@ -31,7 +31,6 @@ namespace Raycer
 		uint32_t id = 0;
 		MaterialType type = MaterialType::DIFFUSE;
 
-		bool nonShadowing = false;
 		bool normalInterpolation = true;
 		bool autoInvertNormal = true;
 		bool invertNormal = false;
@@ -64,7 +63,6 @@ namespace Raycer
 		{
 			ar(CEREAL_NVP(id),
 				CEREAL_NVP(type),
-				CEREAL_NVP(nonShadowing),
 				CEREAL_NVP(normalInterpolation),
 				CEREAL_NVP(autoInvertNormal),
 				CEREAL_NVP(invertNormal),

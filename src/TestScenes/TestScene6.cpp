@@ -28,7 +28,6 @@ Scene TestScene::create6()
 	planeMaterial.reflectance = skyColor;
 	planeMaterial.emittance = skyColor * 10.0f;
 	planeMaterial.invertNormal = false;
-	planeMaterial.nonShadowing = true;
 
 	ModelLoaderInfo model;
 	model.modelFileName = "data/models/plane.obj";

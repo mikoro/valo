@@ -22,8 +22,7 @@ namespace Raycer
 		float minDistance = 0.0f;
 		float maxDistance = std::numeric_limits<float>::max();
 
-		bool isShadowRay = false;
-		bool fastOcclusion = false;
+		bool isVisibilityRay = false;
 		bool directionIsNegative[3];
 	};
 }
