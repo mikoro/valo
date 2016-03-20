@@ -27,9 +27,10 @@ void CpuRenderer::render(RenderJob& job)
 	if (maxThreads != randoms.size())
 	{
 		randoms.resize(maxThreads);
+		std::random_device rd;
 
 		for (Random& random : randoms)
-			random.initialize();
+			random.seed(uint64_t(rd()) << 32 | rd());
 	}
 
 	std::mutex ompThreadExceptionMutex;

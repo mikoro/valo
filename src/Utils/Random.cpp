@@ -10,25 +10,52 @@
 
 using namespace Raycer;
 
+RandomGeneratorPCG::RandomGeneratorPCG()
+{
+	state = 0x853c49e6748fea9bULL;
+	inc = 0xda3e39cb94b95bdbULL;
+}
+
+RandomGeneratorPCG::RandomGeneratorPCG(uint64_t seed_)
+{
+	seed(seed_);
+}
+
+void RandomGeneratorPCG::seed(uint64_t seed_)
+{
+	state = seed_;
+	inc = reinterpret_cast<uint64_t>(this);
+}
+
+#ifdef _MSC_VER
+#pragma warning (push)
+#pragma warning (disable : 4146)
+#endif
+RandomGeneratorPCG::result_type RandomGeneratorPCG::operator()()
+{
+	uint64_t oldstate = state;
+	state = oldstate * 6364136223846793005ULL + inc;
+	uint32_t xorshifted = static_cast<uint32_t>(((oldstate >> 18u) ^ oldstate) >> 27u);
+	uint32_t rot = static_cast<uint32_t>(oldstate >> 59u);
+
+	return (xorshifted >> rot) | (xorshifted << ((-rot) & 31));
+}
+#ifdef _MSC_VER
+#pragma warning (pop)
+#endif
+
 Random::Random()
 {
-	initialize();
 }
 
-Random::Random(uint32_t seed)
+Random::Random(uint64_t seed_)
 {
-	initialize(seed);
+	generator.seed(seed_);
 }
 
-void Random::initialize()
+void Random::seed(uint64_t seed_)
 {
-	std::random_device rd;
-	initialize(rd());
-}
-
-void Random::initialize(uint32_t seed)
-{
-	generator.seed(uint32_t(seed));
+	generator.seed(seed_);
 }
 
 int32_t Random::getInt32(int32_t min, int32_t max)
@@ -41,14 +68,16 @@ uint32_t Random::getUint32(uint32_t min, uint32_t max)
 	return std::uniform_int_distribution<uint32_t>(min, max)(generator);
 }
 
-float Random::getFloat(float min, float max)
+float Random::getFloat()
 {
-	return std::uniform_real_distribution<float>(min, max)(generator);
+	//return std::uniform_real_distribution<float>(0.0f, 1.0f)(generator);
+	return float(ldexp(generator(), -32));
 }
 
-double Random::getDouble(double min, double max)
+double Random::getDouble()
 {
-	return std::uniform_real_distribution<double>(min, max)(generator);
+	//return std::uniform_real_distribution<double>(0.0f, 1.0f)(generator);
+	return ldexp(generator(), -32);
 }
 
 Color Random::getColor(bool randomAlpha)
@@ -82,9 +111,4 @@ Vector3 Random::getVector3()
 	v.z = getFloat();
 
 	return v;
-}
-
-Random::result_type Random::operator()()
-{
-	return std::uniform_int_distribution<uint32_t>(0, std::numeric_limits<uint32_t>::max())(generator);
 }
