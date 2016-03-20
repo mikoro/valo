@@ -3,8 +3,6 @@
 
 #pragma once
 
-#include "cereal/cereal.hpp"
-
 namespace Raycer
 {
 	class Color;
@@ -19,14 +17,5 @@ namespace Raycer
 		Color calculateRadiance(const Scene& scene, const Ray& viewRay, Random& random);
 
 		uint32_t getSampleCount() const;
-
-	private:
-
-		friend class cereal::access;
-
-		template <class Archive>
-		void serialize(Archive& ar)
-		{
-		}
 	};
 }

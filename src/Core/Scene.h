@@ -36,7 +36,6 @@ namespace Raycer
 			float rayMinDistance = 0.0001f;
 			Color backgroundColor = Color(0.0f, 0.0f, 0.0f);
 			Color offLensColor = Color(0.0f, 0.0f, 0.0f);
-			bool pixelFiltering = true;
 			bool normalMapping = true;
 			bool normalInterpolation = true;
 			bool normalVisualization = false;
@@ -48,7 +47,6 @@ namespace Raycer
 				ar(CEREAL_NVP(rayMinDistance),
 					CEREAL_NVP(backgroundColor),
 					CEREAL_NVP(offLensColor),
-					CEREAL_NVP(pixelFiltering),
 					CEREAL_NVP(normalMapping),
 					CEREAL_NVP(normalInterpolation),
 					CEREAL_NVP(normalVisualization),
@@ -57,10 +55,25 @@ namespace Raycer
 
 		} general;
 
+		struct Renderer
+		{
+			bool filtering = true;
+			Filter filter;
+			uint32_t pixelSamples = 1;
+
+			template <class Archive>
+			void serialize(Archive& ar)
+			{
+				ar(CEREAL_NVP(filtering),
+					CEREAL_NVP(filter),
+					CEREAL_NVP(pixelSamples));
+			}
+
+		} renderer;
+
 		Camera camera;
 		Integrator integrator;
 		Tonemapper tonemapper;
-		Filter filter;
 		BVH bvh;
 
 		std::vector<ModelLoaderInfo> models;
@@ -83,6 +96,7 @@ namespace Raycer
 		void serialize(Archive& ar)
 		{
 			ar(CEREAL_NVP(general),
+				CEREAL_NVP(renderer),
 				CEREAL_NVP(camera),
 				CEREAL_NVP(integrator),
 				CEREAL_NVP(tonemapper),

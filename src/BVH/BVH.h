@@ -42,7 +42,6 @@ namespace Raycer
 		{
 			ar(CEREAL_NVP(type),
 				CEREAL_NVP(type),
-				//CEREAL_NVP(bvh4),
 				CEREAL_NVP(bvh1));
 		}
 	};

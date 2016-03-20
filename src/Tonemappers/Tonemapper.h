@@ -43,7 +43,6 @@ namespace Raycer
 		void serialize(Archive& ar)
 		{
 			ar(CEREAL_NVP(type),
-				//CEREAL_NVP(passthroughTonemapper),
 				CEREAL_NVP(linearTonemapper),
 				CEREAL_NVP(simpleTonemapper),
 				CEREAL_NVP(reinhardTonemapper));

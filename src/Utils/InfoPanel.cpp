@@ -219,7 +219,7 @@ void InfoPanel::renderFull(const Renderer& renderer, const RenderJob& job)
 	nvgText(context, currentX, currentY, tfm::format("Integrator: %s", scene.integrator.getName()).c_str(), nullptr);
 	currentY += lineSpacing;
 
-	nvgText(context, currentX, currentY, tfm::format("Filter: %s (%s)", scene.filter.getName(), scene.general.pixelFiltering).c_str(), nullptr);
+	nvgText(context, currentX, currentY, tfm::format("Filter: %s (%s)", scene.renderer.filter.getName(), scene.renderer.filtering).c_str(), nullptr);
 	currentY += lineSpacing;
 
 	nvgText(context, currentX, currentY, tfm::format("Tonemapper: %s", scene.tonemapper.getName()).c_str(), nullptr);

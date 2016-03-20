@@ -43,7 +43,6 @@ namespace Raycer
 		void serialize(Archive& ar)
 		{
 			ar(CEREAL_NVP(type),
-				//CEREAL_NVP(dotIntegrator),
 				CEREAL_NVP(pathIntegrator));
 		}
 	};

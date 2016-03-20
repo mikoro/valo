@@ -37,7 +37,12 @@ bool Settings::load(int argc, char** argv)
 		("scene.useTestScene", po::value(&scene.useTestScene)->default_value(true), "")
 		("scene.testSceneNumber", po::value(&scene.testSceneNumber)->default_value(1), "")
 
-		("renderer.fileName", po::value(&renderer.fileName)->default_value("renderer.xml"), "");
+		("renderer.type", po::value(&renderer.type)->default_value(0), "")
+		("renderer.maxCpuThreadCount", po::value(&renderer.maxCpuThreadCount)->default_value(4), "")
+		("renderer.imageAutoWrite", po::value(&renderer.imageAutoWrite)->default_value(false), "")
+		("renderer.imageAutoWriteInterval", po::value(&renderer.imageAutoWriteInterval)->default_value(60.0f), "")
+		("renderer.imageAutoWriteMaxNumber", po::value(&renderer.imageAutoWriteMaxNumber)->default_value(10), "")
+		("renderer.imageAutoWriteFileName", po::value(&renderer.imageAutoWriteFileName)->default_value("temp_image_%d.png"), "");
 
 	std::ifstream iniFile("raycer.ini");
 	po::variables_map vm;

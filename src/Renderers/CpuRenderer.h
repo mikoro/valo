@@ -3,8 +3,6 @@
 
 #pragma once
 
-#include "cereal/cereal.hpp"
-
 #include "Utils/Random.h"
 
 namespace Raycer
@@ -23,13 +21,5 @@ namespace Raycer
 	private:
 
 		std::vector<Random> randoms;
-
-		friend class cereal::access;
-
-		template <class Archive>
-		void serialize(Archive& ar)
-		{
-			ar(CEREAL_NVP(maxThreadCount));
-		}
 	};
 }

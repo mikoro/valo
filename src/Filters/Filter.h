@@ -50,7 +50,6 @@ namespace Raycer
 			ar(CEREAL_NVP(type),
 				CEREAL_NVP(boxFilter),
 				CEREAL_NVP(tentFilter),
-				CEREAL_NVP(bellFilter),
 				CEREAL_NVP(gaussianFilter),
 				CEREAL_NVP(mitchellFilter),
 				CEREAL_NVP(lanczosSincFilter));

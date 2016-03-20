@@ -37,7 +37,7 @@ void WindowRunnerRenderState::initialize()
 		*scene = Scene::load(settings.scene.fileName);
 
 	scene->initialize();
-	renderer.initialize();
+	renderer.initialize(settings);
 	filmQuad.initialize();
 	infoPanel.initialize();
 	infoPanel.setState(InfoPanelState(settings.window.infoPanelState));
@@ -100,18 +100,18 @@ void WindowRunnerRenderState::update(float timeStep)
 
 		if (windowRunner.keyWasPressed(GLFW_KEY_F5))
 		{
-			if (scene->filter.type == FilterType::BOX)
-				scene->filter.type = FilterType::TENT;
-			else if (scene->filter.type == FilterType::TENT)
-				scene->filter.type = FilterType::BELL;
-			else if (scene->filter.type == FilterType::BELL)
-				scene->filter.type = FilterType::GAUSSIAN;
-			else if (scene->filter.type == FilterType::GAUSSIAN)
-				scene->filter.type = FilterType::MITCHELL;
-			else if (scene->filter.type == FilterType::MITCHELL)
-				scene->filter.type = FilterType::LANCZOS_SINC;
-			else if (scene->filter.type == FilterType::LANCZOS_SINC)
-				scene->filter.type = FilterType::BOX;
+			if (scene->renderer.filter.type == FilterType::BOX)
+				scene->renderer.filter.type = FilterType::TENT;
+			else if (scene->renderer.filter.type == FilterType::TENT)
+				scene->renderer.filter.type = FilterType::BELL;
+			else if (scene->renderer.filter.type == FilterType::BELL)
+				scene->renderer.filter.type = FilterType::GAUSSIAN;
+			else if (scene->renderer.filter.type == FilterType::GAUSSIAN)
+				scene->renderer.filter.type = FilterType::MITCHELL;
+			else if (scene->renderer.filter.type == FilterType::MITCHELL)
+				scene->renderer.filter.type = FilterType::LANCZOS_SINC;
+			else if (scene->renderer.filter.type == FilterType::LANCZOS_SINC)
+				scene->renderer.filter.type = FilterType::BOX;
 
 			film->clear();
 		}
@@ -194,7 +194,7 @@ void WindowRunnerRenderState::update(float timeStep)
 
 	if (windowRunner.keyWasPressed(GLFW_KEY_F))
 	{
-		scene->general.pixelFiltering = !scene->general.pixelFiltering;
+		scene->renderer.filtering = !scene->renderer.filtering;
 		film->clear();
 	}
 
@@ -261,15 +261,12 @@ void WindowRunnerRenderState::update(float timeStep)
 	if (ctrlIsPressed)
 	{
 		if (windowRunner.keyWasPressed(GLFW_KEY_F1))
-			scene->save("scene->xml");
+			scene->save("scene.xml");
 
 		if (windowRunner.keyWasPressed(GLFW_KEY_F2))
-			renderer.save("renderer.xml");
-
-		if (windowRunner.keyWasPressed(GLFW_KEY_F3))
 			scene->camera.saveState("camera.txt");
 
-		if (windowRunner.keyWasPressed(GLFW_KEY_F4))
+		if (windowRunner.keyWasPressed(GLFW_KEY_F3))
 		{
 			film->generateImage(scene->tonemapper);
 			film->getImage().save("image.png");
@@ -296,17 +293,20 @@ void WindowRunnerRenderState::update(float timeStep)
 		if (ctrlIsPressed)
 			testSceneIndex += 10;
 
-		delete scene;
-		scene = new Scene();
-
 		try
 		{
+			delete scene;
+			scene = new Scene();
+
 			*scene = TestScene::create(testSceneIndex);
 			scene->initialize();
 		}
 		catch (const std::exception& ex)
 		{
 			log.logWarning("Could not create test scene: %s", ex.what());
+
+			delete scene;
+			scene = new Scene();
 
 			*scene = Scene();
 			scene->initialize();

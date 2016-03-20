@@ -3,8 +3,6 @@
 
 #pragma once
 
-#include "cereal/cereal.hpp"
-
 namespace Raycer
 {
 	class Vector2;
@@ -17,14 +15,5 @@ namespace Raycer
 		float getWeight(const Vector2& point);
 
 		Vector2 getRadius();
-
-	private:
-
-		friend class cereal::access;
-
-		template <class Archive>
-		void serialize(Archive& ar)
-		{
-		}
 	};
 }

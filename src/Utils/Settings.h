@@ -42,7 +42,12 @@ namespace Raycer
 
 		struct Renderer
 		{
-			std::string fileName;
+			uint32_t type;
+			int32_t maxCpuThreadCount;
+			bool imageAutoWrite;
+			float imageAutoWriteInterval;
+			uint32_t imageAutoWriteMaxNumber;
+			std::string imageAutoWriteFileName;
 		} renderer;
 	};
 }

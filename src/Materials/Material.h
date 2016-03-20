@@ -75,7 +75,6 @@ namespace Raycer
 				CEREAL_NVP(reflectanceTextureId),
 				CEREAL_NVP(normalTextureId),
 				CEREAL_NVP(maskTextureId),
-				//CEREAL_NVP(diffuseMaterial),
 				CEREAL_NVP(blinnPhongMaterial));
 		}
 	};

@@ -3,8 +3,6 @@
 
 #pragma once
 
-#include "cereal/cereal.hpp"
-
 namespace Raycer
 {
 	class Image;
@@ -14,14 +12,5 @@ namespace Raycer
 	public:
 
 		void apply(const Image& inputImage, Image& outputImage);
-
-	private:
-
-		friend class cereal::access;
-
-		template <class Archive>
-		void serialize(Archive& ar)
-		{
-		}
 	};
 }

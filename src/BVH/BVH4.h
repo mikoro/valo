@@ -5,8 +5,6 @@
 
 #include <vector>
 
-#include "cereal/cereal.hpp"
-
 #include "BVH/Common.h"
 #include "Core/Triangle.h"
 
@@ -29,12 +27,5 @@ namespace Raycer
 	private:
 
 		BVHNodeSOA<4>* nodesPtr = nullptr;
-
-		friend class cereal::access;
-
-		template <class Archive>
-		void serialize(Archive& ar)
-		{
-		}
 	};
 }

@@ -6,50 +6,19 @@
 #include "Core/Film.h"
 #include "Core/Scene.h"
 #include "Renderers/Renderer.h"
-#include "Core/App.h"
-#include "Utils/Log.h"
+#include "Utils/Settings.h"
 
 using namespace Raycer;
 
-Renderer Renderer::load(const std::string& fileName)
+void Renderer::initialize(const Settings& settings)
 {
-	App::getLog().logInfo("Loading renderer from %s", fileName);
+	type = static_cast<RendererType>(settings.renderer.type);
+	cpuRenderer.maxThreadCount = settings.renderer.maxCpuThreadCount;
+	imageAutoWrite = settings.renderer.imageAutoWrite;
+	imageAutoWriteInterval = settings.renderer.imageAutoWriteInterval;
+	imageAutoWriteMaxNumber = settings.renderer.imageAutoWriteMaxNumber;
+	imageAutoWriteFileName = settings.renderer.imageAutoWriteFileName;
 
-	std::ifstream file(fileName, std::ios::binary);
-
-	if (!file.good())
-		throw std::runtime_error("Could not open the renderer file for loading");
-
-	Renderer renderer;
-
-	cereal::XMLInputArchive archive(file);
-	archive(renderer);
-
-	file.close();
-
-	return renderer;
-}
-
-void Renderer::save(const std::string& fileName) const
-{
-	App::getLog().logInfo("Saving renderer to %s", fileName);
-
-	std::ofstream file(fileName, std::ios::binary);
-
-	if (!file.good())
-		throw std::runtime_error("Could not open the renderer file for saving");
-
-	// force scope
-	{
-		cereal::XMLOutputArchive archive(file);
-		archive(cereal::make_nvp("renderer", *this));
-	}
-
-	file.close();
-}
-
-void Renderer::initialize()
-{
 	cpuRenderer.initialize();
 	cudaRenderer.initialize();
 }
@@ -61,7 +30,7 @@ void Renderer::render(RenderJob& job)
 
 	imageAutoWriteTimer.restart();
 
-	for (uint32_t i = 0; i < pixelSamples && !job.interrupted; ++i)
+	for (uint32_t i = 0; i < scene.renderer.pixelSamples && !job.interrupted; ++i)
 	{
 		switch (type)
 		{
@@ -72,7 +41,7 @@ void Renderer::render(RenderJob& job)
 
 		++film.pixelSamples;
 
-		if (enableImageAutoWrite && imageAutoWriteTimer.getElapsedSeconds() > imageAutoWriteInterval)
+		if (imageAutoWrite && imageAutoWriteTimer.getElapsedSeconds() > imageAutoWriteInterval)
 		{
 			film.generateImage(scene.tonemapper);
 			film.getImage().save(tfm::format(imageAutoWriteFileName.c_str(), imageAutoWriteNumber), false);

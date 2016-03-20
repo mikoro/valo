@@ -45,7 +45,7 @@ int ConsoleRunner::run()
 	else
 		*scene = Scene::load(settings.scene.fileName);
 
-	renderer.initialize();
+	renderer.initialize(settings);
 
 	scene->initialize();
 	scene->camera.setImagePlaneSize(settings.image.width, settings.image.height);
@@ -60,14 +60,14 @@ int ConsoleRunner::run()
 	
 	SysUtils::setConsoleTextColor(ConsoleTextColor::WHITE_ON_BLACK);
 
-	uint32_t totalSamples = settings.image.width * settings.image.height * renderer.pixelSamples;
+	uint32_t totalSamples = settings.image.width * settings.image.height * scene->renderer.pixelSamples;
 
 	std::cout << tfm::format("\nRendering started (size: %dx%d, pixels: %s, samples: %s, pixel samples: %d)\n\n",
 		settings.image.width,
 		settings.image.height,
 		StringUtils::humanizeNumber(double(settings.image.width * settings.image.height)),
 		StringUtils::humanizeNumber(double(totalSamples)),
-		renderer.pixelSamples);
+		scene->renderer.pixelSamples);
 
 	Timer renderingElapsedTimer;
 	renderingElapsedTimer.setAveragingAlpha(0.05f);

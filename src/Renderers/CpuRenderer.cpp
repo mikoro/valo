@@ -54,10 +54,10 @@ void CpuRenderer::render(RenderJob& job)
 			Random& random = randoms[omp_get_thread_num()];
 			float filterWeight = 1.0f;
 			
-			if (scene.general.pixelFiltering)
+			if (scene.renderer.filtering)
 			{
-				Vector2 offset = (random.getVector2() - Vector2(0.5f, 0.5f)) * 2.0f * scene.filter.getRadius();
-				filterWeight = scene.filter.getWeight(offset);
+				Vector2 offset = (random.getVector2() - Vector2(0.5f, 0.5f)) * 2.0f * scene.renderer.filter.getRadius();
+				filterWeight = scene.renderer.filter.getWeight(offset);
 				pixel += offset;
 			}
 
