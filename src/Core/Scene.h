@@ -85,7 +85,6 @@ namespace Raycer
 		Texture* texturesPtr = nullptr;
 		Material* materialsPtr = nullptr;
 		Triangle* trianglesPtr = nullptr;
-		TriangleSOA<4>* triangles4Ptr = nullptr;
 		Triangle* emissiveTrianglesPtr = nullptr;
 		uint32_t emissiveTrianglesCount = 0;
 

@@ -5,6 +5,7 @@
 
 #include "BVH/BVH4.h"
 #include "Core/App.h"
+#include "Core/Common.h"
 #include "Utils/Log.h"
 #include "Utils/Timer.h"
 #include "Core/Scene.h"
@@ -27,19 +28,22 @@ namespace
 
 BVH4::~BVH4()
 {
-	if (nodesPtr != nullptr)
-	{
-		free(nodesPtr);
-		nodesPtr = nullptr;
-	}
+	RAYCER_FREE(nodesPtr);
+	RAYCER_FREE(triangles4Ptr);
 }
 
-void BVH4::build(std::vector<Triangle>& triangles, std::vector<TriangleSOA<4>>& triangles4)
+void BVH4::build(std::vector<Triangle>& triangles)
 {
 	Log& log = App::getLog();
 
 	Timer timer;
 	uint32_t triangleCount = uint32_t(triangles.size());
+
+	if (triangleCount == 0)
+	{
+		log.logWarning("Could not build BVH from empty triangle list");
+		return;
+	}
 
 	log.logInfo("BVH4 building started (triangles: %d)", triangleCount);
 
@@ -58,6 +62,8 @@ void BVH4::build(std::vector<Triangle>& triangles, std::vector<TriangleSOA<4>>& 
 	}
 
 	std::vector<BVHNodeSOA<4>> nodes;
+	std::vector<TriangleSOA<4>> triangles4;
+
 	nodes.reserve(triangleCount);
 	triangles4.reserve(triangleCount / 4);
 
@@ -228,8 +234,19 @@ void BVH4::build(std::vector<Triangle>& triangles, std::vector<TriangleSOA<4>>& 
 		stackIndex++;
 	}
 
-	nodesPtr = static_cast<BVHNodeSOA<4>*>(malloc(nodes.size() * sizeof(BVHNodeSOA<4>)));
-	memcpy(nodesPtr, &nodes[0], nodes.size() * sizeof(BVHNodeSOA<4>));
+	nodesPtr = static_cast<BVHNodeSOA<4>*>(RAYCER_MALLOC(nodes.size() * sizeof(BVHNodeSOA<4>)));
+
+	if (nodesPtr == nullptr)
+		throw std::runtime_error("Could not allocate memory for BVH nodes");
+
+	memcpy(nodesPtr, nodes.data(), nodes.size() * sizeof(BVHNodeSOA<4>));
+
+	triangles4Ptr = static_cast<TriangleSOA<4>*>(RAYCER_MALLOC(triangles4.size() * sizeof(TriangleSOA<4>)));
+
+	if (triangles4Ptr == nullptr)
+		throw std::runtime_error("Could not allocate memory for BVH triangles");
+
+	memcpy(triangles4Ptr, triangles4.data(), triangles4.size() * sizeof(TriangleSOA<4>));
 
 	std::vector<Triangle> sortedTriangles(triangleCount);
 
@@ -243,6 +260,9 @@ void BVH4::build(std::vector<Triangle>& triangles, std::vector<TriangleSOA<4>>& 
 
 bool BVH4::intersect(const Scene& scene, const Ray& ray, Intersection& intersection) const
 {
+	if (nodesPtr == nullptr || triangles4Ptr == nullptr)
+		return false;
+
 	if (ray.isVisibilityRay && intersection.wasFound)
 		return true;
 
@@ -262,7 +282,7 @@ bool BVH4::intersect(const Scene& scene, const Ray& ray, Intersection& intersect
 			if (node.triangleCount == 0)
 				continue;
 
-			const TriangleSOA<4>& triangleSOA = scene.triangles4Ptr[node.triangleOffset];
+			const TriangleSOA<4>& triangleSOA = triangles4Ptr[node.triangleOffset];
 
 			if (Triangle::intersect<4>(
 				&triangleSOA.vertex1X[0],

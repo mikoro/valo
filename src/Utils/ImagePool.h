@@ -4,23 +4,22 @@
 #pragma once
 
 #include <map>
-#include <vector>
-
-#include "Core/Image.h"
 
 namespace Raycer
 {
+	class Image;
+
 	class ImagePool
 	{
 	public:
 
-		Image* loadImage(const std::string& fileName, bool applyGamma);
+		~ImagePool();
+
+		Image* load(const std::string& fileName, bool applyGamma);
 		void clear();
 
 	private:
 
-		bool initialized = false;
-		std::map<std::string, uint32_t> imageIndexMap;
-		std::vector<Image> images;
+		std::map<std::string, Image*> images;
 	};
 }

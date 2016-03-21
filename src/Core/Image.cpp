@@ -6,6 +6,7 @@
 #include "stb/stb_image.h"
 #include "stb/stb_image_write.h"
 
+#include "Core/Common.h"
 #include "Core/Image.h"
 #include "Core/App.h"
 #include "Utils/Log.h"
@@ -21,11 +22,7 @@ Image::Image()
 
 Image::~Image()
 {
-	if (pixels != nullptr)
-	{
-		free(pixels);
-		pixels = nullptr;
-	}
+	RAYCER_FREE(pixels);
 }
 
 Image::Image(uint32_t length_)
@@ -174,8 +171,11 @@ void Image::resize(uint32_t width_, uint32_t height_)
 	height = height_;
 	length = width * height;
 
-	free(pixels);
-	pixels = static_cast<Color*>(malloc(length * sizeof(Color)));
+	RAYCER_FREE(pixels);
+	pixels = static_cast<Color*>(RAYCER_MALLOC(length * sizeof(Color)));
+
+	if (pixels == nullptr)
+		throw std::runtime_error("Could not allocate memory for image");
 
 	clear();
 }

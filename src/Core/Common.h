@@ -11,3 +11,6 @@
 #elif __GNUC__
 #define ALIGN(x) __attribute__ ((aligned(x)))
 #endif
+
+#define RAYCER_MALLOC(x) malloc(x)
+#define RAYCER_FREE(x) if (x != nullptr) { free(x); x = nullptr; }

@@ -10,6 +10,7 @@
 #include "Runners/WindowRunner.h"
 #include "Runners/WindowRunnerRenderState.h"
 #include "TestScenes/TestScene.h"
+#include "Utils/ImagePool.h"
 #include "Utils/Log.h"
 #include "Utils/Settings.h"
 
@@ -292,6 +293,8 @@ void WindowRunnerRenderState::update(float timeStep)
 	{
 		if (ctrlIsPressed)
 			testSceneIndex += 10;
+
+		App::getImagePool().clear();
 
 		try
 		{

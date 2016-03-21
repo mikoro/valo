@@ -8,38 +8,29 @@
 
 using namespace Raycer;
 
-namespace
+ImagePool::~ImagePool()
 {
-	const uint32_t MAX_IMAGES = 1000;
+	clear();
 }
 
-Image* ImagePool::loadImage(const std::string& fileName, bool applyGamma)
+Image* ImagePool::load(const std::string& fileName, bool applyGamma)
 {
-	if (!initialized)
+	if (!images.count(fileName))
 	{
-		images.reserve(MAX_IMAGES);
-		initialized = true;
-	}
-
-	if (!imageIndexMap.count(fileName))
-	{
-		images.emplace_back(fileName);
-		imageIndexMap[fileName] = uint32_t(images.size() - 1);
+		Image* image = new Image(fileName);
+		images[fileName] = image;
 
 		if (applyGamma)
-			images.back().applyFastGamma(2.2f);
+			image->applyFastGamma(2.2f);
 	}
 
-	// the limit is arbitrary, increase it if it becomes a problem
-	// idea is to prevent push_back from invalidating pointers
-	if (images.size() > MAX_IMAGES)
-		throw std::runtime_error("Image pool maximum size exceeded");
-
-	return &images[imageIndexMap[fileName]];
+	return images[fileName];
 }
 
 void ImagePool::clear()
 {
-	imageIndexMap.clear();
+	for (auto& kv : images)
+		delete kv.second;
+
 	images.clear();
 }

@@ -21,11 +21,12 @@ namespace Raycer
 
 		~BVH4();
 
-		void build(std::vector<Triangle>& triangles, std::vector<TriangleSOA<4>>& triangles4);
+		void build(std::vector<Triangle>& triangles);
 		bool intersect(const Scene& scene, const Ray& ray, Intersection& intersection) const;
 
 	private:
 
 		BVHNodeSOA<4>* nodesPtr = nullptr;
+		TriangleSOA<4>* triangles4Ptr = nullptr;
 	};
 }

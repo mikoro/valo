@@ -3,6 +3,7 @@
 
 #include "Core/Precompiled.h"
 
+#include "Core/Common.h"
 #include "Core/App.h"
 #include "Core/Film.h"
 #include "Tonemappers/Tonemapper.h"
@@ -12,11 +13,7 @@ using namespace Raycer;
 
 Film::~Film()
 {
-	if (pixels != nullptr)
-	{
-		free(pixels);
-		pixels = nullptr;
-	}
+	RAYCER_FREE(pixels);
 }
 
 void Film::clear()
@@ -34,8 +31,11 @@ void Film::resize(uint32_t width_, uint32_t height_)
 
 	App::getLog().logInfo("Resizing film to %sx%s", width, height);
 
-	free(pixels);
-	pixels = static_cast<Color*>(malloc(length * sizeof(Color)));
+	RAYCER_FREE(pixels);
+	pixels = static_cast<Color*>(RAYCER_MALLOC(length * sizeof(Color)));
+
+	if (pixels == nullptr)
+		throw std::runtime_error("Could not allocate memory for film");
 
 	linearImage.resize(width, height);
 	outputImage.resize(width, height);

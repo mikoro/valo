@@ -5,6 +5,7 @@
 
 #include "BVH/BVH1.h"
 #include "Core/App.h"
+#include "Core/Common.h"
 #include "Utils/Log.h"
 #include "Utils/Timer.h"
 #include "Core/Scene.h"
@@ -26,11 +27,7 @@ namespace
 
 BVH1::~BVH1()
 {
-	if (nodesPtr != nullptr)
-	{
-		free(nodesPtr);
-		nodesPtr = nullptr;
-	}
+	RAYCER_FREE(nodesPtr);
 }
 
 void BVH1::build(std::vector<Triangle>& triangles)
@@ -39,6 +36,12 @@ void BVH1::build(std::vector<Triangle>& triangles)
 
 	Timer timer;
 	uint32_t triangleCount = uint32_t(triangles.size());
+
+	if (triangleCount == 0)
+	{
+		log.logWarning("Could not build BVH from empty triangle list");
+		return;
+	}
 
 	log.logInfo("BVH1 building started (triangles: %d)", triangleCount);
 
@@ -124,11 +127,15 @@ void BVH1::build(std::vector<Triangle>& triangles)
 		stackIndex++;
 	}
 
-	nodesPtr = static_cast<BVHNode*>(malloc(nodes.size() * sizeof(BVHNode)));
-	memcpy(nodesPtr, &nodes[0], nodes.size() * sizeof(BVHNode));
+	nodesPtr = static_cast<BVHNode*>(RAYCER_MALLOC(nodes.size() * sizeof(BVHNode)));
+
+	if (nodesPtr == nullptr)
+		throw std::runtime_error("Could not allocate memory for BVH nodes");
+
+	memcpy(nodesPtr, nodes.data(), nodes.size() * sizeof(BVHNode));
 
 	std::vector<Triangle> sortedTriangles(triangleCount);
-	
+
 	for (uint32_t i = 0; i < triangleCount; ++i)
 		sortedTriangles[i] = *buildTriangles[i].triangle;
 
@@ -139,6 +146,9 @@ void BVH1::build(std::vector<Triangle>& triangles)
 
 bool BVH1::intersect(const Scene& scene, const Ray& ray, Intersection& intersection) const
 {
+	if (nodesPtr == nullptr || scene.trianglesPtr == nullptr)
+		return false;
+
 	if (ray.isVisibilityRay && intersection.wasFound)
 		return true;
 

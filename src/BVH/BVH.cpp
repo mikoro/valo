@@ -17,12 +17,12 @@
 
 using namespace Raycer;
 
-void BVH::build(std::vector<Triangle>& triangles, std::vector<TriangleSOA<4>>& triangles4)
+void BVH::build(std::vector<Triangle>& triangles)
 {
 	switch (type)
 	{
 		case BVHType::BVH1: bvh1.build(triangles); break;
-		case BVHType::BVH4: bvh4.build(triangles, triangles4); break;
+		case BVHType::BVH4: bvh4.build(triangles); break;
 		default: break;
 	}
 }
@@ -104,6 +104,5 @@ BVHSplitOutput BVH::calculateSplit(std::vector<BVHBuildTriangle>& buildTriangles
 	}
 	
 	output.fullAABB = fullAABB[output.axis];
-
 	return output;
 }

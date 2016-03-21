@@ -7,6 +7,7 @@
 #include "Core/Precompiled.h"
 
 #include "Core/App.h"
+#include "Core/Common.h"
 #include "Core/Intersection.h"
 #include "Core/Scene.h"
 #include "Textures/Texture.h"
@@ -17,35 +18,10 @@ using namespace Raycer;
 
 Scene::~Scene()
 {
-	if (texturesPtr != nullptr)
-	{
-		free(texturesPtr);
-		texturesPtr = nullptr;
-	}
-
-	if (materialsPtr != nullptr)
-	{
-		free(materialsPtr);
-		materialsPtr = nullptr;
-	}
-
-	if (trianglesPtr != nullptr)
-	{
-		free(trianglesPtr);
-		trianglesPtr = nullptr;
-	}
-
-	if (triangles4Ptr != nullptr)
-	{
-		free(triangles4Ptr);
-		triangles4Ptr = nullptr;
-	}
-
-	if (emissiveTrianglesPtr != nullptr)
-	{
-		free(emissiveTrianglesPtr);
-		emissiveTrianglesPtr = nullptr;
-	}
+	RAYCER_FREE(texturesPtr);
+	RAYCER_FREE(materialsPtr);
+	RAYCER_FREE(trianglesPtr);
+	RAYCER_FREE(emissiveTrianglesPtr);
 }
 
 Scene Scene::load(const std::string& fileName)
@@ -95,7 +71,6 @@ void Scene::initialize()
 	std::vector<Texture> allTextures;
 	std::vector<Material> allMaterials;
 	std::vector<Triangle> allTriangles;
-	std::vector<Triangle> emissiveTriangles;
 
 	allTextures.insert(allTextures.end(), textures.begin(), textures.end());
 	allMaterials.insert(allMaterials.end(), materials.begin(), materials.end());
@@ -121,14 +96,22 @@ void Scene::initialize()
 
 	if (allTextures.size() > 0)
 	{
-		texturesPtr = static_cast<Texture*>(malloc(allTextures.size() * sizeof(Texture)));
-		memcpy(texturesPtr, &allTextures[0], allTextures.size() * sizeof(Texture));
+		texturesPtr = static_cast<Texture*>(RAYCER_MALLOC(allTextures.size() * sizeof(Texture)));
+
+		if (texturesPtr == nullptr)
+			throw std::runtime_error("Could not allocate memory for textures");
+
+		memcpy(texturesPtr, allTextures.data(), allTextures.size() * sizeof(Texture));
 	}
 
 	if (allMaterials.size() > 0)
 	{
-		materialsPtr = static_cast<Material*>(malloc(allMaterials.size() * sizeof(Material)));
-		memcpy(materialsPtr, &allMaterials[0], allMaterials.size() * sizeof(Material));
+		materialsPtr = static_cast<Material*>(RAYCER_MALLOC(allMaterials.size() * sizeof(Material)));
+
+		if (materialsPtr == nullptr)
+			throw std::runtime_error("Could not allocate memory for materials");
+
+		memcpy(materialsPtr, allMaterials.data(), allMaterials.size() * sizeof(Material));
 	}
 
 	std::map<uint32_t, Texture*> texturesMap;
@@ -175,6 +158,8 @@ void Scene::initialize()
 			materialsPtr[i].blinnPhongMaterial.glossinessTexture = texturesMap[materialsPtr[i].blinnPhongMaterial.glossinessTextureId];
 	}
 
+	std::vector<Triangle> emissiveTriangles;
+
 	for (Triangle& triangle : allTriangles)
 	{
 		if (materialsMap.count(triangle.materialId))
@@ -190,27 +175,27 @@ void Scene::initialize()
 
 	if (emissiveTriangles.size() > 0)
 	{
-		emissiveTrianglesPtr = static_cast<Triangle*>(malloc(emissiveTriangles.size() * sizeof(Triangle)));
-		memcpy(emissiveTrianglesPtr, &emissiveTriangles[0], emissiveTriangles.size() * sizeof(Triangle));
+		emissiveTrianglesPtr = static_cast<Triangle*>(RAYCER_MALLOC(emissiveTriangles.size() * sizeof(Triangle)));
+
+		if (emissiveTrianglesPtr == nullptr)
+			throw std::runtime_error("Could not allocate memory for emissive triangles");
+
+		memcpy(emissiveTrianglesPtr, emissiveTriangles.data(), emissiveTriangles.size() * sizeof(Triangle));
 		emissiveTrianglesCount = uint32_t(emissiveTriangles.size());
 	}
 
 	// BVH BUILD
 
-	std::vector<TriangleSOA<4>> triangles4;
-	bvh.build(allTriangles, triangles4);
+	bvh.build(allTriangles);
 
-	if (allTriangles.size() > 0)
-	{
-		trianglesPtr = static_cast<Triangle*>(malloc(allTriangles.size() * sizeof(Triangle)));
-		memcpy(trianglesPtr, &allTriangles[0], allTriangles.size() * sizeof(Triangle));
-	}
+	trianglesPtr = static_cast<Triangle*>(RAYCER_MALLOC(allTriangles.size() * sizeof(Triangle)));
 
-	if (triangles4.size() > 0)
-	{
-		triangles4Ptr = static_cast<TriangleSOA<4>*>(malloc(triangles4.size() * sizeof(TriangleSOA<4>)));
-		memcpy(triangles4Ptr, &triangles4[0], triangles4.size() * sizeof(TriangleSOA<4>));
-	}
+	if (trianglesPtr == nullptr)
+		throw std::runtime_error("Could not allocate memory for triangles");
+
+	memcpy(trianglesPtr, allTriangles.data(), allTriangles.size() * sizeof(Triangle));
+
+	// MISC
 
 	camera.initialize();
 

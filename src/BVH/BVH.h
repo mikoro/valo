@@ -23,7 +23,7 @@ namespace Raycer
 	{
 	public:
 
-		void build(std::vector<Triangle>& triangles, std::vector<TriangleSOA<4>>& triangles4);
+		void build(std::vector<Triangle>& triangles);
 		bool intersect(const Scene& scene, const Ray& ray, Intersection& intersection) const;
 
 		static BVHSplitOutput calculateSplit(std::vector<BVHBuildTriangle>& buildTriangles, std::vector<BVHSplitCache>& cache, uint32_t start, uint32_t end);
