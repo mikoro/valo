@@ -29,7 +29,7 @@ void Triangle::initialize()
 	float denominator = t0tot1.x * t0tot2.y - t0tot1.y * t0tot2.x;
 
 	// tangent space aligned to texcoords
-	if (std::abs(denominator) > std::numeric_limits<float>::epsilon())
+	if (std::abs(denominator) > 0.0000000001f)
 	{
 		float r = 1.0f / denominator;
 		tangent = (v0tov1 * t0tot2.y - v0tov2 * t0tot1.y) * r;
@@ -58,7 +58,7 @@ bool Triangle::intersect(const Scene& scene, const Ray& ray, Intersection& inter
 	float determinant = v0v1.dot(pvec);
 
 	// ray and triangle are parallel -> no intersection
-	if (std::abs(determinant) < std::numeric_limits<float>::epsilon())
+	if (std::abs(determinant) < 0.0000000001f)
 		return false;
 
 	float invDeterminant = 1.0f / determinant;
@@ -145,7 +145,7 @@ bool Triangle::intersect(
 		// dot product
 		const float determinant = v0v1X * pvecX + v0v1Y * pvecY + v0v1Z * pvecZ;
 
-		if (std::abs(determinant) < std::numeric_limits<float>::epsilon())
+		if (std::abs(determinant) < 0.0000000001f)
 			hits[i] = 0;
 
 		const float invDeterminant = 1.0f / determinant;
