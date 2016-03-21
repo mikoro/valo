@@ -9,6 +9,7 @@ TARGET = raycer
 
 # these might be needed
 # -lXrandr -lXi -lXcursor -lXinerama
+# -fopt-info-vec -fopt-info-vec-missed
 
 # linux
 ifneq "$(findstring linux,$(UNAME))" ""

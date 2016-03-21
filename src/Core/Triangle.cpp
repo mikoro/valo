@@ -275,11 +275,11 @@ Intersection Triangle::getRandomIntersection(Random& random) const
 	float u = 1.0f - sr1;
 	float v = r2 * sr1;
 	float w = 1.0f - u - v;
-	
+
 	Vector3 position = u * vertices[0] + v * vertices[1] + w * vertices[2];
 	Vector3 tempNormal = material->normalInterpolation ? (w * normals[0] + u * normals[1] + v * normals[2]) : normal;
 	Vector2 texcoord = (w * texcoords[0] + u * texcoords[1] + v * texcoords[2]) * material->texcoordScale;
-	
+
 	texcoord.x = texcoord.x - floor(texcoord.x);
 	texcoord.y = texcoord.y - floor(texcoord.y);
 
