@@ -23,7 +23,7 @@ Image* ImagePool::loadImage(const std::string& fileName, bool applyGamma)
 
 	if (!imageIndexMap.count(fileName))
 	{
-		images.push_back(Image(fileName));
+		images.emplace_back(fileName);
 		imageIndexMap[fileName] = uint32_t(images.size() - 1);
 
 		if (applyGamma)

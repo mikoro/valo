@@ -47,6 +47,8 @@ namespace Raycer
 		uint32_t imageAutoWriteMaxNumber = 10;
 		std::string imageAutoWriteFileName = "temp_image_%d.png";
 
+		bool filtering = true;
+
 	private:
 
 		Timer imageAutoWriteTimer;

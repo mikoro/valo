@@ -32,6 +32,8 @@ namespace Raycer
 		uint32_t getWidth() const;
 		uint32_t getHeight() const;
 
+		bool isCleared() const;
+
 		std::atomic<uint32_t> pixelSamples;
 
 	private:
@@ -44,5 +46,7 @@ namespace Raycer
 
 		Image linearImage;
 		Image outputImage;
+
+		bool cleared = false;
 	};
 }

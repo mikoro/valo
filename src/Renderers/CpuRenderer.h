@@ -14,7 +14,7 @@ namespace Raycer
 	public:
 
 		void initialize();
-		void render(RenderJob& job);
+		void render(RenderJob& job, bool filtering);
 
 		int32_t maxThreadCount = 4;
 

@@ -23,6 +23,7 @@ void Film::clear()
 {
 	memset(pixels, 0, length * sizeof(Color));
 	pixelSamples = 0;
+	cleared = true;
 }
 
 void Film::resize(uint32_t width_, uint32_t height_)
@@ -53,6 +54,8 @@ void Film::addSample(uint32_t index, const Color& color, float filterWeight)
 	pixels[index].g += color.g * filterWeight;
 	pixels[index].b += color.b * filterWeight;
 	pixels[index].a += filterWeight;
+
+	cleared = false;
 }
 
 Color Film::getLinearColor(uint32_t x, uint32_t y) const
@@ -93,4 +96,9 @@ uint32_t Film::getWidth() const
 uint32_t Film::getHeight() const
 {
 	return height;
+}
+
+bool Film::isCleared() const
+{
+	return cleared;
 }

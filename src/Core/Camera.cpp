@@ -37,6 +37,7 @@ void Camera::reset()
 	fov = originalFov;
 	orthoSize = originalOrthoSize;
 	fishEyeAngle = originalFishEyeAngle;
+	currentSpeedModifier = 1.0f;
 	velocity = Vector3(0.0f, 0.0f, 0.0f);
 	smoothVelocity = Vector3(0.0f, 0.0f, 0.0f);
 	smoothAcceleration = Vector3(0.0f, 0.0f, 0.0f);

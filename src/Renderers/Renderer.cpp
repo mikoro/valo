@@ -34,8 +34,8 @@ void Renderer::render(RenderJob& job)
 	{
 		switch (type)
 		{
-			case RendererType::CPU: cpuRenderer.render(job); break;
-			case RendererType::CUDA: cudaRenderer.render(job); break;
+			case RendererType::CPU: cpuRenderer.render(job, filtering); break;
+			case RendererType::CUDA: cudaRenderer.render(job, filtering); break;
 			default: break;
 		}
 

@@ -53,7 +53,6 @@ namespace Raycer
 		float slowSpeedModifier = 0.25f;
 		float fastSpeedModifier = 2.5f;
 		float veryFastSpeedModifier = 5.0f;
-		float currentSpeedModifier = 1.0f;
 
 		bool enableDepthOfField = false;
 		bool enableMovement = true;
@@ -62,9 +61,11 @@ namespace Raycer
 
 	private:
 
+		bool cameraIsMoving = false;
 		float aspectRatio = 1.0f;
 		float imagePlaneWidth = 0.0f;
 		float imagePlaneHeight = 0.0f;
+		float currentSpeedModifier = 1.0f;
 
 		Vector3 right;
 		Vector3 up;
@@ -78,14 +79,12 @@ namespace Raycer
 		Vector3 smoothAngularVelocity;
 		Vector3 smoothAngularAcceleration;
 
-		bool cameraIsMoving = false;
-
 		Vector3 originalPosition;
 		EulerAngle originalOrientation;
 		float originalFov = 0.0f;
 		float originalOrthoSize = 0.0f;
 		float originalFishEyeAngle = 0.0f;
-
+		
 		friend class cereal::access;
 
 		template <class Archive>
@@ -107,7 +106,6 @@ namespace Raycer
 				CEREAL_NVP(slowSpeedModifier),
 				CEREAL_NVP(fastSpeedModifier),
 				CEREAL_NVP(veryFastSpeedModifier),
-				CEREAL_NVP(currentSpeedModifier),
 				CEREAL_NVP(enableDepthOfField),
 				CEREAL_NVP(enableMovement),
 				CEREAL_NVP(smoothMovement),

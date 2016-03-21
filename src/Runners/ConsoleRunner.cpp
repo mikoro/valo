@@ -60,7 +60,7 @@ int ConsoleRunner::run()
 	
 	SysUtils::setConsoleTextColor(ConsoleTextColor::WHITE_ON_BLACK);
 
-	uint32_t totalSamples = settings.image.width * settings.image.height * scene->renderer.pixelSamples;
+	uint64_t totalSamples = uint64_t(settings.image.width) * uint64_t(settings.image.height) * uint64_t(scene->renderer.pixelSamples);
 
 	std::cout << tfm::format("\nRendering started (size: %dx%d, pixels: %s, samples: %s, pixel samples: %d)\n\n",
 		settings.image.width,
@@ -152,10 +152,9 @@ void ConsoleRunner::interrupt()
 	renderJob.interrupted = true;
 }
 
-void ConsoleRunner::printProgress(float percentage_, const TimerData& elapsed, const TimerData& remaining, uint32_t pixelSamples)
+void ConsoleRunner::printProgress(float percentage, const TimerData& elapsed, const TimerData& remaining, uint32_t pixelSamples)
 {
-	uint32_t percentage = uint32_t(percentage_ + 0.5f);
-	uint32_t barCount = percentage / 4;
+	uint32_t barCount = uint32_t(percentage + 0.5f) / 4;
 
     tfm::printf("[");
 
@@ -171,7 +170,7 @@ void ConsoleRunner::printProgress(float percentage_, const TimerData& elapsed, c
 	}
 
     tfm::printf("] ");
-    tfm::printf("%d %% | ", percentage);
+    tfm::printf("%.2f %% | ", percentage);
     tfm::printf("Elapsed: %s | ", elapsed.getString());
     tfm::printf("Remaining: %s | ", remaining.getString());
 	tfm::printf("Samples/s: %s | ", StringUtils::humanizeNumber(samplesPerSecondAverage.getAverage()));

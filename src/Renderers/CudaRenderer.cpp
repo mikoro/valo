@@ -14,10 +14,11 @@ void CudaRenderer::initialize()
 {
 }
 
-void CudaRenderer::render(RenderJob& job)
+void CudaRenderer::render(RenderJob& job, bool filtering)
 {
 	//Scene& scene = *job.scene;
 	Film& film = *job.film;
+	(void)filtering;
 	
 	film.clear();
 }

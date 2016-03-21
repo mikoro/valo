@@ -327,6 +327,8 @@ void WindowRunnerRenderState::render(float timeStep, float interpolation)
 	if (scene->camera.isMoving())
 		film->clear();
 
+	renderer.filtering = !film->isCleared();
+
 	RenderJob job;
 	job.scene = scene;
 	job.film = film;

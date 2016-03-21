@@ -143,6 +143,7 @@ void Scene::initialize()
 			throw std::runtime_error(tfm::format("A duplicate texture id was found (id: %s, type: %s)", texturesPtr[i].id));
 
 		texturesMap[texturesPtr[i].id] = &texturesPtr[i];
+		texturesPtr[i].initialize();
 	}
 
 	for (uint32_t i = 0; i < allMaterials.size(); ++i)

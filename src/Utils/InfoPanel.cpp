@@ -162,6 +162,20 @@ void InfoPanel::renderFull(const Renderer& renderer, const RenderJob& job)
 	nvgText(context, currentX, currentY, tfm::format("Frametime: %.1f ms", fpsCounter.getFrameTime()).c_str(), nullptr);
 	currentY += lineSpacing;
 
+	int tempWindowWidth, tempWindowHeight, tempFramebufferWidth, tempFramebufferHeight;
+	GLFWwindow* window = windowRunner.getGlfwWindow();
+
+	glfwGetWindowSize(window, &tempWindowWidth, &tempWindowHeight);
+	glfwGetFramebufferSize(window, &tempFramebufferWidth, &tempFramebufferHeight);
+
+	nvgText(context, currentX, currentY, tfm::format("Window: %dx%d (%dx%d)", tempWindowWidth, tempWindowHeight, tempFramebufferWidth, tempFramebufferHeight).c_str(), nullptr);
+	currentY += lineSpacing;
+
+	float totalPixels = float(film.getWidth() * film.getWidth());
+
+	nvgText(context, currentX, currentY, tfm::format("Film: %dx%d (%.2fx) (%s)", film.getWidth(), film.getWidth(), settings.window.renderScale, StringUtils::humanizeNumber(totalPixels)).c_str(), nullptr);
+	currentY += lineSpacing;
+
 	nvgText(context, currentX, currentY, tfm::format("Position: (%.2f, %.2f, %.2f)", scene.camera.position.x, scene.camera.position.y, scene.camera.position.z).c_str(), nullptr);
 	currentY += lineSpacing;
 
@@ -188,20 +202,6 @@ void InfoPanel::renderFull(const Renderer& renderer, const RenderJob& job)
 	nvgText(context, currentX, currentY, tfm::format("Pixel out: (%.2f, %.2f, %.2f)", outputColor.r, outputColor.g, outputColor.b).c_str(), nullptr);
 	currentY += lineSpacing;
 
-	int tempWindowWidth, tempWindowHeight, tempFramebufferWidth, tempFramebufferHeight;
-	GLFWwindow* window = windowRunner.getGlfwWindow();
-
-	glfwGetWindowSize(window, &tempWindowWidth, &tempWindowHeight);
-	glfwGetFramebufferSize(window, &tempFramebufferWidth, &tempFramebufferHeight);
-
-	nvgText(context, currentX, currentY, tfm::format("Window: %dx%d (%dx%d)", tempWindowWidth, tempWindowHeight, tempFramebufferWidth, tempFramebufferHeight).c_str(), nullptr);
-	currentY += lineSpacing;
-
-	float totalPixels = float(film.getWidth() * film.getWidth());
-
-	nvgText(context, currentX, currentY, tfm::format("Film: %dx%d (%.2fx) (%s)", film.getWidth(), film.getWidth(), settings.window.renderScale, StringUtils::humanizeNumber(totalPixels)).c_str(), nullptr);
-	currentY += lineSpacing;
-
 	nvgText(context, currentX, currentY, tfm::format("Pixel samples: %d", film.pixelSamples).c_str(), nullptr);
 	currentY += lineSpacing;
 
@@ -219,9 +219,20 @@ void InfoPanel::renderFull(const Renderer& renderer, const RenderJob& job)
 	nvgText(context, currentX, currentY, tfm::format("Integrator: %s", scene.integrator.getName()).c_str(), nullptr);
 	currentY += lineSpacing;
 
-	nvgText(context, currentX, currentY, tfm::format("Filter: %s (%s)", scene.renderer.filter.getName(), scene.renderer.filtering).c_str(), nullptr);
+	nvgText(context, currentX, currentY, tfm::format("Filter: %s (%s)", scene.renderer.filter.getName(), (renderer.filtering && scene.renderer.filtering) ? "on" : "off").c_str(), nullptr);
 	currentY += lineSpacing;
 
-	nvgText(context, currentX, currentY, tfm::format("Tonemapper: %s", scene.tonemapper.getName()).c_str(), nullptr);
+	float tonemapperValue = 0.0f;
+
+	switch (scene.tonemapper.type)
+	{
+		case TonemapperType::PASSTHROUGH: tonemapperValue = 0.0f; break;
+		case TonemapperType::LINEAR: tonemapperValue = scene.tonemapper.linearTonemapper.exposure; break;
+		case TonemapperType::SIMPLE: tonemapperValue = scene.tonemapper.simpleTonemapper.exposure; break;
+		case TonemapperType::REINHARD: tonemapperValue = scene.tonemapper.reinhardTonemapper.key; break;
+		default: break;
+	}
+
+	nvgText(context, currentX, currentY, tfm::format("Tonemapper: %s (%.2f)", scene.tonemapper.getName(), tonemapperValue).c_str(), nullptr);
 	currentY += lineSpacing;
 }

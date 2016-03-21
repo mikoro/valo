@@ -12,6 +12,6 @@ namespace Raycer
 	public:
 
 		void initialize();
-		void render(RenderJob& job);
+		void render(RenderJob& job, bool filtering);
 	};
 }
