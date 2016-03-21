@@ -22,10 +22,11 @@ namespace Raycer
 		static AABB createFromCenterExtent(const Vector3& center, const Vector3& extent);
 		static AABB createFromVertices(const Vector3& v0, const Vector3& v1, const Vector3& v2);
 
+		bool intersects(const Ray& ray) const;
+
 		template <uint32_t N>
 		static std::array<uint32_t, N> intersects(const float* __restrict aabbMinX, const float* __restrict aabbMinY, const float* __restrict aabbMinZ, const float* __restrict aabbMaxX, const float* __restrict aabbMaxY, const float* __restrict aabbMaxZ, const Ray& ray);
 
-		bool intersects(const Ray& ray) const;
 		void expand(const AABB& other);
 
 		Vector3 getCenter() const;
@@ -47,5 +48,3 @@ namespace Raycer
 		}
 	};
 }
-
-#include "Core/AABB.inl"

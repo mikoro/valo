@@ -53,15 +53,12 @@ namespace Raycer
 
 		void initialize();
 		bool intersect(const Scene& scene, const Ray& ray, Intersection& intersection) const;
-		Intersection getRandomIntersection(Random& random) const;
-		AABB getAABB() const;
-		float getArea() const;
 
 		template <uint32_t N>
 		static bool intersect(const float* __restrict vertex1X, const float* __restrict vertex1Y, const float* __restrict vertex1Z, const float* __restrict vertex2X, const float* __restrict vertex2Y, const float* __restrict vertex2Z, const float* __restrict vertex3X, const float* __restrict vertex3Y, const float* __restrict vertex3Z, const uint32_t* __restrict triangleIndices, const Scene& scene, const Ray& ray, Intersection& intersection);
 
-		template <uint32_t N>
-		static bool findIntersectionValues(const uint32_t* hits, const float* distances, const float* uValues, const float* vValues, const uint32_t* triangleIndices, float& distance, float& u, float& v, uint32_t& triangleIndex);
+		Intersection getRandomIntersection(Random& random) const;
+		AABB getAABB() const;
 
 		Vector3 vertices[3];
 		Vector3 normals[3];
@@ -74,6 +71,9 @@ namespace Raycer
 		Material* material = nullptr;
 
 	private:
+
+		template <uint32_t N>
+		static bool findIntersectionValues(const uint32_t* hits, const float* distances, const float* uValues, const float* vValues, const uint32_t* triangleIndices, float& distance, float& u, float& v, uint32_t& triangleIndex);
 
 		static bool calculateIntersectionData(const Scene& scene, const Ray& ray, const Triangle& triangle, Intersection& intersection, float distance, float u, float v);
 
@@ -93,5 +93,3 @@ namespace Raycer
 		}
 	};
 }
-
-#include "Core/Triangle.inl"

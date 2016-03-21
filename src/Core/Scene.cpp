@@ -7,6 +7,7 @@
 #include "Core/Precompiled.h"
 
 #include "Core/App.h"
+#include "Core/Intersection.h"
 #include "Core/Scene.h"
 #include "Textures/Texture.h"
 #include "Utils/Log.h"

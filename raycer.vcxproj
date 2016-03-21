@@ -417,8 +417,6 @@
   <ItemGroup>
     <None Include="data\shaders\film.frag" />
     <None Include="data\shaders\film.vert" />
-    <None Include="src\Core\AABB.inl" />
-    <None Include="src\Core\Triangle.inl" />
     <None Include="src\Math\Polynomial.inl" />
     <None Include="src\Utils\Log.inl" />
   </ItemGroup>

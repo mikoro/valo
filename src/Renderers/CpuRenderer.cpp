@@ -4,6 +4,7 @@
 #include "Core/Precompiled.h"
 
 #include "Core/Film.h"
+#include "Core/Ray.h"
 #include "Core/Scene.h"
 #include "Renderers/CpuRenderer.h"
 #include "Renderers/Renderer.h"

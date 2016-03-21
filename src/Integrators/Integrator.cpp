@@ -75,7 +75,7 @@ Color Integrator::calculateDirectLight(const Scene& scene, const Intersection& i
 		return Color(0.0f, 0.0f, 0.0f);
 
 	float probability1 = 1.0f / float(scene.emissiveTrianglesCount);
-	float probability2 = 1.0f / triangle->getArea();
+	float probability2 = 1.0f / triangle->area;
 
 	Color emittance = triangle->material->getEmittance(triangleIntersection.texcoord, triangleIntersection.position);
 	Color brdf = intersection.material->getBrdf(intersection, in, out);

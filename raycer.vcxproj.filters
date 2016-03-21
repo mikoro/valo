@@ -538,12 +538,6 @@
     <None Include="src\Math\Polynomial.inl">
       <Filter>Math</Filter>
     </None>
-    <None Include="src\Core\AABB.inl">
-      <Filter>Core</Filter>
-    </None>
-    <None Include="src\Core\Triangle.inl">
-      <Filter>Core</Filter>
-    </None>
     <None Include="src\Utils\Log.inl">
       <Filter>Utils</Filter>
     </None>
