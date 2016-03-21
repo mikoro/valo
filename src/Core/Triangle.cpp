@@ -127,9 +127,6 @@ bool Triangle::intersect(
 
 	memset(hits, 1, sizeof(hits));
 
-#ifdef __INTEL_COMPILER
-#pragma vector always assert aligned
-#endif
 	for (uint32_t i = 0; i < N; ++i)
 	{
 		const float v0v1X = vertex2X[i] - vertex1X[i];

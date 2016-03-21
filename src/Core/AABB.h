@@ -25,7 +25,7 @@ namespace Raycer
 		bool intersects(const Ray& ray) const;
 
 		template <uint32_t N>
-		static std::array<uint32_t, N> intersects(const float* __restrict aabbMinX, const float* __restrict aabbMinY, const float* __restrict aabbMinZ, const float* __restrict aabbMaxX, const float* __restrict aabbMaxY, const float* __restrict aabbMaxZ, const Ray& ray);
+		static std::array<bool, N> intersects(const float* __restrict aabbMinX, const float* __restrict aabbMinY, const float* __restrict aabbMinZ, const float* __restrict aabbMaxX, const float* __restrict aabbMaxY, const float* __restrict aabbMaxZ, const Ray& ray);
 
 		void expand(const AABB& other);
 

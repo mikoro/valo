@@ -288,7 +288,7 @@ bool BVH4::intersect(const Scene& scene, const Ray& ray, Intersection& intersect
 			continue;
 		}
 
-		std::array<uint32_t, 4> intersects = AABB::intersects<4>(
+		std::array<bool, 4> intersects = AABB::intersects<4>(
 			&node.aabbMinX[0],
 			&node.aabbMinY[0],
 			&node.aabbMinZ[0],

@@ -4,7 +4,6 @@
 #include "Core/Precompiled.h"
 
 #include "Core/AABB.h"
-#include "Core/Common.h"
 #include "Core/Ray.h"
 
 using namespace Raycer;
@@ -88,7 +87,7 @@ bool AABB::intersects(const Ray& ray) const
 #define MAX(a,b) (((a)>(b))?(a):(b))
 
 template <uint32_t N>
-std::array<uint32_t, N> AABB::intersects(
+std::array<bool, N> AABB::intersects(
 	const float* __restrict aabbMinX,
 	const float* __restrict aabbMinY,
 	const float* __restrict aabbMinZ,
@@ -108,11 +107,8 @@ std::array<uint32_t, N> AABB::intersects(
 	const float minDistance = ray.minDistance;
 	const float maxDistance = ray.maxDistance;
 
-	ALIGN(16) uint32_t result[N];
+	std::array<bool, N> result;
 
-#ifdef __INTEL_COMPILER
-#pragma vector always assert aligned
-#endif
 	for (uint32_t i = 0; i < N; ++i)
 	{
 		const float tx0 = (aabbMinX[i] - originX) * inverseDirectionX;
@@ -136,14 +132,12 @@ std::array<uint32_t, N> AABB::intersects(
 		result[i] = tmax >= MAX(tmin, 0.0f) && tmin < maxDistance && tmax > minDistance;
 	}
 
-	std::array<uint32_t, N> resultArray;
-	memcpy(resultArray.data(), result, sizeof(resultArray));
-	return resultArray;
+	return result;
 }
 
-template std::array<uint32_t, 4> AABB::intersects(const float* __restrict aabbMinX, const float* __restrict aabbMinY, const float* __restrict aabbMinZ, const float* __restrict aabbMaxX, const float* __restrict aabbMaxY, const float* __restrict aabbMaxZ, const Ray& ray);
-template std::array<uint32_t, 8> AABB::intersects(const float* __restrict aabbMinX, const float* __restrict aabbMinY, const float* __restrict aabbMinZ, const float* __restrict aabbMaxX, const float* __restrict aabbMaxY, const float* __restrict aabbMaxZ, const Ray& ray);
-template std::array<uint32_t, 16> AABB::intersects(const float* __restrict aabbMinX, const float* __restrict aabbMinY, const float* __restrict aabbMinZ, const float* __restrict aabbMaxX, const float* __restrict aabbMaxY, const float* __restrict aabbMaxZ, const Ray& ray);
+template std::array<bool, 4> AABB::intersects(const float* __restrict aabbMinX, const float* __restrict aabbMinY, const float* __restrict aabbMinZ, const float* __restrict aabbMaxX, const float* __restrict aabbMaxY, const float* __restrict aabbMaxZ, const Ray& ray);
+template std::array<bool, 8> AABB::intersects(const float* __restrict aabbMinX, const float* __restrict aabbMinY, const float* __restrict aabbMinZ, const float* __restrict aabbMaxX, const float* __restrict aabbMaxY, const float* __restrict aabbMaxZ, const Ray& ray);
+template std::array<bool, 16> AABB::intersects(const float* __restrict aabbMinX, const float* __restrict aabbMinY, const float* __restrict aabbMinZ, const float* __restrict aabbMaxX, const float* __restrict aabbMaxY, const float* __restrict aabbMaxZ, const Ray& ray);
 
 void AABB::expand(const AABB& other)
 {
