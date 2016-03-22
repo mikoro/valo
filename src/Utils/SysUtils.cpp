@@ -3,6 +3,11 @@
 
 #include "Core/Precompiled.h"
 
+#ifdef _WIN32
+#include <windows.h>
+#include <shellapi.h>
+#endif
+
 #include "Utils/SysUtils.h"
 #include "Core/App.h"
 #include "Utils/Log.h"

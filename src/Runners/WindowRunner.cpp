@@ -3,6 +3,9 @@
 
 #include "Core/Precompiled.h"
 
+#include <GL/gl3w.h>
+#include <GLFW/glfw3.h>
+
 #include "Core/App.h"
 #include "Core/Image.h"
 #include "Runners/WindowRunner.h"

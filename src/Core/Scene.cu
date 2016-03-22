@@ -4,7 +4,10 @@
 // when using precompiled headers with this file, the deserialization of XML files will crash in release mode
 //#include "Core/Precompiled.h"
 
-#include "Core/Precompiled.h"
+#include <map>
+#include <vector>
+
+#include "tinyformat/tinyformat.h"
 
 #include "Core/App.h"
 #include "Core/Common.h"

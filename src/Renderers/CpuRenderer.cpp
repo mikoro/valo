@@ -3,6 +3,8 @@
 
 #include "Core/Precompiled.h"
 
+#include <omp.h>
+
 #include "Core/Film.h"
 #include "Core/Ray.h"
 #include "Core/Scene.h"

@@ -6,7 +6,6 @@
 #include <cassert>
 #include <chrono>
 #include <cmath>
-#include <complex>
 #include <cstddef>
 #include <cstdint>
 #include <cstdio>
@@ -26,29 +25,5 @@
 #include <sstream>
 #include <thread>
 #include <vector>
-
-#include <omp.h>
-
-#ifdef _WIN32
-#include <windows.h>
-#include <shellapi.h>
-#include <ppl.h>
-#else
-#include <errno.h>
-#include <stdlib.h>
-#include <sys/types.h>
-#include <unistd.h>
-#include <signal.h>
-#endif
-
-#include <GL/gl3w.h>
-#include <GL/glcorearb.h>
-#include <GLFW/glfw3.h>
-
-#ifdef __linux
-#include <dlfcn.h>
-#include <GL/glx.h>
-#include <parallel/algorithm>
-#endif
 
 #include "tinyformat/tinyformat.h"

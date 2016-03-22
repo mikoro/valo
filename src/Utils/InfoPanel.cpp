@@ -3,6 +3,9 @@
 
 #include "Core/Precompiled.h"
 
+#include <GL/gl3w.h>
+#include <GLFW/glfw3.h>
+
 #define NANOVG_GL3_IMPLEMENTATION
 #include "nanovg/nanovg.h"
 #include "nanovg/nanovg_gl.h"

@@ -3,6 +3,8 @@
 
 #include "Core/Precompiled.h"
 
+#include <GLFW/glfw3.h>
+
 #include "Utils/FpsCounter.h"
 
 using namespace Raycer;

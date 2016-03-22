@@ -1,7 +1,8 @@
 ﻿// Copyright © 2016 Mikko Ronkainen <firstname@mikkoronkainen.com>
 // License: MIT, see the LICENSE file.
 
-#include "Core/Precompiled.h"
+#include <cfloat>
+#include <cstdint>
 
 #include "Core/AABB.h"
 #include "Core/Ray.h"

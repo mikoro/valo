@@ -4,6 +4,7 @@
 #pragma once
 
 #include <atomic>
+#include <cstdint>
 
 #include "Core/Common.h"
 #include "Core/Image.h"

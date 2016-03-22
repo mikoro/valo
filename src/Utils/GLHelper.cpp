@@ -3,6 +3,8 @@
 
 #include "Core/Precompiled.h"
 
+#include <GL/gl3w.h>
+
 #include "Utils/GLHelper.h"
 #include "Core/App.h"
 #include "Utils/Settings.h"

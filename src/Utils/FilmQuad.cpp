@@ -3,6 +3,8 @@
 
 #include "Core/Precompiled.h"
 
+#include <GL/gl3w.h>
+
 #include "Core/Film.h"
 #include "Utils/FilmQuad.h"
 #include "Utils/GLHelper.h"

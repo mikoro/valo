@@ -3,6 +3,9 @@
 
 #pragma once
 
+#include <cstdint>
+#include <string>
+
 #include "Core/Common.h"
 
 namespace Raycer

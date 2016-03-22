@@ -3,6 +3,8 @@
 
 #pragma once
 
+#include <cstdint>
+
 #include "Core/AABB.h"
 
 namespace Raycer

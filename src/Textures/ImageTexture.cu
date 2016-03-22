@@ -1,8 +1,6 @@
 // Copyright © 2016 Mikko Ronkainen <firstname@mikkoronkainen.com>
 // License: MIT, see the LICENSE file.
 
-#include "Core/Precompiled.h"
-
 #include "Core/App.h"
 #include "Core/Scene.h"
 #include "Math/Vector2.h"

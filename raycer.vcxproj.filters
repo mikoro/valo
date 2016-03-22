@@ -267,9 +267,6 @@
     <ClInclude Include="src\Math\ONB.h">
       <Filter>Math</Filter>
     </ClInclude>
-    <ClInclude Include="src\Math\Polynomial.h">
-      <Filter>Math</Filter>
-    </ClInclude>
     <ClInclude Include="src\Math\Quaternion.h">
       <Filter>Math</Filter>
     </ClInclude>
@@ -417,9 +414,6 @@
     </None>
     <None Include="data\shaders\film.vert">
       <Filter>Shaders</Filter>
-    </None>
-    <None Include="src\Math\Polynomial.inl">
-      <Filter>Math</Filter>
     </None>
     <None Include="src\Utils\Log.inl">
       <Filter>Utils</Filter>

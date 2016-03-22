@@ -1,17 +1,17 @@
 ﻿// Copyright © 2016 Mikko Ronkainen <firstname@mikkoronkainen.com>
 // License: MIT, see the LICENSE file.
 
-#include "Core/Precompiled.h"
-
 #include "BVH/BVH.h"
 #include "BVH/BVH1.h"
 #include "BVH/BVH4.h"
 
 #ifdef _WIN32
+#include <ppl.h>
 #define PARALLEL_SORT concurrency::parallel_sort
 #endif
 
 #ifdef __linux
+#include <parallel/algorithm>
 #define PARALLEL_SORT __gnu_parallel::sort
 #endif
 

@@ -7,6 +7,8 @@
 #include <fstream>
 #include <mutex>
 
+#include "tinyformat/tinyformat.h"
+
 #ifdef ERROR
 #undef ERROR
 #endif

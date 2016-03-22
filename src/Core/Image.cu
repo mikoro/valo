@@ -1,7 +1,9 @@
 // Copyright © 2016 Mikko Ronkainen <firstname@mikkoronkainen.com>
 // License: MIT, see the LICENSE file.
 
-#include "Core/Precompiled.h"
+#include <vector>
+
+#include "tinyformat/tinyformat.h"
 
 #include "stb/stb_image.h"
 #include "stb/stb_image_write.h"

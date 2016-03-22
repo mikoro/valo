@@ -3,6 +3,10 @@
 
 #include "Core/Precompiled.h"
 
+#ifdef _WIN32
+#include <windows.h>
+#endif
+
 #include "Core/App.h"
 #include "Core/Common.h"
 #include "Utils/Settings.h"

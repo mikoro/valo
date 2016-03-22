@@ -1,8 +1,6 @@
 // Copyright © 2016 Mikko Ronkainen <firstname@mikkoronkainen.com>
 // License: MIT, see the LICENSE file.
 
-#include "Core/Precompiled.h"
-
 #include "Math/AxisAngle.h"
 #include "Math/Matrix4x4.h"
 #include "Math/MathUtils.h"
@@ -18,8 +16,8 @@ CUDA_CALLABLE Matrix4x4 AxisAngle::toMatrix4x4() const
 	float x = axis.x;
 	float y = axis.y;
 	float z = axis.z;
-	float c = cos(MathUtils::degToRad(angle));
-	float s = sin(MathUtils::degToRad(angle));
+	float c = std::cos(MathUtils::degToRad(angle));
+	float s = std::sin(MathUtils::degToRad(angle));
 	float ci = 1.0f - c;
 
 	Matrix4x4 result(
