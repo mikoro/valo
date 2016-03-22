@@ -3,8 +3,7 @@
 
 #pragma once
 
-#include <limits>
-
+#include "Core/Common.h"
 #include "Math/Vector3.h"
 
 namespace Raycer
@@ -13,14 +12,14 @@ namespace Raycer
 	{
 	public:
 
-		void precalculate();
+		CUDA_CALLABLE void precalculate();
 
 		Vector3 origin;
 		Vector3 direction;
 		Vector3 inverseDirection;
 
 		float minDistance = 0.0f;
-		float maxDistance = std::numeric_limits<float>::max();
+		float maxDistance = FLT_MAX;
 
 		bool isVisibilityRay = false;
 		bool directionIsNegative[3];

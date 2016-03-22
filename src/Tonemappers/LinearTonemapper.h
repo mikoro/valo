@@ -3,8 +3,6 @@
 
 #pragma once
 
-#include "cereal/cereal.hpp"
-
 namespace Raycer
 {
 	class Image;
@@ -19,18 +17,5 @@ namespace Raycer
 		bool shouldClamp = true;
 		float gamma = 2.2f;
 		float exposure = 0.0f;
-
-	private:
-
-		friend class cereal::access;
-
-		template <class Archive>
-		void serialize(Archive& ar)
-		{
-			ar(CEREAL_NVP(applyGamma),
-				CEREAL_NVP(shouldClamp),
-				CEREAL_NVP(gamma),
-				CEREAL_NVP(exposure));
-		}
 	};
 }

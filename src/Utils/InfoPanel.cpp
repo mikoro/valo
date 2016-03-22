@@ -186,8 +186,8 @@ void InfoPanel::renderFull(const Renderer& renderer, const RenderJob& job)
 	nvgText(context, currentX, currentY, tfm::format("Rotation: (%.2f, %.2f, %.2f)", scene.camera.orientation.pitch, scene.camera.orientation.yaw, scene.camera.orientation.roll).c_str(), nullptr);
 	currentY += lineSpacing;
 
-	int32_t filmMouseX = std::max(int32_t(0), std::min(windowRunner.getMouseInfo().filmX, int32_t(film.getWidth() - 1)));
-	int32_t filmMouseY = std::max(int32_t(0), std::min(windowRunner.getMouseInfo().filmY, int32_t(film.getHeight() - 1)));;
+	int32_t filmMouseX = MAX(int32_t(0), MIN(windowRunner.getMouseInfo().filmX, int32_t(film.getWidth() - 1)));
+	int32_t filmMouseY = MAX(int32_t(0), MIN(windowRunner.getMouseInfo().filmY, int32_t(film.getHeight() - 1)));;
 	int32_t filmMouseIndex = filmMouseY * film.getWidth() + filmMouseX;
 
 	nvgText(context, currentX, currentY, tfm::format("Mouse: (%d, %d, %d)", filmMouseX, filmMouseY, filmMouseIndex).c_str(), nullptr);

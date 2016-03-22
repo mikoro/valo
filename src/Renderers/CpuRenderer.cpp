@@ -21,7 +21,7 @@ void CpuRenderer::render(RenderJob& job, bool filtering)
 	Film& film = *job.film;
 
 	omp_set_num_threads(maxThreadCount);
-	uint32_t maxThreads = std::max(1, omp_get_max_threads());
+	uint32_t maxThreads = MAX(1, omp_get_max_threads());
 
 	assert(maxThreads >= 1);
 

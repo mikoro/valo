@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include "cereal/cereal.hpp"
+#include "Core/Common.h"
 
 /*
 
@@ -25,38 +25,26 @@ namespace Raycer
 	{
 	public:
 
-		explicit EulerAngle(float pitch = 0.0f, float yaw = 0.0f, float roll = 0.0f);
+		CUDA_CALLABLE explicit EulerAngle(float pitch = 0.0f, float yaw = 0.0f, float roll = 0.0f);
 
-		friend EulerAngle operator+(const EulerAngle& e1, const EulerAngle& e2);
-		friend EulerAngle operator-(const EulerAngle& e1, const EulerAngle& e2);
-		friend EulerAngle operator*(const EulerAngle& e, float s);
-		friend EulerAngle operator*(float s, const EulerAngle& e);
-		friend EulerAngle operator-(const EulerAngle& e);
+		CUDA_CALLABLE friend EulerAngle operator+(const EulerAngle& e1, const EulerAngle& e2);
+		CUDA_CALLABLE friend EulerAngle operator-(const EulerAngle& e1, const EulerAngle& e2);
+		CUDA_CALLABLE friend EulerAngle operator*(const EulerAngle& e, float s);
+		CUDA_CALLABLE friend EulerAngle operator*(float s, const EulerAngle& e);
+		CUDA_CALLABLE friend EulerAngle operator-(const EulerAngle& e);
 
-		EulerAngle& operator+=(const EulerAngle& e);
-		EulerAngle& operator-=(const EulerAngle& e);
+		CUDA_CALLABLE EulerAngle& operator+=(const EulerAngle& e);
+		CUDA_CALLABLE EulerAngle& operator-=(const EulerAngle& e);
 
-		void clampPitch();
-		void normalize();
+		CUDA_CALLABLE void clampPitch();
+		CUDA_CALLABLE void normalize();
 
-		Vector3 getDirection() const;
+		CUDA_CALLABLE Vector3 getDirection() const;
 
-		static EulerAngle lerp(const EulerAngle& e1, const EulerAngle& e2, float t);
+		CUDA_CALLABLE static EulerAngle lerp(const EulerAngle& e1, const EulerAngle& e2, float t);
 
 		float pitch; // x-axis
 		float yaw; // y-axis
 		float roll; // z-axis
-
-	private:
-
-		friend class cereal::access;
-
-		template <class Archive>
-		void serialize(Archive& ar)
-		{
-			ar(CEREAL_NVP(pitch),
-				CEREAL_NVP(yaw),
-				CEREAL_NVP(roll));
-		}
 	};
 }

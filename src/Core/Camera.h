@@ -3,8 +3,7 @@
 
 #pragma once
 
-#include "cereal/cereal.hpp"
-
+#include "Core/Common.h"
 #include "Math/Vector3.h"
 #include "Math/EulerAngle.h"
 
@@ -28,7 +27,7 @@ namespace Raycer
 		bool isMoving() const;
 		void saveState(const std::string& fileName) const;
 
-		Ray getRay(const Vector2& pixel, bool& isOffLens) const;
+		CUDA_CALLABLE Ray getRay(const Vector2& pixel, bool& isOffLens) const;
 
 		Vector3 getRight() const;
 		Vector3 getUp() const;
@@ -84,32 +83,5 @@ namespace Raycer
 		float originalFov = 0.0f;
 		float originalOrthoSize = 0.0f;
 		float originalFishEyeAngle = 0.0f;
-		
-		friend class cereal::access;
-
-		template <class Archive>
-		void serialize(Archive& ar)
-		{
-			ar(CEREAL_NVP(type), 
-				CEREAL_NVP(position),
-				CEREAL_NVP(orientation),
-				CEREAL_NVP(fov),
-				CEREAL_NVP(orthoSize),
-				CEREAL_NVP(fishEyeAngle),
-				CEREAL_NVP(apertureSize),
-				CEREAL_NVP(focalDistance),
-				CEREAL_NVP(moveSpeed),
-				CEREAL_NVP(mouseSpeed),
-				CEREAL_NVP(moveDrag),
-				CEREAL_NVP(mouseDrag),
-				CEREAL_NVP(autoStopSpeed),
-				CEREAL_NVP(slowSpeedModifier),
-				CEREAL_NVP(fastSpeedModifier),
-				CEREAL_NVP(veryFastSpeedModifier),
-				CEREAL_NVP(enableDepthOfField),
-				CEREAL_NVP(enableMovement),
-				CEREAL_NVP(smoothMovement),
-				CEREAL_NVP(freeLook));
-		}
 	};
 }

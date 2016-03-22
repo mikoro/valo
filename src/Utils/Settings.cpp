@@ -3,6 +3,8 @@
 
 #include "Core/Precompiled.h"
 
+#include <boost/program_options.hpp>
+
 #include "Utils/Settings.h"
 
 using namespace Raycer;

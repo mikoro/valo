@@ -32,10 +32,7 @@ void WindowRunnerRenderState::initialize()
 {
 	Settings& settings = App::getSettings();
 	
-	if (settings.scene.useTestScene)
-		*scene = TestScene::create(settings.scene.testSceneNumber);
-	else
-		*scene = Scene::load(settings.scene.fileName);
+	*scene = TestScene::create(settings.scene.testSceneNumber);
 
 	scene->initialize();
 	renderer.initialize(settings);
@@ -253,7 +250,7 @@ void WindowRunnerRenderState::update(float timeStep)
 			else if (windowRunner.keyIsDown(GLFW_KEY_PAGE_UP))
 				scene->tonemapper.reinhardTonemapper.key += 0.1f * timeStep;
 
-			scene->tonemapper.reinhardTonemapper.key = std::max(0.0f, scene->tonemapper.reinhardTonemapper.key);
+			scene->tonemapper.reinhardTonemapper.key = MAX(0.0f, scene->tonemapper.reinhardTonemapper.key);
 		}
 	}
 
@@ -261,8 +258,8 @@ void WindowRunnerRenderState::update(float timeStep)
 
 	if (ctrlIsPressed)
 	{
-		if (windowRunner.keyWasPressed(GLFW_KEY_F1))
-			scene->save("scene.xml");
+		//if (windowRunner.keyWasPressed(GLFW_KEY_F1))
+		//	scene->save("scene.xml");
 
 		if (windowRunner.keyWasPressed(GLFW_KEY_F2))
 			scene->camera.saveState("camera.txt");
@@ -271,6 +268,12 @@ void WindowRunnerRenderState::update(float timeStep)
 		{
 			film->generateImage(scene->tonemapper);
 			film->getImage().save("image.png");
+		}
+
+		if (windowRunner.keyWasPressed(GLFW_KEY_F4))
+		{
+			film->generateImage(scene->tonemapper);
+			film->getImage().save("image.hdr");
 		}
 	}
 
@@ -361,8 +364,8 @@ void WindowRunnerRenderState::resizeFilm()
 	uint32_t filmWidth = uint32_t(float(windowRunner.getWindowWidth()) * settings.window.renderScale + 0.5);
 	uint32_t filmHeight = uint32_t(float(windowRunner.getWindowHeight()) * settings.window.renderScale + 0.5);
 
-    filmWidth = std::max(uint32_t(1), filmWidth);
-    filmHeight = std::max(uint32_t(1), filmHeight);
+    filmWidth = MAX(uint32_t(1), filmWidth);
+    filmHeight = MAX(uint32_t(1), filmHeight);
 
 	film->resize(filmWidth, filmHeight);
 	filmQuad.resize(filmWidth, filmHeight);

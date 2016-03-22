@@ -13,8 +13,8 @@ using namespace Raycer;
 
 TEST_CASE("MathUtils functionality", "[mathutils]")
 {
-	const float epsilon = std::numeric_limits<float>::epsilon();
-	const float min = std::numeric_limits<float>::min();
+	const float epsilon = FLT_EPSILON;
+	const float min = FLT_MIN;
 
 	REQUIRE(MathUtils::almostZero(0.0f, epsilon) == true);
 	REQUIRE(MathUtils::almostZero(0.0001f, epsilon) == false);

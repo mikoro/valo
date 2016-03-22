@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include "Utils/Random.h"
+#include "Math/Random.h"
 
 namespace Raycer
 {

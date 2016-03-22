@@ -43,14 +43,14 @@ namespace Raycer
 	template <uint32_t N>
 	struct BVHNodeSOA
 	{
-		std::array<float, N> aabbMinX;
-		std::array<float, N> aabbMinY;
-		std::array<float, N> aabbMinZ;
-		std::array<float, N> aabbMaxX;
-		std::array<float, N> aabbMaxY;
-		std::array<float, N> aabbMaxZ;
-		std::array<uint32_t, N-1> rightOffset;
-		std::array<uint16_t, N-1> splitAxis;
+		float aabbMinX[N];
+		float aabbMinY[N];
+		float aabbMinZ[N];
+		float aabbMaxX[N];
+		float aabbMaxY[N];
+		float aabbMaxZ[N];
+		uint32_t rightOffset[N-1];
+		uint16_t splitAxis[N-1];
 		uint32_t triangleOffset;
 		uint32_t triangleCount;
 		uint32_t isLeaf;

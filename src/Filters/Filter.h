@@ -3,8 +3,9 @@
 
 #pragma once
 
-#include "cereal/cereal.hpp"
+#include <string>
 
+#include "Core/Common.h"
 #include "Filters/BoxFilter.h"
 #include "Filters/TentFilter.h"
 #include "Filters/BellFilter.h"
@@ -24,10 +25,10 @@ namespace Raycer
 
 		explicit Filter(FilterType type = FilterType::MITCHELL);
 
-		float getWeight(float s);
-		float getWeight(const Vector2& point);
+		CUDA_CALLABLE float getWeight(float s);
+		CUDA_CALLABLE float getWeight(const Vector2& point);
 
-		Vector2 getRadius();
+		CUDA_CALLABLE Vector2 getRadius();
 
 		std::string getName() const;
 
@@ -39,20 +40,5 @@ namespace Raycer
 		GaussianFilter gaussianFilter;
 		MitchellFilter mitchellFilter;
 		LanczosSincFilter lanczosSincFilter;
-
-	private:
-
-		friend class cereal::access;
-
-		template <class Archive>
-		void serialize(Archive& ar)
-		{
-			ar(CEREAL_NVP(type),
-				CEREAL_NVP(boxFilter),
-				CEREAL_NVP(tentFilter),
-				CEREAL_NVP(gaussianFilter),
-				CEREAL_NVP(mitchellFilter),
-				CEREAL_NVP(lanczosSincFilter));
-		}
 	};
 }

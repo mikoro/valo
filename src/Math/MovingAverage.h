@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include "cereal/cereal.hpp"
+#include "Core/Common.h"
 
 namespace Raycer
 {
@@ -11,25 +11,16 @@ namespace Raycer
 	{
 	public:
 
-		explicit MovingAverage(float alpha = 1.0f, float average = 0.0f);
+		CUDA_CALLABLE explicit MovingAverage(float alpha = 1.0f, float average = 0.0f);
 
-		void setAlpha(float alpha);
-		void setAverage(float average);
-		void addMeasurement(float value);
-		float getAverage() const;
+		CUDA_CALLABLE void setAlpha(float alpha);
+		CUDA_CALLABLE void setAverage(float average);
+		CUDA_CALLABLE void addMeasurement(float value);
+		CUDA_CALLABLE float getAverage() const;
 
 	private:
 
 		float alpha;
 		float average;
-
-		friend class cereal::access;
-
-		template <class Archive>
-		void serialize(Archive& ar)
-		{
-			ar(CEREAL_NVP(alpha),
-				CEREAL_NVP(average));
-		}
 	};
 }

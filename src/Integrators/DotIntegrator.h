@@ -3,6 +3,8 @@
 
 #pragma once
 
+#include "Core/Common.h"
+
 namespace Raycer
 {
 	class Color;
@@ -14,7 +16,7 @@ namespace Raycer
 	{
 	public:
 
-		Color calculateRadiance(const Scene& scene, const Ray& viewRay, Random& random);
+		CUDA_CALLABLE Color calculateRadiance(const Scene& scene, const Ray& viewRay, Random& random);
 
 		uint32_t getSampleCount() const;
 	};

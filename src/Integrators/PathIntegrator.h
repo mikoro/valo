@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include "cereal/cereal.hpp"
+#include "Core/Common.h"
 
 namespace Raycer
 {
@@ -16,7 +16,7 @@ namespace Raycer
 	{
 	public:
 
-		Color calculateRadiance(const Scene& scene, const Ray& viewRay, Random& random);
+		CUDA_CALLABLE Color calculateRadiance(const Scene& scene, const Ray& viewRay, Random& random);
 
 		uint32_t getSampleCount() const;
 
@@ -24,18 +24,5 @@ namespace Raycer
 		uint32_t minPathLength = 3;
 		uint32_t maxPathLength = 10;
 		float terminationProbability = 0.5f;
-
-	private:
-
-		friend class cereal::access;
-
-		template <class Archive>
-		void serialize(Archive& ar)
-		{
-			ar(CEREAL_NVP(pathSamples),
-				CEREAL_NVP(minPathLength),
-				CEREAL_NVP(maxPathLength),
-				CEREAL_NVP(terminationProbability));
-		}
 	};
 }

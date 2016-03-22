@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include "Core/Common.h"
 #include "Math/Color.h"
 
 /*
@@ -41,15 +42,15 @@ namespace Raycer
 		void swapComponents();
 		void fillWithTestPattern();
 
-		uint32_t getWidth() const;
-		uint32_t getHeight() const;
-		uint32_t getLength() const;
+		CUDA_CALLABLE uint32_t getWidth() const;
+		CUDA_CALLABLE uint32_t getHeight() const;
+		CUDA_CALLABLE uint32_t getLength() const;
 
-		Color getPixel(uint32_t x, uint32_t y) const;
-		Color getPixel(uint32_t index) const;
-		Color getPixelNearest(float u, float v) const;
-		Color getPixelBilinear(float u, float v) const;
-		Color getPixelBicubic(float u, float v, Filter& filter) const;
+		CUDA_CALLABLE Color getPixel(uint32_t x, uint32_t y) const;
+		CUDA_CALLABLE Color getPixel(uint32_t index) const;
+		CUDA_CALLABLE Color getPixelNearest(float u, float v) const;
+		CUDA_CALLABLE Color getPixelBilinear(float u, float v) const;
+		CUDA_CALLABLE Color getPixelBicubic(float u, float v, Filter& filter) const;
 
 		Color* getPixelData();
 		const Color* getPixelData() const;

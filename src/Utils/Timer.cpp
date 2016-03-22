@@ -113,5 +113,5 @@ TimerData Timer::getRemaining()
 float Timer::getPercentage() const
 {
 	float percentage = (currentValue / targetValue) * 100.0f;
-	return std::max(0.0f, std::min(100.0f, percentage));
+	return MAX(0.0f, MIN(100.0f, percentage));
 }

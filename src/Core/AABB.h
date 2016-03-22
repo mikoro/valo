@@ -3,8 +3,7 @@
 
 #pragma once
 
-#include "cereal/cereal.hpp"
-
+#include "Core/Common.h"
 #include "Math/Vector3.h"
 
 namespace Raycer
@@ -22,10 +21,10 @@ namespace Raycer
 		static AABB createFromCenterExtent(const Vector3& center, const Vector3& extent);
 		static AABB createFromVertices(const Vector3& v0, const Vector3& v1, const Vector3& v2);
 
-		bool intersects(const Ray& ray) const;
+		CUDA_CALLABLE bool intersects(const Ray& ray) const;
 
 		template <uint32_t N>
-		static std::array<bool, N> intersects(const float* __restrict aabbMinX, const float* __restrict aabbMinY, const float* __restrict aabbMinZ, const float* __restrict aabbMaxX, const float* __restrict aabbMaxY, const float* __restrict aabbMaxZ, const Ray& ray);
+		CUDA_CALLABLE static void intersects(const float* __restrict aabbMinX, const float* __restrict aabbMinY, const float* __restrict aabbMinZ, const float* __restrict aabbMaxX, const float* __restrict aabbMaxY, const float* __restrict aabbMaxZ, bool* __restrict result, const Ray& ray);
 
 		void expand(const AABB& other);
 
@@ -35,16 +34,5 @@ namespace Raycer
 
 		Vector3 min;
 		Vector3 max;
-
-	private:
-
-		friend class cereal::access;
-
-		template <class Archive>
-		void serialize(Archive& ar)
-		{
-			ar(CEREAL_NVP(min),
-				CEREAL_NVP(max));
-		}
 	};
 }

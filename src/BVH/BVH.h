@@ -5,11 +5,10 @@
 
 #include <vector>
 
-#include "cereal/cereal.hpp"
-
 #include "BVH/BVH1.h"
 #include "BVH/BVH4.h"
 #include "BVH/Common.h"
+#include "Core/Common.h"
 
 namespace Raycer
 {
@@ -24,7 +23,7 @@ namespace Raycer
 	public:
 
 		void build(std::vector<Triangle>& triangles);
-		bool intersect(const Scene& scene, const Ray& ray, Intersection& intersection) const;
+		CUDA_CALLABLE bool intersect(const Scene& scene, const Ray& ray, Intersection& intersection) const;
 
 		static BVHSplitOutput calculateSplit(std::vector<BVHBuildTriangle>& buildTriangles, std::vector<BVHSplitCache>& cache, uint32_t start, uint32_t end);
 
@@ -32,17 +31,5 @@ namespace Raycer
 
 		BVH1 bvh1;
 		BVH4 bvh4;
-
-	private:
-
-		friend class cereal::access;
-
-		template <class Archive>
-		void serialize(Archive& ar)
-		{
-			ar(CEREAL_NVP(type),
-				CEREAL_NVP(type),
-				CEREAL_NVP(bvh1));
-		}
 	};
 }

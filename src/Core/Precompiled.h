@@ -2,7 +2,6 @@
 // License: MIT, see the LICENSE file.
 
 #include <algorithm>
-#include <array>
 #include <atomic>
 #include <cassert>
 #include <chrono>
@@ -17,7 +16,6 @@
 #include <fstream>
 #include <functional>
 #include <iostream>
-#include <limits>
 #include <map>
 #include <mutex>
 #include <numeric>
@@ -30,12 +28,6 @@
 #include <vector>
 
 #include <omp.h>
-
-#include <boost/align/aligned_allocator.hpp>
-#include <boost/asio.hpp>
-#include <boost/array.hpp>
-#include <boost/filesystem.hpp>
-#include <boost/program_options.hpp>
 
 #ifdef _WIN32
 #include <windows.h>
@@ -60,12 +52,3 @@
 #endif
 
 #include "tinyformat/tinyformat.h"
-
-#include "cereal/cereal.hpp"
-#include "cereal/archives/json.hpp"
-#include "cereal/archives/xml.hpp"
-#include "cereal/archives/binary.hpp"
-#include "cereal/types/string.hpp"
-#include "cereal/types/vector.hpp"
-#include "cereal/types/map.hpp"
-#include "cereal/types/array.hpp"

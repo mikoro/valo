@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include "cereal/cereal.hpp"
+#include "Core/Common.h"
 
 namespace Raycer
 {
@@ -18,12 +18,12 @@ namespace Raycer
 	{
 	public:
 
-		Vector3 getDirection(const Material& material, const Intersection& intersection, Random& random);
-		Color getBrdf(const Material& material, const Intersection& intersection, const Vector3& in, const Vector3& out);
-		float getPdf(const Material& material, const Intersection& intersection, const Vector3& out);
+		CUDA_CALLABLE Vector3 getDirection(const Material& material, const Intersection& intersection, Random& random);
+		CUDA_CALLABLE Color getBrdf(const Material& material, const Intersection& intersection, const Vector3& in, const Vector3& out);
+		CUDA_CALLABLE float getPdf(const Material& material, const Intersection& intersection, const Vector3& out);
 
-		Color getSpecularReflectance(const Vector2& texcoord, const Vector3& position) const;
-		Color getGlossiness(const Vector2& texcoord, const Vector3& position) const;
+		CUDA_CALLABLE Color getSpecularReflectance(const Vector2& texcoord, const Vector3& position) const;
+		CUDA_CALLABLE Color getGlossiness(const Vector2& texcoord, const Vector3& position) const;
 
 		Color specularReflectance = Color(0.0f, 0.0f, 0.0f);
 		uint32_t specularReflectanceTextureId = 0;
@@ -32,18 +32,5 @@ namespace Raycer
 		Color glossiness = Color(1.0f, 1.0f, 1.0f);
 		uint32_t glossinessTextureId = 0;
 		Texture* glossinessTexture = nullptr;
-
-	private:
-
-		friend class cereal::access;
-
-		template <class Archive>
-		void serialize(Archive& ar)
-		{
-			ar(CEREAL_NVP(specularReflectance),
-				CEREAL_NVP(specularReflectanceTextureId),
-				CEREAL_NVP(glossiness),
-				CEREAL_NVP(glossinessTextureId));
-		}
 	};
 }

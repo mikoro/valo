@@ -3,6 +3,8 @@
 
 #pragma once
 
+#include "Core/Common.h"
+
 namespace Raycer
 {
 	class Vector3;
@@ -15,8 +17,8 @@ namespace Raycer
 	{
 	public:
 
-		Vector3 getDirection(const Material& material, const Intersection& intersection, Random& random);
-		Color getBrdf(const Material& material, const Intersection& intersection, const Vector3& in, const Vector3& out);
-		float getPdf(const Material& material, const Intersection& intersection, const Vector3& out);
+		CUDA_CALLABLE Vector3 getDirection(const Material& material, const Intersection& intersection, Random& random);
+		CUDA_CALLABLE Color getBrdf(const Material& material, const Intersection& intersection, const Vector3& in, const Vector3& out);
+		CUDA_CALLABLE float getPdf(const Material& material, const Intersection& intersection, const Vector3& out);
 	};
 }

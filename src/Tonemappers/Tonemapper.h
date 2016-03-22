@@ -7,8 +7,6 @@
 #undef PASSTHROUGH
 #endif
 
-#include "cereal/cereal.hpp"
-
 #include "Tonemappers/PassthroughTonemapper.h"
 #include "Tonemappers/LinearTonemapper.h"
 #include "Tonemappers/SimpleTonemapper.h"
@@ -34,18 +32,5 @@ namespace Raycer
 		LinearTonemapper linearTonemapper;
 		SimpleTonemapper simpleTonemapper;
 		ReinhardTonemapper reinhardTonemapper;
-
-	private:
-
-		friend class cereal::access;
-
-		template <class Archive>
-		void serialize(Archive& ar)
-		{
-			ar(CEREAL_NVP(type),
-				CEREAL_NVP(linearTonemapper),
-				CEREAL_NVP(simpleTonemapper),
-				CEREAL_NVP(reinhardTonemapper));
-		}
 	};
 }

@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include "Core/Common.h"
 #include "Math/Vector3.h"
 
 /*
@@ -26,14 +27,14 @@ namespace Raycer
 	{
 	public:
 
-		ONB();
-		ONB(const Vector3& u, const Vector3& v, const Vector3& w);
+		CUDA_CALLABLE ONB();
+		CUDA_CALLABLE ONB(const Vector3& u, const Vector3& v, const Vector3& w);
 
-		ONB transformed(const Matrix4x4& tranformation) const;
+		CUDA_CALLABLE ONB transformed(const Matrix4x4& tranformation) const;
 
-		static ONB fromNormal(const Vector3& normal, const Vector3& up = Vector3::ALMOST_UP);
+		CUDA_CALLABLE static ONB fromNormal(const Vector3& normal, const Vector3& up = Vector3::almostUp());
 
-		static const ONB UP;
+		CUDA_CALLABLE static ONB up();
 
 		Vector3 u;
 		Vector3 v;

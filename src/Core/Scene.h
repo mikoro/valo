@@ -5,10 +5,9 @@
 
 #include <vector>
 
-#include "cereal/cereal.hpp"
-
 #include "BVH/BVH.h"
 #include "Core/Camera.h"
+#include "Core/Common.h"
 #include "Filters/Filter.h"
 #include "Integrators/Integrator.h"
 #include "Materials/Material.h"
@@ -25,12 +24,9 @@ namespace Raycer
 
 		~Scene();
 
-		static Scene load(const std::string& fileName);
-		void save(const std::string& fileName) const;
-
 		void initialize();
-		bool intersect(const Ray& ray, Intersection& intersection) const;
-		void calculateNormalMapping(Intersection& intersection) const;
+		CUDA_CALLABLE bool intersect(const Ray& ray, Intersection& intersection) const;
+		CUDA_CALLABLE void calculateNormalMapping(Intersection& intersection) const;
 
 		struct General
 		{
@@ -42,18 +38,6 @@ namespace Raycer
 			bool normalVisualization = false;
 			bool interpolationVisualization = false;
 
-			template <class Archive>
-			void serialize(Archive& ar)
-			{
-				ar(CEREAL_NVP(rayMinDistance),
-					CEREAL_NVP(backgroundColor),
-					CEREAL_NVP(offLensColor),
-					CEREAL_NVP(normalMapping),
-					CEREAL_NVP(normalInterpolation),
-					CEREAL_NVP(normalVisualization),
-					CEREAL_NVP(interpolationVisualization));
-			}
-
 		} general;
 
 		struct Renderer
@@ -61,14 +45,6 @@ namespace Raycer
 			bool filtering = true;
 			Filter filter;
 			uint32_t pixelSamples = 1;
-
-			template <class Archive>
-			void serialize(Archive& ar)
-			{
-				ar(CEREAL_NVP(filtering),
-					CEREAL_NVP(filter),
-					CEREAL_NVP(pixelSamples));
-			}
 
 		} renderer;
 
@@ -87,24 +63,5 @@ namespace Raycer
 		Triangle* trianglesPtr = nullptr;
 		Triangle* emissiveTrianglesPtr = nullptr;
 		uint32_t emissiveTrianglesCount = 0;
-
-	private:
-
-		friend class cereal::access;
-
-		template <class Archive>
-		void serialize(Archive& ar)
-		{
-			ar(CEREAL_NVP(general),
-				CEREAL_NVP(renderer),
-				CEREAL_NVP(camera),
-				CEREAL_NVP(integrator),
-				CEREAL_NVP(tonemapper),
-				CEREAL_NVP(bvh),
-				CEREAL_NVP(models),
-				CEREAL_NVP(textures),
-				CEREAL_NVP(materials),
-				CEREAL_NVP(triangles));
-		}
 	};
 }

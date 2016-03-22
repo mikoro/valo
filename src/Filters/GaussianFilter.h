@@ -3,8 +3,7 @@
 
 #pragma once
 
-#include "cereal/cereal.hpp"
-
+#include "Core/Common.h"
 #include "Math/Vector2.h"
 
 namespace Raycer
@@ -15,21 +14,11 @@ namespace Raycer
 	{
 	public:
 
-		float getWeight(float s);
-		float getWeight(const Vector2& point);
+		CUDA_CALLABLE float getWeight(float s);
+		CUDA_CALLABLE float getWeight(const Vector2& point);
 
-		Vector2 getRadius();
+		CUDA_CALLABLE Vector2 getRadius();
 
 		Vector2 stdDeviation = Vector2(0.5f, 0.5f);
-
-	private:
-
-		friend class cereal::access;
-
-		template <class Archive>
-		void serialize(Archive& ar)
-		{
-			ar(CEREAL_NVP(stdDeviation));
-		}
 	};
 }

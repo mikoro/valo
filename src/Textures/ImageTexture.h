@@ -3,8 +3,7 @@
 
 #pragma once
 
-#include "cereal/cereal.hpp"
-
+#include "Core/Common.h"
 #include "Core/Image.h"
 
 namespace Raycer
@@ -18,7 +17,7 @@ namespace Raycer
 
 		void initialize();
 
-		Color getColor(const Vector2& texcoord, const Vector3& position);
+		CUDA_CALLABLE Color getColor(const Vector2& texcoord, const Vector3& position);
 		
 		std::string imageFileName;
 		bool applyGamma = false;
@@ -26,14 +25,5 @@ namespace Raycer
 	private:
 
 		Image* image = nullptr;
-
-		friend class cereal::access;
-
-		template <class Archive>
-		void serialize(Archive& ar)
-		{
-			ar(CEREAL_NVP(imageFileName),
-				CEREAL_NVP(applyGamma));
-		}
 	};
 }

@@ -5,9 +5,8 @@
 
 #include <vector>
 
-#include "cereal/cereal.hpp"
-
 #include "BVH/Common.h"
+#include "Core/Common.h"
 
 namespace Raycer
 {
@@ -23,20 +22,12 @@ namespace Raycer
 		~BVH1();
 
 		void build(std::vector<Triangle>& triangles);
-		bool intersect(const Scene& scene, const Ray& ray, Intersection& intersection) const;
+		CUDA_CALLABLE bool intersect(const Scene& scene, const Ray& ray, Intersection& intersection) const;
 
 		uint32_t maxLeafSize = 4;
 
 	private:
 
 		BVHNode* nodesPtr = nullptr;
-
-		friend class cereal::access;
-
-		template <class Archive>
-		void serialize(Archive& ar)
-		{
-			ar(CEREAL_NVP(maxLeafSize));
-		}
 	};
 }

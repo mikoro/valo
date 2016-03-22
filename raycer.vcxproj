@@ -116,7 +116,7 @@
       <FloatingPointExceptions>true</FloatingPointExceptions>
       <AdditionalOptions>/bigobj /Zm200 %(AdditionalOptions)</AdditionalOptions>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <DisableSpecificWarnings>4313;4127</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4313;4127;4505</DisableSpecificWarnings>
       <PrecompiledHeaderFile>Core\Precompiled.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
@@ -132,6 +132,8 @@
     <CudaCompile>
       <TargetMachinePlatform>64</TargetMachinePlatform>
       <CodeGeneration>compute_52,sm_52</CodeGeneration>
+      <GenerateRelocatableDeviceCode>true</GenerateRelocatableDeviceCode>
+      <AdditionalOptions>-Xcompiler "/wd 4505" %(AdditionalOptions)</AdditionalOptions>
     </CudaCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='DebugTest|x64'">
@@ -149,7 +151,7 @@
       <FloatingPointExceptions>true</FloatingPointExceptions>
       <AdditionalOptions>/bigobj /Zm200 %(AdditionalOptions)</AdditionalOptions>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <DisableSpecificWarnings>4313;4127</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4313;4127;4505</DisableSpecificWarnings>
       <PrecompiledHeaderFile>Core\Precompiled.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
@@ -165,6 +167,8 @@
     <CudaCompile>
       <TargetMachinePlatform>64</TargetMachinePlatform>
       <CodeGeneration>compute_52,sm_52</CodeGeneration>
+      <GenerateRelocatableDeviceCode>true</GenerateRelocatableDeviceCode>
+      <AdditionalOptions>-Xcompiler "/wd 4505" %(AdditionalOptions)</AdditionalOptions>
     </CudaCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -188,7 +192,7 @@
       <FloatingPointExceptions>false</FloatingPointExceptions>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <AdditionalOptions>/bigobj /Zm200 %(AdditionalOptions)</AdditionalOptions>
-      <DisableSpecificWarnings>4313;4127</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4313;4127;4505</DisableSpecificWarnings>
       <PrecompiledHeaderFile>Core\Precompiled.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
@@ -205,6 +209,8 @@
     <CudaCompile>
       <TargetMachinePlatform>64</TargetMachinePlatform>
       <CodeGeneration>compute_52,sm_52</CodeGeneration>
+      <GenerateRelocatableDeviceCode>true</GenerateRelocatableDeviceCode>
+      <AdditionalOptions>-Xcompiler "/wd 4505" %(AdditionalOptions)</AdditionalOptions>
     </CudaCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseFull|x64'">
@@ -228,7 +234,7 @@
       <FloatingPointExceptions>false</FloatingPointExceptions>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <AdditionalOptions>/bigobj /Zm200 /Gw /favor:INTEL64 %(AdditionalOptions)</AdditionalOptions>
-      <DisableSpecificWarnings>4313;4127</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4313;4127;4505</DisableSpecificWarnings>
       <PrecompiledHeaderFile>Core\Precompiled.h</PrecompiledHeaderFile>
       <WholeProgramOptimization>true</WholeProgramOptimization>
       <StringPooling>true</StringPooling>
@@ -248,20 +254,55 @@
     <CudaCompile>
       <TargetMachinePlatform>64</TargetMachinePlatform>
       <CodeGeneration>compute_52,sm_52</CodeGeneration>
+      <GenerateRelocatableDeviceCode>true</GenerateRelocatableDeviceCode>
+      <AdditionalOptions>-Xcompiler "/wd 4505" %(AdditionalOptions)</AdditionalOptions>
     </CudaCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\BVH\BVH.cpp" />
-    <ClCompile Include="src\BVH\BVH1.cpp" />
-    <ClCompile Include="src\BVH\BVH4.cpp" />
-    <ClCompile Include="src\Core\AABB.cpp" />
+    <CudaCompile Include="src\BVH\BVH.cu" />
+    <CudaCompile Include="src\BVH\BVH1.cu" />
+    <CudaCompile Include="src\BVH\BVH4.cu" />
+    <CudaCompile Include="src\Cuda\CudaKernels.cu" />
+    <CudaCompile Include="src\Core\AABB.cu" />
+    <CudaCompile Include="src\Core\Camera.cu" />
+    <CudaCompile Include="src\Core\Film.cu" />
+    <CudaCompile Include="src\Core\Image.cu" />
+    <CudaCompile Include="src\Core\Ray.cu" />
+    <CudaCompile Include="src\Core\Scene.cu" />
+    <CudaCompile Include="src\Core\Triangle.cu" />
+    <CudaCompile Include="src\Filters\BellFilter.cu" />
+    <CudaCompile Include="src\Filters\BoxFilter.cu" />
+    <CudaCompile Include="src\Filters\Filter.cu" />
+    <CudaCompile Include="src\Filters\GaussianFilter.cu" />
+    <CudaCompile Include="src\Filters\LanczosSincFilter.cu" />
+    <CudaCompile Include="src\Filters\MitchellFilter.cu" />
+    <CudaCompile Include="src\Filters\TentFilter.cu" />
+    <CudaCompile Include="src\Integrators\DotIntegrator.cu" />
+    <CudaCompile Include="src\Integrators\Integrator.cu" />
+    <CudaCompile Include="src\Integrators\PathIntegrator.cu" />
+    <CudaCompile Include="src\Materials\BlinnPhongMaterial.cu" />
+    <CudaCompile Include="src\Materials\DiffuseMaterial.cu" />
+    <CudaCompile Include="src\Materials\Material.cu" />
+    <CudaCompile Include="src\Math\AxisAngle.cu" />
+    <CudaCompile Include="src\Math\Color.cu" />
+    <CudaCompile Include="src\Math\EulerAngle.cu" />
+    <CudaCompile Include="src\Math\Mapper.cu" />
+    <CudaCompile Include="src\Math\MathUtils.cu" />
+    <CudaCompile Include="src\Math\Matrix4x4.cu" />
+    <CudaCompile Include="src\Math\MovingAverage.cu" />
+    <CudaCompile Include="src\Math\ONB.cu" />
+    <CudaCompile Include="src\Math\Quaternion.cu" />
+    <CudaCompile Include="src\Math\Random.cu" />
+    <CudaCompile Include="src\Math\Solver.cu" />
+    <CudaCompile Include="src\Math\Vector2.cu" />
+    <CudaCompile Include="src\Math\Vector3.cu" />
+    <CudaCompile Include="src\Math\Vector4.cu" />
+    <CudaCompile Include="src\Textures\CheckerTexture.cu" />
+    <CudaCompile Include="src\Textures\ImageTexture.cu" />
+    <CudaCompile Include="src\Textures\Texture.cu" />
+  </ItemGroup>
+  <ItemGroup>
     <ClCompile Include="src\Core\App.cpp" />
-    <ClCompile Include="src\Core\Camera.cpp" />
-    <ClCompile Include="src\Core\Film.cpp" />
-    <ClCompile Include="src\Core\Image.cpp" />
-    <ClCompile Include="src\Core\Ray.cpp" />
-    <ClCompile Include="src\Core\Scene.cpp" />
-    <ClCompile Include="src\Core\Triangle.cpp" />
     <ClCompile Include="src\External\gl3w.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='DebugTest|x64'">NotUsing</PrecompiledHeader>
@@ -280,38 +321,12 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='ReleaseFull|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="src\Filters\BellFilter.cpp" />
-    <ClCompile Include="src\Filters\BoxFilter.cpp" />
-    <ClCompile Include="src\Filters\Filter.cpp" />
-    <ClCompile Include="src\Filters\GaussianFilter.cpp" />
-    <ClCompile Include="src\Filters\LanczosSincFilter.cpp" />
-    <ClCompile Include="src\Filters\MitchellFilter.cpp" />
-    <ClCompile Include="src\Filters\TentFilter.cpp" />
-    <ClCompile Include="src\Integrators\DotIntegrator.cpp" />
-    <ClCompile Include="src\Integrators\Integrator.cpp" />
-    <ClCompile Include="src\Integrators\PathIntegrator.cpp" />
     <ClCompile Include="src\Main.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='ReleaseFull|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='DebugTest|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="src\Materials\BlinnPhongMaterial.cpp" />
-    <ClCompile Include="src\Materials\DiffuseMaterial.cpp" />
-    <ClCompile Include="src\Materials\Material.cpp" />
-    <ClCompile Include="src\Math\AxisAngle.cpp" />
-    <ClCompile Include="src\Math\Color.cpp" />
-    <ClCompile Include="src\Math\EulerAngle.cpp" />
-    <ClCompile Include="src\Math\Mapper.cpp" />
-    <ClCompile Include="src\Math\MathUtils.cpp" />
-    <ClCompile Include="src\Math\Matrix4x4.cpp" />
-    <ClCompile Include="src\Math\MovingAverage.cpp" />
-    <ClCompile Include="src\Math\ONB.cpp" />
-    <ClCompile Include="src\Math\Quaternion.cpp" />
-    <ClCompile Include="src\Math\Solver.cpp" />
-    <ClCompile Include="src\Math\Vector2.cpp" />
-    <ClCompile Include="src\Math\Vector3.cpp" />
-    <ClCompile Include="src\Math\Vector4.cpp" />
     <ClCompile Include="src\Renderers\CpuRenderer.cpp" />
     <ClCompile Include="src\Renderers\CudaRenderer.cpp" />
     <ClCompile Include="src\Renderers\Renderer.cpp" />
@@ -337,11 +352,7 @@
     <ClCompile Include="src\Tests\OnbTest.cpp" />
     <ClCompile Include="src\Tests\PolynomialTest.cpp" />
     <ClCompile Include="src\Tests\SolverTest.cpp" />
-    <ClCompile Include="src\Tests\TestScenesTest.cpp" />
     <ClCompile Include="src\Tests\Vector3Test.cpp" />
-    <ClCompile Include="src\Textures\CheckerTexture.cpp" />
-    <ClCompile Include="src\Textures\ImageTexture.cpp" />
-    <ClCompile Include="src\Textures\Texture.cpp" />
     <ClCompile Include="src\Tonemappers\LinearTonemapper.cpp" />
     <ClCompile Include="src\Tonemappers\PassthroughTonemapper.cpp" />
     <ClCompile Include="src\Tonemappers\ReinhardTonemapper.cpp" />
@@ -354,7 +365,6 @@
     <ClCompile Include="src\Utils\InfoPanel.cpp" />
     <ClCompile Include="src\Utils\Log.cpp" />
     <ClCompile Include="src\Utils\ModelLoader.cpp" />
-    <ClCompile Include="src\Utils\Random.cpp" />
     <ClCompile Include="src\Utils\Settings.cpp" />
     <ClCompile Include="src\Utils\StringUtils.cpp" />
     <ClCompile Include="src\Utils\SysUtils.cpp" />
@@ -376,6 +386,7 @@
     <ClInclude Include="src\Core\Ray.h" />
     <ClInclude Include="src\Core\Scene.h" />
     <ClInclude Include="src\Core\Triangle.h" />
+    <ClInclude Include="src\Cuda\CudaKernels.h" />
     <ClInclude Include="src\Filters\BellFilter.h" />
     <ClInclude Include="src\Filters\BoxFilter.h" />
     <ClInclude Include="src\Filters\Filter.h" />
@@ -399,6 +410,7 @@
     <ClInclude Include="src\Math\ONB.h" />
     <ClInclude Include="src\Math\Polynomial.h" />
     <ClInclude Include="src\Math\Quaternion.h" />
+    <ClInclude Include="src\Math\Random.h" />
     <ClInclude Include="src\Math\Solver.h" />
     <ClInclude Include="src\Math\Vector2.h" />
     <ClInclude Include="src\Math\Vector3.h" />
@@ -425,7 +437,6 @@
     <ClInclude Include="src\Utils\InfoPanel.h" />
     <ClInclude Include="src\Utils\Log.h" />
     <ClInclude Include="src\Utils\ModelLoader.h" />
-    <ClInclude Include="src\Utils\Random.h" />
     <ClInclude Include="src\Utils\Settings.h" />
     <ClInclude Include="src\Utils\StringUtils.h" />
     <ClInclude Include="src\Utils\SysUtils.h" />

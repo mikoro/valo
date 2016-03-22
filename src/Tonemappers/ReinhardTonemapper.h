@@ -3,8 +3,6 @@
 
 #pragma once
 
-#include "cereal/cereal.hpp"
-
 #include "Math/MovingAverage.h"
 
 // https://www.cs.utah.edu/~reinhard/cdrom/tonemap.pdf
@@ -31,18 +29,5 @@ namespace Raycer
 	private:
 
 		MovingAverage maxLuminanceAverage;
-
-		friend class cereal::access;
-
-		template <class Archive>
-		void serialize(Archive& ar)
-		{
-			ar(CEREAL_NVP(applyGamma),
-				CEREAL_NVP(shouldClamp),
-				CEREAL_NVP(gamma),
-				CEREAL_NVP(key),
-				CEREAL_NVP(enableAveraging),
-				CEREAL_NVP(averagingAlpha));
-		}
 	};
 }

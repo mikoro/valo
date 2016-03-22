@@ -5,8 +5,6 @@
 
 #include <vector>
 
-#include "cereal/cereal.hpp"
-
 #include "Core/Triangle.h"
 #include "Materials/Material.h"
 #include "Math/EulerAngle.h"
@@ -33,18 +31,6 @@ namespace Raycer
 		uint32_t defaultMaterialId = 0;
 		uint32_t triangleCountEstimate = 0;
 		bool loadOnlyMaterials = false;
-		
-		template <class Archive>
-		void serialize(Archive& ar)
-		{
-			ar(CEREAL_NVP(modelFileName),
-				CEREAL_NVP(scale),
-				CEREAL_NVP(rotate),
-				CEREAL_NVP(translate),
-				CEREAL_NVP(defaultMaterialId),
-				CEREAL_NVP(triangleCountEstimate),
-				CEREAL_NVP(loadOnlyMaterials));
-		}
 	};
 
 	struct ModelLoaderResult

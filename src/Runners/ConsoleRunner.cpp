@@ -40,10 +40,7 @@ int ConsoleRunner::run()
 	Timer totalElapsedTimer;
 	Renderer renderer;
 
-	if (settings.scene.useTestScene)
-		*scene = TestScene::create(settings.scene.testSceneNumber);
-	else
-		*scene = Scene::load(settings.scene.fileName);
+	*scene = TestScene::create(settings.scene.testSceneNumber);
 
 	renderer.initialize(settings);
 

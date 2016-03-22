@@ -3,6 +3,8 @@
 
 #pragma once
 
+#include "Core/Common.h"
+
 namespace Raycer
 {
 	class Vector2;
@@ -11,9 +13,9 @@ namespace Raycer
 	{
 	public:
 
-		float getWeight(float s);
-		float getWeight(const Vector2& point);
+		CUDA_CALLABLE float getWeight(float s);
+		CUDA_CALLABLE float getWeight(const Vector2& point);
 
-		Vector2 getRadius();
+		CUDA_CALLABLE Vector2 getRadius();
 	};
 }

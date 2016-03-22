@@ -3,8 +3,7 @@
 
 #pragma once
 
-#include "cereal/cereal.hpp"
-
+#include "Core/Common.h"
 #include "Math/Vector3.h"
 
 namespace Raycer
@@ -15,22 +14,11 @@ namespace Raycer
 	{
 	public:
 
-		explicit AxisAngle(const Vector3& axis = Vector3::UP, float angle = 0.0f);
+		CUDA_CALLABLE explicit AxisAngle(const Vector3& axis = Vector3::up(), float angle = 0.0f);
 
-		Matrix4x4 toMatrix4x4() const;
+		CUDA_CALLABLE Matrix4x4 toMatrix4x4() const;
 
 		Vector3 axis;
 		float angle; // degrees
-
-	private:
-
-		friend class cereal::access;
-
-		template <class Archive>
-		void serialize(Archive& ar)
-		{
-			ar(CEREAL_NVP(axis),
-				CEREAL_NVP(angle));
-		}
 	};
 }

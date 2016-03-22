@@ -3,8 +3,6 @@
 
 #pragma once
 
-#include <limits>
-
 #include "Math/Vector3.h"
 #include "Math/Vector2.h"
 #include "Math/Color.h"
@@ -22,7 +20,7 @@ namespace Raycer
 		bool isBehind = false;
 		bool hasColor = false;
 
-		float distance = std::numeric_limits<float>::max();
+		float distance = FLT_MAX;
 
 		Vector3 position;
 		Vector3 normal;

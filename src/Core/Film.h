@@ -5,6 +5,7 @@
 
 #include <atomic>
 
+#include "Core/Common.h"
 #include "Core/Image.h"
 #include "Math/Color.h"
 
@@ -20,8 +21,8 @@ namespace Raycer
 
 		void clear();
 		void resize(uint32_t width, uint32_t height);
-		void addSample(uint32_t x, uint32_t y, const Color& color, float filterWeight);
-		void addSample(uint32_t index, const Color& color, float filterWeight);
+		CUDA_CALLABLE void addSample(uint32_t x, uint32_t y, const Color& color, float filterWeight);
+		CUDA_CALLABLE void addSample(uint32_t index, const Color& color, float filterWeight);
 
 		Color getLinearColor(uint32_t x, uint32_t y) const;
 		Color getOutputColor(uint32_t x, uint32_t y) const;
@@ -29,8 +30,9 @@ namespace Raycer
 		void generateImage(Tonemapper& tonemapper);
 		const Image& getImage() const;
 
-		uint32_t getWidth() const;
-		uint32_t getHeight() const;
+		CUDA_CALLABLE uint32_t getWidth() const;
+		CUDA_CALLABLE uint32_t getHeight() const;
+		CUDA_CALLABLE uint32_t getLength() const;
 
 		bool isCleared() const;
 

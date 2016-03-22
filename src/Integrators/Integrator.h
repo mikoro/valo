@@ -3,8 +3,7 @@
 
 #pragma once
 
-#include "cereal/cereal.hpp"
-
+#include "Core/Common.h"
 #include "Integrators/DotIntegrator.h"
 #include "Integrators/PathIntegrator.h"
 
@@ -22,27 +21,16 @@ namespace Raycer
 	{
 	public:
 
-		Color calculateRadiance(const Scene& scene, const Ray& viewRay, Random& random);
+		CUDA_CALLABLE Color calculateRadiance(const Scene& scene, const Ray& viewRay, Random& random);
 
 		uint32_t getSampleCount() const;
 		std::string getName() const;
 
-		static Color calculateDirectLight(const Scene& scene, const Intersection& intersection, const Vector3& in, Random& random);
+		CUDA_CALLABLE static Color calculateDirectLight(const Scene& scene, const Intersection& intersection, const Vector3& in, Random& random);
 
 		IntegratorType type = IntegratorType::DOT;
 
 		DotIntegrator dotIntegrator;
 		PathIntegrator pathIntegrator;
-
-	private:
-
-		friend class cereal::access;
-
-		template <class Archive>
-		void serialize(Archive& ar)
-		{
-			ar(CEREAL_NVP(type),
-				CEREAL_NVP(pathIntegrator));
-		}
 	};
 }

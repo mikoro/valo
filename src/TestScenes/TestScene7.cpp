@@ -50,19 +50,19 @@ Scene TestScene::create7()
 
 	Material planeMaterial;
 	planeMaterial.id = 1;
-	planeMaterial.reflectance = Color::WHITE;
+	planeMaterial.reflectance = Color(1.0f, 1.0f, 1.0f);
 	
 	scene.materials.push_back(planeMaterial);
 
 	Material buddhaMaterial;
 	buddhaMaterial.id = 2;
-	buddhaMaterial.reflectance = Color::WHITE;
+	buddhaMaterial.reflectance = Color(1.0f, 1.0f, 1.0f);
 	
 	scene.materials.push_back(buddhaMaterial);
 
 	Material dragonMaterial;
 	dragonMaterial.id = 3;
-	dragonMaterial.reflectance = Color::WHITE;
+	dragonMaterial.reflectance = Color(1.0f, 1.0f, 1.0f);
 	
 	scene.materials.push_back(dragonMaterial);
 

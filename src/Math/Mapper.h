@@ -5,6 +5,8 @@
 
 #include "Math/ONB.h"
 
+#include "Core/Common.h"
+
 /*
 
 point is assumed to be in [0, 1]^2
@@ -20,8 +22,8 @@ namespace Raycer
 	{
 	public:
 
-		static Vector2 mapToDisc(const Vector2& point);
-		static Vector3 mapToCosineHemisphere(const Vector2& point, const ONB& onb = ONB::UP);
-		static Vector3 mapToUniformHemisphere(const Vector2& point, const ONB& onb = ONB::UP);
+		CUDA_CALLABLE static Vector2 mapToDisc(const Vector2& point);
+		CUDA_CALLABLE static Vector3 mapToCosineHemisphere(const Vector2& point, const ONB& onb = ONB::up());
+		CUDA_CALLABLE static Vector3 mapToUniformHemisphere(const Vector2& point, const ONB& onb = ONB::up());
 	};
 }

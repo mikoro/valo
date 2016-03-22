@@ -6,6 +6,7 @@
 #include <vector>
 
 #include "BVH/Common.h"
+#include "Core/Common.h"
 #include "Core/Triangle.h"
 
 namespace Raycer
@@ -22,7 +23,7 @@ namespace Raycer
 		~BVH4();
 
 		void build(std::vector<Triangle>& triangles);
-		bool intersect(const Scene& scene, const Ray& ray, Intersection& intersection) const;
+		CUDA_CALLABLE bool intersect(const Scene& scene, const Ray& ray, Intersection& intersection) const;
 
 	private:
 

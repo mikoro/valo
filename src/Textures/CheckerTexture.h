@@ -3,8 +3,7 @@
 
 #pragma once
 
-#include "cereal/cereal.hpp"
-
+#include "Core/Common.h"
 #include "Math/Color.h"
 
 namespace Raycer
@@ -18,24 +17,11 @@ namespace Raycer
 
 		void initialize();
 
-		Color getColor(const Vector2& texcoord, const Vector3& position);
+		CUDA_CALLABLE Color getColor(const Vector2& texcoord, const Vector3& position);
 		
 		Color color1;
 		Color color2;
 		bool stripeMode = false;
 		float stripeWidth = 0.05f;
-
-	private:
-
-		friend class cereal::access;
-
-		template <class Archive>
-		void serialize(Archive& ar)
-		{
-			ar(CEREAL_NVP(color1),
-				CEREAL_NVP(color2),
-				CEREAL_NVP(stripeMode),
-				CEREAL_NVP(stripeWidth));
-		}
 	};
 }

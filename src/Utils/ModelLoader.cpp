@@ -3,6 +3,8 @@
 
 #include "Core/Precompiled.h"
 
+#include <boost/filesystem.hpp>
+
 #include "Core/App.h"
 #include "Math/Matrix4x4.h"
 #include "Math/Vector2.h"

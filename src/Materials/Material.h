@@ -3,8 +3,7 @@
 
 #pragma once
 
-#include "cereal/cereal.hpp"
-
+#include "Core/Common.h"
 #include "Math/Color.h"
 #include "Math/Vector2.h"
 #include "Materials/DiffuseMaterial.h"
@@ -20,13 +19,13 @@ namespace Raycer
 	{
 	public:
 
-		Vector3 getDirection(const Intersection& intersection, Random& random);
-		Color getBrdf(const Intersection& intersection, const Vector3& in, const Vector3& out);
-		float getPdf(const Intersection& intersection, const Vector3& out);
+		CUDA_CALLABLE Vector3 getDirection(const Intersection& intersection, Random& random);
+		CUDA_CALLABLE Color getBrdf(const Intersection& intersection, const Vector3& in, const Vector3& out);
+		CUDA_CALLABLE float getPdf(const Intersection& intersection, const Vector3& out);
 
-		bool isEmissive() const;
-		Color getEmittance(const Vector2& texcoord, const Vector3& position) const;
-		Color getReflectance(const Vector2& texcoord, const Vector3& position) const;
+		CUDA_CALLABLE bool isEmissive() const;
+		CUDA_CALLABLE Color getEmittance(const Vector2& texcoord, const Vector3& position) const;
+		CUDA_CALLABLE Color getReflectance(const Vector2& texcoord, const Vector3& position) const;
 
 		uint32_t id = 0;
 		MaterialType type = MaterialType::DIFFUSE;
@@ -53,27 +52,5 @@ namespace Raycer
 
 		DiffuseMaterial diffuseMaterial;
 		BlinnPhongMaterial blinnPhongMaterial;
-
-	private:
-
-		friend class cereal::access;
-
-		template <class Archive>
-		void serialize(Archive& ar)
-		{
-			ar(CEREAL_NVP(id),
-				CEREAL_NVP(type),
-				CEREAL_NVP(normalInterpolation),
-				CEREAL_NVP(autoInvertNormal),
-				CEREAL_NVP(invertNormal),
-				CEREAL_NVP(texcoordScale),
-				CEREAL_NVP(emittance),
-				CEREAL_NVP(emittanceTextureId),
-				CEREAL_NVP(reflectance),
-				CEREAL_NVP(reflectanceTextureId),
-				CEREAL_NVP(normalTextureId),
-				CEREAL_NVP(maskTextureId),
-				CEREAL_NVP(blinnPhongMaterial));
-		}
 	};
 }
