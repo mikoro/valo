@@ -10,7 +10,7 @@
 #include "nanovg/nanovg.h"
 #include "nanovg/nanovg_gl.h"
 
-#include "Core/App.h"
+#include "App.h"
 #include "Core/Film.h"
 #include "Core/Scene.h"
 #include "Renderers/Renderer.h"

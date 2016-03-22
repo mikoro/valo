@@ -6,7 +6,7 @@
 #include <GL/gl3w.h>
 
 #include "Utils/GLHelper.h"
-#include "Core/App.h"
+#include "App.h"
 #include "Utils/Settings.h"
 #include "Utils/Log.h"
 #include "Utils/StringUtils.h"

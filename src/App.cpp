@@ -7,7 +7,12 @@
 #include <windows.h>
 #endif
 
-#include "Core/App.h"
+#ifdef RUN_UNIT_TESTS
+#define CATCH_CONFIG_RUNNER
+#include "catch/catch.hpp"
+#endif
+
+#include "App.h"
 #include "Core/Common.h"
 #include "Utils/Settings.h"
 #include "Utils/Log.h"
@@ -16,6 +21,23 @@
 #include "Utils/ImagePool.h"
 
 using namespace Raycer;
+
+int main(int argc, char** argv)
+{
+	int result;
+
+#ifdef RUN_UNIT_TESTS
+	result = Catch::Session().run(argc, argv);
+#else
+	result = App::run(argc, argv);
+#endif
+
+#ifdef USE_CUDA
+	cudaDeviceReset();
+#endif
+
+	return result;
+}
 
 #ifdef _WIN32
 BOOL consoleCtrlHandler(DWORD fdwCtrlType)

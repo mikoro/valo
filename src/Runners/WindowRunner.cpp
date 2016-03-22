@@ -6,7 +6,7 @@
 #include <GL/gl3w.h>
 #include <GLFW/glfw3.h>
 
-#include "Core/App.h"
+#include "App.h"
 #include "Core/Image.h"
 #include "Runners/WindowRunner.h"
 #include "Runners/WindowRunnerRenderState.h"

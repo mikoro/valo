@@ -2,7 +2,7 @@
 // License: MIT, see the LICENSE file.
 
 #include "BVH/BVH1.h"
-#include "Core/App.h"
+#include "App.h"
 #include "Core/Common.h"
 #include "Utils/Log.h"
 #include "Utils/Timer.h"

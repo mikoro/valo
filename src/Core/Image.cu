@@ -10,7 +10,7 @@
 
 #include "Core/Common.h"
 #include "Core/Image.h"
-#include "Core/App.h"
+#include "App.h"
 #include "Utils/Log.h"
 #include "Utils/StringUtils.h"
 #include "Math/MathUtils.h"

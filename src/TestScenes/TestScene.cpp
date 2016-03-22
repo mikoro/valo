@@ -3,7 +3,7 @@
 
 #include "Core/Precompiled.h"
 
-#include "Core/App.h"
+#include "App.h"
 #include "Core/Scene.h"
 #include "TestScenes/TestScene.h"
 #include "Utils/Log.h"

@@ -2,7 +2,7 @@
 // License: MIT, see the LICENSE file.
 
 #include "Core/Common.h"
-#include "Core/App.h"
+#include "App.h"
 #include "Core/Film.h"
 #include "Tonemappers/Tonemapper.h"
 #include "Utils/Log.h"

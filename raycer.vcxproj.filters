@@ -177,10 +177,6 @@
     <ClCompile Include="src\Utils\Timer.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
-    <ClCompile Include="src\Core\App.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\Utils\ImagePool.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
@@ -193,6 +189,7 @@
     <ClCompile Include="src\Renderers\Renderer.cpp">
       <Filter>Renderers</Filter>
     </ClCompile>
+    <ClCompile Include="src\App.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\BVH\BVH.h">
@@ -381,9 +378,6 @@
     <ClInclude Include="src\Utils\Timer.h">
       <Filter>Utils</Filter>
     </ClInclude>
-    <ClInclude Include="src\Core\App.h">
-      <Filter>Core</Filter>
-    </ClInclude>
     <ClInclude Include="src\Core\Common.h">
       <Filter>Core</Filter>
     </ClInclude>
@@ -402,6 +396,7 @@
     <ClInclude Include="src\Math\Random.h">
       <Filter>Math</Filter>
     </ClInclude>
+    <ClInclude Include="src\App.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="platform\windows\raycer.rc">

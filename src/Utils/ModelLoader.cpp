@@ -5,7 +5,7 @@
 
 #include <boost/filesystem.hpp>
 
-#include "Core/App.h"
+#include "App.h"
 #include "Math/Matrix4x4.h"
 #include "Math/Vector2.h"
 #include "Math/Vector3.h"

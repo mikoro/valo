@@ -9,7 +9,7 @@
 #endif
 
 #include "Utils/SysUtils.h"
-#include "Core/App.h"
+#include "App.h"
 #include "Utils/Log.h"
 
 using namespace Raycer;

@@ -5,7 +5,7 @@
 
 #include "tinyformat/tinyformat.h"
 
-#include "Core/App.h"
+#include "App.h"
 #include "Core/Camera.h"
 #include "Core/Intersection.h"
 #include "Core/Ray.h"

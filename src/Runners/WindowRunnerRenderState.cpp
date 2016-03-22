@@ -5,7 +5,7 @@
 
 #include <GLFW/glfw3.h>
 
-#include "Core/App.h"
+#include "App.h"
 #include "Core/Camera.h"
 #include "Core/Film.h"
 #include "Core/Scene.h"
