@@ -262,7 +262,6 @@
     <CudaCompile Include="src\BVH\BVH.cu" />
     <CudaCompile Include="src\BVH\BVH1.cu" />
     <CudaCompile Include="src\BVH\BVH4.cu" />
-    <CudaCompile Include="src\Cuda\CudaKernels.cu" />
     <CudaCompile Include="src\Core\AABB.cu" />
     <CudaCompile Include="src\Core\Camera.cu" />
     <CudaCompile Include="src\Core\Film.cu" />
@@ -297,6 +296,7 @@
     <CudaCompile Include="src\Math\Vector2.cu" />
     <CudaCompile Include="src\Math\Vector3.cu" />
     <CudaCompile Include="src\Math\Vector4.cu" />
+	<CudaCompile Include="src\Renderers\CudaRenderer.cu" />
     <CudaCompile Include="src\Textures\CheckerTexture.cu" />
     <CudaCompile Include="src\Textures\ImageTexture.cu" />
     <CudaCompile Include="src\Textures\Texture.cu" />
@@ -327,7 +327,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='ReleaseFull|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="src\Renderers\CpuRenderer.cpp" />
-    <ClCompile Include="src\Renderers\CudaRenderer.cpp" />
     <ClCompile Include="src\Renderers\Renderer.cpp" />
     <ClCompile Include="src\Runners\ConsoleRunner.cpp" />
     <ClCompile Include="src\Runners\WindowRunner.cpp" />
@@ -386,7 +385,6 @@
     <ClInclude Include="src\Core\Ray.h" />
     <ClInclude Include="src\Core\Scene.h" />
     <ClInclude Include="src\Core\Triangle.h" />
-    <ClInclude Include="src\Cuda\CudaKernels.h" />
     <ClInclude Include="src\Filters\BellFilter.h" />
     <ClInclude Include="src\Filters\BoxFilter.h" />
     <ClInclude Include="src\Filters\Filter.h" />

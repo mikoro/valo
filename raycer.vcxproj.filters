@@ -49,9 +49,6 @@
     <Filter Include="Core">
       <UniqueIdentifier>{349ac0fd-0e47-4a26-9332-8b69ba1d2c25}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Cuda">
-      <UniqueIdentifier>{c06ca795-6bd2-4af4-ade6-65e84c3745ac}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\External\gl3w.cpp">
@@ -181,9 +178,6 @@
       <Filter>Utils</Filter>
     </ClCompile>
     <ClCompile Include="src\Renderers\CpuRenderer.cpp">
-      <Filter>Renderers</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Renderers\CudaRenderer.cpp">
       <Filter>Renderers</Filter>
     </ClCompile>
     <ClCompile Include="src\Renderers\Renderer.cpp">
@@ -393,9 +387,6 @@
     <ClInclude Include="src\BVH\Common.h">
       <Filter>BVH</Filter>
     </ClInclude>
-    <ClInclude Include="src\Cuda\CudaKernels.h">
-      <Filter>Cuda</Filter>
-    </ClInclude>
     <ClInclude Include="src\Math\Random.h">
       <Filter>Math</Filter>
     </ClInclude>
@@ -421,9 +412,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <CudaCompile Include="src\Cuda\CudaKernels.cu">
-      <Filter>Cuda</Filter>
-    </CudaCompile>
     <CudaCompile Include="src\Filters\BellFilter.cu">
       <Filter>Filters</Filter>
     </CudaCompile>
@@ -543,6 +531,9 @@
     </CudaCompile>
     <CudaCompile Include="src\Integrators\PathIntegrator.cu">
       <Filter>Integrators</Filter>
+    </CudaCompile>
+    <CudaCompile Include="src\Renderers\CudaRenderer.cu">
+      <Filter>Renderers</Filter>
     </CudaCompile>
   </ItemGroup>
 </Project>
