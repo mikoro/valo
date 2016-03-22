@@ -18,26 +18,18 @@
 
 using namespace Raycer;
 
-WindowRunnerRenderState::WindowRunnerRenderState()
-{
-	scene = new Scene();
-	film = new Film();
-}
-
-WindowRunnerRenderState::~WindowRunnerRenderState()
-{
-	delete scene;
-	delete film;
-}
-
 void WindowRunnerRenderState::initialize()
 {
 	Settings& settings = App::getSettings();
+
+	scene = new Scene();
+	film = new Film();
 	
 	*scene = TestScene::create(settings.scene.testSceneNumber);
 
-	scene->initialize();
 	renderer.initialize(settings);
+
+	scene->initialize();
 	filmQuad.initialize();
 	infoPanel.initialize();
 	infoPanel.setState(InfoPanelState(settings.window.infoPanelState));
@@ -47,6 +39,11 @@ void WindowRunnerRenderState::initialize()
 
 void WindowRunnerRenderState::shutdown()
 {
+	delete scene;
+	delete film;
+
+	scene = nullptr;
+	film = nullptr;
 }
 
 void WindowRunnerRenderState::update(float timeStep)

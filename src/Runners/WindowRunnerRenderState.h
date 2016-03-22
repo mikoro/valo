@@ -18,9 +18,6 @@ namespace Raycer
 	{
 	public:
 
-		WindowRunnerRenderState();
-		~WindowRunnerRenderState();
-
 		void initialize() override;
 		void shutdown() override;
 

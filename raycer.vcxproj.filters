@@ -190,6 +190,9 @@
       <Filter>Renderers</Filter>
     </ClCompile>
     <ClCompile Include="src\App.cpp" />
+    <ClCompile Include="src\Utils\Allocator.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\BVH\BVH.h">
@@ -397,6 +400,9 @@
       <Filter>Math</Filter>
     </ClInclude>
     <ClInclude Include="src\App.h" />
+    <ClInclude Include="src\Utils\Allocator.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="platform\windows\raycer.rc">

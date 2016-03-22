@@ -16,9 +16,6 @@ namespace Raycer
 	{
 	public:
 
-		ConsoleRunner();
-		~ConsoleRunner();
-
 		int run();
 		void interrupt();
 

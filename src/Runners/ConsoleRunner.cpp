@@ -18,18 +18,6 @@
 using namespace Raycer;
 using namespace std::chrono;
 
-ConsoleRunner::ConsoleRunner()
-{
-	scene = new Scene();
-	film = new Film();
-}
-
-ConsoleRunner::~ConsoleRunner()
-{
-	delete scene;
-	delete film;
-}
-
 int ConsoleRunner::run()
 {
 	Settings& settings = App::getSettings();
@@ -39,6 +27,9 @@ int ConsoleRunner::run()
 
 	Timer totalElapsedTimer;
 	Renderer renderer;
+
+	scene = new Scene();
+	film = new Film();
 
 	*scene = TestScene::create(settings.scene.testSceneNumber);
 
@@ -140,6 +131,9 @@ int ConsoleRunner::run()
 	}
 	else
 		film->getImage().save("partial_image.png");
+
+	delete scene;
+	delete film;
 
 	return 0;
 }

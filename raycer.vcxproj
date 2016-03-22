@@ -357,6 +357,7 @@
     <ClCompile Include="src\Tonemappers\ReinhardTonemapper.cpp" />
     <ClCompile Include="src\Tonemappers\SimpleTonemapper.cpp" />
     <ClCompile Include="src\Tonemappers\Tonemapper.cpp" />
+    <ClCompile Include="src\Utils\Allocator.cpp" />
     <ClCompile Include="src\Utils\FilmQuad.cpp" />
     <ClCompile Include="src\Utils\FpsCounter.cpp" />
     <ClCompile Include="src\Utils\GLHelper.cpp" />
@@ -428,6 +429,7 @@
     <ClInclude Include="src\Tonemappers\ReinhardTonemapper.h" />
     <ClInclude Include="src\Tonemappers\SimpleTonemapper.h" />
     <ClInclude Include="src\Tonemappers\Tonemapper.h" />
+    <ClInclude Include="src\Utils\Allocator.h" />
     <ClInclude Include="src\Utils\FilmQuad.h" />
     <ClInclude Include="src\Utils\FpsCounter.h" />
     <ClInclude Include="src\Utils\GLHelper.h" />

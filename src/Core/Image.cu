@@ -11,6 +11,7 @@
 #include "Core/Common.h"
 #include "Core/Image.h"
 #include "App.h"
+#include "Utils/Allocator.h"
 #include "Utils/Log.h"
 #include "Utils/StringUtils.h"
 #include "Math/MathUtils.h"
