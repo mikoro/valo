@@ -59,8 +59,8 @@ void CudaRenderer::render(RenderJob& job, bool filtering)
 	dimGrid.x = (film.getWidth() + dimBlock.x - 1) / dimBlock.x;
 	dimGrid.y = (film.getHeight() + dimBlock.y - 1) / dimBlock.y;
 
-	renderKernel<<<dimGrid, dimBlock>>>(scene, film, filtering);
-	cudaDeviceSynchronize();
+	/*renderKernel<<<dimGrid, dimBlock>>>(scene, film, filtering);
+	cudaDeviceSynchronize();*/
 }
 
 #else

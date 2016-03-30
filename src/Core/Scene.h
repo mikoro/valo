@@ -15,12 +15,11 @@
 #include "Math/Color.h"
 #include "Textures/Texture.h"
 #include "Tonemappers/Tonemapper.h"
-#include "Utils/Allocator.h"
 #include "Utils/ModelLoader.h"
 
 namespace Raycer
 {
-	class Scene : public Allocator
+	class Scene
 	{
 	public:
 

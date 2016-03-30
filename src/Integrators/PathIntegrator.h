@@ -23,6 +23,6 @@ namespace Raycer
 		uint32_t pathSamples = 1;
 		uint32_t minPathLength = 3;
 		uint32_t maxPathLength = 10;
-		float terminationProbability = 0.5f;
+		float terminationProbability = 0.2f;
 	};
 }

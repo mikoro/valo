@@ -9,13 +9,12 @@
 #include "Core/Common.h"
 #include "Core/Image.h"
 #include "Math/Color.h"
-#include "Utils/Allocator.h"
 
 namespace Raycer
 {
 	class Tonemapper;
 
-	class Film : public Allocator
+	class Film
 	{
 	public:
 

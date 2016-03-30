@@ -176,7 +176,7 @@ void InfoPanel::renderFull(const Renderer& renderer, const RenderJob& job)
 
 	float totalPixels = float(film.getWidth() * film.getWidth());
 
-	nvgText(context, currentX, currentY, tfm::format("Film: %dx%d (%.2fx) (%s)", film.getWidth(), film.getWidth(), settings.window.renderScale, StringUtils::humanizeNumber(totalPixels)).c_str(), nullptr);
+	nvgText(context, currentX, currentY, tfm::format("Film: %dx%d (%.2fx) (%s)", film.getWidth(), film.getHeight(), settings.window.renderScale, StringUtils::humanizeNumber(totalPixels)).c_str(), nullptr);
 	currentY += lineSpacing;
 
 	nvgText(context, currentX, currentY, tfm::format("Position: (%.2f, %.2f, %.2f)", scene.camera.position.x, scene.camera.position.y, scene.camera.position.z).c_str(), nullptr);

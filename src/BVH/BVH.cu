@@ -1,9 +1,7 @@
 ﻿// Copyright © 2016 Mikko Ronkainen <firstname@mikkoronkainen.com>
 // License: MIT, see the LICENSE file.
 
-#include "BVH/BVH.h"
-#include "BVH/BVH1.h"
-#include "BVH/BVH4.h"
+#include <cassert>
 
 #ifdef _WIN32
 #include <ppl.h>
@@ -14,6 +12,10 @@
 #include <parallel/algorithm>
 #define PARALLEL_SORT __gnu_parallel::sort
 #endif
+
+#include "BVH/BVH.h"
+#include "BVH/BVH1.h"
+#include "BVH/BVH4.h"
 
 using namespace Raycer;
 

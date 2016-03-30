@@ -8,11 +8,13 @@
 
 using namespace Raycer;
 
-// BEDROOM //
+// KITCHEN //
 
 Scene TestScene::create9()
 {
 	Scene scene;
+
+	scene.bvh.type = BVHType::BVH4;
 
 	scene.integrator.type = IntegratorType::DOT;
 
