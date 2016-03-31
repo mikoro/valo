@@ -5,7 +5,7 @@
 
 #include <GL/gl3w.h>
 
-#include "Utils/GLHelper.h"
+#include "Utils/GLUtils.h"
 #include "App.h"
 #include "Utils/Settings.h"
 #include "Utils/Log.h"
@@ -13,7 +13,7 @@
 
 using namespace Raycer;
 
-GLuint GLHelper::buildProgram(const std::string& vertexShaderPath, const std::string& fragmentShaderPath)
+GLuint GLUtils::buildProgram(const std::string& vertexShaderPath, const std::string& fragmentShaderPath)
 {
 	Log& log = App::getLog();
 
@@ -95,7 +95,7 @@ GLuint GLHelper::buildProgram(const std::string& vertexShaderPath, const std::st
 	return program;
 }
 
-void GLHelper::checkError(const std::string& message)
+void GLUtils::checkError(const std::string& message)
 {
 	Settings& settings = App::getSettings();
 
@@ -105,7 +105,7 @@ void GLHelper::checkError(const std::string& message)
 		throw std::runtime_error(tfm::format("OpenGL error: %s: %s", message, getErrorMessage(result)));
 }
 
-std::string GLHelper::getErrorMessage(int32_t result)
+std::string GLUtils::getErrorMessage(int32_t result)
 {
 	switch (result)
 	{

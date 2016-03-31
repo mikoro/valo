@@ -3,11 +3,13 @@
 
 #pragma once
 
+#include <string>
+
 #include <GL/glcorearb.h>
 
 namespace Raycer
 {
-	class GLHelper
+	class GLUtils
 	{
 	public:
 

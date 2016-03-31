@@ -10,7 +10,7 @@
 #include "Core/Image.h"
 #include "Runners/WindowRunner.h"
 #include "Runners/WindowRunnerRenderState.h"
-#include "Utils/GLHelper.h"
+#include "Utils/GLUtils.h"
 #include "Utils/Log.h"
 #include "Utils/Settings.h"
 
@@ -340,7 +340,7 @@ void WindowRunner::takeScreenshot() const
 	std::vector<float> data(windowWidth * windowHeight * 4);
 
 	glReadPixels(0, 0, GLsizei(windowWidth), GLsizei(windowHeight), GL_RGBA, GL_FLOAT, &data[0]);
-	GLHelper::checkError("Could not read pixels from renderbuffer");
+	GLUtils::checkError("Could not read pixels from renderbuffer");
 
 	Image image(windowWidth, windowHeight, &data[0]);
 	image.save("screenshot.png");

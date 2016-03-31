@@ -150,9 +150,6 @@
     <ClCompile Include="src\Utils\FpsCounter.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
-    <ClCompile Include="src\Utils\GLHelper.cpp">
-      <Filter>Utils</Filter>
-    </ClCompile>
     <ClCompile Include="src\Utils\InfoPanel.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
@@ -184,6 +181,12 @@
       <Filter>Renderers</Filter>
     </ClCompile>
     <ClCompile Include="src\App.cpp" />
+    <ClCompile Include="src\Utils\GLUtils.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Utils\CudaUtils.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\BVH\BVH.h">
@@ -348,9 +351,6 @@
     <ClInclude Include="src\Utils\FpsCounter.h">
       <Filter>Utils</Filter>
     </ClInclude>
-    <ClInclude Include="src\Utils\GLHelper.h">
-      <Filter>Utils</Filter>
-    </ClInclude>
     <ClInclude Include="src\Utils\InfoPanel.h">
       <Filter>Utils</Filter>
     </ClInclude>
@@ -388,6 +388,15 @@
       <Filter>Math</Filter>
     </ClInclude>
     <ClInclude Include="src\App.h" />
+    <ClInclude Include="src\Core\CudaAlloc.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Utils\GLUtils.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Utils\CudaUtils.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="platform\windows\raycer.rc">
@@ -528,6 +537,9 @@
     </CudaCompile>
     <CudaCompile Include="src\Renderers\CudaRenderer.cu">
       <Filter>Renderers</Filter>
+    </CudaCompile>
+    <CudaCompile Include="src\Core\CudaAlloc.cu">
+      <Filter>Core</Filter>
     </CudaCompile>
   </ItemGroup>
 </Project>

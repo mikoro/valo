@@ -7,7 +7,7 @@
 
 #include "Core/Film.h"
 #include "Utils/FilmQuad.h"
-#include "Utils/GLHelper.h"
+#include "Utils/GLUtils.h"
 
 using namespace Raycer;
 
@@ -15,7 +15,7 @@ void FilmQuad::initialize()
 {
 	glGenTextures(1, &textureId);
 
-	GLHelper::checkError("Could not create OpenGL texture");
+	GLUtils::checkError("Could not create OpenGL texture");
 
 	glBindTexture(GL_TEXTURE_2D, textureId);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -23,9 +23,9 @@ void FilmQuad::initialize()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-	GLHelper::checkError("Could not set OpenGL texture parameters");
+	GLUtils::checkError("Could not set OpenGL texture parameters");
 
-	programId = GLHelper::buildProgram("data/shaders/film.vert", "data/shaders/film.frag");
+	programId = GLUtils::buildProgram("data/shaders/film.vert", "data/shaders/film.frag");
 
 	textureUniformId = glGetUniformLocation(programId, "tex0");
 	textureWidthUniformId = glGetUniformLocation(programId, "textureWidth");
@@ -33,7 +33,7 @@ void FilmQuad::initialize()
 	texelWidthUniformId = glGetUniformLocation(programId, "texelWidth");
 	texelHeightUniformId = glGetUniformLocation(programId, "texelHeight");
 
-	GLHelper::checkError("Could not get GLSL uniforms");
+	GLUtils::checkError("Could not get GLSL uniforms");
 
 	const GLfloat vertexData[] =
 	{
@@ -57,7 +57,7 @@ void FilmQuad::initialize()
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), reinterpret_cast<void*>(2 * sizeof(GLfloat)));
 	glBindVertexArray(0);
 
-	GLHelper::checkError("Could not set OpenGL buffer parameters");
+	GLUtils::checkError("Could not set OpenGL buffer parameters");
 }
 
 void FilmQuad::resize(uint32_t width_, uint32_t height_)
@@ -70,7 +70,7 @@ void FilmQuad::resize(uint32_t width_, uint32_t height_)
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, GLsizei(width), GLsizei(height), 0, GL_RGBA, GL_FLOAT, nullptr);
 	glBindTexture(GL_TEXTURE_2D, 0);
 
-	GLHelper::checkError("Could not reserve OpenGL texture memory");
+	GLUtils::checkError("Could not reserve OpenGL texture memory");
 }
 
 void FilmQuad::upload(const Film& film)
@@ -79,7 +79,7 @@ void FilmQuad::upload(const Film& film)
 	glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, GLsizei(width), GLsizei(height), GL_RGBA, GL_FLOAT, film.getImage().getPixelData());
 	glBindTexture(GL_TEXTURE_2D, 0);
 
-	GLHelper::checkError("Could not upload OpenGL texture data");
+	GLUtils::checkError("Could not upload OpenGL texture data");
 }
 
 void FilmQuad::render()
@@ -101,5 +101,5 @@ void FilmQuad::render()
 	glBindTexture(GL_TEXTURE_2D, 0);
 	glUseProgram(0);
 
-	GLHelper::checkError("Could not render the film");
+	GLUtils::checkError("Could not render the film");
 }

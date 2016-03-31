@@ -264,6 +264,7 @@
     <CudaCompile Include="src\BVH\BVH4.cu" />
     <CudaCompile Include="src\Core\AABB.cu" />
     <CudaCompile Include="src\Core\Camera.cu" />
+    <CudaCompile Include="src\Core\CudaAlloc.cu" />
     <CudaCompile Include="src\Core\Film.cu" />
     <CudaCompile Include="src\Core\Image.cu" />
     <CudaCompile Include="src\Core\Ray.cu" />
@@ -356,9 +357,10 @@
     <ClCompile Include="src\Tonemappers\ReinhardTonemapper.cpp" />
     <ClCompile Include="src\Tonemappers\SimpleTonemapper.cpp" />
     <ClCompile Include="src\Tonemappers\Tonemapper.cpp" />
+    <ClCompile Include="src\Utils\CudaUtils.cpp" />
     <ClCompile Include="src\Utils\FilmQuad.cpp" />
     <ClCompile Include="src\Utils\FpsCounter.cpp" />
-    <ClCompile Include="src\Utils\GLHelper.cpp" />
+    <ClCompile Include="src\Utils\GLUtils.cpp" />
     <ClCompile Include="src\Utils\ImagePool.cpp" />
     <ClCompile Include="src\Utils\InfoPanel.cpp" />
     <ClCompile Include="src\Utils\Log.cpp" />
@@ -377,6 +379,7 @@
     <ClInclude Include="src\Core\AABB.h" />
     <ClInclude Include="src\Core\Camera.h" />
     <ClInclude Include="src\Core\Common.h" />
+    <ClInclude Include="src\Core\CudaAlloc.h" />
     <ClInclude Include="src\Core\Film.h" />
     <ClInclude Include="src\Core\Image.h" />
     <ClInclude Include="src\Core\Intersection.h" />
@@ -426,9 +429,10 @@
     <ClInclude Include="src\Tonemappers\ReinhardTonemapper.h" />
     <ClInclude Include="src\Tonemappers\SimpleTonemapper.h" />
     <ClInclude Include="src\Tonemappers\Tonemapper.h" />
+    <ClInclude Include="src\Utils\CudaUtils.h" />
     <ClInclude Include="src\Utils\FilmQuad.h" />
     <ClInclude Include="src\Utils\FpsCounter.h" />
-    <ClInclude Include="src\Utils\GLHelper.h" />
+    <ClInclude Include="src\Utils\GLUtils.h" />
     <ClInclude Include="src\Utils\ImagePool.h" />
     <ClInclude Include="src\Utils\InfoPanel.h" />
     <ClInclude Include="src\Utils\Log.h" />
