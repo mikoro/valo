@@ -1,6 +1,10 @@
 // Copyright © 2016 Mikko Ronkainen <firstname@mikkoronkainen.com>
 // License: MIT, see the LICENSE file.
 
+#ifdef USE_CUDA
+#include <device_launch_parameters.h>
+#endif
+
 #include "Core/Common.h"
 #include "Core/Film.h"
 #include "Core/Ray.h"
@@ -61,9 +65,8 @@ void CudaRenderer::render(RenderJob& job, bool filtering)
 	dimGrid.y = (film.getHeight() + dimBlock.y - 1) / dimBlock.y;
 
 	renderKernel<<<dimGrid, dimBlock>>>(scene, film, filtering);
-	CudaUtils::checkError(cudaPeekAtLastError());
-	CudaUtils::checkError(cudaDeviceSynchronize());
-
+	CudaUtils::checkError(cudaPeekAtLastError(), "Could not launch render kernel");
+	CudaUtils::checkError(cudaDeviceSynchronize(), "Could not execute render kernel");
 }
 
 #else

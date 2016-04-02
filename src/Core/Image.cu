@@ -3,6 +3,10 @@
 
 #include <vector>
 
+#ifdef USE_CUDA
+#include <device_launch_parameters.h>
+#endif
+
 #include "tinyformat/tinyformat.h"
 
 #include "stb/stb_image.h"
@@ -13,6 +17,7 @@
 #include "App.h"
 #include "Utils/Log.h"
 #include "Utils/StringUtils.h"
+#include "Utils/CudaUtils.h"
 #include "Math/MathUtils.h"
 #include "Filters/Filter.h"
 
@@ -24,7 +29,33 @@ Image::Image()
 
 Image::~Image()
 {
-	RAYCER_FREE(pixels);
+	if (data != nullptr)
+	{
+		free(data);
+		data = nullptr;
+	}
+
+#ifdef USE_CUDA
+
+	if (textureObject != 0)
+	{
+		CudaUtils::checkError(cudaDestroyTextureObject(textureObject), "Could not destroy texture object");
+		textureObject = 0;
+	}
+
+	if (surfaceObject != 0)
+	{
+		CudaUtils::checkError(cudaDestroySurfaceObject(surfaceObject), "Could not destroy surface object");
+		surfaceObject = 0;
+	}
+
+	if (cudaData != nullptr)
+	{
+		CudaUtils::checkError(cudaFreeArray(cudaData), "Could not free array");
+		cudaData = nullptr;
+	}
+
+#endif
 }
 
 Image::Image(uint32_t length_)
@@ -55,10 +86,10 @@ void Image::load(uint32_t width_, uint32_t height_, float* rgbaData)
 	{
 		uint32_t dataIndex = i * 4;
 
-		pixels[i].r = rgbaData[dataIndex];
-		pixels[i].g = rgbaData[dataIndex + 1];
-		pixels[i].b = rgbaData[dataIndex + 2];
-		pixels[i].a = rgbaData[dataIndex + 3];
+		data[i].r = rgbaData[dataIndex];
+		data[i].g = rgbaData[dataIndex + 1];
+		data[i].b = rgbaData[dataIndex + 2];
+		data[i].a = rgbaData[dataIndex + 3];
 	}
 }
 
@@ -83,10 +114,10 @@ void Image::load(const std::string& fileName)
 				uint32_t pixelIndex = y * width + x;
 				uint32_t dataIndex = (height - 1 - y) * width * 3 + x * 3; // flip vertically
 
-				pixels[pixelIndex].r = loadData[dataIndex];
-				pixels[pixelIndex].g = loadData[dataIndex + 1];
-				pixels[pixelIndex].b = loadData[dataIndex + 2];
-				pixels[pixelIndex].a = 1.0f;
+				data[pixelIndex].r = loadData[dataIndex];
+				data[pixelIndex].g = loadData[dataIndex + 1];
+				data[pixelIndex].b = loadData[dataIndex + 2];
+				data[pixelIndex].a = 1.0f;
 			}
 		}
 
@@ -105,7 +136,7 @@ void Image::load(const std::string& fileName)
 		for (uint32_t y = 0; y < height; ++y)
 		{
 			for (uint32_t x = 0; x < width; ++x)
-				pixels[y * width + x] = Color::fromAbgrValue(loadData[(height - 1 - y) * width + x]); // flip vertically
+				data[y * width + x] = Color::fromAbgrValue(loadData[(height - 1 - y) * width + x]); // flip vertically
 		}
 
 		stbi_image_free(loadData);
@@ -126,7 +157,7 @@ void Image::save(const std::string& fileName, bool writeToLog) const
 		for (uint32_t y = 0; y < height; ++y)
 		{
 			for (uint32_t x = 0; x < width; ++x)
-				saveData[(height - 1 - y) * width + x] = pixels[y * width + x].clamped().getAbgrValue(); // flip vertically
+				saveData[(height - 1 - y) * width + x] = data[y * width + x].clamped().getAbgrValue(); // flip vertically
 		}
 
 		if (StringUtils::endsWith(fileName, ".png"))
@@ -147,9 +178,9 @@ void Image::save(const std::string& fileName, bool writeToLog) const
 				uint32_t dataIndex = (height - 1 - y) * width * 3 + x * 3; // flip vertically
 				uint32_t pixelIndex = y * width + x;
 
-				saveData[dataIndex] = float(pixels[pixelIndex].r);
-				saveData[dataIndex + 1] = float(pixels[pixelIndex].g);
-				saveData[dataIndex + 2] = float(pixels[pixelIndex].b);
+				saveData[dataIndex] = float(data[pixelIndex].r);
+				saveData[dataIndex + 1] = float(data[pixelIndex].g);
+				saveData[dataIndex + 2] = float(data[pixelIndex].b);
 			}
 		}
 
@@ -173,58 +204,128 @@ void Image::resize(uint32_t width_, uint32_t height_)
 	height = height_;
 	length = width * height;
 
-	RAYCER_FREE(pixels);
-	pixels = static_cast<Color*>(RAYCER_MALLOC(length * sizeof(Color)));
+	if (data != nullptr)
+	{
+		free(data);
+		data = nullptr;
+	}
 
-	if (pixels == nullptr)
+	data = static_cast<Color*>(malloc(length * sizeof(Color)));
+
+	if (data == nullptr)
 		throw std::runtime_error("Could not allocate memory for image");
 
-	clear();
+#ifdef USE_CUDA
+
+	if (textureObject != 0)
+	{
+		CudaUtils::checkError(cudaDestroyTextureObject(textureObject), "Could not destroy texture object");
+		textureObject = 0;
+	}
+
+	if (surfaceObject != 0)
+	{
+		CudaUtils::checkError(cudaDestroySurfaceObject(surfaceObject), "Could not surface texture object");
+		surfaceObject = 0;
+	}
+
+	if (cudaData != nullptr)
+	{
+		CudaUtils::checkError(cudaFreeArray(cudaData), "Could not free array");
+		cudaData = nullptr;
+	}
+
+	cudaChannelFormatDesc channelDesc = cudaCreateChannelDesc(32, 32, 32, 32, cudaChannelFormatKindFloat);
+	CudaUtils::checkError(cudaMallocArray(&cudaData, &channelDesc, width, height, cudaArraySurfaceLoadStore), "Could not allocate memory");
+
+	if (cudaData == nullptr)
+		throw std::runtime_error("Could not allocate cuda memory for image");
+
+	cudaResourceDesc resDesc;
+	memset(&resDesc, 0, sizeof(resDesc));
+	resDesc.resType = cudaResourceTypeArray;
+	resDesc.res.array.array = cudaData;
+
+	cudaTextureDesc texDesc;
+	memset(&texDesc, 0, sizeof(texDesc));
+	texDesc.addressMode[0] = cudaAddressModeWrap;
+	texDesc.addressMode[1] = cudaAddressModeWrap;
+	texDesc.filterMode = cudaFilterModeLinear;
+	texDesc.readMode = cudaReadModeElementType;
+	texDesc.normalizedCoords = 1;
+
+	CudaUtils::checkError(cudaCreateTextureObject(&textureObject, &resDesc, &texDesc, nullptr), "Could not create texture object");
+	CudaUtils::checkError(cudaCreateSurfaceObject(&surfaceObject, &resDesc), "Could not create surface object");
+
+#endif
 }
 
-void Image::setPixel(uint32_t x, uint32_t y, const Color& color)
+#ifdef USE_CUDA
+
+__global__ void clearKernel(cudaSurfaceObject_t surfaceObject, uint32_t width, uint32_t height)
 {
-	pixels[y * width + x] = color;
+	uint32_t x = threadIdx.x + blockIdx.x * blockDim.x;
+	uint32_t y = threadIdx.y + blockIdx.y * blockDim.y;
+
+	if (x >= width || y >= height)
+		return;
+
+	float4 zero = make_float4(0.0f, 0.0f, 0.0f, 0.0f);
+	surf2Dwrite(zero, surfaceObject, x * sizeof(float4), y);
 }
 
-void Image::setPixel(uint32_t index, const Color& color)
-{
-	pixels[index] = color;
-}
+#endif
 
-void Image::clear()
+void Image::clear(RendererType type)
 {
-	memset(pixels, 0, length * sizeof(Color));
+	if (type == RendererType::CPU)
+		memset(data, 0, length * sizeof(Color));
+	else
+	{
+#ifdef USE_CUDA
+
+		dim3 dimBlock(16, 16);
+		dim3 dimGrid;
+
+		dimGrid.x = (width + dimBlock.x - 1) / dimBlock.x;
+		dimGrid.y = (height + dimBlock.y - 1) / dimBlock.y;
+
+		clearKernel<<<dimGrid, dimBlock>>>(surfaceObject, width, height);
+		CudaUtils::checkError(cudaPeekAtLastError(), "Could not launch clear kernel");
+		CudaUtils::checkError(cudaDeviceSynchronize(), "Could not execute clear kernel");
+
+#endif
+	}
 }
 
 void Image::clear(const Color& color)
 {
 	for (uint32_t i = 0; i < length; ++i)
-		pixels[i] = color;
+		data[i] = color;
 }
 
 void Image::applyGamma(float gamma)
 {
 	for (uint32_t i = 0; i < length; ++i)
-		pixels[i] = Color::pow(pixels[i], gamma).clamped();
+		data[i] = Color::pow(data[i], gamma).clamped();
 }
 
 void Image::applyFastGamma(float gamma)
 {
 	for (uint32_t i = 0; i < length; ++i)
-		pixels[i] = Color::fastPow(pixels[i], gamma).clamped();
+		data[i] = Color::fastPow(data[i], gamma).clamped();
 }
 
 void Image::swapComponents()
 {
 	for (uint32_t i = 0; i < length; ++i)
 	{
-		Color c2 = pixels[i];
+		Color c2 = data[i];
 
-		pixels[i].r = c2.a;
-		pixels[i].g = c2.b;
-		pixels[i].b = c2.g;
-		pixels[i].a = c2.r;
+		data[i].r = c2.a;
+		data[i].g = c2.b;
+		data[i].b = c2.g;
+		data[i].a = c2.r;
 	}
 }
 
@@ -239,38 +340,71 @@ void Image::fillWithTestPattern()
 			if (x % 2 == 0 && y % 2 == 0)
 				color = Color::lerp(Color::red(), Color::blue(), float(x) / float(width));
 
-			pixels[y * width + x] = color;
+			data[y * width + x] = color;
 		}
 	}
 }
 
-CUDA_CALLABLE uint32_t Image::getWidth() const
+CUDA_CALLABLE void Image::setPixel(uint32_t x, uint32_t y, const Color& color)
 {
-	return width;
+#if CUDA_DEVICE_CODE
+
+	float4 temp(color.r, color.g, color.b, color.a);
+	surf2Dwrite(temp, surfaceObject, x * sizeof(float4), y);
+
+#else
+
+	assert(x < width && y < height);
+	data[y * width + x] = color;
+
+#endif
 }
 
-CUDA_CALLABLE uint32_t Image::getHeight() const
+CUDA_CALLABLE void Image::setPixel(uint32_t index, const Color& color)
 {
-	return height;
-}
+#if CUDA_DEVICE_CODE
 
-CUDA_CALLABLE uint32_t Image::getLength() const
-{
-	return length;
+	float4 temp(color.r, color.g, color.b, color.a);
+	surf1Dwrite(temp, surfaceObject, index * sizeof(float4));
+
+#else
+
+	assert(index < length);
+	data[index] = color;
+
+#endif
 }
 
 CUDA_CALLABLE Color Image::getPixel(uint32_t x, uint32_t y) const
 {
-	assert(x < width && y < height);
+#if CUDA_DEVICE_CODE
 
-	return pixels[y * width + x];
+	float4 temp;
+	surf2Dread(&temp, surfaceObject, x * sizeof(float4), y);
+	return Color(temp.x, temp.y, temp.z, temp.w);
+
+#else
+
+	assert(x < width && y < height);
+	return data[y * width + x];
+
+#endif
 }
 
 CUDA_CALLABLE Color Image::getPixel(uint32_t index) const
 {
-	assert(index < length);
+#if CUDA_DEVICE_CODE
 
-	return pixels[index];
+	float4 color;
+	surf1Dread(&color, surfaceObject, index * sizeof(float4));
+	return Color(color.x, color.y, color.z, color.w);
+
+#else
+
+	assert(index < length);
+	return data[index];
+
+#endif
 }
 
 CUDA_CALLABLE Color Image::getPixelNearest(float u, float v) const
@@ -283,6 +417,13 @@ CUDA_CALLABLE Color Image::getPixelNearest(float u, float v) const
 
 CUDA_CALLABLE Color Image::getPixelBilinear(float u, float v) const
 {
+#if CUDA_DEVICE_CODE
+
+	float4 texel = tex2D<float4>(textureObject, u, v);
+	return Color(texel.x, texel.y, texel.z, texel.w);
+
+#else
+
 	float x = u * float(width - 1);
 	float y = v * float(height - 1);
 
@@ -314,6 +455,8 @@ CUDA_CALLABLE Color Image::getPixelBilinear(float u, float v) const
 
 	// bilinear interpolation
 	return (tx1 * c11 + tx2 * c21) * ty1 + (tx1 * c12 + tx2 * c22) * ty2;
+
+#endif
 }
 
 CUDA_CALLABLE Color Image::getPixelBicubic(float u, float v, Filter& filter) const
@@ -360,12 +503,50 @@ CUDA_CALLABLE Color Image::getPixelBicubic(float u, float v, Filter& filter) con
 	return cumulativeColor / cumulativeFilterWeight;
 }
 
-Color* Image::getPixelData()
+CUDA_CALLABLE uint32_t Image::getWidth() const
 {
-	return pixels;
+	return width;
 }
 
-const Color* Image::getPixelData() const
+CUDA_CALLABLE uint32_t Image::getHeight() const
 {
-	return pixels;
+	return height;
 }
+
+CUDA_CALLABLE uint32_t Image::getLength() const
+{
+	return length;
+}
+
+void Image::upload()
+{
+#ifdef USE_CUDA
+	CudaUtils::checkError(cudaMemcpyToArray(cudaData, 0, 0, data, length * sizeof(Color), cudaMemcpyHostToDevice), "Could not upload image to device");
+#endif
+}
+
+void Image::download()
+{
+#ifdef USE_CUDA
+	CudaUtils::checkError(cudaMemcpyFromArray(data, cudaData, 0, 0, length * sizeof(Color), cudaMemcpyDeviceToHost), "Could not download image from device");
+#endif
+}
+
+Color* Image::getData()
+{
+	return data;
+}
+
+const Color* Image::getData() const
+{
+	return data;
+}
+
+#ifdef USE_CUDA
+
+cudaSurfaceObject_t Image::getSurfaceObject() const
+{
+	return surfaceObject;
+}
+
+#endif

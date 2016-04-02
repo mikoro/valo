@@ -6,9 +6,16 @@
 #include <atomic>
 #include <cstdint>
 
+#include <GL/glcorearb.h>
+
+#ifdef USE_CUDA
+#include <cuda_runtime.h>
+#endif
+
 #include "Core/Common.h"
 #include "Core/Image.h"
 #include "Math/Color.h"
+#include "Renderers/Renderer.h"
 
 namespace Raycer
 {
@@ -18,24 +25,35 @@ namespace Raycer
 	{
 	public:
 
-		~Film();
+		explicit Film(bool windowed = false);
 
-		void clear();
+		void initialize();
+		void shutdown();
 		void resize(uint32_t width, uint32_t height);
+		void clear(RendererType type);
+		bool hasBeenCleared() const;
+		void resetCleared();
+
 		CUDA_CALLABLE void addSample(uint32_t x, uint32_t y, const Color& color, float filterWeight);
 		CUDA_CALLABLE void addSample(uint32_t index, const Color& color, float filterWeight);
 
-		Color getLinearColor(uint32_t x, uint32_t y) const;
-		Color getOutputColor(uint32_t x, uint32_t y) const;
-		
-		void generateImage(Tonemapper& tonemapper);
-		const Image& getImage() const;
+		void normalize(RendererType type);
+		void tonemap(Tonemapper& tonemapper, RendererType type);
+		void updateTexture(RendererType type);
+
+		Color getCumulativeColor(uint32_t x, uint32_t y) const;
+		Color getNormalizedColor(uint32_t x, uint32_t y) const;
+		Color getTonemappedColor(uint32_t x, uint32_t y) const;
+
+		Image& getCumulativeImage();
+		Image& getNormalizedImage();
+		Image& getTonemappedImage();
 
 		CUDA_CALLABLE uint32_t getWidth() const;
 		CUDA_CALLABLE uint32_t getHeight() const;
 		CUDA_CALLABLE uint32_t getLength() const;
 
-		bool isCleared() const;
+		GLuint getTextureId() const;
 
 		std::atomic<uint32_t> pixelSamples;
 
@@ -44,12 +62,18 @@ namespace Raycer
 		uint32_t width = 0;
 		uint32_t height = 0;
 		uint32_t length = 0;
-		
-		Color* pixels = nullptr;
 
-		Image linearImage;
-		Image outputImage;
-
+		bool windowed = false;
 		bool cleared = false;
+		
+		Image cumulativeImage;
+		Image normalizedImage;
+		Image tonemappedImage;
+
+		GLuint textureId = 0;
+
+#ifdef USE_CUDA
+		cudaGraphicsResource* textureResource = nullptr;
+#endif
 	};
 }

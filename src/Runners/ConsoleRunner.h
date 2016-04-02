@@ -9,9 +9,6 @@
 
 namespace Raycer
 {
-	class Scene;
-	class Film;
-
 	class ConsoleRunner
 	{
 	public:
@@ -25,8 +22,5 @@ namespace Raycer
 		
 		RenderJob renderJob;
 		MovingAverage samplesPerSecondAverage;
-
-		Scene* scene = nullptr;
-		Film* film = nullptr;
 	};
 }

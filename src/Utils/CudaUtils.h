@@ -15,6 +15,6 @@ namespace Raycer
 	{
 	public:
 
-		static void checkError(cudaError_t code);
+		static void checkError(cudaError_t code, const std::string& message);
 	};
 }

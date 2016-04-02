@@ -196,13 +196,13 @@ void InfoPanel::renderFull(const Renderer& renderer, const RenderJob& job)
 	nvgText(context, currentX, currentY, tfm::format("Mouse: (%d, %d, %d)", filmMouseX, filmMouseY, filmMouseIndex).c_str(), nullptr);
 	currentY += lineSpacing;
 
-	Color linearColor = film.getLinearColor(filmMouseX, filmMouseY);
-	Color outputColor = film.getOutputColor(filmMouseX, filmMouseY);
+	Color normalizedColor = film.getNormalizedColor(filmMouseX, filmMouseY);
+	Color tonemappedColor = film.getTonemappedColor(filmMouseX, filmMouseY);
 
-	nvgText(context, currentX, currentY, tfm::format("Pixel lin: (%.2f, %.2f, %.2f)", linearColor.r, linearColor.g, linearColor.b).c_str(), nullptr);
+	nvgText(context, currentX, currentY, tfm::format("Pixel nor: (%.2f, %.2f, %.2f)", normalizedColor.r, normalizedColor.g, normalizedColor.b).c_str(), nullptr);
 	currentY += lineSpacing;
 
-	nvgText(context, currentX, currentY, tfm::format("Pixel out: (%.2f, %.2f, %.2f)", outputColor.r, outputColor.g, outputColor.b).c_str(), nullptr);
+	nvgText(context, currentX, currentY, tfm::format("Pixel ton: (%.2f, %.2f, %.2f)", tonemappedColor.r, tonemappedColor.g, tonemappedColor.b).c_str(), nullptr);
 	currentY += lineSpacing;
 
 	nvgText(context, currentX, currentY, tfm::format("Pixel samples: %d", film.pixelSamples).c_str(), nullptr);

@@ -28,34 +28,33 @@ int ConsoleRunner::run()
 	Timer totalElapsedTimer;
 	Renderer renderer;
 
-	scene = new Scene();
-	film = new Film();
+	Scene scene = TestScene::create(settings.scene.testSceneNumber);
+	Film film;
 
-	*scene = TestScene::create(settings.scene.testSceneNumber);
-
+	scene.initialize();
+	film.initialize();
 	renderer.initialize(settings);
 
-	scene->initialize();
-	scene->camera.setImagePlaneSize(settings.image.width, settings.image.height);
-	scene->camera.update(0.0f);
+	film.resize(settings.image.width, settings.image.height);
+	
+	scene.camera.setImagePlaneSize(settings.image.width, settings.image.height);
+	scene.camera.update(0.0f);
 
-	film->resize(settings.image.width, settings.image.height);
-
-	renderJob.scene = scene;
-	renderJob.film = film;
+	renderJob.scene = &scene;
+	renderJob.film = &film;
 	renderJob.interrupted = false;
 	renderJob.sampleCount = 0;
 	
 	SysUtils::setConsoleTextColor(ConsoleTextColor::WHITE_ON_BLACK);
 
-	uint64_t totalSamples = uint64_t(settings.image.width) * uint64_t(settings.image.height) * uint64_t(scene->renderer.pixelSamples);
+	uint64_t totalSamples = uint64_t(settings.image.width) * uint64_t(settings.image.height) * uint64_t(scene.renderer.pixelSamples);
 
 	std::cout << tfm::format("\nRendering started (size: %dx%d, pixels: %s, samples: %s, pixel samples: %d)\n\n",
 		settings.image.width,
 		settings.image.height,
 		StringUtils::humanizeNumber(double(settings.image.width * settings.image.height)),
 		StringUtils::humanizeNumber(double(totalSamples)),
-		scene->renderer.pixelSamples);
+		scene.renderer.pixelSamples);
 
 	Timer renderingElapsedTimer;
 	renderingElapsedTimer.setAveragingAlpha(0.05f);
@@ -90,7 +89,7 @@ int ConsoleRunner::run()
 		if (elapsed.totalMilliseconds > 0)
 			samplesPerSecondAverage.addMeasurement(float(renderJob.sampleCount) / (float(elapsed.totalMilliseconds) / 1000.0f));
 
-		printProgress(renderingElapsedTimer.getPercentage(), elapsed, remaining, film->pixelSamples);
+		printProgress(renderingElapsedTimer.getPercentage(), elapsed, remaining, film.pixelSamples);
 		std::this_thread::sleep_for(std::chrono::milliseconds(250));
 	}
 
@@ -104,7 +103,7 @@ int ConsoleRunner::run()
 	auto elapsed = renderingElapsedTimer.getElapsed();
 	auto remaining = renderingElapsedTimer.getRemaining();
 
-	printProgress(renderingElapsedTimer.getPercentage(), elapsed, remaining, film->pixelSamples);
+	printProgress(renderingElapsedTimer.getPercentage(), elapsed, remaining, film.pixelSamples);
 
 	float totalSamplesPerSecond = 0.0f;
 
@@ -118,22 +117,21 @@ int ConsoleRunner::run()
 
 	SysUtils::setConsoleTextColor(ConsoleTextColor::DEFAULT);
 
-	film->generateImage(scene->tonemapper);
+	film.normalize(renderer.type);
+	film.tonemap(scene.tonemapper, renderer.type);
+	film.getTonemappedImage().download();
 
 	log.logInfo("Total elapsed time: %s", totalElapsedTimer.getElapsed().getString(true));
 
 	if (!renderJob.interrupted)
 	{
-		film->getImage().save(settings.image.fileName);
+		film.getTonemappedImage().save(settings.image.fileName);
 
 		if (settings.image.autoView)
 			SysUtils::openFileExternally(settings.image.fileName);
 	}
 	else
-		film->getImage().save("partial_image.png");
-
-	delete scene;
-	delete film;
+		film.getTonemappedImage().save("partial_image.png");
 
 	return 0;
 }

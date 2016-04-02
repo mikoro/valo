@@ -14,18 +14,12 @@ namespace Raycer
 	public:
 
 		void initialize();
-		void resize(uint32_t width, uint32_t height);
-		void upload(const Film& film);
-		void render();
+		void render(const Film& film);
 
 	private:
 
-		uint32_t width = 0;
-		uint32_t height = 0;
-
 		GLuint vaoId = 0;
 		GLuint vboId = 0;
-		GLuint textureId = 0;
 
 		GLuint programId = 0;
 		GLuint textureUniformId = 0;

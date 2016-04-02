@@ -25,7 +25,11 @@ namespace
 
 BVH1::~BVH1()
 {
-	RAYCER_FREE(nodesPtr);
+	if (nodesPtr != nullptr)
+	{
+		free(nodesPtr);
+		nodesPtr = nullptr;
+	}
 }
 
 void BVH1::build(std::vector<Triangle>& triangles)
@@ -125,7 +129,7 @@ void BVH1::build(std::vector<Triangle>& triangles)
 		stackIndex++;
 	}
 
-	nodesPtr = static_cast<BVHNode*>(RAYCER_MALLOC(nodes.size() * sizeof(BVHNode)));
+	nodesPtr = static_cast<BVHNode*>(malloc(nodes.size() * sizeof(BVHNode)));
 
 	if (nodesPtr == nullptr)
 		throw std::runtime_error("Could not allocate memory for BVH nodes");

@@ -43,8 +43,10 @@ void Renderer::render(RenderJob& job)
 
 		if (imageAutoWrite && imageAutoWriteTimer.getElapsedSeconds() > imageAutoWriteInterval)
 		{
-			film.generateImage(scene.tonemapper);
-			film.getImage().save(tfm::format(imageAutoWriteFileName.c_str(), imageAutoWriteNumber), false);
+			film.normalize(type);
+			film.tonemap(scene.tonemapper, type);
+			film.getTonemappedImage().download();
+			film.getTonemappedImage().save(tfm::format(imageAutoWriteFileName.c_str(), imageAutoWriteNumber), false);
 
 			if (++imageAutoWriteNumber > imageAutoWriteMaxNumber)
 				imageAutoWriteNumber = 1;

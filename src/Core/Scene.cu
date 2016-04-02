@@ -21,10 +21,29 @@ using namespace Raycer;
 
 Scene::~Scene()
 {
-	RAYCER_FREE(texturesPtr);
-	RAYCER_FREE(materialsPtr);
-	RAYCER_FREE(trianglesPtr);
-	RAYCER_FREE(emissiveTrianglesPtr);
+	if (texturesPtr != nullptr)
+	{
+		free(texturesPtr);
+		texturesPtr = nullptr;
+	}
+
+	if (materialsPtr != nullptr)
+	{
+		free(materialsPtr);
+		materialsPtr = nullptr;
+	}
+
+	if (trianglesPtr != nullptr)
+	{
+		free(trianglesPtr);
+		trianglesPtr = nullptr;
+	}
+
+	if (emissiveTrianglesPtr != nullptr)
+	{
+		free(emissiveTrianglesPtr);
+		emissiveTrianglesPtr = nullptr;
+	}
 }
 
 void Scene::initialize()
@@ -62,7 +81,7 @@ void Scene::initialize()
 
 	if (allTextures.size() > 0)
 	{
-		texturesPtr = static_cast<Texture*>(RAYCER_MALLOC(allTextures.size() * sizeof(Texture)));
+		texturesPtr = static_cast<Texture*>(malloc(allTextures.size() * sizeof(Texture)));
 
 		if (texturesPtr == nullptr)
 			throw std::runtime_error("Could not allocate memory for textures");
@@ -72,7 +91,7 @@ void Scene::initialize()
 
 	if (allMaterials.size() > 0)
 	{
-		materialsPtr = static_cast<Material*>(RAYCER_MALLOC(allMaterials.size() * sizeof(Material)));
+		materialsPtr = static_cast<Material*>(malloc(allMaterials.size() * sizeof(Material)));
 
 		if (materialsPtr == nullptr)
 			throw std::runtime_error("Could not allocate memory for materials");
@@ -141,7 +160,7 @@ void Scene::initialize()
 
 	if (emissiveTriangles.size() > 0)
 	{
-		emissiveTrianglesPtr = static_cast<Triangle*>(RAYCER_MALLOC(emissiveTriangles.size() * sizeof(Triangle)));
+		emissiveTrianglesPtr = static_cast<Triangle*>(malloc(emissiveTriangles.size() * sizeof(Triangle)));
 
 		if (emissiveTrianglesPtr == nullptr)
 			throw std::runtime_error("Could not allocate memory for emissive triangles");
@@ -154,7 +173,7 @@ void Scene::initialize()
 
 	bvh.build(allTriangles);
 
-	trianglesPtr = static_cast<Triangle*>(RAYCER_MALLOC(allTriangles.size() * sizeof(Triangle)));
+	trianglesPtr = static_cast<Triangle*>(malloc(allTriangles.size() * sizeof(Triangle)));
 
 	if (trianglesPtr == nullptr)
 		throw std::runtime_error("Could not allocate memory for triangles");

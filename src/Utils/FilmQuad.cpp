@@ -13,18 +13,6 @@ using namespace Raycer;
 
 void FilmQuad::initialize()
 {
-	glGenTextures(1, &textureId);
-
-	GLUtils::checkError("Could not create OpenGL texture");
-
-	glBindTexture(GL_TEXTURE_2D, textureId);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-	GLUtils::checkError("Could not set OpenGL texture parameters");
-
 	programId = GLUtils::buildProgram("data/shaders/film.vert", "data/shaders/film.frag");
 
 	textureUniformId = glGetUniformLocation(programId, "tex0");
@@ -60,39 +48,17 @@ void FilmQuad::initialize()
 	GLUtils::checkError("Could not set OpenGL buffer parameters");
 }
 
-void FilmQuad::resize(uint32_t width_, uint32_t height_)
-{
-	width = width_;
-	height = height_;
-
-	// reserve the texture memory on the device
-	glBindTexture(GL_TEXTURE_2D, textureId);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, GLsizei(width), GLsizei(height), 0, GL_RGBA, GL_FLOAT, nullptr);
-	glBindTexture(GL_TEXTURE_2D, 0);
-
-	GLUtils::checkError("Could not reserve OpenGL texture memory");
-}
-
-void FilmQuad::upload(const Film& film)
-{
-	glBindTexture(GL_TEXTURE_2D, textureId);
-	glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, GLsizei(width), GLsizei(height), GL_RGBA, GL_FLOAT, film.getImage().getPixelData());
-	glBindTexture(GL_TEXTURE_2D, 0);
-
-	GLUtils::checkError("Could not upload OpenGL texture data");
-}
-
-void FilmQuad::render()
+void FilmQuad::render(const Film& film)
 {
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, textureId);
+	glBindTexture(GL_TEXTURE_2D, film.getTextureId());
 
 	glUseProgram(programId);
 	glUniform1i(textureUniformId, 0);
-	glUniform1f(textureWidthUniformId, float(width));
-	glUniform1f(textureHeightUniformId, float(height));
-	glUniform1f(texelWidthUniformId, 1.0f / width);
-	glUniform1f(texelHeightUniformId, 1.0f / height);
+	glUniform1f(textureWidthUniformId, float(film.getWidth()));
+	glUniform1f(textureHeightUniformId, float(film.getHeight()));
+	glUniform1f(texelWidthUniformId, 1.0f / film.getWidth());
+	glUniform1f(texelHeightUniformId, 1.0f / film.getHeight());
 
 	glBindVertexArray(vaoId);
 	glDrawArrays(GL_TRIANGLES, 0, 6);

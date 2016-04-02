@@ -12,8 +12,8 @@ using namespace Raycer;
 
 void SimpleTonemapper::apply(const Image& inputImage, Image& outputImage)
 {
-	const Color* inputPixels = inputImage.getPixelData();
-	Color* outputPixels = outputImage.getPixelData();
+	const Color* inputPixels = inputImage.getData();
+	Color* outputPixels = outputImage.getData();
 	int32_t pixelCount = inputImage.getLength();
 
 	const float invGamma = 1.0f / gamma;

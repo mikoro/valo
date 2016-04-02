@@ -26,8 +26,17 @@ namespace
 
 BVH4::~BVH4()
 {
-	RAYCER_FREE(nodesPtr);
-	RAYCER_FREE(triangles4Ptr);
+	if (nodesPtr != nullptr)
+	{
+		free(nodesPtr);
+		nodesPtr = nullptr;
+	}
+
+	if (triangles4Ptr != nullptr)
+	{
+		free(triangles4Ptr);
+		triangles4Ptr = nullptr;
+	}
 }
 
 void BVH4::build(std::vector<Triangle>& triangles)
@@ -232,14 +241,14 @@ void BVH4::build(std::vector<Triangle>& triangles)
 		stackIndex++;
 	}
 
-	nodesPtr = static_cast<BVHNodeSOA<4>*>(RAYCER_MALLOC(nodes.size() * sizeof(BVHNodeSOA<4>)));
+	nodesPtr = static_cast<BVHNodeSOA<4>*>(malloc(nodes.size() * sizeof(BVHNodeSOA<4>)));
 
 	if (nodesPtr == nullptr)
 		throw std::runtime_error("Could not allocate memory for BVH nodes");
 
 	memcpy(nodesPtr, nodes.data(), nodes.size() * sizeof(BVHNodeSOA<4>));
 
-	triangles4Ptr = static_cast<TriangleSOA<4>*>(RAYCER_MALLOC(triangles4.size() * sizeof(TriangleSOA<4>)));
+	triangles4Ptr = static_cast<TriangleSOA<4>*>(malloc(triangles4.size() * sizeof(TriangleSOA<4>)));
 
 	if (triangles4Ptr == nullptr)
 		throw std::runtime_error("Could not allocate memory for BVH triangles");

@@ -6,8 +6,13 @@
 #include <cstdint>
 #include <string>
 
+#ifdef USE_CUDA
+#include <cuda_runtime.h>
+#endif
+
 #include "Core/Common.h"
 #include "Math/Color.h"
+#include "Renderers/Renderer.h"
 
 /*
 
@@ -36,18 +41,16 @@ namespace Raycer
 		void save(const std::string& fileName, bool writeToLog = true) const;
 		void resize(uint32_t length);
 		void resize(uint32_t width, uint32_t height);
-		void setPixel(uint32_t x, uint32_t y, const Color& color);
-		void setPixel(uint32_t index, const Color& color);
-		void clear();
+		void clear(RendererType type);
 		void clear(const Color& color);
+
 		void applyGamma(float gamma);
 		void applyFastGamma(float gamma);
 		void swapComponents();
 		void fillWithTestPattern();
 
-		CUDA_CALLABLE uint32_t getWidth() const;
-		CUDA_CALLABLE uint32_t getHeight() const;
-		CUDA_CALLABLE uint32_t getLength() const;
+		CUDA_CALLABLE void setPixel(uint32_t x, uint32_t y, const Color& color);
+		CUDA_CALLABLE void setPixel(uint32_t index, const Color& color);
 
 		CUDA_CALLABLE Color getPixel(uint32_t x, uint32_t y) const;
 		CUDA_CALLABLE Color getPixel(uint32_t index) const;
@@ -55,8 +58,19 @@ namespace Raycer
 		CUDA_CALLABLE Color getPixelBilinear(float u, float v) const;
 		CUDA_CALLABLE Color getPixelBicubic(float u, float v, Filter& filter) const;
 
-		Color* getPixelData();
-		const Color* getPixelData() const;
+		CUDA_CALLABLE uint32_t getWidth() const;
+		CUDA_CALLABLE uint32_t getHeight() const;
+		CUDA_CALLABLE uint32_t getLength() const;
+
+		void upload();
+		void download();
+
+		Color* getData();
+		const Color* getData() const;
+
+#ifdef USE_CUDA
+		cudaSurfaceObject_t getSurfaceObject() const;
+#endif
 
 	private:
 
@@ -64,6 +78,12 @@ namespace Raycer
 		uint32_t height = 0;
 		uint32_t length = 0;
 
-		Color* pixels = nullptr;
+		Color* data = nullptr;
+
+#ifdef USE_CUDA
+		cudaArray* cudaData = nullptr;
+		cudaTextureObject_t textureObject = 0;
+		cudaSurfaceObject_t surfaceObject = 0;
+#endif
 	};
 }

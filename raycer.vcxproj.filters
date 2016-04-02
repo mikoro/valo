@@ -388,13 +388,13 @@
       <Filter>Math</Filter>
     </ClInclude>
     <ClInclude Include="src\App.h" />
-    <ClInclude Include="src\Core\CudaAlloc.h">
-      <Filter>Core</Filter>
-    </ClInclude>
     <ClInclude Include="src\Utils\GLUtils.h">
       <Filter>Utils</Filter>
     </ClInclude>
     <ClInclude Include="src\Utils\CudaUtils.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Utils\CudaAlloc.h">
       <Filter>Utils</Filter>
     </ClInclude>
   </ItemGroup>
@@ -538,8 +538,8 @@
     <CudaCompile Include="src\Renderers\CudaRenderer.cu">
       <Filter>Renderers</Filter>
     </CudaCompile>
-    <CudaCompile Include="src\Core\CudaAlloc.cu">
-      <Filter>Core</Filter>
+    <CudaCompile Include="src\Utils\CudaAlloc.cu">
+      <Filter>Utils</Filter>
     </CudaCompile>
   </ItemGroup>
 </Project>

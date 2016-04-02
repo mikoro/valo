@@ -5,15 +5,14 @@
 
 #include "Runners/WindowRunner.h"
 
+#include "Core/Scene.h"
+#include "Core/Film.h"
 #include "Renderers/Renderer.h"
 #include "Utils/FilmQuad.h"
 #include "Utils/InfoPanel.h"
 
 namespace Raycer
 {
-	class Scene;
-	class Film;
-
 	class WindowRunnerRenderState : public WindowRunnerState
 	{
 	public:
@@ -30,11 +29,10 @@ namespace Raycer
 
 		void resizeFilm();
 
+		Scene scene;
+		Film film;
 		Renderer renderer;
 		FilmQuad filmQuad;
 		InfoPanel infoPanel;
-
-		Scene* scene = nullptr;
-		Film* film = nullptr;
 	};
 }

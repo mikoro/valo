@@ -23,6 +23,3 @@
 #endif
 
 #define CUDA_DEVICE_CODE (defined(__CUDA_ARCH__) && (__CUDA_ARCH__ > 0))
-
-#define RAYCER_MALLOC(x) malloc(x)
-#define RAYCER_FREE(x) if (x != nullptr) { free(x); x = nullptr; }
