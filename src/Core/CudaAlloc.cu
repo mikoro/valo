@@ -1,7 +1,7 @@
 // Copyright © 2016 Mikko Ronkainen <firstname@mikkoronkainen.com>
 // License: MIT, see the LICENSE file.
 
-#include "Core/Precompiled.h"
+#include "Precompiled.h"
 
 #ifdef USE_CUDA
 #include <cuda_runtime.h>
@@ -29,6 +29,8 @@ CudaAlloc<T>::~CudaAlloc()
 template <typename T>
 void CudaAlloc<T>::resize(size_t count)
 {
+	assert(count > 0);
+
 	release();
 
 	maxCount = count;

@@ -117,7 +117,7 @@
       <AdditionalOptions>/bigobj /Zm200 %(AdditionalOptions)</AdditionalOptions>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <DisableSpecificWarnings>4313;4127;4505</DisableSpecificWarnings>
-      <PrecompiledHeaderFile>Core\Precompiled.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>Precompiled.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -152,7 +152,7 @@
       <AdditionalOptions>/bigobj /Zm200 %(AdditionalOptions)</AdditionalOptions>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <DisableSpecificWarnings>4313;4127;4505</DisableSpecificWarnings>
-      <PrecompiledHeaderFile>Core\Precompiled.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>Precompiled.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -193,7 +193,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <AdditionalOptions>/bigobj /Zm200 %(AdditionalOptions)</AdditionalOptions>
       <DisableSpecificWarnings>4313;4127;4505</DisableSpecificWarnings>
-      <PrecompiledHeaderFile>Core\Precompiled.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>Precompiled.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -235,7 +235,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <AdditionalOptions>/bigobj /Zm200 /Gw /favor:INTEL64 %(AdditionalOptions)</AdditionalOptions>
       <DisableSpecificWarnings>4313;4127;4505</DisableSpecificWarnings>
-      <PrecompiledHeaderFile>Core\Precompiled.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>Precompiled.h</PrecompiledHeaderFile>
       <WholeProgramOptimization>true</WholeProgramOptimization>
       <StringPooling>true</StringPooling>
       <ControlFlowGuard>false</ControlFlowGuard>
@@ -384,7 +384,6 @@
     <ClInclude Include="src\Core\Image.h" />
     <ClInclude Include="src\Core\ImagePool.h" />
     <ClInclude Include="src\Core\Intersection.h" />
-    <ClInclude Include="src\Core\Precompiled.h" />
     <ClInclude Include="src\Core\Ray.h" />
     <ClInclude Include="src\Core\Scene.h" />
     <ClInclude Include="src\Core\Triangle.h" />
@@ -415,6 +414,7 @@
     <ClInclude Include="src\Math\Vector2.h" />
     <ClInclude Include="src\Math\Vector3.h" />
     <ClInclude Include="src\Math\Vector4.h" />
+    <ClInclude Include="src\Precompiled.h" />
     <ClInclude Include="src\Renderers\CpuRenderer.h" />
     <ClInclude Include="src\Renderers\CudaRenderer.h" />
     <ClInclude Include="src\Renderers\Renderer.h" />

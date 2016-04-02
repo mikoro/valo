@@ -372,9 +372,6 @@
     <ClInclude Include="src\Core\Common.h">
       <Filter>Core</Filter>
     </ClInclude>
-    <ClInclude Include="src\Core\Precompiled.h">
-      <Filter>Core</Filter>
-    </ClInclude>
     <ClInclude Include="src\BVH\Common.h">
       <Filter>BVH</Filter>
     </ClInclude>
@@ -394,6 +391,7 @@
     <ClInclude Include="src\Core\ImagePool.h">
       <Filter>Core</Filter>
     </ClInclude>
+    <ClInclude Include="src\Precompiled.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="platform\windows\raycer.rc">

@@ -1,9 +1,11 @@
 // Copyright © 2016 Mikko Ronkainen <firstname@mikkoronkainen.com>
 // License: MIT, see the LICENSE file.
 
-#include "Core/Precompiled.h"
+#include "Precompiled.h"
 
 #include <GLFW/glfw3.h>
+
+#include "tinyformat/tinyformat.h"
 
 #include "Utils/FpsCounter.h"
 

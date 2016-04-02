@@ -25,5 +25,3 @@
 #include <sstream>
 #include <thread>
 #include <vector>
-
-#include "tinyformat/tinyformat.h"

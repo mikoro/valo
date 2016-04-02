@@ -1,7 +1,9 @@
 // Copyright © 2016 Mikko Ronkainen <firstname@mikkoronkainen.com>
 // License: MIT, see the LICENSE file.
 
-#include "Core/Precompiled.h"
+#include "Precompiled.h"
+
+#include "tinyformat/tinyformat.h"
 
 #include "Utils/Timer.h"
 

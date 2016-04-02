@@ -1,7 +1,7 @@
 ﻿// Copyright © 2016 Mikko Ronkainen <firstname@mikkoronkainen.com>
 // License: MIT, see the LICENSE file.
 
-#include "Core/Precompiled.h"
+#include "Precompiled.h"
 
 #include <GL/gl3w.h>
 #include <GLFW/glfw3.h>
@@ -9,6 +9,8 @@
 #define NANOVG_GL3_IMPLEMENTATION
 #include "nanovg/nanovg.h"
 #include "nanovg/nanovg_gl.h"
+
+#include "tinyformat/tinyformat.h"
 
 #include "App.h"
 #include "Core/Film.h"
