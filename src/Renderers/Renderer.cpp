@@ -27,8 +27,8 @@ void Renderer::initialize(const Settings& settings)
 
 void Renderer::render(RenderJob& job)
 {
-	Scene& scene = *job.scene;
-	Film& film = *job.film;
+	Scene& scene = *job.scene->getPtr();
+	Film& film = *job.film->getPtr();
 
 	imageAutoWriteTimer.restart();
 

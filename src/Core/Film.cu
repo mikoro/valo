@@ -149,15 +149,15 @@ __global__ void normalizeKernel(cudaSurfaceObject_t cumulative, cudaSurfaceObjec
 	if (x >= width || y >= height)
 		return;
 
-	float4 temp;
-	surf2Dread(&temp, cumulative, x * sizeof(float4), y);
+	float4 color;
+	surf2Dread(&color, cumulative, x * sizeof(float4), y);
 
-	temp.x /= temp.w;
-	temp.y /= temp.w;
-	temp.z /= temp.w;
-	temp.w = 1.0f;
+	color.x /= color.w;
+	color.y /= color.w;
+	color.z /= color.w;
+	color.w = 1.0f;
 
-	surf2Dwrite(temp, normalized, x * sizeof(float4), y);
+	surf2Dwrite(color, normalized, x * sizeof(float4), y);
 }
 
 #endif
@@ -169,11 +169,11 @@ void Film::normalize(RendererType type)
 		#pragma omp parallel for
 		for (int32_t i = 0; i < int32_t(length); ++i)
 		{
-			Color temp = cumulativeImage.getPixel(i);
-			temp /= temp.a;
-			temp.a = 1.0f;
+			Color color = cumulativeImage.getPixel(i);
+			color /= color.a;
+			color.a = 1.0f;
 
-			normalizedImage.setPixel(i, temp);
+			normalizedImage.setPixel(i, color);
 		}
 	}
 	else
@@ -204,15 +204,15 @@ __global__ void tonemapKernel(cudaSurfaceObject_t input, cudaSurfaceObject_t out
 	if (x >= width || y >= height)
 		return;
 
-	float4 temp;
-	surf2Dread(&temp, input, x * sizeof(float4), y);
+	float4 color;
+	surf2Dread(&color, input, x * sizeof(float4), y);
 
-	temp.x = pow(temp.x, 1.0f / 2.2f);
-	temp.y = pow(temp.y, 1.0f / 2.2f);
-	temp.z = pow(temp.z, 1.0f / 2.2f);
-	temp.w = 1.0f;
+	color.x = pow(color.x, 1.0f / 2.2f);
+	color.y = pow(color.y, 1.0f / 2.2f);
+	color.z = pow(color.z, 1.0f / 2.2f);
+	color.w = 1.0f;
 
-	surf2Dwrite(temp, output, x * sizeof(float4), y);
+	surf2Dwrite(color, output, x * sizeof(float4), y);
 }
 
 #endif
@@ -251,9 +251,9 @@ __global__ void updateTextureKernel(cudaSurfaceObject_t input, cudaSurfaceObject
 	if (x >= width || y >= height)
 		return;
 
-	float4 temp;
-	surf2Dread(&temp, input, x * sizeof(float4), y);
-	surf2Dwrite(temp, output, x * sizeof(float4), y);
+	float4 color;
+	surf2Dread(&color, input, x * sizeof(float4), y);
+	surf2Dwrite(color, output, x * sizeof(float4), y);
 }
 
 #endif
@@ -320,17 +320,17 @@ Color Film::getTonemappedColor(uint32_t x, uint32_t y) const
 	return tonemappedImage.getPixel(x, y);
 }
 
-Image& Film::getCumulativeImage()
+CUDA_CALLABLE Image& Film::getCumulativeImage()
 {
 	return cumulativeImage;
 }
 
-Image& Film::getNormalizedImage()
+CUDA_CALLABLE Image& Film::getNormalizedImage()
 {
 	return normalizedImage;
 }
 
-Image& Film::getTonemappedImage()
+CUDA_CALLABLE Image& Film::getTonemappedImage()
 {
 	return tonemappedImage;
 }

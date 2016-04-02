@@ -45,9 +45,9 @@ namespace Raycer
 		Color getNormalizedColor(uint32_t x, uint32_t y) const;
 		Color getTonemappedColor(uint32_t x, uint32_t y) const;
 
-		Image& getCumulativeImage();
-		Image& getNormalizedImage();
-		Image& getTonemappedImage();
+		CUDA_CALLABLE Image& getCumulativeImage();
+		CUDA_CALLABLE Image& getNormalizedImage();
+		CUDA_CALLABLE Image& getTonemappedImage();
 
 		CUDA_CALLABLE uint32_t getWidth() const;
 		CUDA_CALLABLE uint32_t getHeight() const;

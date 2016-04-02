@@ -21,5 +21,3 @@
 #else
 #define CUDA_CALLABLE 
 #endif
-
-#define CUDA_DEVICE_CODE (defined(__CUDA_ARCH__) && (__CUDA_ARCH__ > 0))

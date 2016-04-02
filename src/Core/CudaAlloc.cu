@@ -94,7 +94,7 @@ template <typename T>
 CUDA_CALLABLE T* CudaAlloc<T>::getPtr() const
 {
 #ifdef USE_CUDA
-#if CUDA_DEVICE_CODE
+#if (defined(__CUDA_ARCH__) && (__CUDA_ARCH__ > 0))
 	return devicePtr;
 #else
 	return hostPtr;

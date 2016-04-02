@@ -19,8 +19,8 @@ void CpuRenderer::initialize()
 
 void CpuRenderer::render(RenderJob& job, bool filtering)
 {
-	Scene& scene = *job.scene;
-	Film& film = *job.film;
+	Scene& scene = *job.scene->getPtr();
+	Film& film = *job.film->getPtr();
 
 	omp_set_num_threads(maxThreadCount);
 	uint32_t maxThreads = MAX(1, omp_get_max_threads());

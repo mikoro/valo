@@ -270,8 +270,8 @@ __global__ void clearKernel(cudaSurfaceObject_t surfaceObject, uint32_t width, u
 	if (x >= width || y >= height)
 		return;
 
-	float4 zero = make_float4(0.0f, 0.0f, 0.0f, 0.0f);
-	surf2Dwrite(zero, surfaceObject, x * sizeof(float4), y);
+	float4 color = make_float4(0.0f, 0.0f, 0.0f, 0.0f);
+	surf2Dwrite(color, surfaceObject, x * sizeof(float4), y);
 }
 
 #endif
@@ -347,10 +347,9 @@ void Image::fillWithTestPattern()
 
 CUDA_CALLABLE void Image::setPixel(uint32_t x, uint32_t y, const Color& color)
 {
-#if CUDA_DEVICE_CODE
+#if (defined(__CUDA_ARCH__) && (__CUDA_ARCH__ > 0))
 
-	float4 temp(color.r, color.g, color.b, color.a);
-	surf2Dwrite(temp, surfaceObject, x * sizeof(float4), y);
+	surf2Dwrite(make_float4(color.r, color.g, color.b, color.a), surfaceObject, x * sizeof(float4), y);
 
 #else
 
@@ -362,10 +361,9 @@ CUDA_CALLABLE void Image::setPixel(uint32_t x, uint32_t y, const Color& color)
 
 CUDA_CALLABLE void Image::setPixel(uint32_t index, const Color& color)
 {
-#if CUDA_DEVICE_CODE
+#if (defined(__CUDA_ARCH__) && (__CUDA_ARCH__ > 0))
 
-	float4 temp(color.r, color.g, color.b, color.a);
-	surf1Dwrite(temp, surfaceObject, index * sizeof(float4));
+	surf1Dwrite(make_float4(color.r, color.g, color.b, color.a), surfaceObject, index * sizeof(float4));
 
 #else
 
@@ -377,11 +375,11 @@ CUDA_CALLABLE void Image::setPixel(uint32_t index, const Color& color)
 
 CUDA_CALLABLE Color Image::getPixel(uint32_t x, uint32_t y) const
 {
-#if CUDA_DEVICE_CODE
+#if (defined(__CUDA_ARCH__) && (__CUDA_ARCH__ > 0))
 
-	float4 temp;
-	surf2Dread(&temp, surfaceObject, x * sizeof(float4), y);
-	return Color(temp.x, temp.y, temp.z, temp.w);
+	float4 color;
+	surf2Dread(&color, surfaceObject, x * sizeof(float4), y);
+	return Color(color.x, color.y, color.z, color.w);
 
 #else
 
@@ -393,7 +391,7 @@ CUDA_CALLABLE Color Image::getPixel(uint32_t x, uint32_t y) const
 
 CUDA_CALLABLE Color Image::getPixel(uint32_t index) const
 {
-#if CUDA_DEVICE_CODE
+#if (defined(__CUDA_ARCH__) && (__CUDA_ARCH__ > 0))
 
 	float4 color;
 	surf1Dread(&color, surfaceObject, index * sizeof(float4));
@@ -417,10 +415,10 @@ CUDA_CALLABLE Color Image::getPixelNearest(float u, float v) const
 
 CUDA_CALLABLE Color Image::getPixelBilinear(float u, float v) const
 {
-#if CUDA_DEVICE_CODE
+#if (defined(__CUDA_ARCH__) && (__CUDA_ARCH__ > 0))
 
-	float4 texel = tex2D<float4>(textureObject, u, v);
-	return Color(texel.x, texel.y, texel.z, texel.w);
+	float4 color = tex2D<float4>(textureObject, u, v);
+	return Color(color.x, color.y, color.z, color.w);
 
 #else
 
@@ -544,7 +542,7 @@ const Color* Image::getData() const
 
 #ifdef USE_CUDA
 
-cudaSurfaceObject_t Image::getSurfaceObject() const
+CUDA_CALLABLE cudaSurfaceObject_t Image::getSurfaceObject() const
 {
 	return surfaceObject;
 }

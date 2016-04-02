@@ -5,6 +5,7 @@
 
 #include <atomic>
 
+#include "Core/CudaAlloc.h"
 #include "Renderers/CpuRenderer.h"
 #include "Renderers/CudaRenderer.h"
 #include "Utils/Timer.h"
@@ -21,8 +22,8 @@ namespace Raycer
 	{
 		RenderJob() : interrupted(false), sampleCount(0) {}
 
-		Scene* scene = nullptr;
-		Film* film = nullptr;
+		CudaAlloc<Scene>* scene = nullptr;
+		CudaAlloc<Film>* film = nullptr;
 
 		std::atomic<bool> interrupted;
 		std::atomic<uint32_t> sampleCount;

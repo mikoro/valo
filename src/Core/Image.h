@@ -69,7 +69,7 @@ namespace Raycer
 		const Color* getData() const;
 
 #ifdef USE_CUDA
-		cudaSurfaceObject_t getSurfaceObject() const;
+		CUDA_CALLABLE cudaSurfaceObject_t getSurfaceObject() const;
 #endif
 
 	private:

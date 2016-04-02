@@ -7,6 +7,7 @@
 #include "Core/Camera.h"
 #include "Core/Film.h"
 #include "Core/Scene.h"
+#include "Core/CudaAlloc.h"
 #include "Renderers/Renderer.h"
 #include "Runners/ConsoleRunner.h"
 #include "TestScenes/TestScene.h"
@@ -41,8 +42,16 @@ int ConsoleRunner::run()
 	scene.camera.setImagePlaneSize(settings.image.width, settings.image.height);
 	scene.camera.update(0.0f);
 
-	renderJob.scene = &scene;
-	renderJob.film = &film;
+	CudaAlloc<Scene> sceneAlloc(false);
+	sceneAlloc.resize(1);
+	sceneAlloc.write(&scene, 1);
+
+	CudaAlloc<Film> filmAlloc(false);
+	filmAlloc.resize(1);
+	filmAlloc.write(&film, 1);
+
+	renderJob.scene = &sceneAlloc;
+	renderJob.film = &filmAlloc;
 	renderJob.interrupted = false;
 	renderJob.sampleCount = 0;
 	

@@ -57,8 +57,7 @@ __global__ void renderKernel(Scene& scene, Film& film, bool filtering)
 
 void CudaRenderer::render(RenderJob& job, bool filtering)
 {
-	Scene& scene = *job.scene;
-	Film& film = *job.film;
+	Film& film = *job.film->getPtr();
 
 	dim3 dimBlock(16, 16);
 	dim3 dimGrid;
@@ -66,7 +65,7 @@ void CudaRenderer::render(RenderJob& job, bool filtering)
 	dimGrid.x = (film.getWidth() + dimBlock.x - 1) / dimBlock.x;
 	dimGrid.y = (film.getHeight() + dimBlock.y - 1) / dimBlock.y;
 
-	renderKernel<<<dimGrid, dimBlock>>>(scene, film, filtering);
+	renderKernel<<<dimGrid, dimBlock>>>(*job.scene->getDevicePtr(), *job.film->getDevicePtr(), filtering);
 	CudaUtils::checkError(cudaPeekAtLastError(), "Could not launch render kernel");
 	CudaUtils::checkError(cudaDeviceSynchronize(), "Could not execute render kernel");
 }

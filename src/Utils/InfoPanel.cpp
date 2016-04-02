@@ -126,8 +126,8 @@ void InfoPanel::renderFull(const Renderer& renderer, const RenderJob& job)
 	Settings& settings = App::getSettings();
 	WindowRunner& windowRunner = App::getWindowRunner();
 	const FpsCounter& fpsCounter = windowRunner.getFpsCounter();
-	const Scene& scene = *job.scene;
-	const Film& film = *job.film;
+	const Scene& scene = *job.scene->getPtr();
+	const Film& film = *job.film->getPtr();
 
 	nvgBeginPath(context);
 
