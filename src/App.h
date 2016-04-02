@@ -9,7 +9,6 @@ namespace Raycer
 	class Settings;
 	class WindowRunner;
 	class ConsoleRunner;
-	class ImagePool;
 
 	class App
 	{
@@ -21,6 +20,5 @@ namespace Raycer
 		static Settings& getSettings();
 		static WindowRunner& getWindowRunner();
 		static ConsoleRunner& getConsoleRunner();
-		static ImagePool& getImagePool();
 	};
 }

@@ -24,19 +24,8 @@ namespace
 	};
 }
 
-BVH4::~BVH4()
+BVH4::BVH4() : nodesAlloc(false), triangles4Alloc(false)
 {
-	if (nodesPtr != nullptr)
-	{
-		free(nodesPtr);
-		nodesPtr = nullptr;
-	}
-
-	if (triangles4Ptr != nullptr)
-	{
-		free(triangles4Ptr);
-		triangles4Ptr = nullptr;
-	}
 }
 
 void BVH4::build(std::vector<Triangle>& triangles)
@@ -241,19 +230,11 @@ void BVH4::build(std::vector<Triangle>& triangles)
 		stackIndex++;
 	}
 
-	nodesPtr = static_cast<BVHNodeSOA<4>*>(malloc(nodes.size() * sizeof(BVHNodeSOA<4>)));
+	nodesAlloc.resize(nodes.size());
+	nodesAlloc.write(nodes.data(), nodes.size());
 
-	if (nodesPtr == nullptr)
-		throw std::runtime_error("Could not allocate memory for BVH nodes");
-
-	memcpy(nodesPtr, nodes.data(), nodes.size() * sizeof(BVHNodeSOA<4>));
-
-	triangles4Ptr = static_cast<TriangleSOA<4>*>(malloc(triangles4.size() * sizeof(TriangleSOA<4>)));
-
-	if (triangles4Ptr == nullptr)
-		throw std::runtime_error("Could not allocate memory for BVH triangles");
-
-	memcpy(triangles4Ptr, triangles4.data(), triangles4.size() * sizeof(TriangleSOA<4>));
+	triangles4Alloc.resize(triangles4.size());
+	triangles4Alloc.write(triangles4.data(), triangles4.size());
 
 	std::vector<Triangle> sortedTriangles(triangleCount);
 
@@ -267,9 +248,6 @@ void BVH4::build(std::vector<Triangle>& triangles)
 
 CUDA_CALLABLE bool BVH4::intersect(const Scene& scene, const Ray& ray, Intersection& intersection) const
 {
-	if (nodesPtr == nullptr || triangles4Ptr == nullptr)
-		return false;
-
 	if (ray.isVisibilityRay && intersection.wasFound)
 		return true;
 
@@ -282,14 +260,14 @@ CUDA_CALLABLE bool BVH4::intersect(const Scene& scene, const Ray& ray, Intersect
 	while (stackIndex > 0)
 	{
 		uint32_t nodeIndex = stack[--stackIndex];
-		const BVHNodeSOA<4>& node = nodesPtr[nodeIndex];
+		const BVHNodeSOA<4>& node = nodesAlloc.getPtr()[nodeIndex];
 
 		if (node.isLeaf)
 		{
 			if (node.triangleCount == 0)
 				continue;
 
-			const TriangleSOA<4>& triangleSOA = triangles4Ptr[node.triangleOffset];
+			const TriangleSOA<4>& triangleSOA = triangles4Alloc.getPtr()[node.triangleOffset];
 
 			if (Triangle::intersect<4>(
 				triangleSOA.vertex1X,

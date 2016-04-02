@@ -18,7 +18,6 @@
 #include "Utils/Log.h"
 #include "Runners/WindowRunner.h"
 #include "Runners/ConsoleRunner.h"
-#include "Utils/ImagePool.h"
 
 using namespace Raycer;
 
@@ -117,10 +116,4 @@ ConsoleRunner& App::getConsoleRunner()
 {
 	static ConsoleRunner consoleRunner;
 	return consoleRunner;
-}
-
-ImagePool& App::getImagePool()
-{
-	static ImagePool imagePool;
-	return imagePool;
 }

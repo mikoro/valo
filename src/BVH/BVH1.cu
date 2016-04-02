@@ -23,13 +23,8 @@ namespace
 	};
 }
 
-BVH1::~BVH1()
+BVH1::BVH1() : nodesAlloc(false)
 {
-	if (nodesPtr != nullptr)
-	{
-		free(nodesPtr);
-		nodesPtr = nullptr;
-	}
 }
 
 void BVH1::build(std::vector<Triangle>& triangles)
@@ -129,12 +124,8 @@ void BVH1::build(std::vector<Triangle>& triangles)
 		stackIndex++;
 	}
 
-	nodesPtr = static_cast<BVHNode*>(malloc(nodes.size() * sizeof(BVHNode)));
-
-	if (nodesPtr == nullptr)
-		throw std::runtime_error("Could not allocate memory for BVH nodes");
-
-	memcpy(nodesPtr, nodes.data(), nodes.size() * sizeof(BVHNode));
+	nodesAlloc.resize(nodes.size());
+	nodesAlloc.write(nodes.data(), nodes.size());
 
 	std::vector<Triangle> sortedTriangles(triangleCount);
 
@@ -148,9 +139,6 @@ void BVH1::build(std::vector<Triangle>& triangles)
 
 CUDA_CALLABLE bool BVH1::intersect(const Scene& scene, const Ray& ray, Intersection& intersection) const
 {
-	if (nodesPtr == nullptr || scene.trianglesPtr == nullptr)
-		return false;
-
 	if (ray.isVisibilityRay && intersection.wasFound)
 		return true;
 
@@ -163,14 +151,14 @@ CUDA_CALLABLE bool BVH1::intersect(const Scene& scene, const Ray& ray, Intersect
 	while (stackIndex > 0)
 	{
 		uint32_t nodeIndex = stack[--stackIndex];
-		const BVHNode& node = nodesPtr[nodeIndex];
+		const BVHNode& node = nodesAlloc.getPtr()[nodeIndex];
 
 		// leaf node
 		if (node.rightOffset == 0)
 		{
 			for (uint32_t i = 0; i < node.triangleCount; ++i)
 			{
-				if (scene.trianglesPtr[node.triangleOffset + i].intersect(scene, ray, intersection))
+				if (scene.getTriangles()[node.triangleOffset + i].intersect(scene, ray, intersection))
 				{
 					if (ray.isVisibilityRay)
 						return true;

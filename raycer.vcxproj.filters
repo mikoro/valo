@@ -171,9 +171,6 @@
     <ClCompile Include="src\Utils\Timer.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
-    <ClCompile Include="src\Utils\ImagePool.cpp">
-      <Filter>Utils</Filter>
-    </ClCompile>
     <ClCompile Include="src\Renderers\CpuRenderer.cpp">
       <Filter>Renderers</Filter>
     </ClCompile>
@@ -378,9 +375,6 @@
     <ClInclude Include="src\Core\Precompiled.h">
       <Filter>Core</Filter>
     </ClInclude>
-    <ClInclude Include="src\Utils\ImagePool.h">
-      <Filter>Utils</Filter>
-    </ClInclude>
     <ClInclude Include="src\BVH\Common.h">
       <Filter>BVH</Filter>
     </ClInclude>
@@ -394,8 +388,11 @@
     <ClInclude Include="src\Utils\CudaUtils.h">
       <Filter>Utils</Filter>
     </ClInclude>
-    <ClInclude Include="src\Utils\CudaAlloc.h">
-      <Filter>Utils</Filter>
+    <ClInclude Include="src\Core\CudaAlloc.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Core\ImagePool.h">
+      <Filter>Core</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -538,8 +535,11 @@
     <CudaCompile Include="src\Renderers\CudaRenderer.cu">
       <Filter>Renderers</Filter>
     </CudaCompile>
-    <CudaCompile Include="src\Utils\CudaAlloc.cu">
-      <Filter>Utils</Filter>
+    <CudaCompile Include="src\Core\CudaAlloc.cu">
+      <Filter>Core</Filter>
+    </CudaCompile>
+    <CudaCompile Include="src\Core\ImagePool.cu">
+      <Filter>Core</Filter>
     </CudaCompile>
   </ItemGroup>
 </Project>

@@ -10,11 +10,12 @@ namespace Raycer
 	{
 	public:
 
-		explicit CudaAlloc(bool pinned = false);
+		explicit CudaAlloc(bool pinned);
 		~CudaAlloc();
 
 		void resize(size_t count);
 		void write(T* source, size_t count);
+		void read(size_t count);
 
 		CUDA_CALLABLE T* getPtr() const;
 		T* getHostPtr() const;
@@ -28,5 +29,7 @@ namespace Raycer
 
 		T* hostPtr = nullptr;
 		T* devicePtr = nullptr;
+
+		size_t maxCount = 0;
 	};
 }

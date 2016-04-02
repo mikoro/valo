@@ -1,6 +1,7 @@
 // Copyright © 2016 Mikko Ronkainen <firstname@mikkoronkainen.com>
 // License: MIT, see the LICENSE file.
 
+#include "Core/Scene.h"
 #include "Materials/Material.h"
 #include "Math/Vector3.h"
 #include "Textures/Texture.h"
@@ -17,12 +18,12 @@ CUDA_CALLABLE Vector3 Material::getDirection(const Intersection& intersection, R
 	}
 }
 
-CUDA_CALLABLE Color Material::getBrdf(const Intersection& intersection, const Vector3& in, const Vector3& out)
+CUDA_CALLABLE Color Material::getBrdf(const Scene& scene, const Intersection& intersection, const Vector3& in, const Vector3& out)
 {
 	switch (type)
 	{
-		case MaterialType::DIFFUSE: return diffuseMaterial.getBrdf(*this, intersection, in, out);
-		case MaterialType::BLINN_PHONG: return blinnPhongMaterial.getBrdf(*this, intersection, in, out);
+		case MaterialType::DIFFUSE: return diffuseMaterial.getBrdf(scene, *this, intersection, in, out);
+		case MaterialType::BLINN_PHONG: return blinnPhongMaterial.getBrdf(scene, *this, intersection, in, out);
 		default: return Color::black();
 	}
 }
@@ -39,21 +40,21 @@ CUDA_CALLABLE float Material::getPdf(const Intersection& intersection, const Vec
 
 CUDA_CALLABLE bool Material::isEmissive() const
 {
-	return emittanceTexture != nullptr || !emittance.isZero();
+	return emittanceTextureIndex != -1 || !emittance.isZero();
 }
 
-CUDA_CALLABLE Color Material::getEmittance(const Vector2& texcoord, const Vector3& position) const
+CUDA_CALLABLE Color Material::getEmittance(const Scene& scene, const Vector2& texcoord, const Vector3& position) const
 {
-	if (emittanceTexture != nullptr)
-		return emittanceTexture->getColor(texcoord, position);
+	if (emittanceTextureIndex != -1)
+		return scene.getTexture(emittanceTextureIndex).getColor(scene, texcoord, position);
 	else
 		return emittance;
 }
 
-CUDA_CALLABLE Color Material::getReflectance(const Vector2& texcoord, const Vector3& position) const
+CUDA_CALLABLE Color Material::getReflectance(const Scene& scene, const Vector2& texcoord, const Vector3& position) const
 {
-	if (reflectanceTexture != nullptr)
-		return reflectanceTexture->getColor(texcoord, position);
+	if (reflectanceTextureIndex != -1)
+		return scene.getTexture(reflectanceTextureIndex).getColor(scene, texcoord, position);
 	else
 		return reflectance;
 }

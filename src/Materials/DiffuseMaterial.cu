@@ -16,12 +16,12 @@ CUDA_CALLABLE Vector3 DiffuseMaterial::getDirection(const Material& material, co
 	return Mapper::mapToCosineHemisphere(random.getVector2(), intersection.onb);
 }
 
-CUDA_CALLABLE Color DiffuseMaterial::getBrdf(const Material& material, const Intersection& intersection, const Vector3& in, const Vector3& out)
+CUDA_CALLABLE Color DiffuseMaterial::getBrdf(const Scene& scene, const Material& material, const Intersection& intersection, const Vector3& in, const Vector3& out)
 {
 	(void)in;
 	(void)out;
 
-	return material.getReflectance(intersection.texcoord, intersection.position) / float(M_PI);
+	return material.getReflectance(scene, intersection.texcoord, intersection.position) / float(M_PI);
 }
 
 CUDA_CALLABLE float DiffuseMaterial::getPdf(const Material& material, const Intersection& intersection, const Vector3& out)

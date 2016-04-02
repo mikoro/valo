@@ -27,8 +27,10 @@ CUDA_CALLABLE Color DotIntegrator::calculateRadiance(const Scene& scene, const R
 	if (scene.general.normalVisualization)
 		return Color::fromNormal(intersection.normal);
 
+	Material& material = scene.getMaterial(intersection.materialIndex);
+
 	float dot = std::abs(viewRay.direction.dot(intersection.normal));
-	return dot * intersection.material->getReflectance(intersection.texcoord, intersection.position);
+	return dot * material.getReflectance(scene, intersection.texcoord, intersection.position);
 }
 
 uint32_t DotIntegrator::getSampleCount() const

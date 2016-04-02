@@ -8,6 +8,7 @@
 #include "BVH/Common.h"
 #include "Core/Common.h"
 #include "Core/Triangle.h"
+#include "Core/CudaAlloc.h"
 
 namespace Raycer
 {
@@ -20,14 +21,14 @@ namespace Raycer
 	{
 	public:
 
-		~BVH4();
+		BVH4();
 
 		void build(std::vector<Triangle>& triangles);
 		CUDA_CALLABLE bool intersect(const Scene& scene, const Ray& ray, Intersection& intersection) const;
 
 	private:
 
-		BVHNodeSOA<4>* nodesPtr = nullptr;
-		TriangleSOA<4>* triangles4Ptr = nullptr;
+		CudaAlloc<BVHNodeSOA<4>> nodesAlloc;
+		CudaAlloc<TriangleSOA<4>> triangles4Alloc;
 	};
 }

@@ -14,7 +14,6 @@ namespace Raycer
 	class Scene;
 	class Ray;
 	class Intersection;
-	class Material;
 	class Random;
 	class AABB;
 
@@ -43,7 +42,7 @@ namespace Raycer
 		template <uint32_t N>
 		CUDA_CALLABLE static bool intersect(const float* __restrict vertex1X, const float* __restrict vertex1Y, const float* __restrict vertex1Z, const float* __restrict vertex2X, const float* __restrict vertex2Y, const float* __restrict vertex2Z, const float* __restrict vertex3X, const float* __restrict vertex3Y, const float* __restrict vertex3Z, const uint32_t* __restrict triangleIndices, const Scene& scene, const Ray& ray, Intersection& intersection);
 
-		CUDA_CALLABLE Intersection getRandomIntersection(Random& random) const;
+		CUDA_CALLABLE Intersection getRandomIntersection(const Scene& scene, Random& random) const;
 		AABB getAABB() const;
 
 		Vector3 vertices[3];
@@ -54,8 +53,8 @@ namespace Raycer
 		Vector3 bitangent;
 		float area = 0.0f;
 		uint32_t materialId = 0;
-		Material* material = nullptr;
-
+		uint32_t materialIndex = 0;
+		
 	private:
 
 		template <uint32_t N>

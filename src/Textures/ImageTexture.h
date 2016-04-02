@@ -15,15 +15,15 @@ namespace Raycer
 	{
 	public:
 
-		void initialize();
+		void initialize(Scene& scene);
 
-		CUDA_CALLABLE Color getColor(const Vector2& texcoord, const Vector3& position);
+		CUDA_CALLABLE Color getColor(const Scene& scene, const Vector2& texcoord, const Vector3& position);
 		
 		std::string imageFileName;
 		bool applyGamma = false;
 
 	private:
 
-		Image* image = nullptr;
+		uint32_t imageIndex = 0;
 	};
 }

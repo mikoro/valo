@@ -8,7 +8,7 @@
 #endif
 
 #include "Core/Common.h"
-#include "Utils/CudaAlloc.h"
+#include "Core/CudaAlloc.h"
 #include "Utils/CudaUtils.h"
 #include "Core/Scene.h"
 #include "Core/Film.h"
@@ -30,6 +30,8 @@ template <typename T>
 void CudaAlloc<T>::resize(size_t count)
 {
 	release();
+
+	maxCount = count;
 
 #ifdef USE_CUDA
 
@@ -66,10 +68,22 @@ void CudaAlloc<T>::resize(size_t count)
 template <typename T>
 void CudaAlloc<T>::write(T* source, size_t count)
 {
+	assert(count <= maxCount);
+
 	memcpy(hostPtr, source, sizeof(T) * count);
 
 #ifdef USE_CUDA
-	CudaUtils::checkError(cudaMemcpy(devicePtr, hostPtr, sizeof(T) * count, cudaMemcpyHostToDevice), "Could not copy data to device");
+	CudaUtils::checkError(cudaMemcpy(devicePtr, hostPtr, sizeof(T) * count, cudaMemcpyHostToDevice), "Could not write data to device");
+#endif
+}
+
+template <typename T>
+void CudaAlloc<T>::read(size_t count)
+{
+	assert(count <= maxCount);
+
+#ifdef USE_CUDA
+	CudaUtils::checkError(cudaMemcpy(hostPtr, devicePtr, sizeof(T) * count, cudaMemcpyDeviceToHost), "Could not read data from device");
 #endif
 }
 
@@ -102,6 +116,8 @@ T* CudaAlloc<T>::getDevicePtr() const
 template <typename T>
 void CudaAlloc<T>::release()
 {
+	maxCount = 0;
+
 #ifdef USE_CUDA
 
 	if (hostPtr != nullptr)
@@ -136,3 +152,7 @@ template class CudaAlloc<Film>;
 template class CudaAlloc<Image>;
 template class CudaAlloc<Texture>;
 template class CudaAlloc<Material>;
+template class CudaAlloc<Triangle>;
+template class CudaAlloc<BVHNode>;
+template class CudaAlloc<BVHNodeSOA<4>>;
+template class CudaAlloc<TriangleSOA<4>>;

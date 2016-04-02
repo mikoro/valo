@@ -15,8 +15,6 @@ namespace Raycer
 	{
 	public:
 
-		void initialize();
-
 		CUDA_CALLABLE Color getColor(const Vector2& texcoord, const Vector3& position);
 		
 		Color color1;

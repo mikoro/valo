@@ -42,11 +42,11 @@ std::string Integrator::getName() const
 
 CUDA_CALLABLE Color Integrator::calculateDirectLight(const Scene& scene, const Intersection& intersection, const Vector3& in, Random& random)
 {
-	if (scene.emissiveTrianglesCount == 0)
+	if (scene.getEmissiveTrianglesCount() == 0)
 		return Color(0.0f, 0.0f, 0.0f);
 
-	Triangle* triangle = &scene.emissiveTrianglesPtr[random.getUint32(0, scene.emissiveTrianglesCount - 1)];
-	Intersection triangleIntersection = triangle->getRandomIntersection(random);
+	Triangle& triangle = scene.getEmissiveTriangles()[random.getUint32(0, scene.getEmissiveTrianglesCount() - 1)];
+	Intersection triangleIntersection = triangle.getRandomIntersection(scene, random);
 	Vector3 intersectionToTriangle = triangleIntersection.position - intersection.position;
 	float triangleDistance2 = intersectionToTriangle.lengthSquared();
 	float triangleDistance = sqrt(triangleDistance2);
@@ -66,16 +66,19 @@ CUDA_CALLABLE Color Integrator::calculateDirectLight(const Scene& scene, const I
 		return Color(0.0f, 0.0f, 0.0f);
 
 	float cosine1 = intersection.normal.dot(out);
-	float cosine2 = out.dot(-triangle->normal);
+	float cosine2 = out.dot(-triangle.normal);
 
 	if (cosine1 < 0.0f || cosine2 < 0.0f)
 		return Color(0.0f, 0.0f, 0.0f);
 
-	float probability1 = 1.0f / float(scene.emissiveTrianglesCount);
-	float probability2 = 1.0f / triangle->area;
+	float probability1 = 1.0f / float(scene.getEmissiveTrianglesCount());
+	float probability2 = 1.0f / triangle.area;
 
-	Color emittance = triangle->material->getEmittance(triangleIntersection.texcoord, triangleIntersection.position);
-	Color brdf = intersection.material->getBrdf(intersection, in, out);
+	Material& triangleMaterial = scene.getMaterial(triangle.materialIndex);
+	Material& intersectionMaterial = scene.getMaterial(intersection.materialIndex);
+
+	Color emittance = triangleMaterial.getEmittance(scene, triangleIntersection.texcoord, triangleIntersection.position);
+	Color brdf = intersectionMaterial.getBrdf(scene, intersection, in, out);
 
 	return emittance * brdf * cosine1 * cosine2 * (1.0f / triangleDistance2) / (probability1 * probability2);
 }

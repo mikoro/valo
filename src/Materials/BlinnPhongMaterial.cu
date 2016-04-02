@@ -2,6 +2,7 @@
 // License: MIT, see the LICENSE file.
 
 #include "Core/Intersection.h"
+#include "Core/Scene.h"
 #include "Materials/BlinnPhongMaterial.h"
 #include "Materials/Material.h"
 #include "Math/Mapper.h"
@@ -17,12 +18,12 @@ CUDA_CALLABLE Vector3 BlinnPhongMaterial::getDirection(const Material& material,
 	return Mapper::mapToCosineHemisphere(random.getVector2(), intersection.onb);
 }
 
-CUDA_CALLABLE Color BlinnPhongMaterial::getBrdf(const Material& material, const Intersection& intersection, const Vector3& in, const Vector3& out)
+CUDA_CALLABLE Color BlinnPhongMaterial::getBrdf(const Scene& scene, const Material& material, const Intersection& intersection, const Vector3& in, const Vector3& out)
 {
 	(void)in;
 	(void)out;
 
-	return material.getReflectance(intersection.texcoord, intersection.position) / float(M_PI);
+	return material.getReflectance(scene, intersection.texcoord, intersection.position) / float(M_PI);
 }
 
 CUDA_CALLABLE float BlinnPhongMaterial::getPdf(const Material& material, const Intersection& intersection, const Vector3& out)
@@ -32,18 +33,18 @@ CUDA_CALLABLE float BlinnPhongMaterial::getPdf(const Material& material, const I
 	return intersection.normal.dot(out) / float(M_PI);
 }
 
-CUDA_CALLABLE Color BlinnPhongMaterial::getSpecularReflectance(const Vector2& texcoord, const Vector3& position) const
+CUDA_CALLABLE Color BlinnPhongMaterial::getSpecularReflectance(const Scene& scene, const Vector2& texcoord, const Vector3& position) const
 {
-	if (specularReflectanceTexture != nullptr)
-		return specularReflectanceTexture->getColor(texcoord, position);
+	if (specularReflectanceTextureIndex != -1)
+		return scene.getTexture(specularReflectanceTextureIndex).getColor(scene, texcoord, position);
 	else
 		return specularReflectance;
 }
 
-CUDA_CALLABLE Color BlinnPhongMaterial::getGlossiness(const Vector2& texcoord, const Vector3& position) const
+CUDA_CALLABLE Color BlinnPhongMaterial::getGlossiness(const Scene& scene, const Vector2& texcoord, const Vector3& position) const
 {
-	if (glossinessTexture != nullptr)
-		return glossinessTexture->getColor(texcoord, position);
+	if (glossinessTextureIndex != -1)
+		return scene.getTexture(glossinessTextureIndex).getColor(scene, texcoord, position);
 	else
 		return glossiness;
 }

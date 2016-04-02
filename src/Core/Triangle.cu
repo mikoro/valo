@@ -55,8 +55,7 @@ CUDA_CALLABLE bool Triangle::intersect(const Scene& scene, const Ray& ray, Inter
 	Vector3 pvec = ray.direction.cross(v0v2);
 	float determinant = v0v1.dot(pvec);
 
-	// ray and triangle are parallel -> no intersection
-	if (std::abs(determinant) < 0.0000000001f)
+	if (determinant == 0.0f)
 		return false;
 
 	float invDeterminant = 1.0f / determinant;
@@ -143,7 +142,7 @@ CUDA_CALLABLE bool Triangle::intersect(
 		// dot product
 		const float determinant = v0v1X * pvecX + v0v1Y * pvecY + v0v1Z * pvecZ;
 
-		if (std::abs(determinant) < 0.0000000001f)
+		if (determinant == 0.0f)
 			hits[i] = 0;
 
 		const float invDeterminant = 1.0f / determinant;
@@ -192,7 +191,7 @@ CUDA_CALLABLE bool Triangle::intersect(
 	if (!findIntersectionValues<N>(hits, distances, uValues, vValues, triangleIndices, distance, u, v, triangleIndex))
 		return false;
 
-	return calculateIntersectionData(scene, ray, scene.trianglesPtr[triangleIndex], intersection, distance, u, v);
+	return calculateIntersectionData(scene, ray, scene.getTriangle(triangleIndex), intersection, distance, u, v);
 }
 
 template <uint32_t N>
@@ -223,28 +222,30 @@ template bool Triangle::intersect<16>(const float* __restrict vertex1X, const fl
 
 CUDA_CALLABLE bool Triangle::calculateIntersectionData(const Scene& scene, const Ray& ray, const Triangle& triangle, Intersection& intersection, float distance, float u, float v)
 {
+	Material& material = scene.getMaterial(triangle.materialIndex);
+
 	float w = 1.0f - u - v;
 
 	Vector3 intersectionPosition = ray.origin + (distance * ray.direction);
-	Vector2 texcoord = (w * triangle.texcoords[0] + u * triangle.texcoords[1] + v * triangle.texcoords[2]) * triangle.material->texcoordScale;
+	Vector2 texcoord = (w * triangle.texcoords[0] + u * triangle.texcoords[1] + v * triangle.texcoords[2]) * material.texcoordScale;
 
 	texcoord.x = texcoord.x - floor(texcoord.x);
 	texcoord.y = texcoord.y - floor(texcoord.y);
 
-	if (triangle.material->maskTexture != nullptr)
+	if (material.maskTextureIndex != -1)
 	{
-		if (triangle.material->maskTexture->getColor(texcoord, intersectionPosition).r < 0.5f)
+		if (scene.getTexture(material.maskTextureIndex).getColor(scene, texcoord, intersectionPosition).r < 0.5f)
 			return false;
 	}
 
-	Vector3 tempNormal = (scene.general.normalInterpolation && triangle.material->normalInterpolation) ? (w * triangle.normals[0] + u * triangle.normals[1] + v * triangle.normals[2]) : triangle.normal;
+	Vector3 tempNormal = (scene.general.normalInterpolation && material.normalInterpolation) ? (w * triangle.normals[0] + u * triangle.normals[1] + v * triangle.normals[2]) : triangle.normal;
 
-	if (triangle.material->invertNormal)
+	if (material.invertNormal)
 		tempNormal = -tempNormal;
 
 	intersection.isBehind = ray.direction.dot(tempNormal) > 0.0f;
 
-	if (triangle.material->autoInvertNormal && intersection.isBehind)
+	if (material.autoInvertNormal && intersection.isBehind)
 		tempNormal = -tempNormal;
 
 	if (scene.general.interpolationVisualization)
@@ -259,13 +260,15 @@ CUDA_CALLABLE bool Triangle::calculateIntersectionData(const Scene& scene, const
 	intersection.normal = tempNormal;
 	intersection.texcoord = texcoord;
 	intersection.onb = ONB(triangle.tangent, triangle.bitangent, tempNormal);
-	intersection.material = triangle.material;
+	intersection.materialIndex = triangle.materialIndex;
 
 	return true;
 }
 
-CUDA_CALLABLE Intersection Triangle::getRandomIntersection(Random& random) const
+CUDA_CALLABLE Intersection Triangle::getRandomIntersection(const Scene& scene, Random& random) const
 {
+	Material& material = scene.getMaterial(materialIndex);
+
 	float r1 = random.getFloat();
 	float r2 = random.getFloat();
 	float sr1 = std::sqrt(r1);
@@ -275,8 +278,8 @@ CUDA_CALLABLE Intersection Triangle::getRandomIntersection(Random& random) const
 	float w = 1.0f - u - v;
 
 	Vector3 position = u * vertices[0] + v * vertices[1] + w * vertices[2];
-	Vector3 tempNormal = material->normalInterpolation ? (w * normals[0] + u * normals[1] + v * normals[2]) : normal;
-	Vector2 texcoord = (w * texcoords[0] + u * texcoords[1] + v * texcoords[2]) * material->texcoordScale;
+	Vector3 tempNormal = material.normalInterpolation ? (w * normals[0] + u * normals[1] + v * normals[2]) : normal;
+	Vector2 texcoord = (w * texcoords[0] + u * texcoords[1] + v * texcoords[2]) * material.texcoordScale;
 
 	texcoord.x = texcoord.x - floor(texcoord.x);
 	texcoord.y = texcoord.y - floor(texcoord.y);
@@ -287,7 +290,7 @@ CUDA_CALLABLE Intersection Triangle::getRandomIntersection(Random& random) const
 	intersection.normal = tempNormal;
 	intersection.texcoord = texcoord;
 	intersection.onb = ONB(tangent, bitangent, tempNormal);
-	intersection.material = material;
+	intersection.materialIndex = materialIndex;
 
 	return intersection;
 }

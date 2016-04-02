@@ -11,21 +11,21 @@
 
 namespace Raycer
 {
-	class Texture;
-
 	enum class MaterialType { DIFFUSE, BLINN_PHONG };
+
+	class Scene;
 
 	class Material
 	{
 	public:
 
 		CUDA_CALLABLE Vector3 getDirection(const Intersection& intersection, Random& random);
-		CUDA_CALLABLE Color getBrdf(const Intersection& intersection, const Vector3& in, const Vector3& out);
+		CUDA_CALLABLE Color getBrdf(const Scene& scene, const Intersection& intersection, const Vector3& in, const Vector3& out);
 		CUDA_CALLABLE float getPdf(const Intersection& intersection, const Vector3& out);
 
 		CUDA_CALLABLE bool isEmissive() const;
-		CUDA_CALLABLE Color getEmittance(const Vector2& texcoord, const Vector3& position) const;
-		CUDA_CALLABLE Color getReflectance(const Vector2& texcoord, const Vector3& position) const;
+		CUDA_CALLABLE Color getEmittance(const Scene& scene, const Vector2& texcoord, const Vector3& position) const;
+		CUDA_CALLABLE Color getReflectance(const Scene& scene, const Vector2& texcoord, const Vector3& position) const;
 
 		uint32_t id = 0;
 		MaterialType type = MaterialType::DIFFUSE;
@@ -38,17 +38,17 @@ namespace Raycer
 
 		Color emittance = Color(0.0f, 0.0f, 0.0f);
 		uint32_t emittanceTextureId = 0;
-		Texture* emittanceTexture = nullptr;
+		int32_t emittanceTextureIndex = -1;
 
 		Color reflectance = Color(0.0f, 0.0f, 0.0f);
 		uint32_t reflectanceTextureId = 0;
-		Texture* reflectanceTexture = nullptr;
+		int32_t reflectanceTextureIndex = -1;
 
 		uint32_t normalTextureId = 0;
-		Texture* normalTexture = nullptr;
+		int32_t normalTextureIndex = -1;
 
 		uint32_t maskTextureId = 0;
-		Texture* maskTexture = nullptr;
+		int32_t maskTextureIndex = -1;
 
 		DiffuseMaterial diffuseMaterial;
 		BlinnPhongMaterial blinnPhongMaterial;

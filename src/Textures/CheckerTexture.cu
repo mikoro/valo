@@ -7,10 +7,6 @@
 
 using namespace Raycer;
 
-void CheckerTexture::initialize()
-{
-}
-
 CUDA_CALLABLE Color CheckerTexture::getColor(const Vector2& texcoord, const Vector3& position)
 {
 	(void)position;

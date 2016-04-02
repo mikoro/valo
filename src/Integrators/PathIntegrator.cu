@@ -32,17 +32,19 @@ CUDA_CALLABLE Color PathIntegrator::calculateRadiance(const Scene& scene, const 
 
 			scene.calculateNormalMapping(intersection);
 
-			if (++pathLength == 1 && !intersection.isBehind && intersection.material->isEmissive())
-				result += throughput * intersection.material->getEmittance(intersection.texcoord, intersection.position);
+			Material& material = scene.getMaterial(intersection.materialIndex);
+
+			if (++pathLength == 1 && !intersection.isBehind && material.isEmissive())
+				result += throughput * material.getEmittance(scene, intersection.texcoord, intersection.position);
 
 			Vector3 in = -pathRay.direction;
-			Vector3 out = intersection.material->getDirection(intersection, random);
+			Vector3 out = material.getDirection(intersection, random);
 
 			result += throughput * Integrator::calculateDirectLight(scene, intersection, in, random);
 
-			Color brdf = intersection.material->getBrdf(intersection, in, out);
+			Color brdf = material.getBrdf(scene, intersection, in, out);
 			float cosine = out.dot(intersection.normal);
-			float pdf = intersection.material->getPdf(intersection, out);
+			float pdf = material.getPdf(intersection, out);
 
 			if (pdf == 0.0f)
 				break;

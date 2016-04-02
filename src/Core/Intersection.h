@@ -10,8 +10,6 @@
 
 namespace Raycer
 {
-	class Material;
-
 	class Intersection
 	{
 	public:
@@ -29,6 +27,6 @@ namespace Raycer
 
 		ONB onb;
 
-		Material* material = nullptr;
+		uint32_t materialIndex = 0;
 	};
 }

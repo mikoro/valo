@@ -9,6 +9,8 @@
 #include "BVH/BVH.h"
 #include "Core/Camera.h"
 #include "Core/Common.h"
+#include "Core/CudaAlloc.h"
+#include "Core/ImagePool.h"
 #include "Filters/Filter.h"
 #include "Integrators/Integrator.h"
 #include "Materials/Material.h"
@@ -23,11 +25,22 @@ namespace Raycer
 	{
 	public:
 
-		~Scene();
+		Scene();
 
 		void initialize();
+
 		CUDA_CALLABLE bool intersect(const Ray& ray, Intersection& intersection) const;
 		CUDA_CALLABLE void calculateNormalMapping(Intersection& intersection) const;
+
+		CUDA_CALLABLE Texture* getTextures() const;
+		CUDA_CALLABLE Material* getMaterials() const;
+		CUDA_CALLABLE Triangle* getTriangles() const;
+		CUDA_CALLABLE Triangle* getEmissiveTriangles() const;
+		CUDA_CALLABLE uint32_t getEmissiveTrianglesCount() const;
+
+		CUDA_CALLABLE Texture& getTexture(uint32_t index) const;
+		CUDA_CALLABLE Material& getMaterial(uint32_t index) const;
+		CUDA_CALLABLE Triangle& getTriangle(uint32_t index) const;
 
 		struct General
 		{
@@ -53,16 +66,19 @@ namespace Raycer
 		Integrator integrator;
 		Tonemapper tonemapper;
 		BVH bvh;
+		ImagePool imagePool;
 
 		std::vector<ModelLoaderInfo> models;
 		std::vector<Texture> textures;
 		std::vector<Material> materials;
 		std::vector<Triangle> triangles;
 
-		Texture* texturesPtr = nullptr;
-		Material* materialsPtr = nullptr;
-		Triangle* trianglesPtr = nullptr;
-		Triangle* emissiveTrianglesPtr = nullptr;
-		uint32_t emissiveTrianglesCount = 0;
+	private:
+
+		CudaAlloc<Texture> texturesAlloc;
+		CudaAlloc<Material> materialsAlloc;
+		CudaAlloc<Triangle> trianglesAlloc;
+		CudaAlloc<Triangle> emissiveTrianglesAlloc;
+		uint32_t emissiveTrianglesCount = 0;	
 	};
 }

@@ -7,6 +7,7 @@
 
 namespace Raycer
 {
+	class Scene;
 	class Vector3;
 	class Intersection;
 	class Random;
@@ -19,18 +20,18 @@ namespace Raycer
 	public:
 
 		CUDA_CALLABLE Vector3 getDirection(const Material& material, const Intersection& intersection, Random& random);
-		CUDA_CALLABLE Color getBrdf(const Material& material, const Intersection& intersection, const Vector3& in, const Vector3& out);
+		CUDA_CALLABLE Color getBrdf(const Scene& scene, const Material& material, const Intersection& intersection, const Vector3& in, const Vector3& out);
 		CUDA_CALLABLE float getPdf(const Material& material, const Intersection& intersection, const Vector3& out);
 
-		CUDA_CALLABLE Color getSpecularReflectance(const Vector2& texcoord, const Vector3& position) const;
-		CUDA_CALLABLE Color getGlossiness(const Vector2& texcoord, const Vector3& position) const;
+		CUDA_CALLABLE Color getSpecularReflectance(const Scene& scene, const Vector2& texcoord, const Vector3& position) const;
+		CUDA_CALLABLE Color getGlossiness(const Scene& scene, const Vector2& texcoord, const Vector3& position) const;
 
 		Color specularReflectance = Color(0.0f, 0.0f, 0.0f);
 		uint32_t specularReflectanceTextureId = 0;
-		Texture* specularReflectanceTexture = nullptr;
+		int32_t specularReflectanceTextureIndex = -1;
 
 		Color glossiness = Color(1.0f, 1.0f, 1.0f);
 		uint32_t glossinessTextureId = 0;
-		Texture* glossinessTexture = nullptr;
+		int32_t glossinessTextureIndex = -1;
 	};
 }

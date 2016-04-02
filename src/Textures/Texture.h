@@ -19,9 +19,9 @@ namespace Raycer
 	{
 	public:
 
-		void initialize();
+		void initialize(Scene& scene);
 
-		CUDA_CALLABLE Color getColor(const Vector2& texcoord, const Vector3& position);
+		CUDA_CALLABLE Color getColor(const Scene& scene, const Vector2& texcoord, const Vector3& position);
 		
 		uint32_t id = 0;
 		TextureType type = TextureType::CHECKER;

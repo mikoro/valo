@@ -19,31 +19,8 @@
 
 using namespace Raycer;
 
-Scene::~Scene()
+Scene::Scene() : texturesAlloc(false), materialsAlloc(false), trianglesAlloc(false), emissiveTrianglesAlloc(false)
 {
-	if (texturesPtr != nullptr)
-	{
-		free(texturesPtr);
-		texturesPtr = nullptr;
-	}
-
-	if (materialsPtr != nullptr)
-	{
-		free(materialsPtr);
-		materialsPtr = nullptr;
-	}
-
-	if (trianglesPtr != nullptr)
-	{
-		free(trianglesPtr);
-		trianglesPtr = nullptr;
-	}
-
-	if (emissiveTrianglesPtr != nullptr)
-	{
-		free(emissiveTrianglesPtr);
-		emissiveTrianglesPtr = nullptr;
-	}
 }
 
 void Scene::initialize()
@@ -56,6 +33,7 @@ void Scene::initialize()
 	std::vector<Texture> allTextures;
 	std::vector<Material> allMaterials;
 	std::vector<Triangle> allTriangles;
+	std::vector<Triangle> emissiveTriangles;
 
 	allTextures.insert(allTextures.end(), textures.begin(), textures.end());
 	allMaterials.insert(allMaterials.end(), materials.begin(), materials.end());
@@ -77,110 +55,85 @@ void Scene::initialize()
 		}
 	}
 
-	// POINTER ASSIGNMENT & INITIALIZATION
+	// INDEX ASSIGNMENT & INITIALIZATION
 
-	if (allTextures.size() > 0)
-	{
-		texturesPtr = static_cast<Texture*>(malloc(allTextures.size() * sizeof(Texture)));
-
-		if (texturesPtr == nullptr)
-			throw std::runtime_error("Could not allocate memory for textures");
-
-		memcpy(texturesPtr, allTextures.data(), allTextures.size() * sizeof(Texture));
-	}
-
-	if (allMaterials.size() > 0)
-	{
-		materialsPtr = static_cast<Material*>(malloc(allMaterials.size() * sizeof(Material)));
-
-		if (materialsPtr == nullptr)
-			throw std::runtime_error("Could not allocate memory for materials");
-
-		memcpy(materialsPtr, allMaterials.data(), allMaterials.size() * sizeof(Material));
-	}
-
-	std::map<uint32_t, Texture*> texturesMap;
-	std::map<uint32_t, Material*> materialsMap;
+	std::map<uint32_t, uint32_t> texturesMap;
+	std::map<uint32_t, uint32_t> materialsMap;
 
 	for (uint32_t i = 0; i < allTextures.size(); ++i)
 	{
-		if (texturesPtr[i].id == 0)
+		if (allTextures[i].id == 0)
 			throw std::runtime_error(tfm::format("A texture must have a non-zero id"));
 
-		if (texturesMap.count(texturesPtr[i].id))
-			throw std::runtime_error(tfm::format("A duplicate texture id was found (id: %s, type: %s)", texturesPtr[i].id));
+		if (texturesMap.count(allTextures[i].id))
+			throw std::runtime_error(tfm::format("A duplicate texture id was found (id: %s, type: %s)", allTextures[i].id));
 
-		texturesMap[texturesPtr[i].id] = &texturesPtr[i];
-		texturesPtr[i].initialize();
+		texturesMap[allTextures[i].id] = i;
+		allTextures[i].initialize(*this);
 	}
 
 	for (uint32_t i = 0; i < allMaterials.size(); ++i)
 	{
-		if (materialsPtr[i].id == 0)
+		if (allMaterials[i].id == 0)
 			throw std::runtime_error(tfm::format("A material must have a non-zero id"));
 
-		if (materialsMap.count(materialsPtr[i].id))
-			throw std::runtime_error(tfm::format("A duplicate material id was found (id: %s)", materialsPtr[i].id));
+		if (materialsMap.count(allMaterials[i].id))
+			throw std::runtime_error(tfm::format("A duplicate material id was found (id: %s)", allMaterials[i].id));
 
-		materialsMap[materialsPtr[i].id] = &materialsPtr[i];
+		materialsMap[allMaterials[i].id] = i;
 
-		if (texturesMap.count(materialsPtr[i].emittanceTextureId))
-			materialsPtr[i].emittanceTexture = texturesMap[materialsPtr[i].emittanceTextureId];
+		if (texturesMap.count(allMaterials[i].emittanceTextureId))
+			allMaterials[i].emittanceTextureIndex = texturesMap[allMaterials[i].emittanceTextureId];
 
-		if (texturesMap.count(materialsPtr[i].reflectanceTextureId))
-			materialsPtr[i].reflectanceTexture = texturesMap[materialsPtr[i].reflectanceTextureId];
+		if (texturesMap.count(allMaterials[i].reflectanceTextureId))
+			allMaterials[i].reflectanceTextureIndex = texturesMap[allMaterials[i].reflectanceTextureId];
 
-		if (texturesMap.count(materialsPtr[i].normalTextureId))
-			materialsPtr[i].normalTexture = texturesMap[materialsPtr[i].normalTextureId];
+		if (texturesMap.count(allMaterials[i].normalTextureId))
+			allMaterials[i].normalTextureIndex = texturesMap[allMaterials[i].normalTextureId];
 
-		if (texturesMap.count(materialsPtr[i].maskTextureId))
-			materialsPtr[i].maskTexture = texturesMap[materialsPtr[i].maskTextureId];
+		if (texturesMap.count(allMaterials[i].maskTextureId))
+			allMaterials[i].maskTextureIndex = texturesMap[allMaterials[i].maskTextureId];
 
-		if (texturesMap.count(materialsPtr[i].blinnPhongMaterial.specularReflectanceTextureId))
-			materialsPtr[i].blinnPhongMaterial.specularReflectanceTexture = texturesMap[materialsPtr[i].blinnPhongMaterial.specularReflectanceTextureId];
+		if (texturesMap.count(allMaterials[i].blinnPhongMaterial.specularReflectanceTextureId))
+			allMaterials[i].blinnPhongMaterial.specularReflectanceTextureIndex = texturesMap[allMaterials[i].blinnPhongMaterial.specularReflectanceTextureId];
 
-		if (texturesMap.count(materialsPtr[i].blinnPhongMaterial.glossinessTextureId))
-			materialsPtr[i].blinnPhongMaterial.glossinessTexture = texturesMap[materialsPtr[i].blinnPhongMaterial.glossinessTextureId];
+		if (texturesMap.count(allMaterials[i].blinnPhongMaterial.glossinessTextureId))
+			allMaterials[i].blinnPhongMaterial.glossinessTextureIndex = texturesMap[allMaterials[i].blinnPhongMaterial.glossinessTextureId];
 	}
-
-	std::vector<Triangle> emissiveTriangles;
 
 	for (Triangle& triangle : allTriangles)
 	{
 		if (materialsMap.count(triangle.materialId))
-			triangle.material = materialsMap[triangle.materialId];
+			triangle.materialIndex = materialsMap[triangle.materialId];
 		else
 			throw std::runtime_error(tfm::format("A triangle has a non-existent material id (%d)", triangle.materialId));
 		
 		triangle.initialize();
 
-		if (triangle.material->isEmissive())
+		if (allMaterials[triangle.materialIndex].isEmissive())
 			emissiveTriangles.push_back(triangle);
-	}
-
-	if (emissiveTriangles.size() > 0)
-	{
-		emissiveTrianglesPtr = static_cast<Triangle*>(malloc(emissiveTriangles.size() * sizeof(Triangle)));
-
-		if (emissiveTrianglesPtr == nullptr)
-			throw std::runtime_error("Could not allocate memory for emissive triangles");
-
-		memcpy(emissiveTrianglesPtr, emissiveTriangles.data(), emissiveTriangles.size() * sizeof(Triangle));
-		emissiveTrianglesCount = uint32_t(emissiveTriangles.size());
 	}
 
 	// BVH BUILD
 
 	bvh.build(allTriangles);
 
-	trianglesPtr = static_cast<Triangle*>(malloc(allTriangles.size() * sizeof(Triangle)));
+	// MEMORY ALLOC & WRITE
 
-	if (trianglesPtr == nullptr)
-		throw std::runtime_error("Could not allocate memory for triangles");
+	texturesAlloc.resize(allTextures.size());
+	texturesAlloc.write(allTextures.data(), allTextures.size());
 
-	memcpy(trianglesPtr, allTriangles.data(), allTriangles.size() * sizeof(Triangle));
+	materialsAlloc.resize(allMaterials.size());
+	materialsAlloc.write(allMaterials.data(), allMaterials.size());
 
-	// MISC
+	trianglesAlloc.resize(allTriangles.size());
+	trianglesAlloc.write(allTriangles.data(), allTriangles.size());
+
+	emissiveTrianglesAlloc.resize(emissiveTriangles.size());
+	emissiveTrianglesAlloc.write(emissiveTriangles.data(), emissiveTriangles.size());
+	emissiveTrianglesCount = uint32_t(emissiveTriangles.size());
+
+	// CAMERA INIT
 
 	camera.initialize();
 
@@ -194,11 +147,54 @@ CUDA_CALLABLE bool Scene::intersect(const Ray& ray, Intersection& intersection) 
 
 CUDA_CALLABLE void Scene::calculateNormalMapping(Intersection& intersection) const
 {
-	if (!general.normalMapping || intersection.material->normalTexture == nullptr)
+	Material& material = getMaterial(intersection.materialIndex);
+
+	if (!general.normalMapping || material.normalTextureIndex == -1)
 		return;
 
-	Color normalColor = intersection.material->normalTexture->getColor(intersection.texcoord, intersection.position);
+	Texture& normalTexture = getTexture(material.normalTextureIndex);
+	Color normalColor = normalTexture.getColor(*this, intersection.texcoord, intersection.position);
 	Vector3 normal(normalColor.r * 2.0f - 1.0f, normalColor.g * 2.0f - 1.0f, normalColor.b * 2.0f - 1.0f);
 	Vector3 mappedNormal = intersection.onb.u * normal.x + intersection.onb.v * normal.y + intersection.onb.w * normal.z;
 	intersection.normal = mappedNormal.normalized();
+}
+
+CUDA_CALLABLE Texture* Scene::getTextures() const
+{
+	return texturesAlloc.getPtr();
+}
+
+CUDA_CALLABLE Material* Scene::getMaterials() const
+{
+	return materialsAlloc.getPtr();
+}
+
+CUDA_CALLABLE Triangle* Scene::getTriangles() const
+{
+	return trianglesAlloc.getPtr();
+}
+
+CUDA_CALLABLE Triangle* Scene::getEmissiveTriangles() const
+{
+	return emissiveTrianglesAlloc.getPtr();
+}
+
+CUDA_CALLABLE uint32_t Scene::getEmissiveTrianglesCount() const
+{
+	return emissiveTrianglesCount;
+}
+
+CUDA_CALLABLE Texture& Scene::getTexture(uint32_t index) const
+{
+	return texturesAlloc.getPtr()[index];
+}
+
+CUDA_CALLABLE Material& Scene::getMaterial(uint32_t index) const
+{
+	return materialsAlloc.getPtr()[index];
+}
+
+CUDA_CALLABLE Triangle& Scene::getTriangle(uint32_t index) const
+{
+	return trianglesAlloc.getPtr()[index];
 }
