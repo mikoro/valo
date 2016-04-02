@@ -3,8 +3,6 @@
 
 #pragma once
 
-#include "Runners/WindowRunner.h"
-
 #include "Core/Scene.h"
 #include "Core/Film.h"
 #include "Renderers/Renderer.h"
@@ -13,19 +11,19 @@
 
 namespace Raycer
 {
-	class WindowRunnerRenderState : public WindowRunnerState
+	class WindowRunnerRenderState
 	{
 	public:
 
 		WindowRunnerRenderState();
 
-		void initialize() override;
-		void shutdown() override;
+		void initialize();
+		void shutdown();
 
-		void update(float timeStep) override;
-		void render(float timeStep, float interpolation) override;
+		void update(float timeStep);
+		void render(float timeStep, float interpolation);
 
-		void windowResized(uint32_t width, uint32_t height) override;
+		void windowResized(uint32_t width, uint32_t height);
 
 	private:
 

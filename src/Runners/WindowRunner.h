@@ -7,28 +7,12 @@
 #include <memory>
 
 #include "Utils/FpsCounter.h"
+#include "Runners/WindowRunnerRenderState.h"
 
 struct GLFWwindow;
 
 namespace Raycer
 {
-	enum class WindowRunnerStates { NONE, RENDER };
-
-	class WindowRunnerState
-	{
-	public:
-
-		virtual ~WindowRunnerState() {}
-
-		virtual void initialize() = 0;
-		virtual void shutdown() = 0;
-
-		virtual void update(float timeStep) = 0;
-		virtual void render(float timeStep, float interpolation) = 0;
-
-		virtual void windowResized(uint32_t width, uint32_t height) = 0;
-	};
-
 	struct MouseInfo
 	{
 		int32_t windowX = 0;
@@ -45,7 +29,6 @@ namespace Raycer
 	{
 	public:
 
-		WindowRunner();
 		~WindowRunner();
 
 		int run();
@@ -63,8 +46,6 @@ namespace Raycer
 		bool keyWasPressed(int32_t key);
 		bool mouseWasPressed(int32_t button);
 		float getMouseWheelScroll();
-
-		void changeState(WindowRunnerStates state);
 
 	private:
 
@@ -97,9 +78,7 @@ namespace Raycer
 		std::map<int32_t, bool> keyStates;
 		std::map<int32_t, bool> mouseStates;
 
-		std::map<WindowRunnerStates, std::unique_ptr<WindowRunnerState>> windowRunnerStates;
-		WindowRunnerState* currentState = nullptr;
-
+		std::unique_ptr<WindowRunnerRenderState> renderState;
 		FpsCounter fpsCounter;
 	};
 }

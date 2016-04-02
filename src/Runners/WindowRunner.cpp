@@ -9,7 +9,6 @@
 #include "App.h"
 #include "Core/Image.h"
 #include "Runners/WindowRunner.h"
-#include "Runners/WindowRunnerRenderState.h"
 #include "Utils/GLUtils.h"
 #include "Utils/Log.h"
 #include "Utils/Settings.h"
@@ -33,11 +32,6 @@ namespace
 		mouseInfoPtr->scrollY = float(yoffset);
 		mouseInfoPtr->hasScrolled = true;
 	}
-}
-
-WindowRunner::WindowRunner()
-{
-	windowRunnerStates[WindowRunnerStates::RENDER] = std::make_unique<WindowRunnerRenderState>();
 }
 
 WindowRunner::~WindowRunner()
@@ -143,20 +137,6 @@ float WindowRunner::getMouseWheelScroll()
 	return 0.0f;
 }
 
-void WindowRunner::changeState(WindowRunnerStates state)
-{
-	if (currentState != nullptr)
-		currentState->shutdown();
-
-	currentState = nullptr;
-
-	if (state != WindowRunnerStates::NONE)
-	{
-		currentState = windowRunnerStates[state].get();
-		currentState->initialize();
-	}
-}
-
 void WindowRunner::initialize()
 {
 	Log& log = App::getLog();
@@ -208,14 +188,16 @@ void WindowRunner::initialize()
 	if (settings.window.hideCursor)
 		glfwSetInputMode(glfwWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
+	renderState = std::make_unique<WindowRunnerRenderState>();
+	renderState->initialize();
+
 	checkWindowSize();
-	changeState(WindowRunnerStates::RENDER);
 }
 
 void WindowRunner::shutdown()
 {
-	currentState->shutdown();
-	windowRunnerStates.clear();
+	renderState->shutdown();
+	renderState = nullptr;
 }
 
 void WindowRunner::checkWindowSize()
@@ -251,8 +233,7 @@ void WindowRunner::windowResized(uint32_t width, uint32_t height)
 
 	glViewport(0, 0, GLsizei(windowWidth), GLsizei(windowHeight));
 
-	if (currentState != nullptr)
-		currentState->windowResized(windowWidth, windowHeight);
+	renderState->windowResized(windowWidth, windowHeight);
 }
 
 // http://gafferongames.com/game-physics/fix-your-timestep/
@@ -318,7 +299,7 @@ void WindowRunner::update(float timeStep)
 	if (keyWasPressed(GLFW_KEY_ESCAPE))
 		shouldRun = false;
 
-	currentState->update(timeStep);
+	renderState->update(timeStep);
 }
 
 void WindowRunner::render(float timeStep, float interpolation)
@@ -328,7 +309,7 @@ void WindowRunner::render(float timeStep, float interpolation)
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
-	currentState->render(timeStep, interpolation);
+	renderState->render(timeStep, interpolation);
 
 	glfwSwapBuffers(glfwWindow);
 

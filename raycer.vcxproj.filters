@@ -66,9 +66,6 @@
     <ClCompile Include="src\Runners\WindowRunner.cpp">
       <Filter>Runners</Filter>
     </ClCompile>
-    <ClCompile Include="src\Runners\WindowRunnerRenderState.cpp">
-      <Filter>Runners</Filter>
-    </ClCompile>
     <ClCompile Include="src\Tests\EulerAngleTest.cpp">
       <Filter>Tests</Filter>
     </ClCompile>
@@ -183,6 +180,9 @@
     </ClCompile>
     <ClCompile Include="src\Utils\CudaUtils.cpp">
       <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Runners\WindowRunnerRenderState.cpp">
+      <Filter>Runners</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -312,9 +312,6 @@
     <ClInclude Include="src\Runners\WindowRunner.h">
       <Filter>Runners</Filter>
     </ClInclude>
-    <ClInclude Include="src\Runners\WindowRunnerRenderState.h">
-      <Filter>Runners</Filter>
-    </ClInclude>
     <ClInclude Include="src\TestScenes\TestScene.h">
       <Filter>TestScenes</Filter>
     </ClInclude>
@@ -392,6 +389,9 @@
       <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="src\Precompiled.h" />
+    <ClInclude Include="src\Runners\WindowRunnerRenderState.h">
+      <Filter>Runners</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="platform\windows\raycer.rc">
