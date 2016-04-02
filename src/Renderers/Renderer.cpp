@@ -15,7 +15,7 @@ using namespace Raycer;
 void Renderer::initialize(const Settings& settings)
 {
 	type = static_cast<RendererType>(settings.renderer.type);
-	cpuRenderer.maxThreadCount = settings.renderer.maxCpuThreadCount;
+	cpuRenderer.maxThreadCount = settings.general.maxCpuThreadCount;
 	imageAutoWrite = settings.renderer.imageAutoWrite;
 	imageAutoWriteInterval = settings.renderer.imageAutoWriteInterval;
 	imageAutoWriteMaxNumber = settings.renderer.imageAutoWriteMaxNumber;

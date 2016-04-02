@@ -10,6 +10,8 @@ using namespace Raycer;
 
 ImagePool::ImagePool() : imagesAlloc(true)
 {
+	// TODO: implement proper copy/move constructors for image to avoid this
+	images.reserve(1000);
 }
 
 uint32_t ImagePool::load(const std::string& fileName, bool applyGamma)

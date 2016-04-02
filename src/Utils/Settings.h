@@ -11,9 +11,15 @@ namespace Raycer
 
 		bool load(int argc, char** argv);
 
+		struct General
+		{
+			bool windowed;
+			uint32_t maxCpuThreadCount;
+			uint32_t cudaDeviceNumber;
+		} general;
+
 		struct Window
 		{
-			bool enabled;
 			uint32_t width;
 			uint32_t height;
 			bool fullscreen;
@@ -43,7 +49,6 @@ namespace Raycer
 		struct Renderer
 		{
 			uint32_t type;
-			int32_t maxCpuThreadCount;
 			bool imageAutoWrite;
 			float imageAutoWriteInterval;
 			uint32_t imageAutoWriteMaxNumber;

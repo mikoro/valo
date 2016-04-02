@@ -12,10 +12,15 @@
 #include "catch/catch.hpp"
 #endif
 
+#ifdef USE_CUDA
+#include <cuda_runtime.h>
+#endif
+
 #include "App.h"
 #include "Core/Common.h"
 #include "Utils/Settings.h"
 #include "Utils/Log.h"
+#include "Utils/CudaUtils.h"
 #include "Runners/WindowRunner.h"
 #include "Runners/ConsoleRunner.h"
 
@@ -82,7 +87,33 @@ int App::run(int argc, char** argv)
 
 		log.logInfo(std::string("Raycer v") + RAYCER_VERSION);
 
-		if (settings.window.enabled)
+		if (settings.general.maxCpuThreadCount == 0)
+			settings.general.maxCpuThreadCount = std::thread::hardware_concurrency();
+
+		log.logInfo("CPU thread count: %s", settings.general.maxCpuThreadCount);
+
+#ifdef USE_CUDA
+
+		int deviceCount;
+		CudaUtils::checkError(cudaGetDeviceCount(&deviceCount), "Could not get device count");
+		CudaUtils::checkError(cudaSetDevice(settings.general.cudaDeviceNumber), "Could not set device");
+
+		log.logInfo("CUDA selected device: %d (device count: %d)", settings.general.cudaDeviceNumber, deviceCount);
+
+		cudaDeviceProp deviceProp; 
+		CudaUtils::checkError(cudaGetDeviceProperties(&deviceProp, settings.general.cudaDeviceNumber), "Could not get device properties");
+		
+		int driverVersion;
+		CudaUtils::checkError(cudaDriverGetVersion(&driverVersion), "Could not get driver version");
+
+		int runtimeVersion;
+		CudaUtils::checkError(cudaRuntimeGetVersion(&runtimeVersion), "Could not get runtime version");
+
+		log.logInfo("CUDA device: %s | Compute capability: %d.%d | Driver version: %d | Runtime version: %d", deviceProp.name, deviceProp.major, deviceProp.minor, driverVersion, runtimeVersion);
+
+#endif
+
+		if (settings.general.windowed)
 			return windowRunner.run();
 		else
 			return consoleRunner.run();

@@ -145,9 +145,10 @@ void Scene::initialize()
 
 	emissiveTrianglesCount = uint32_t(emissiveTriangles.size());
 	
-	// CAMERA INIT
+	// MISC
 
 	camera.initialize();
+	imagePool.commit();
 
 	log.logInfo("Scene initialization finished (time: %s)", timer.getElapsed().getString(true));
 }
