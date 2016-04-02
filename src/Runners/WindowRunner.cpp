@@ -215,6 +215,7 @@ void WindowRunner::initialize()
 void WindowRunner::shutdown()
 {
 	currentState->shutdown();
+	windowRunnerStates.clear();
 }
 
 void WindowRunner::checkWindowSize()

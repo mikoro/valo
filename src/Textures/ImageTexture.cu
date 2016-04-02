@@ -18,6 +18,6 @@ CUDA_CALLABLE Color ImageTexture::getColor(const Scene& scene, const Vector2& te
 {
 	(void)position;
 
-	const Image& image = scene.imagePool.getImages()[imageIndex];
+	Image& image = scene.imagePool.getImage(imageIndex);
 	return image.getPixelBilinear(texcoord.x, texcoord.y);
 }

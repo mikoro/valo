@@ -23,6 +23,7 @@ namespace Raycer
 		void commit();
 		
 		CUDA_CALLABLE Image* getImages() const;
+		CUDA_CALLABLE Image& getImage(uint32_t index) const;
 
 	private:
 

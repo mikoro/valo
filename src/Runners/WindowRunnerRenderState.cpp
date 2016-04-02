@@ -17,6 +17,10 @@
 
 using namespace Raycer;
 
+WindowRunnerRenderState::WindowRunnerRenderState() : film(true)
+{
+}
+
 void WindowRunnerRenderState::initialize()
 {
 	Settings& settings = App::getSettings();
@@ -320,6 +324,7 @@ void WindowRunnerRenderState::render(float timeStep, float interpolation)
 		film.clear(renderer.type);
 
 	renderer.filtering = !film.hasBeenCleared();
+	film.resetCleared();
 
 	RenderJob job;
 	job.scene = &scene;
@@ -355,5 +360,6 @@ void WindowRunnerRenderState::resizeFilm()
     filmHeight = MAX(uint32_t(1), filmHeight);
 
 	film.resize(filmWidth, filmHeight);
+	film.clear(renderer.type);
 	scene.camera.setImagePlaneSize(filmWidth, filmHeight);
 }

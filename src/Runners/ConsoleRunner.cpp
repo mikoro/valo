@@ -29,14 +29,15 @@ int ConsoleRunner::run()
 	Renderer renderer;
 
 	Scene scene = TestScene::create(settings.scene.testSceneNumber);
-	Film film;
+	Film film(false);
 
 	scene.initialize();
 	film.initialize();
 	renderer.initialize(settings);
 
 	film.resize(settings.image.width, settings.image.height);
-	
+	film.clear(renderer.type);
+
 	scene.camera.setImagePlaneSize(settings.image.width, settings.image.height);
 	scene.camera.update(0.0f);
 

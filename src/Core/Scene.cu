@@ -120,19 +120,32 @@ void Scene::initialize()
 
 	// MEMORY ALLOC & WRITE
 
-	texturesAlloc.resize(allTextures.size());
-	texturesAlloc.write(allTextures.data(), allTextures.size());
+	if (allTextures.size() > 0)
+	{
+		texturesAlloc.resize(allTextures.size());
+		texturesAlloc.write(allTextures.data(), allTextures.size());
+	}
+	
+	if (allMaterials.size() > 0)
+	{
+		materialsAlloc.resize(allMaterials.size());
+		materialsAlloc.write(allMaterials.data(), allMaterials.size());
+	}
+	
+	if (allTriangles.size() > 0)
+	{
+		trianglesAlloc.resize(allTriangles.size());
+		trianglesAlloc.write(allTriangles.data(), allTriangles.size());
+	}
+	
+	if (emissiveTriangles.size() > 0)
+	{
+		emissiveTrianglesAlloc.resize(emissiveTriangles.size());
+		emissiveTrianglesAlloc.write(emissiveTriangles.data(), emissiveTriangles.size());
+	}
 
-	materialsAlloc.resize(allMaterials.size());
-	materialsAlloc.write(allMaterials.data(), allMaterials.size());
-
-	trianglesAlloc.resize(allTriangles.size());
-	trianglesAlloc.write(allTriangles.data(), allTriangles.size());
-
-	emissiveTrianglesAlloc.resize(emissiveTriangles.size());
-	emissiveTrianglesAlloc.write(emissiveTriangles.data(), emissiveTriangles.size());
 	emissiveTrianglesCount = uint32_t(emissiveTriangles.size());
-
+	
 	// CAMERA INIT
 
 	camera.initialize();

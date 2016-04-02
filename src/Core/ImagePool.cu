@@ -28,10 +28,19 @@ uint32_t ImagePool::load(const std::string& fileName, bool applyGamma)
 
 void ImagePool::commit()
 {
-	imagesAlloc.write(images.data(), images.size());
+	if (images.size() > 0)
+	{
+		imagesAlloc.resize(images.size());
+		imagesAlloc.write(images.data(), images.size());
+	}
 }
 
 CUDA_CALLABLE Image* ImagePool::getImages() const
 {
 	return imagesAlloc.getPtr();
+}
+
+CUDA_CALLABLE Image& ImagePool::getImage(uint32_t index) const
+{
+	return imagesAlloc.getPtr()[index];
 }

@@ -230,11 +230,17 @@ void BVH4::build(std::vector<Triangle>& triangles)
 		stackIndex++;
 	}
 
-	nodesAlloc.resize(nodes.size());
-	nodesAlloc.write(nodes.data(), nodes.size());
+	if (nodes.size() > 0)
+	{
+		nodesAlloc.resize(nodes.size());
+		nodesAlloc.write(nodes.data(), nodes.size());
+	}
 
-	triangles4Alloc.resize(triangles4.size());
-	triangles4Alloc.write(triangles4.data(), triangles4.size());
+	if (triangles4.size() > 0)
+	{
+		triangles4Alloc.resize(triangles4.size());
+		triangles4Alloc.write(triangles4.data(), triangles4.size());
+	}
 
 	std::vector<Triangle> sortedTriangles(triangleCount);
 

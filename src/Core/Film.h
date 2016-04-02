@@ -25,7 +25,7 @@ namespace Raycer
 	{
 	public:
 
-		explicit Film(bool windowed = false);
+		explicit Film(bool windowed);
 
 		void initialize();
 		void shutdown();

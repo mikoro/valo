@@ -124,8 +124,11 @@ void BVH1::build(std::vector<Triangle>& triangles)
 		stackIndex++;
 	}
 
-	nodesAlloc.resize(nodes.size());
-	nodesAlloc.write(nodes.data(), nodes.size());
+	if (nodes.size() > 0)
+	{
+		nodesAlloc.resize(nodes.size());
+		nodesAlloc.write(nodes.data(), nodes.size());
+	}
 
 	std::vector<Triangle> sortedTriangles(triangleCount);
 
