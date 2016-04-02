@@ -1,6 +1,8 @@
 // Copyright © 2016 Mikko Ronkainen <firstname@mikkoronkainen.com>
 // License: MIT, see the LICENSE file.
 
+#include "Precompiled.h"
+
 #ifdef USE_CUDA
 #include <device_launch_parameters.h>
 #endif
@@ -73,7 +75,7 @@ void CudaRenderer::render(RenderJob& job, bool filtering)
 
 void CudaRenderer::render(RenderJob& job, bool filtering)
 {
-	job.film->clear();
+	job.film->clear(RendererType::CPU);
 	(void)filtering;
 }
 

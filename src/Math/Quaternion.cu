@@ -1,7 +1,7 @@
 // Copyright © 2016 Mikko Ronkainen <firstname@mikkoronkainen.com>
 // License: MIT, see the LICENSE file.
 
-#include <cassert>
+#include "Precompiled.h"
 
 #include "Math/Quaternion.h"
 #include "Math/AxisAngle.h"

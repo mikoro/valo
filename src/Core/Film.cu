@@ -1,6 +1,8 @@
 ﻿// Copyright © 2016 Mikko Ronkainen <firstname@mikkoronkainen.com>
 // License: MIT, see the LICENSE file.
 
+#include "Precompiled.h"
+
 #include <GL/gl3w.h>
 
 #ifdef USE_CUDA

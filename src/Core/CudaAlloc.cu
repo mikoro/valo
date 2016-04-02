@@ -82,6 +82,7 @@ void CudaAlloc<T>::write(T* source, size_t count)
 template <typename T>
 void CudaAlloc<T>::read(size_t count)
 {
+	(void)count;
 	assert(count <= maxCount);
 
 #ifdef USE_CUDA
