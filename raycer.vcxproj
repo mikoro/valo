@@ -29,33 +29,31 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugTest|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
     <WholeProgramOptimization>false</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseFull|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
-  <ImportGroup Label="ExtensionSettings">
-    <Import Project="$(VCTargetsPath)\BuildCustomizations\CUDA 7.5.props" />
-  </ImportGroup>
+  <ImportGroup Label="ExtensionSettings" />
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
@@ -71,33 +69,33 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>src;include;platform\windows\include;platform\windows\include\freetype;D:\boost_1_60_0-msvc-12;$(IncludePath)</IncludePath>
+    <IncludePath>src;include;platform\windows\include;platform\windows\include\freetype;D:\boost_1_60_0-msvc;$(IncludePath)</IncludePath>
     <GenerateManifest>false</GenerateManifest>
-    <LibraryPath>platform\windows\lib;D:\boost_1_60_0-msvc-12\lib64-msvc-12.0;$(LibraryPath)</LibraryPath>
+    <LibraryPath>platform\windows\lib;D:\boost_1_60_0-msvc\stage\lib;$(LibraryPath)</LibraryPath>
     <OutDir>$(SolutionDir)bin\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)build\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugTest|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>src;include;platform\windows\include;platform\windows\include\freetype;D:\boost_1_60_0-msvc-12;$(IncludePath)</IncludePath>
+    <IncludePath>src;include;platform\windows\include;platform\windows\include\freetype;D:\boost_1_60_0-msvc;$(IncludePath)</IncludePath>
     <GenerateManifest>false</GenerateManifest>
-    <LibraryPath>platform\windows\lib;D:\boost_1_60_0-msvc-12\lib64-msvc-12.0;$(LibraryPath)</LibraryPath>
+    <LibraryPath>platform\windows\lib;D:\boost_1_60_0-msvc\stage\lib;$(LibraryPath)</LibraryPath>
     <OutDir>$(SolutionDir)bin\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)build\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>src;include;platform\windows\include;platform\windows\include\freetype;D:\boost_1_60_0-msvc-12;$(IncludePath)</IncludePath>
+    <IncludePath>src;include;platform\windows\include;platform\windows\include\freetype;D:\boost_1_60_0-msvc;$(IncludePath)</IncludePath>
     <GenerateManifest>false</GenerateManifest>
-    <LibraryPath>platform\windows\lib;D:\boost_1_60_0-msvc-12\lib64-msvc-12.0;$(LibraryPath)</LibraryPath>
+    <LibraryPath>platform\windows\lib;D:\boost_1_60_0-msvc\stage\lib;$(LibraryPath)</LibraryPath>
     <OutDir>$(SolutionDir)bin\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)build\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseFull|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>src;include;platform\windows\include;platform\windows\include\freetype;D:\boost_1_60_0-msvc-12;$(IncludePath)</IncludePath>
+    <IncludePath>src;include;platform\windows\include;platform\windows\include\freetype;D:\boost_1_60_0-msvc;$(IncludePath)</IncludePath>
     <GenerateManifest>false</GenerateManifest>
-    <LibraryPath>platform\windows\lib;D:\boost_1_60_0-msvc-12\lib64-msvc-12.0;$(LibraryPath)</LibraryPath>
+    <LibraryPath>platform\windows\lib;D:\boost_1_60_0-msvc\stage\lib;$(LibraryPath)</LibraryPath>
     <OutDir>$(SolutionDir)bin\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)build\$(Configuration)\</IntDir>
   </PropertyGroup>
@@ -105,7 +103,7 @@
     <ClCompile>
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;_USE_MATH_DEFINES;NOMINMAX;_WIN32_WINNT=0x0601;USE_CUDA;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;_USE_MATH_DEFINES;NOMINMAX;_WIN32_WINNT=0x0601;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <OpenMPSupport>true</OpenMPSupport>
       <CompileAs>CompileAsCpp</CompileAs>
@@ -122,26 +120,19 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>glfw3.lib;opengl32.lib;cudart_static.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glfw3.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalOptions>/NODEFAULTLIB:msvcrt.lib %(AdditionalOptions)</AdditionalOptions>
       <TreatLinkerWarningAsErrors>true</TreatLinkerWarningAsErrors>
     </Link>
     <PostBuildEvent>
       <Command>platform\windows\post-build.bat Debug</Command>
     </PostBuildEvent>
-    <CudaCompile>
-      <TargetMachinePlatform>64</TargetMachinePlatform>
-      <CodeGeneration>compute_52,sm_52</CodeGeneration>
-      <GenerateRelocatableDeviceCode>true</GenerateRelocatableDeviceCode>
-      <AdditionalOptions>-Xcompiler "/wd 4505" %(AdditionalOptions)</AdditionalOptions>
-      <FastMath>true</FastMath>
-    </CudaCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='DebugTest|x64'">
     <ClCompile>
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;_USE_MATH_DEFINES;NOMINMAX;_WIN32_WINNT=0x0601;USE_CUDA;_DEBUG;_WINDOWS;RUN_UNIT_TESTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;_USE_MATH_DEFINES;NOMINMAX;_WIN32_WINNT=0x0601;_DEBUG;_WINDOWS;RUN_UNIT_TESTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <OpenMPSupport>true</OpenMPSupport>
       <CompileAs>CompileAsCpp</CompileAs>
@@ -158,20 +149,13 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>glfw3.lib;opengl32.lib;cudart_static.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glfw3.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalOptions>/NODEFAULTLIB:msvcrt.lib %(AdditionalOptions)</AdditionalOptions>
       <TreatLinkerWarningAsErrors>true</TreatLinkerWarningAsErrors>
     </Link>
     <PostBuildEvent>
       <Command>platform\windows\post-build.bat DebugTest</Command>
     </PostBuildEvent>
-    <CudaCompile>
-      <TargetMachinePlatform>64</TargetMachinePlatform>
-      <CodeGeneration>compute_52,sm_52</CodeGeneration>
-      <GenerateRelocatableDeviceCode>true</GenerateRelocatableDeviceCode>
-      <AdditionalOptions>-Xcompiler "/wd 4505" %(AdditionalOptions)</AdditionalOptions>
-      <FastMath>true</FastMath>
-    </CudaCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -179,7 +163,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;_USE_MATH_DEFINES;NOMINMAX;_WIN32_WINNT=0x0601;USE_CUDA;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;_USE_MATH_DEFINES;NOMINMAX;_WIN32_WINNT=0x0601;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <OpenMPSupport>true</OpenMPSupport>
       <CompileAs>CompileAsCpp</CompileAs>
       <OpenMP>GenerateParallelCode</OpenMP>
@@ -202,19 +186,12 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>glfw3.lib;opengl32.lib;cudart_static.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glfw3.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <TreatLinkerWarningAsErrors>true</TreatLinkerWarningAsErrors>
     </Link>
     <PostBuildEvent>
       <Command>platform\windows\post-build.bat Release</Command>
     </PostBuildEvent>
-    <CudaCompile>
-      <TargetMachinePlatform>64</TargetMachinePlatform>
-      <CodeGeneration>compute_52,sm_52</CodeGeneration>
-      <GenerateRelocatableDeviceCode>true</GenerateRelocatableDeviceCode>
-      <AdditionalOptions>-Xcompiler "/wd 4505" %(AdditionalOptions)</AdditionalOptions>
-      <FastMath>true</FastMath>
-    </CudaCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseFull|x64'">
     <ClCompile>
@@ -222,7 +199,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;_USE_MATH_DEFINES;NOMINMAX;_WIN32_WINNT=0x0601;USE_CUDA;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;_USE_MATH_DEFINES;NOMINMAX;_WIN32_WINNT=0x0601;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <OpenMPSupport>true</OpenMPSupport>
       <CompileAs>CompileAsCpp</CompileAs>
       <OpenMP>GenerateParallelCode</OpenMP>
@@ -248,66 +225,59 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>glfw3.lib;opengl32.lib;cudart_static.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glfw3.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <TreatLinkerWarningAsErrors>true</TreatLinkerWarningAsErrors>
     </Link>
     <PostBuildEvent>
       <Command>platform\windows\post-build.bat ReleaseFull</Command>
     </PostBuildEvent>
-    <CudaCompile>
-      <TargetMachinePlatform>64</TargetMachinePlatform>
-      <CodeGeneration>compute_52,sm_52</CodeGeneration>
-      <GenerateRelocatableDeviceCode>true</GenerateRelocatableDeviceCode>
-      <AdditionalOptions>-Xcompiler "/wd 4505" %(AdditionalOptions)</AdditionalOptions>
-      <FastMath>true</FastMath>
-    </CudaCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <CudaCompile Include="src\BVH\BVH.cu" />
-    <CudaCompile Include="src\BVH\BVH1.cu" />
-    <CudaCompile Include="src\BVH\BVH4.cu" />
-    <CudaCompile Include="src\Core\AABB.cu" />
-    <CudaCompile Include="src\Core\Camera.cu" />
-    <CudaCompile Include="src\Core\CudaAlloc.cu" />
-    <CudaCompile Include="src\Core\Film.cu" />
-    <CudaCompile Include="src\Core\Image.cu" />
-    <CudaCompile Include="src\Core\ImagePool.cu" />
-    <CudaCompile Include="src\Core\Ray.cu" />
-    <CudaCompile Include="src\Core\Scene.cu" />
-    <CudaCompile Include="src\Core\Triangle.cu" />
-    <CudaCompile Include="src\Filters\BellFilter.cu" />
-    <CudaCompile Include="src\Filters\BoxFilter.cu" />
-    <CudaCompile Include="src\Filters\Filter.cu" />
-    <CudaCompile Include="src\Filters\GaussianFilter.cu" />
-    <CudaCompile Include="src\Filters\LanczosSincFilter.cu" />
-    <CudaCompile Include="src\Filters\MitchellFilter.cu" />
-    <CudaCompile Include="src\Filters\TentFilter.cu" />
-    <CudaCompile Include="src\Integrators\AmbientOcclusionIntegrator.cu" />
-    <CudaCompile Include="src\Integrators\DirectLightIntegrator.cu" />
-    <CudaCompile Include="src\Integrators\DotIntegrator.cu" />
-    <CudaCompile Include="src\Integrators\Integrator.cu" />
-    <CudaCompile Include="src\Integrators\PathIntegrator.cu" />
-    <CudaCompile Include="src\Materials\BlinnPhongMaterial.cu" />
-    <CudaCompile Include="src\Materials\DiffuseMaterial.cu" />
-    <CudaCompile Include="src\Materials\Material.cu" />
-    <CudaCompile Include="src\Math\AxisAngle.cu" />
-    <CudaCompile Include="src\Math\Color.cu" />
-    <CudaCompile Include="src\Math\EulerAngle.cu" />
-    <CudaCompile Include="src\Math\Mapper.cu" />
-    <CudaCompile Include="src\Math\MathUtils.cu" />
-    <CudaCompile Include="src\Math\Matrix4x4.cu" />
-    <CudaCompile Include="src\Math\MovingAverage.cu" />
-    <CudaCompile Include="src\Math\ONB.cu" />
-    <CudaCompile Include="src\Math\Quaternion.cu" />
-    <CudaCompile Include="src\Math\Random.cu" />
-    <CudaCompile Include="src\Math\Solver.cu" />
-    <CudaCompile Include="src\Math\Vector2.cu" />
-    <CudaCompile Include="src\Math\Vector3.cu" />
-    <CudaCompile Include="src\Math\Vector4.cu" />
-    <CudaCompile Include="src\Renderers\CudaRenderer.cu" />
-    <CudaCompile Include="src\Textures\CheckerTexture.cu" />
-    <CudaCompile Include="src\Textures\ImageTexture.cu" />
-    <CudaCompile Include="src\Textures\Texture.cu" />
+    <ClCompile Include="src\BVH\BVH.cu" />
+    <ClCompile Include="src\BVH\BVH1.cu" />
+    <ClCompile Include="src\BVH\BVH4.cu" />
+    <ClCompile Include="src\Core\AABB.cu" />
+    <ClCompile Include="src\Core\Camera.cu" />
+    <ClCompile Include="src\Core\CudaAlloc.cu" />
+    <ClCompile Include="src\Core\Film.cu" />
+    <ClCompile Include="src\Core\Image.cu" />
+    <ClCompile Include="src\Core\ImagePool.cu" />
+    <ClCompile Include="src\Core\Ray.cu" />
+    <ClCompile Include="src\Core\Scene.cu" />
+    <ClCompile Include="src\Core\Triangle.cu" />
+    <ClCompile Include="src\Filters\BellFilter.cu" />
+    <ClCompile Include="src\Filters\BoxFilter.cu" />
+    <ClCompile Include="src\Filters\Filter.cu" />
+    <ClCompile Include="src\Filters\GaussianFilter.cu" />
+    <ClCompile Include="src\Filters\LanczosSincFilter.cu" />
+    <ClCompile Include="src\Filters\MitchellFilter.cu" />
+    <ClCompile Include="src\Filters\TentFilter.cu" />
+    <ClCompile Include="src\Integrators\AmbientOcclusionIntegrator.cu" />
+    <ClCompile Include="src\Integrators\DirectLightIntegrator.cu" />
+    <ClCompile Include="src\Integrators\DotIntegrator.cu" />
+    <ClCompile Include="src\Integrators\Integrator.cu" />
+    <ClCompile Include="src\Integrators\PathIntegrator.cu" />
+    <ClCompile Include="src\Materials\BlinnPhongMaterial.cu" />
+    <ClCompile Include="src\Materials\DiffuseMaterial.cu" />
+    <ClCompile Include="src\Materials\Material.cu" />
+    <ClCompile Include="src\Math\AxisAngle.cu" />
+    <ClCompile Include="src\Math\Color.cu" />
+    <ClCompile Include="src\Math\EulerAngle.cu" />
+    <ClCompile Include="src\Math\Mapper.cu" />
+    <ClCompile Include="src\Math\MathUtils.cu" />
+    <ClCompile Include="src\Math\Matrix4x4.cu" />
+    <ClCompile Include="src\Math\MovingAverage.cu" />
+    <ClCompile Include="src\Math\ONB.cu" />
+    <ClCompile Include="src\Math\Quaternion.cu" />
+    <ClCompile Include="src\Math\Random.cu" />
+    <ClCompile Include="src\Math\Solver.cu" />
+    <ClCompile Include="src\Math\Vector2.cu" />
+    <ClCompile Include="src\Math\Vector3.cu" />
+    <ClCompile Include="src\Math\Vector4.cu" />
+    <ClCompile Include="src\Renderers\CudaRenderer.cu" />
+    <ClCompile Include="src\Textures\CheckerTexture.cu" />
+    <ClCompile Include="src\Textures\ImageTexture.cu" />
+    <ClCompile Include="src\Textures\Texture.cu" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\App.cpp">
@@ -459,7 +429,5 @@
     <None Include="src\Utils\Log.inl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
-  <ImportGroup Label="ExtensionTargets">
-    <Import Project="$(VCTargetsPath)\BuildCustomizations\CUDA 7.5.targets" />
-  </ImportGroup>
+  <ImportGroup Label="ExtensionTargets" />
 </Project>
