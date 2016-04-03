@@ -25,6 +25,7 @@ void BVH::build(std::vector<Triangle>& triangles)
 	{
 		case BVHType::BVH1: bvh1.build(triangles); break;
 		case BVHType::BVH4: bvh4.build(triangles); break;
+		case BVHType::BVH8: bvh8.build(triangles); break;
 		default: break;
 	}
 }
@@ -35,6 +36,7 @@ CUDA_CALLABLE bool BVH::intersect(const Scene& scene, const Ray& ray, Intersecti
 	{
 		case BVHType::BVH1: return bvh1.intersect(scene, ray, intersection);
 		case BVHType::BVH4: return bvh4.intersect(scene, ray, intersection);
+		case BVHType::BVH8: return bvh8.intersect(scene, ray, intersection);
 		default: return false;
 	}
 }

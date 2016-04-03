@@ -236,6 +236,7 @@
     <ClCompile Include="src\BVH\BVH.cu" />
     <ClCompile Include="src\BVH\BVH1.cu" />
     <ClCompile Include="src\BVH\BVH4.cu" />
+	<ClCompile Include="src\BVH\BVH8.cu" />
     <ClCompile Include="src\Core\AABB.cu" />
     <ClCompile Include="src\Core\Camera.cu" />
     <ClCompile Include="src\Core\CudaAlloc.cu" />
@@ -351,6 +352,7 @@
     <ClInclude Include="src\BVH\BVH.h" />
     <ClInclude Include="src\BVH\BVH1.h" />
     <ClInclude Include="src\BVH\BVH4.h" />
+    <ClInclude Include="src\BVH\BVH8.h" />
     <ClInclude Include="src\BVH\Common.h" />
     <ClInclude Include="src\Core\AABB.h" />
     <ClInclude Include="src\Core\Camera.h" />
