@@ -4,7 +4,6 @@
 #pragma once
 
 #include "Math/MovingAverage.h"
-#include "Utils/Timer.h"
 #include "Renderers/Renderer.h"
 
 namespace Raycer

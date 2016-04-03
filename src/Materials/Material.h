@@ -19,9 +19,9 @@ namespace Raycer
 	{
 	public:
 
-		CUDA_CALLABLE Vector3 getDirection(const Intersection& intersection, Random& random);
-		CUDA_CALLABLE Color getBrdf(const Scene& scene, const Intersection& intersection, const Vector3& in, const Vector3& out);
-		CUDA_CALLABLE float getPdf(const Intersection& intersection, const Vector3& out);
+		CUDA_CALLABLE Vector3 getDirection(const Intersection& intersection, Random& random) const;
+		CUDA_CALLABLE Color getBrdf(const Scene& scene, const Intersection& intersection, const Vector3& in, const Vector3& out) const;
+		CUDA_CALLABLE float getPdf(const Intersection& intersection, const Vector3& out) const;
 
 		CUDA_CALLABLE bool isEmissive() const;
 		CUDA_CALLABLE Color getEmittance(const Scene& scene, const Vector2& texcoord, const Vector3& position) const;

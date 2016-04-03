@@ -224,7 +224,7 @@ template bool Triangle::intersect<16>(const float* __restrict vertex1X, const fl
 
 CUDA_CALLABLE bool Triangle::calculateIntersectionData(const Scene& scene, const Ray& ray, const Triangle& triangle, Intersection& intersection, float distance, float u, float v)
 {
-	Material& material = scene.getMaterial(triangle.materialIndex);
+	const Material& material = scene.getMaterial(triangle.materialIndex);
 
 	float w = 1.0f - u - v;
 
@@ -269,7 +269,7 @@ CUDA_CALLABLE bool Triangle::calculateIntersectionData(const Scene& scene, const
 
 CUDA_CALLABLE Intersection Triangle::getRandomIntersection(const Scene& scene, Random& random) const
 {
-	Material& material = scene.getMaterial(materialIndex);
+	const Material& material = scene.getMaterial(materialIndex);
 
 	float r1 = random.getFloat();
 	float r2 = random.getFloat();

@@ -13,7 +13,7 @@ Filter::Filter(FilterType type_)
 	type = type_;
 }
 
-CUDA_CALLABLE float Filter::getWeight(float s)
+CUDA_CALLABLE float Filter::getWeight(float s) const
 {
 	switch (type)
 	{
@@ -27,7 +27,7 @@ CUDA_CALLABLE float Filter::getWeight(float s)
 	}
 }
 
-CUDA_CALLABLE float Filter::getWeight(const Vector2& point)
+CUDA_CALLABLE float Filter::getWeight(const Vector2& point) const
 {
 	switch (type)
 	{
@@ -41,7 +41,7 @@ CUDA_CALLABLE float Filter::getWeight(const Vector2& point)
 	}
 }
 
-CUDA_CALLABLE Vector2 Filter::getRadius()
+CUDA_CALLABLE Vector2 Filter::getRadius() const
 {
 	switch (type)
 	{

@@ -134,6 +134,7 @@
       <CodeGeneration>compute_52,sm_52</CodeGeneration>
       <GenerateRelocatableDeviceCode>true</GenerateRelocatableDeviceCode>
       <AdditionalOptions>-Xcompiler "/wd 4505" %(AdditionalOptions)</AdditionalOptions>
+      <FastMath>true</FastMath>
     </CudaCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='DebugTest|x64'">
@@ -169,6 +170,7 @@
       <CodeGeneration>compute_52,sm_52</CodeGeneration>
       <GenerateRelocatableDeviceCode>true</GenerateRelocatableDeviceCode>
       <AdditionalOptions>-Xcompiler "/wd 4505" %(AdditionalOptions)</AdditionalOptions>
+      <FastMath>true</FastMath>
     </CudaCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -211,6 +213,7 @@
       <CodeGeneration>compute_52,sm_52</CodeGeneration>
       <GenerateRelocatableDeviceCode>true</GenerateRelocatableDeviceCode>
       <AdditionalOptions>-Xcompiler "/wd 4505" %(AdditionalOptions)</AdditionalOptions>
+      <FastMath>true</FastMath>
     </CudaCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseFull|x64'">
@@ -256,6 +259,7 @@
       <CodeGeneration>compute_52,sm_52</CodeGeneration>
       <GenerateRelocatableDeviceCode>true</GenerateRelocatableDeviceCode>
       <AdditionalOptions>-Xcompiler "/wd 4505" %(AdditionalOptions)</AdditionalOptions>
+      <FastMath>true</FastMath>
     </CudaCompile>
   </ItemDefinitionGroup>
   <ItemGroup>

@@ -16,7 +16,7 @@ void ImageTexture::initialize(Scene& scene)
 	imageIndex = scene.imagePool.load(imageFileName, applyGamma);
 }
 
-CUDA_CALLABLE Color ImageTexture::getColor(const Scene& scene, const Vector2& texcoord, const Vector3& position)
+CUDA_CALLABLE Color ImageTexture::getColor(const Scene& scene, const Vector2& texcoord, const Vector3& position) const
 {
 	(void)position;
 

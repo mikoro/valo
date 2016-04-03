@@ -12,7 +12,7 @@
 
 using namespace Raycer;
 
-CUDA_CALLABLE Color Integrator::calculateRadiance(const Scene& scene, const Ray& viewRay, Random& random)
+CUDA_CALLABLE Color Integrator::calculateRadiance(const Scene& scene, const Ray& viewRay, Random& random) const
 {
 	switch (type)
 	{
@@ -47,7 +47,7 @@ CUDA_CALLABLE Color Integrator::calculateDirectLight(const Scene& scene, const I
 	if (scene.getEmissiveTrianglesCount() == 0)
 		return Color(0.0f, 0.0f, 0.0f);
 
-	Triangle& triangle = scene.getEmissiveTriangles()[random.getUint32(0, scene.getEmissiveTrianglesCount() - 1)];
+	const Triangle& triangle = scene.getEmissiveTriangles()[random.getUint32(0, scene.getEmissiveTrianglesCount() - 1)];
 	Intersection triangleIntersection = triangle.getRandomIntersection(scene, random);
 	Vector3 intersectionToTriangle = triangleIntersection.position - intersection.position;
 	float triangleDistance2 = intersectionToTriangle.lengthSquared();
@@ -76,8 +76,8 @@ CUDA_CALLABLE Color Integrator::calculateDirectLight(const Scene& scene, const I
 	float probability1 = 1.0f / float(scene.getEmissiveTrianglesCount());
 	float probability2 = 1.0f / triangle.area;
 
-	Material& triangleMaterial = scene.getMaterial(triangle.materialIndex);
-	Material& intersectionMaterial = scene.getMaterial(intersection.materialIndex);
+	const Material& triangleMaterial = scene.getMaterial(triangle.materialIndex);
+	const Material& intersectionMaterial = scene.getMaterial(intersection.materialIndex);
 
 	Color emittance = triangleMaterial.getEmittance(scene, triangleIntersection.texcoord, triangleIntersection.position);
 	Color brdf = intersectionMaterial.getBrdf(scene, intersection, in, out);

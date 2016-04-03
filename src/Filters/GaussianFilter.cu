@@ -15,7 +15,7 @@ namespace
 	}
 }
 
-CUDA_CALLABLE float GaussianFilter::getWeight(float s)
+CUDA_CALLABLE float GaussianFilter::getWeight(float s) const
 {
 	float alpha = 1.0f / (std::sqrt(2.0f * float(M_PI)) * stdDeviation.x);
 	float beta = -1.0f / (2.0f * stdDeviation.x * stdDeviation.x);
@@ -23,7 +23,7 @@ CUDA_CALLABLE float GaussianFilter::getWeight(float s)
 	return calculateWeight(s, alpha, beta);
 }
 
-CUDA_CALLABLE float GaussianFilter::getWeight(const Vector2& point)
+CUDA_CALLABLE float GaussianFilter::getWeight(const Vector2& point) const
 {
 	float alphaX = 1.0f / (std::sqrt(2.0f * float(M_PI)) * stdDeviation.x);
 	float alphaY = 1.0f / (std::sqrt(2.0f * float(M_PI)) * stdDeviation.y);
@@ -33,7 +33,7 @@ CUDA_CALLABLE float GaussianFilter::getWeight(const Vector2& point)
 	return calculateWeight(point.x, alphaX, betaX) * calculateWeight(point.y, alphaY, betaY);
 }
 
-CUDA_CALLABLE Vector2 GaussianFilter::getRadius()
+CUDA_CALLABLE Vector2 GaussianFilter::getRadius() const
 {
 	float radiusX = (7.43384f * stdDeviation.x) / 2.0f; // from full width at thousandth of maximum
 	float radiusY = (7.43384f * stdDeviation.y) / 2.0f;

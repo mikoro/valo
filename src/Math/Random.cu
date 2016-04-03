@@ -15,28 +15,38 @@
 
 using namespace Raycer;
 
-CUDA_CALLABLE RandomGeneratorPCG::RandomGeneratorPCG()
+CUDA_CALLABLE RandomGenerator::RandomGenerator()
 {
-	state = 0x853c49e6748fea9bULL;
-	inc = 0xda3e39cb94b95bdbULL;
+	state.state = 0x853c49e6748fea9bULL;
+	state.inc = 0xda3e39cb94b95bdbULL;
 }
 
-CUDA_CALLABLE RandomGeneratorPCG::RandomGeneratorPCG(uint64_t seed_)
+CUDA_CALLABLE RandomGenerator::RandomGenerator(uint64_t seed_)
 {
 	seed(seed_);
 }
 
-CUDA_CALLABLE void RandomGeneratorPCG::seed(uint64_t seed_)
+CUDA_CALLABLE RandomGenerator::RandomGenerator(RandomGeneratorState state_)
 {
-	state = seed_;
-	inc = reinterpret_cast<uint64_t>(this);
+	seed(state_);
+}
+
+CUDA_CALLABLE void RandomGenerator::seed(uint64_t seed_)
+{
+	state.state = seed_;
+	state.inc = reinterpret_cast<uint64_t>(this);
+}
+
+CUDA_CALLABLE void RandomGenerator::seed(RandomGeneratorState state_)
+{
+	state = state_;
 }
 
 // https://github.com/imneme/pcg-c-basic/blob/master/pcg_basic.c
-CUDA_CALLABLE RandomGeneratorPCG::result_type RandomGeneratorPCG::operator()()
+CUDA_CALLABLE RandomGenerator::result_type RandomGenerator::operator()()
 {
-	uint64_t oldstate = state;
-	state = oldstate * 6364136223846793005ULL + inc;
+	uint64_t oldstate = state.state;
+	state.state = oldstate * 6364136223846793005ULL + state.inc;
 	uint32_t xorshifted = static_cast<uint32_t>(((oldstate >> 18u) ^ oldstate) >> 27u);
 	uint32_t rot = static_cast<uint32_t>(oldstate >> 59u);
 
@@ -52,9 +62,24 @@ CUDA_CALLABLE Random::Random(uint64_t seed_)
 	generator.seed(seed_);
 }
 
+CUDA_CALLABLE Random::Random(RandomGeneratorState state_)
+{
+	generator.seed(state_);
+}
+
 CUDA_CALLABLE void Random::seed(uint64_t seed_)
 {
 	generator.seed(seed_);
+}
+
+CUDA_CALLABLE void Random::seed(RandomGeneratorState state_)
+{
+	generator.seed(state_);
+}
+
+CUDA_CALLABLE RandomGeneratorState Random::getState() const
+{
+	return generator.state;
 }
 
 CUDA_CALLABLE uint32_t Random::getUint32()

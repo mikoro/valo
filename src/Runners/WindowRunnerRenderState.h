@@ -5,7 +5,6 @@
 
 #include "Core/Scene.h"
 #include "Core/Film.h"
-#include "Core/CudaAlloc.h"
 #include "Renderers/Renderer.h"
 #include "Utils/FilmQuad.h"
 #include "Utils/InfoPanel.h"
@@ -35,8 +34,5 @@ namespace Raycer
 		Renderer renderer;
 		FilmQuad filmQuad;
 		InfoPanel infoPanel;
-
-		CudaAlloc<Scene> sceneAlloc;
-		CudaAlloc<Film> filmAlloc;
 	};
 }

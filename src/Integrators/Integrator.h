@@ -21,7 +21,7 @@ namespace Raycer
 	{
 	public:
 
-		CUDA_CALLABLE Color calculateRadiance(const Scene& scene, const Ray& viewRay, Random& random);
+		CUDA_CALLABLE Color calculateRadiance(const Scene& scene, const Ray& viewRay, Random& random) const;
 
 		uint32_t getSampleCount() const;
 		std::string getName() const;

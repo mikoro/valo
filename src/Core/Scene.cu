@@ -160,34 +160,34 @@ CUDA_CALLABLE bool Scene::intersect(const Ray& ray, Intersection& intersection) 
 
 CUDA_CALLABLE void Scene::calculateNormalMapping(Intersection& intersection) const
 {
-	Material& material = getMaterial(intersection.materialIndex);
+	const Material& material = getMaterial(intersection.materialIndex);
 
 	if (!general.normalMapping || material.normalTextureIndex == -1)
 		return;
 
-	Texture& normalTexture = getTexture(material.normalTextureIndex);
+	const Texture& normalTexture = getTexture(material.normalTextureIndex);
 	Color normalColor = normalTexture.getColor(*this, intersection.texcoord, intersection.position);
 	Vector3 normal(normalColor.r * 2.0f - 1.0f, normalColor.g * 2.0f - 1.0f, normalColor.b * 2.0f - 1.0f);
 	Vector3 mappedNormal = intersection.onb.u * normal.x + intersection.onb.v * normal.y + intersection.onb.w * normal.z;
 	intersection.normal = mappedNormal.normalized();
 }
 
-CUDA_CALLABLE Texture* Scene::getTextures() const
+CUDA_CALLABLE const Texture* Scene::getTextures() const
 {
 	return texturesAlloc.getPtr();
 }
 
-CUDA_CALLABLE Material* Scene::getMaterials() const
+CUDA_CALLABLE const Material* Scene::getMaterials() const
 {
 	return materialsAlloc.getPtr();
 }
 
-CUDA_CALLABLE Triangle* Scene::getTriangles() const
+CUDA_CALLABLE const Triangle* Scene::getTriangles() const
 {
 	return trianglesAlloc.getPtr();
 }
 
-CUDA_CALLABLE Triangle* Scene::getEmissiveTriangles() const
+CUDA_CALLABLE const Triangle* Scene::getEmissiveTriangles() const
 {
 	return emissiveTrianglesAlloc.getPtr();
 }
@@ -197,17 +197,17 @@ CUDA_CALLABLE uint32_t Scene::getEmissiveTrianglesCount() const
 	return emissiveTrianglesCount;
 }
 
-CUDA_CALLABLE Texture& Scene::getTexture(uint32_t index) const
+CUDA_CALLABLE const Texture& Scene::getTexture(uint32_t index) const
 {
 	return texturesAlloc.getPtr()[index];
 }
 
-CUDA_CALLABLE Material& Scene::getMaterial(uint32_t index) const
+CUDA_CALLABLE const Material& Scene::getMaterial(uint32_t index) const
 {
 	return materialsAlloc.getPtr()[index];
 }
 
-CUDA_CALLABLE Triangle& Scene::getTriangle(uint32_t index) const
+CUDA_CALLABLE const Triangle& Scene::getTriangle(uint32_t index) const
 {
 	return trianglesAlloc.getPtr()[index];
 }

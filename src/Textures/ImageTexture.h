@@ -17,7 +17,7 @@ namespace Raycer
 
 		void initialize(Scene& scene);
 
-		CUDA_CALLABLE Color getColor(const Scene& scene, const Vector2& texcoord, const Vector3& position);
+		CUDA_CALLABLE Color getColor(const Scene& scene, const Vector2& texcoord, const Vector3& position) const;
 		
 		std::string imageFileName;
 		bool applyGamma = false;

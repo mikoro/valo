@@ -204,15 +204,15 @@ __global__ void tonemapKernel(cudaSurfaceObject_t input, cudaSurfaceObject_t out
 	if (x >= width || y >= height)
 		return;
 
-	float4 color;
-	surf2Dread(&color, input, x * sizeof(float4), y);
+	float4 temp;
+	surf2Dread(&temp, input, x * sizeof(float4), y);
 
-	color.x = pow(color.x, 1.0f / 2.2f);
-	color.y = pow(color.y, 1.0f / 2.2f);
-	color.z = pow(color.z, 1.0f / 2.2f);
-	color.w = 1.0f;
+	Color color(temp.x, temp.y, temp.z, temp.w);
+	color.clamp();
+	color = Color::pow(color, 1.0f / 2.2f);
+	color.a = 1.0f;
 
-	surf2Dwrite(color, output, x * sizeof(float4), y);
+	surf2Dwrite(make_float4(color.r, color.g, color.b, color.a), output, x * sizeof(float4), y);
 }
 
 #endif

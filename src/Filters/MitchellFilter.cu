@@ -23,17 +23,17 @@ namespace
 	}
 }
 
-CUDA_CALLABLE float MitchellFilter::getWeight(float s)
+CUDA_CALLABLE float MitchellFilter::getWeight(float s) const
 {
 	return calculateWeight(s, B, C);
 }
 
-CUDA_CALLABLE float MitchellFilter::getWeight(const Vector2& point)
+CUDA_CALLABLE float MitchellFilter::getWeight(const Vector2& point) const
 {
 	return calculateWeight(point.x, B, C) * calculateWeight(point.y, B, C);
 }
 
-CUDA_CALLABLE Vector2 MitchellFilter::getRadius()
+CUDA_CALLABLE Vector2 MitchellFilter::getRadius() const
 {
 	return Vector2(2.0f, 2.0f);
 }

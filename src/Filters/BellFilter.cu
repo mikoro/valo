@@ -24,17 +24,17 @@ namespace
 	}
 }
 
-CUDA_CALLABLE float BellFilter::getWeight(float s)
+CUDA_CALLABLE float BellFilter::getWeight(float s) const
 {
 	return calculateWeight(s);
 }
 
-CUDA_CALLABLE float BellFilter::getWeight(const Vector2& point)
+CUDA_CALLABLE float BellFilter::getWeight(const Vector2& point) const
 {
 	return calculateWeight(point.x) * calculateWeight(point.y);
 }
 
-CUDA_CALLABLE Vector2 BellFilter::getRadius()
+CUDA_CALLABLE Vector2 BellFilter::getRadius() const
 {
 	return Vector2(1.5f, 1.5f);
 }

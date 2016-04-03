@@ -20,7 +20,7 @@ void Texture::initialize(Scene& scene)
 	}
 }
 
-CUDA_CALLABLE Color Texture::getColor(const Scene& scene, const Vector2& texcoord, const Vector3& position)
+CUDA_CALLABLE Color Texture::getColor(const Scene& scene, const Vector2& texcoord, const Vector3& position) const
 {
 	switch (type)
 	{

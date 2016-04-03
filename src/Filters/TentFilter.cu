@@ -20,14 +20,14 @@ namespace
 	}
 }
 
-CUDA_CALLABLE float TentFilter::getWeight(float s)
+CUDA_CALLABLE float TentFilter::getWeight(float s) const
 {
 	float radiusInv = 1.0f / radius.x;
 
 	return calculateWeight(s * radiusInv) * radiusInv;
 }
 
-CUDA_CALLABLE float TentFilter::getWeight(const Vector2& point)
+CUDA_CALLABLE float TentFilter::getWeight(const Vector2& point) const
 {
 	float radiusXInv = 1.0f / radius.x;
 	float radiusYInv = 1.0f / radius.y;
@@ -35,7 +35,7 @@ CUDA_CALLABLE float TentFilter::getWeight(const Vector2& point)
 	return calculateWeight(point.x * radiusXInv) * radiusXInv * calculateWeight(point.y * radiusYInv) * radiusYInv;
 }
 
-CUDA_CALLABLE Vector2 TentFilter::getRadius()
+CUDA_CALLABLE Vector2 TentFilter::getRadius() const
 {
 	return radius;
 }

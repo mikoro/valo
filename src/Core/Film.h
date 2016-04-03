@@ -14,11 +14,10 @@
 
 #include "Core/Common.h"
 #include "Core/Image.h"
-#include "Math/Color.h"
-#include "Renderers/Renderer.h"
 
 namespace Raycer
 {
+	class Color;
 	class Tonemapper;
 
 	class Film

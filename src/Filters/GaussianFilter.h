@@ -14,10 +14,10 @@ namespace Raycer
 	{
 	public:
 
-		CUDA_CALLABLE float getWeight(float s);
-		CUDA_CALLABLE float getWeight(const Vector2& point);
+		CUDA_CALLABLE float getWeight(float s) const;
+		CUDA_CALLABLE float getWeight(const Vector2& point) const;
 
-		CUDA_CALLABLE Vector2 getRadius();
+		CUDA_CALLABLE Vector2 getRadius() const;
 
 		Vector2 stdDeviation = Vector2(0.5f, 0.5f);
 	};

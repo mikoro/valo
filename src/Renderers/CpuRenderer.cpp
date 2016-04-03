@@ -17,10 +17,16 @@ void CpuRenderer::initialize()
 {
 }
 
+void CpuRenderer::resize(uint32_t width, uint32_t height)
+{
+	(void)width;
+	(void)height;
+}
+
 void CpuRenderer::render(RenderJob& job, bool filtering)
 {
-	Scene& scene = *job.scene->getPtr();
-	Film& film = *job.film->getPtr();
+	Scene& scene = *job.scene;
+	Film& film = *job.film;
 
 	omp_set_num_threads(maxThreadCount);
 	uint32_t maxThreads = MAX(1, omp_get_max_threads());
@@ -54,8 +60,9 @@ void CpuRenderer::render(RenderJob& job, bool filtering)
 			float x = float(uint32_t(pixelIndex) % filmWidth);
 			float y = float(uint32_t(pixelIndex) / filmWidth);
 			
-			Vector2 pixel = Vector2(x, y);
 			Random& random = randoms[omp_get_thread_num()];
+
+			Vector2 pixel = Vector2(x, y);
 			float filterWeight = 1.0f;
 			
 			if (filtering && scene.renderer.filtering)

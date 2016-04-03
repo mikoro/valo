@@ -17,22 +17,47 @@
 
 using namespace Raycer;
 
+CudaRenderer::CudaRenderer() : sceneAlloc(true), filmAlloc(true), randomStatesAlloc(false)
+{
+}
+
 void CudaRenderer::initialize()
 {
+	sceneAlloc.resize(1);
+	filmAlloc.resize(1);
+}
+
+void CudaRenderer::resize(uint32_t width, uint32_t height)
+{
+	std::vector<RandomGeneratorState> randomStates(width * height);
+
+	std::random_device rd;
+	std::mt19937_64 generator(rd());
+
+	for (RandomGeneratorState& randomState : randomStates)
+	{
+		randomState.state = generator();
+		randomState.inc = generator();
+	}
+
+	randomStatesAlloc.resize(width * height);
+	randomStatesAlloc.write(randomStates.data(), width * height);
 }
 
 #ifdef USE_CUDA
 
-__global__ void renderKernel(Scene& scene, Film& film, bool filtering)
+__global__ void renderKernel(const Scene& scene, Film& film, RandomGeneratorState* randomStates, bool filtering)
 {
 	uint32_t x = threadIdx.x + blockIdx.x * blockDim.x;
 	uint32_t y = threadIdx.y + blockIdx.y * blockDim.y;
+	uint32_t index = y * film.getWidth() + x;
 
 	if (x >= film.getWidth() || y >= film.getHeight())
 		return;
 
+	Random random(randomStates[index]);
+
 	Vector2 pixel = Vector2(x, y);
-	Random random;
 	float filterWeight = 1.0f;
 
 	if (filtering && scene.renderer.filtering)
@@ -53,11 +78,17 @@ __global__ void renderKernel(Scene& scene, Film& film, bool filtering)
 
 	Color color = scene.integrator.calculateRadiance(scene, viewRay, random);
 	film.addSample(x, y, color, filterWeight);
+
+	randomStates[index] = random.getState();
 }
 
 void CudaRenderer::render(RenderJob& job, bool filtering)
 {
-	Film& film = *job.film->getPtr();
+	Scene& scene = *job.scene;
+	Film& film = *job.film;
+
+	sceneAlloc.write(&scene, 1);
+	filmAlloc.write(&film, 1);
 
 	dim3 dimBlock(16, 16);
 	dim3 dimGrid;
@@ -65,7 +96,7 @@ void CudaRenderer::render(RenderJob& job, bool filtering)
 	dimGrid.x = (film.getWidth() + dimBlock.x - 1) / dimBlock.x;
 	dimGrid.y = (film.getHeight() + dimBlock.y - 1) / dimBlock.y;
 
-	renderKernel<<<dimGrid, dimBlock>>>(*job.scene->getDevicePtr(), *job.film->getDevicePtr(), filtering);
+	renderKernel<<<dimGrid, dimBlock>>>(*sceneAlloc.getDevicePtr(), *filmAlloc.getDevicePtr(), randomStatesAlloc.getDevicePtr(), filtering);
 	CudaUtils::checkError(cudaPeekAtLastError(), "Could not launch render kernel");
 	CudaUtils::checkError(cudaDeviceSynchronize(), "Could not execute render kernel");
 }

@@ -25,10 +25,16 @@ void Renderer::initialize(const Settings& settings)
 	cudaRenderer.initialize();
 }
 
+void Renderer::resize(uint32_t width, uint32_t height)
+{
+	cpuRenderer.resize(width, height);
+	cudaRenderer.resize(width, height);
+}
+
 void Renderer::render(RenderJob& job)
 {
-	Scene& scene = *job.scene->getPtr();
-	Film& film = *job.film->getPtr();
+	Scene& scene = *job.scene;
+	Film& film = *job.film;
 
 	imageAutoWriteTimer.restart();
 

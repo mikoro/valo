@@ -14,8 +14,6 @@
 #endif
 
 #include "BVH/BVH.h"
-#include "BVH/BVH1.h"
-#include "BVH/BVH4.h"
 
 using namespace Raycer;
 

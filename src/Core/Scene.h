@@ -32,15 +32,15 @@ namespace Raycer
 		CUDA_CALLABLE bool intersect(const Ray& ray, Intersection& intersection) const;
 		CUDA_CALLABLE void calculateNormalMapping(Intersection& intersection) const;
 
-		CUDA_CALLABLE Texture* getTextures() const;
-		CUDA_CALLABLE Material* getMaterials() const;
-		CUDA_CALLABLE Triangle* getTriangles() const;
-		CUDA_CALLABLE Triangle* getEmissiveTriangles() const;
+		CUDA_CALLABLE const Texture* getTextures() const;
+		CUDA_CALLABLE const Material* getMaterials() const;
+		CUDA_CALLABLE const Triangle* getTriangles() const;
+		CUDA_CALLABLE const Triangle* getEmissiveTriangles() const;
 		CUDA_CALLABLE uint32_t getEmissiveTrianglesCount() const;
 
-		CUDA_CALLABLE Texture& getTexture(uint32_t index) const;
-		CUDA_CALLABLE Material& getMaterial(uint32_t index) const;
-		CUDA_CALLABLE Triangle& getTriangle(uint32_t index) const;
+		CUDA_CALLABLE const Texture& getTexture(uint32_t index) const;
+		CUDA_CALLABLE const Material& getMaterial(uint32_t index) const;
+		CUDA_CALLABLE const Triangle& getTriangle(uint32_t index) const;
 
 		struct General
 		{

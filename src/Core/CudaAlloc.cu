@@ -159,3 +159,4 @@ template class CudaAlloc<Triangle>;
 template class CudaAlloc<BVHNode>;
 template class CudaAlloc<BVHNodeSOA<4>>;
 template class CudaAlloc<TriangleSOA<4>>;
+template class CudaAlloc<RandomGeneratorState>;

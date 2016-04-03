@@ -10,7 +10,7 @@
 
 using namespace Raycer;
 
-CUDA_CALLABLE Vector3 Material::getDirection(const Intersection& intersection, Random& random)
+CUDA_CALLABLE Vector3 Material::getDirection(const Intersection& intersection, Random& random) const
 {
 	switch (type)
 	{
@@ -20,7 +20,7 @@ CUDA_CALLABLE Vector3 Material::getDirection(const Intersection& intersection, R
 	}
 }
 
-CUDA_CALLABLE Color Material::getBrdf(const Scene& scene, const Intersection& intersection, const Vector3& in, const Vector3& out)
+CUDA_CALLABLE Color Material::getBrdf(const Scene& scene, const Intersection& intersection, const Vector3& in, const Vector3& out) const
 {
 	switch (type)
 	{
@@ -30,7 +30,7 @@ CUDA_CALLABLE Color Material::getBrdf(const Scene& scene, const Intersection& in
 	}
 }
 
-CUDA_CALLABLE float Material::getPdf(const Intersection& intersection, const Vector3& out)
+CUDA_CALLABLE float Material::getPdf(const Intersection& intersection, const Vector3& out) const
 {
 	switch (type)
 	{

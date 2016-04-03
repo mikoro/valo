@@ -12,7 +12,6 @@
 
 #include "Core/Common.h"
 #include "Math/Color.h"
-#include "Renderers/Renderer.h"
 
 /*
 
@@ -22,6 +21,7 @@ Origin (0, 0) is at the bottom left corner.
 
 namespace Raycer
 {
+	enum class RendererType;
 	class Filter;
 
 	class Image

@@ -17,7 +17,7 @@
 
 using namespace Raycer;
 
-WindowRunnerRenderState::WindowRunnerRenderState() : film(true), sceneAlloc(true), filmAlloc(true)
+WindowRunnerRenderState::WindowRunnerRenderState() : film(true)
 {
 }
 
@@ -34,12 +34,6 @@ void WindowRunnerRenderState::initialize()
 	infoPanel.setState(InfoPanelState(settings.window.infoPanelState));
 
 	resizeFilm();
-
-	sceneAlloc.resize(1);
-	filmAlloc.resize(1);
-
-	sceneAlloc.write(&scene, 1);
-	filmAlloc.write(&film, 1);
 }
 
 void WindowRunnerRenderState::shutdown()
@@ -332,12 +326,9 @@ void WindowRunnerRenderState::render(float timeStep, float interpolation)
 	renderer.filtering = !film.hasBeenCleared();
 	film.resetCleared();
 
-	sceneAlloc.write(&scene, 1);
-	filmAlloc.write(&film, 1);
-
 	RenderJob job;
-	job.scene = &sceneAlloc;
-	job.film = &filmAlloc;
+	job.scene = &scene;
+	job.film = &film;
 	job.interrupted = false;
 	job.sampleCount = 0;
 	
@@ -369,6 +360,7 @@ void WindowRunnerRenderState::resizeFilm()
     filmHeight = MAX(uint32_t(1), filmHeight);
 
 	film.resize(filmWidth, filmHeight);
+	renderer.resize(filmWidth, filmHeight);
 	film.clear(renderer.type);
 	scene.camera.setImagePlaneSize(filmWidth, filmHeight);
 }

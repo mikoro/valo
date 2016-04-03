@@ -23,6 +23,8 @@ uint32_t ImagePool::load(const std::string& fileName, bool applyGamma)
 
 		if (applyGamma)
 			images.back().applyFastGamma(2.2f);
+
+		images.back().upload();
 	}
 
 	return imagesMap[fileName];

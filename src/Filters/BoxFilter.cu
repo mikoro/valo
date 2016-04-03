@@ -16,17 +16,17 @@ namespace
 	}
 }
 
-CUDA_CALLABLE float BoxFilter::getWeight(float s)
+CUDA_CALLABLE float BoxFilter::getWeight(float s) const
 {
 	return calculateWeight(s, radius.x);
 }
 
-CUDA_CALLABLE float BoxFilter::getWeight(const Vector2& point)
+CUDA_CALLABLE float BoxFilter::getWeight(const Vector2& point) const
 {
 	return calculateWeight(point.x, radius.x) * calculateWeight(point.y, radius.y);
 }
 
-CUDA_CALLABLE Vector2 BoxFilter::getRadius()
+CUDA_CALLABLE Vector2 BoxFilter::getRadius() const
 {
 	return radius;
 }

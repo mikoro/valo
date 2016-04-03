@@ -11,14 +11,14 @@
 
 using namespace Raycer;
 
-CUDA_CALLABLE Vector3 DiffuseMaterial::getDirection(const Material& material, const Intersection& intersection, Random& random)
+CUDA_CALLABLE Vector3 DiffuseMaterial::getDirection(const Material& material, const Intersection& intersection, Random& random) const
 {
 	(void)material;
 
 	return Mapper::mapToCosineHemisphere(random.getVector2(), intersection.onb);
 }
 
-CUDA_CALLABLE Color DiffuseMaterial::getBrdf(const Scene& scene, const Material& material, const Intersection& intersection, const Vector3& in, const Vector3& out)
+CUDA_CALLABLE Color DiffuseMaterial::getBrdf(const Scene& scene, const Material& material, const Intersection& intersection, const Vector3& in, const Vector3& out) const
 {
 	(void)in;
 	(void)out;
@@ -26,7 +26,7 @@ CUDA_CALLABLE Color DiffuseMaterial::getBrdf(const Scene& scene, const Material&
 	return material.getReflectance(scene, intersection.texcoord, intersection.position) / float(M_PI);
 }
 
-CUDA_CALLABLE float DiffuseMaterial::getPdf(const Material& material, const Intersection& intersection, const Vector3& out)
+CUDA_CALLABLE float DiffuseMaterial::getPdf(const Material& material, const Intersection& intersection, const Vector3& out) const
 {
 	(void)material;
 

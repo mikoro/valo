@@ -12,7 +12,7 @@
 
 using namespace Raycer;
 
-CUDA_CALLABLE Color PathIntegrator::calculateRadiance(const Scene& scene, const Ray& viewRay, Random& random)
+CUDA_CALLABLE Color PathIntegrator::calculateRadiance(const Scene& scene, const Ray& viewRay, Random& random) const
 {
 	Ray pathRay = viewRay;
 	Color result(0.0f, 0.0f, 0.0f);
@@ -34,7 +34,7 @@ CUDA_CALLABLE Color PathIntegrator::calculateRadiance(const Scene& scene, const 
 
 			scene.calculateNormalMapping(intersection);
 
-			Material& material = scene.getMaterial(intersection.materialIndex);
+			const Material& material = scene.getMaterial(intersection.materialIndex);
 
 			if (++pathLength == 1 && !intersection.isBehind && material.isEmissive())
 				result += throughput * material.getEmittance(scene, intersection.texcoord, intersection.position);
