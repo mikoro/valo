@@ -8,6 +8,7 @@
 #include "Core/Film.h"
 #include "Core/Ray.h"
 #include "Core/Scene.h"
+#include "Core/Intersection.h"
 #include "Renderers/CpuRenderer.h"
 #include "Renderers/Renderer.h"
 
@@ -37,9 +38,10 @@ void CpuRenderer::render(RenderJob& job, bool filtering)
 	{
 		randoms.resize(maxThreads);
 		std::random_device rd;
+		std::mt19937_64 generator(rd());
 
 		for (Random& random : randoms)
-			random.seed(uint64_t(rd()) << 32 | rd());
+			random.seed(generator());
 	}
 
 	std::mutex ompThreadExceptionMutex;
@@ -54,6 +56,9 @@ void CpuRenderer::render(RenderJob& job, bool filtering)
 	{
 		try
 		{
+			if ((pixelIndex + 1) % 100 == 0)
+				job.sampleCount += 100 * scene.integrator.getSampleCount();
+
 			if (job.interrupted)
 				continue;
 
@@ -73,7 +78,7 @@ void CpuRenderer::render(RenderJob& job, bool filtering)
 			}
 
 			bool isOffLens;
-			Ray viewRay = scene.camera.getRay(pixel, isOffLens);
+			Ray ray = scene.camera.getRay(pixel, isOffLens);
 
 			if (isOffLens)
 			{
@@ -81,11 +86,30 @@ void CpuRenderer::render(RenderJob& job, bool filtering)
 				continue;
 			}
 
-			Color color = scene.integrator.calculateRadiance(scene, viewRay, random);
-			film.addSample(pixelIndex, color, filterWeight);
+			Intersection intersection;
 
-			if ((pixelIndex + 1) % 100 == 0)
-				job.sampleCount += 100 * scene.integrator.getSampleCount();
+			if (!scene.intersect(ray, intersection))
+			{
+				film.addSample(pixelIndex, scene.general.backgroundColor, filterWeight);
+				continue;
+			}
+
+			if (intersection.hasColor)
+			{
+				film.addSample(pixelIndex, intersection.color, filterWeight);
+				continue;
+			}
+
+			scene.calculateNormalMapping(intersection);
+
+			if (scene.general.normalVisualization)
+			{
+				film.addSample(pixelIndex, Color::fromNormal(intersection.normal), filterWeight);
+				continue;
+			}
+
+			Color color = scene.integrator.calculateLight(scene, intersection, ray, random);
+			film.addSample(pixelIndex, color, filterWeight);
 		}
 		catch (...)
 		{

@@ -9,6 +9,7 @@ namespace Raycer
 {
 	class Color;
 	class Scene;
+	class Intersection;
 	class Ray;
 	class Random;
 
@@ -16,7 +17,7 @@ namespace Raycer
 	{
 	public:
 
-		CUDA_CALLABLE Color calculateRadiance(const Scene& scene, const Ray& viewRay, Random& random) const;
+		CUDA_CALLABLE Color calculateLight(const Scene& scene, const Intersection& intersection, const Ray& ray, Random& random) const;
 
 		uint32_t getSampleCount() const;
 	};

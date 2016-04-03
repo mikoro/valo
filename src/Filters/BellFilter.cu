@@ -18,7 +18,10 @@ namespace
 			return 0.75f - (s * s);
 		
 		if (s <= 1.5f)
-			return 0.5f * std::pow(s - 1.5f, 2.0f);
+		{
+			s = s - 1.5f;
+			return 0.5f * (s * s);
+		}
 		
 		return 0.0f;
 	}

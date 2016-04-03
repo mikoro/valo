@@ -12,63 +12,61 @@
 
 using namespace Raycer;
 
-CUDA_CALLABLE Color PathIntegrator::calculateRadiance(const Scene& scene, const Ray& viewRay, Random& random) const
+CUDA_CALLABLE Color PathIntegrator::calculateLight(const Scene& scene, const Intersection& intersection2, const Ray& ray2, Random& random) const
 {
-	Ray pathRay = viewRay;
 	Color result(0.0f, 0.0f, 0.0f);
 	
 	for (uint32_t i = 0; i < scene.integrator.pathIntegrator.pathSamples; ++i)
 	{
-		Color throughput(1.0f, 1.0f, 1.0f);
+		Intersection pathIntersection = intersection2;
+		Ray pathRay = ray2;
+		Color pathThroughput(1.0f, 1.0f, 1.0f);
 		uint32_t pathLength = 0;
 
 		for (;;)
 		{
-			Intersection intersection;
-			
-			if (!scene.intersect(pathRay, intersection))
-			{
-				result += throughput * scene.general.backgroundColor;
-				break;
-			}
+			const Material& material = scene.getMaterial(pathIntersection.materialIndex);
 
-			scene.calculateNormalMapping(intersection);
-
-			const Material& material = scene.getMaterial(intersection.materialIndex);
-
-			if (++pathLength == 1 && !intersection.isBehind && material.isEmissive())
-				result += throughput * material.getEmittance(scene, intersection.texcoord, intersection.position);
+			if (++pathLength == 1 && !pathIntersection.isBehind && material.isEmissive())
+				result += pathThroughput * material.getEmittance(scene, pathIntersection.texcoord, pathIntersection.position);
 
 			Vector3 in = -pathRay.direction;
-			Vector3 out = material.getDirection(intersection, random);
+			Vector3 out = material.getDirection(pathIntersection, random);
 
-			result += throughput * Integrator::calculateDirectLight(scene, intersection, in, random);
+			result += pathThroughput * Integrator::calculateDirectLight(scene, pathIntersection, in, random);
 
-			Color brdf = material.getBrdf(scene, intersection, in, out);
-			float cosine = out.dot(intersection.normal);
-			float pdf = material.getPdf(intersection, out);
+			Color brdf = material.getBrdf(scene, pathIntersection, in, out);
+			float cosine = out.dot(pathIntersection.normal);
+			float pdf = material.getPdf(pathIntersection, out);
 
 			if (pdf == 0.0f)
 				break;
 
-			throughput *= brdf * cosine / pdf;
+			pathThroughput *= brdf * cosine / pdf;
 
 			if (pathLength >= minPathLength)
 			{
 				if (random.getFloat() < terminationProbability)
 					break;
 
-				throughput /= (1.0f - terminationProbability);
+				pathThroughput /= (1.0f - terminationProbability);
 			}
 
 			if (pathLength >= maxPathLength)
 				break;
 
 			pathRay = Ray();
-			pathRay.origin = intersection.position;
+			pathRay.origin = pathIntersection.position;
 			pathRay.direction = out;
 			pathRay.minDistance = scene.general.rayMinDistance;
 			pathRay.precalculate();
+
+			pathIntersection = Intersection();
+
+			if (!scene.intersect(pathRay, pathIntersection))
+				break;
+
+			scene.calculateNormalMapping(pathIntersection);
 		}
 	}
 

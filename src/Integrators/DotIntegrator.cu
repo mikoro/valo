@@ -12,26 +12,12 @@
 
 using namespace Raycer;
 
-CUDA_CALLABLE Color DotIntegrator::calculateRadiance(const Scene& scene, const Ray& viewRay, Random& random) const
+CUDA_CALLABLE Color DotIntegrator::calculateLight(const Scene& scene, const Intersection& intersection, const Ray& ray, Random& random) const
 {
 	(void)random;
 
-	Intersection intersection;
-
-	if (!scene.intersect(viewRay, intersection))
-		return scene.general.backgroundColor;
-
-	if (intersection.hasColor)
-		return intersection.color;
-
-	scene.calculateNormalMapping(intersection);
-
-	if (scene.general.normalVisualization)
-		return Color::fromNormal(intersection.normal);
-
 	const Material& material = scene.getMaterial(intersection.materialIndex);
-
-	float dot = std::abs(viewRay.direction.dot(intersection.normal));
+	float dot = std::abs(ray.direction.dot(intersection.normal));
 	return dot * material.getReflectance(scene, intersection.texcoord, intersection.position);
 }
 

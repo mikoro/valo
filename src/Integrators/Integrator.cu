@@ -12,12 +12,12 @@
 
 using namespace Raycer;
 
-CUDA_CALLABLE Color Integrator::calculateRadiance(const Scene& scene, const Ray& viewRay, Random& random) const
+CUDA_CALLABLE Color Integrator::calculateLight(const Scene& scene, const Intersection& intersection, const Ray& ray, Random& random) const
 {
 	switch (type)
 	{
-		case IntegratorType::DOT: return dotIntegrator.calculateRadiance(scene, viewRay, random);
-		case IntegratorType::PATH: return pathIntegrator.calculateRadiance(scene, viewRay, random);
+		case IntegratorType::DOT: return dotIntegrator.calculateLight(scene, intersection, ray, random);
+		case IntegratorType::PATH: return pathIntegrator.calculateLight(scene, intersection, ray, random);
 		default: return Color::black();
 	}
 }

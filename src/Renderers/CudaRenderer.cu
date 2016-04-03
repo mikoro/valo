@@ -11,6 +11,7 @@
 #include "Core/Film.h"
 #include "Core/Ray.h"
 #include "Core/Scene.h"
+#include "Core/Intersection.h"
 #include "Renderers/CudaRenderer.h"
 #include "Renderers/Renderer.h"
 #include "Utils/CudaUtils.h"
@@ -68,17 +69,42 @@ __global__ void renderKernel(const Scene& scene, Film& film, RandomGeneratorStat
 	}
 
 	bool isOffLens;
-	Ray viewRay = scene.camera.getRay(pixel, isOffLens);
+	Ray ray = scene.camera.getRay(pixel, isOffLens);
 
 	if (isOffLens)
 	{
 		film.addSample(x, y, scene.general.offLensColor, filterWeight);
+		randomStates[index] = random.getState();
 		return;
 	}
 
-	Color color = scene.integrator.calculateRadiance(scene, viewRay, random);
-	film.addSample(x, y, color, filterWeight);
+	Intersection intersection;
 
+	if (!scene.intersect(ray, intersection))
+	{
+		film.addSample(x, y, scene.general.backgroundColor, filterWeight);
+		randomStates[index] = random.getState();
+		return;
+	}
+
+	if (intersection.hasColor)
+	{
+		film.addSample(x, y, intersection.color, filterWeight);
+		randomStates[index] = random.getState();
+		return;
+	}
+
+	scene.calculateNormalMapping(intersection);
+
+	if (scene.general.normalVisualization)
+	{
+		film.addSample(x, y, Color::fromNormal(intersection.normal), filterWeight);
+		randomStates[index] = random.getState();
+		return;
+	}
+
+	Color color = scene.integrator.calculateLight(scene, intersection, ray, random);
+	film.addSample(x, y, color, filterWeight);
 	randomStates[index] = random.getState();
 }
 
