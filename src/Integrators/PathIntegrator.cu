@@ -7,7 +7,7 @@
 #include "Core/Ray.h"
 #include "Core/Scene.h"
 #include "Materials/Material.h"
-#include "PathIntegrator.h"
+#include "Integrators/PathIntegrator.h"
 #include "Math/Random.h"
 
 using namespace Raycer;

@@ -4,8 +4,10 @@
 #pragma once
 
 #include "Core/Common.h"
-#include "Integrators/DotIntegrator.h"
 #include "Integrators/PathIntegrator.h"
+#include "Integrators/DotIntegrator.h"
+#include "Integrators/AmbientOcclusionIntegrator.h"
+#include "Integrators/DirectLightIntegrator.h"
 
 namespace Raycer
 {
@@ -15,7 +17,7 @@ namespace Raycer
 	class Ray;
 	class Random;
 
-	enum class IntegratorType { DOT, PATH };
+	enum class IntegratorType { PATH, DOT, AMBIENT_OCCLUSION, DIRECT_LIGHT };
 
 	class Integrator
 	{
@@ -28,9 +30,11 @@ namespace Raycer
 
 		CUDA_CALLABLE static Color calculateDirectLight(const Scene& scene, const Intersection& intersection, const Vector3& in, Random& random);
 
-		IntegratorType type = IntegratorType::DOT;
+		IntegratorType type = IntegratorType::PATH;
 
-		DotIntegrator dotIntegrator;
 		PathIntegrator pathIntegrator;
+		DotIntegrator dotIntegrator;
+		AmbientOcclusionIntegrator aoIntegrator;
+		DirectLightIntegrator directIntegrator;
 	};
 }

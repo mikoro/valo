@@ -16,8 +16,10 @@ CUDA_CALLABLE Color Integrator::calculateLight(const Scene& scene, const Interse
 {
 	switch (type)
 	{
-		case IntegratorType::DOT: return dotIntegrator.calculateLight(scene, intersection, ray, random);
 		case IntegratorType::PATH: return pathIntegrator.calculateLight(scene, intersection, ray, random);
+		case IntegratorType::DOT: return dotIntegrator.calculateLight(scene, intersection, ray, random);
+		case IntegratorType::AMBIENT_OCCLUSION: return aoIntegrator.calculateLight(scene, intersection, ray, random);
+		case IntegratorType::DIRECT_LIGHT: return directIntegrator.calculateLight(scene, intersection, ray, random);
 		default: return Color::black();
 	}
 }
@@ -26,8 +28,10 @@ uint32_t Integrator::getSampleCount() const
 {
 	switch (type)
 	{
-		case IntegratorType::DOT: return dotIntegrator.getSampleCount();
 		case IntegratorType::PATH: return pathIntegrator.getSampleCount();
+		case IntegratorType::DOT: return dotIntegrator.getSampleCount();
+		case IntegratorType::AMBIENT_OCCLUSION: return aoIntegrator.getSampleCount();
+		case IntegratorType::DIRECT_LIGHT: return directIntegrator.getSampleCount();
 		default: return 0;
 	}
 }
@@ -36,8 +40,10 @@ std::string Integrator::getName() const
 {
 	switch (type)
 	{
-		case IntegratorType::DOT: return "dot";
 		case IntegratorType::PATH: return "path";
+		case IntegratorType::DOT: return "dot";
+		case IntegratorType::AMBIENT_OCCLUSION: return "ao";
+		case IntegratorType::DIRECT_LIGHT: return "direct";
 		default: return "unknown";
 	}
 }

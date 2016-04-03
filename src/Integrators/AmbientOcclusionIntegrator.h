@@ -13,7 +13,7 @@ namespace Raycer
 	class Ray;
 	class Random;
 
-	class DotIntegrator
+	class AmbientOcclusionIntegrator
 	{
 	public:
 
@@ -21,6 +21,7 @@ namespace Raycer
 
 		uint32_t getSampleCount() const;
 
+		float maxDistance = 1.0f;
 		bool useReflectance = false;
 	};
 }

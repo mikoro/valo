@@ -282,6 +282,8 @@
     <CudaCompile Include="src\Filters\LanczosSincFilter.cu" />
     <CudaCompile Include="src\Filters\MitchellFilter.cu" />
     <CudaCompile Include="src\Filters\TentFilter.cu" />
+    <CudaCompile Include="src\Integrators\AmbientOcclusionIntegrator.cu" />
+    <CudaCompile Include="src\Integrators\DirectLightIntegrator.cu" />
     <CudaCompile Include="src\Integrators\DotIntegrator.cu" />
     <CudaCompile Include="src\Integrators\Integrator.cu" />
     <CudaCompile Include="src\Integrators\PathIntegrator.cu" />
@@ -398,6 +400,8 @@
     <ClInclude Include="src\Filters\LanczosSincFilter.h" />
     <ClInclude Include="src\Filters\MitchellFilter.h" />
     <ClInclude Include="src\Filters\TentFilter.h" />
+    <ClInclude Include="src\Integrators\AmbientOcclusionIntegrator.h" />
+    <ClInclude Include="src\Integrators\DirectLightIntegrator.h" />
     <ClInclude Include="src\Integrators\DotIntegrator.h" />
     <ClInclude Include="src\Integrators\Integrator.h" />
     <ClInclude Include="src\Integrators\PathIntegrator.h" />

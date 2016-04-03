@@ -6,7 +6,7 @@
 #include "Core/Intersection.h"
 #include "Core/Ray.h"
 #include "Core/Scene.h"
-#include "DotIntegrator.h"
+#include "Integrators/DotIntegrator.h"
 #include "Materials/Material.h"
 #include "Math/Random.h"
 
@@ -16,9 +16,16 @@ CUDA_CALLABLE Color DotIntegrator::calculateLight(const Scene& scene, const Inte
 {
 	(void)random;
 
-	const Material& material = scene.getMaterial(intersection.materialIndex);
 	float dot = std::abs(ray.direction.dot(intersection.normal));
-	return dot * material.getReflectance(scene, intersection.texcoord, intersection.position);
+	Color dotColor = Color(dot, dot, dot);
+
+	if (useReflectance)
+	{
+		const Material& material = scene.getMaterial(intersection.materialIndex);
+		dotColor *= material.getReflectance(scene, intersection.texcoord, intersection.position);
+	}
+
+	return dotColor;
 }
 
 uint32_t DotIntegrator::getSampleCount() const

@@ -12,6 +12,7 @@
 #include "Utils/CudaUtils.h"
 #include "Core/Scene.h"
 #include "Core/Film.h"
+#include "Math/Random.h"
 
 using namespace Raycer;
 

@@ -17,6 +17,7 @@
 #include "Utils/Log.h"
 #include "Utils/CudaUtils.h"
 #include "Utils/GLUtils.h"
+#include "Renderers/Renderer.h"
 
 using namespace Raycer;
 

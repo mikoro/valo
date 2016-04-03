@@ -392,6 +392,12 @@
     <ClInclude Include="src\Runners\WindowRunnerRenderState.h">
       <Filter>Runners</Filter>
     </ClInclude>
+    <ClInclude Include="src\Integrators\AmbientOcclusionIntegrator.h">
+      <Filter>Integrators</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Integrators\DirectLightIntegrator.h">
+      <Filter>Integrators</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="platform\windows\raycer.rc">
@@ -538,6 +544,12 @@
     </CudaCompile>
     <CudaCompile Include="src\Core\ImagePool.cu">
       <Filter>Core</Filter>
+    </CudaCompile>
+    <CudaCompile Include="src\Integrators\AmbientOcclusionIntegrator.cu">
+      <Filter>Integrators</Filter>
+    </CudaCompile>
+    <CudaCompile Include="src\Integrators\DirectLightIntegrator.cu">
+      <Filter>Integrators</Filter>
     </CudaCompile>
   </ItemGroup>
 </Project>

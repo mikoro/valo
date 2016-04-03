@@ -20,6 +20,7 @@
 #include "Utils/CudaUtils.h"
 #include "Math/MathUtils.h"
 #include "Filters/Filter.h"
+#include "Renderers/Renderer.h"
 
 using namespace Raycer;
 

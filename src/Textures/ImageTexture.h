@@ -8,6 +8,7 @@
 
 namespace Raycer
 {
+	class Scene;
 	class Vector2;
 	class Vector3;
 
