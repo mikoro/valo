@@ -33,6 +33,6 @@ namespace Raycer
 
 		BVH1 bvh1;
 		BVH4 bvh4;
-		BVH4 bvh8;
+		BVH8 bvh8;
 	};
 }
