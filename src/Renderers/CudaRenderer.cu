@@ -131,7 +131,7 @@ void CudaRenderer::render(RenderJob& job, bool filtering)
 
 void CudaRenderer::render(RenderJob& job, bool filtering)
 {
-	job.film->clear(RendererType::CPU);
+	(void)job;
 	(void)filtering;
 }
 
