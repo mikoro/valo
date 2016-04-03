@@ -3,7 +3,9 @@ rwildcard = $(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2)$(filter $(subst
 UNAME := $(shell uname -s | tr "[:upper:]" "[:lower:]")
 SOURCES := $(call rwildcard, src/, *.cpp)
 OBJS := $(subst src/,build/,$(SOURCES:.cpp=.o))
-CFLAGS = -isystem include -Isrc -std=c++14 -Wpedantic -Wall -Wextra -Werror -Ofast -fopenmp -march=native
+CU_SOURCES := $(call rwildcard, src/, *.cu)
+CU_OBJS := $(subst src/,build/,$(CU_SOURCES:.cu=.cu.o))
+CFLAGS = -isystem include -Isrc -std=c++14 -Wpedantic -Wall -Wextra -Werror -Ofast -fopenmp -march=native -x c++
 LDFLAGS = 
 TARGET = raycer
 
@@ -24,13 +26,18 @@ endif
 
 default: raycer
 
-raycer: $(OBJS)
+raycer: $(OBJS) $(CU_OBJS)
 	@mkdir -p bin
 	@echo "Linking $@"
-	@$(CXX) $(OBJS) $(CFLAGS) $(LDFLAGS) -o bin/$(TARGET)
+	@$(CXX) $(OBJS) $(CU_OBJS) $(CFLAGS) $(LDFLAGS) -o bin/$(TARGET)
 	@platform/linux/post-build.sh
 
 build/%.o: src/%.cpp
+	@mkdir -p $(@D)
+	@echo "Compiling $<"
+	@$(CXX) $(CFLAGS) -c -o $@ $<
+
+build/%.cu.o: src/%.cu
 	@mkdir -p $(@D)
 	@echo "Compiling $<"
 	@$(CXX) $(CFLAGS) -c -o $@ $<

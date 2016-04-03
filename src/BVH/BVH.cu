@@ -3,6 +3,8 @@
 
 #include "Precompiled.h"
 
+#include <cfloat>
+
 #ifdef _WIN32
 #include <ppl.h>
 #define PARALLEL_SORT concurrency::parallel_sort

@@ -3,6 +3,8 @@
 
 #pragma once
 
+#include <climits>
+
 #include "Core/Common.h"
 
 /*

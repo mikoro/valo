@@ -3,6 +3,8 @@
 
 #pragma once
 
+#include <cfloat>
+
 #include "Core/Common.h"
 #include "Math/Vector3.h"
 

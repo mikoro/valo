@@ -8,6 +8,10 @@
 #include <shellapi.h>
 #endif
 
+#ifdef __linux
+#include <unistd.h>
+#endif
+
 #include "Utils/SysUtils.h"
 #include "App.h"
 #include "Utils/Log.h"

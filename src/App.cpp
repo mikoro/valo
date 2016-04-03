@@ -7,6 +7,10 @@
 #include <windows.h>
 #endif
 
+#ifdef __linux
+#include <signal.h>
+#endif
+
 #ifdef RUN_UNIT_TESTS
 #define CATCH_CONFIG_RUNNER
 #include "catch/catch.hpp"

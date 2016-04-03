@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include <cfloat>
 #include <complex>
 
 #include "Core/Common.h"
