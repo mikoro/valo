@@ -24,6 +24,13 @@ ifneq "$(findstring darwin,$(UNAME))" ""
 	LDFLAGS += -L/opt/local/lib -L/opt/local/lib/libomp -framework Cocoa -framework OpenGL -framework IOKit -framework CoreVideo -lstdc++ -lglfw -lboost_system-mt -lboost_filesystem-mt -lboost_program_options-mt
 endif
 
+
+ifdef CUDA
+	CXX = nvcc
+	CFLAGS += -DUSE_CUDA
+	CFLAGS := --std c++11 --machine 64 --gpu-architecture=sm_52 --use_fast_math --cudart static -DUSE_CUDA -Xcompiler "$(CFLAGS)"
+endif
+
 default: raycer
 
 raycer: $(OBJS) $(CU_OBJS)
