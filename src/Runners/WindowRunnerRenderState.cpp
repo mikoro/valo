@@ -334,7 +334,7 @@ void WindowRunnerRenderState::render(float timeStep, float interpolation)
 	job.scene = &scene;
 	job.film = &film;
 	job.interrupted = false;
-	job.sampleCount = 0;
+	job.totalSampleCount = 0;
 	
 	renderer.render(job);
 	film.normalize(renderer.type);

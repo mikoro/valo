@@ -20,6 +20,8 @@ Scene TestScene::create1()
 
 	scene.bvh.type = BVHType::BVH8;
 
+	scene.integrator.aoIntegrator.maxDistance = 0.25f;
+
 	ModelLoaderInfo model;
 	model.modelFileName = "data/models/cornellbox-cuboids/cornellbox.obj";
 

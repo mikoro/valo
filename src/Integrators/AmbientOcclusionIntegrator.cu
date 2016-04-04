@@ -38,8 +38,3 @@ CUDA_CALLABLE Color AmbientOcclusionIntegrator::calculateLight(const Scene& scen
 
 	return aoColor;
 }
-
-uint32_t AmbientOcclusionIntegrator::getSampleCount() const
-{
-	return 1;
-}

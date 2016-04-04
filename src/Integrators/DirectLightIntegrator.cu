@@ -21,8 +21,3 @@ CUDA_CALLABLE Color DirectLightIntegrator::calculateLight(const Scene& scene, co
 
 	return Color::red();
 }
-
-uint32_t DirectLightIntegrator::getSampleCount() const
-{
-	return 1;
-}

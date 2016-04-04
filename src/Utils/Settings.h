@@ -14,6 +14,7 @@ namespace Raycer
 		struct General
 		{
 			bool windowed;
+			uint32_t rendererType;
 			uint32_t maxCpuThreadCount;
 			uint32_t cudaDeviceNumber;
 		} general;
@@ -48,7 +49,6 @@ namespace Raycer
 
 		struct Renderer
 		{
-			uint32_t type;
 			bool imageAutoWrite;
 			float imageAutoWriteInterval;
 			uint32_t imageAutoWriteMaxNumber;

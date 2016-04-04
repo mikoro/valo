@@ -24,18 +24,6 @@ CUDA_CALLABLE Color Integrator::calculateLight(const Scene& scene, const Interse
 	}
 }
 
-uint32_t Integrator::getSampleCount() const
-{
-	switch (type)
-	{
-		case IntegratorType::PATH: return pathIntegrator.getSampleCount();
-		case IntegratorType::DOT: return dotIntegrator.getSampleCount();
-		case IntegratorType::AMBIENT_OCCLUSION: return aoIntegrator.getSampleCount();
-		case IntegratorType::DIRECT_LIGHT: return directIntegrator.getSampleCount();
-		default: return 0;
-	}
-}
-
 std::string Integrator::getName() const
 {
 	switch (type)

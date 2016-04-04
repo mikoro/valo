@@ -19,13 +19,13 @@ namespace Raycer
 
 	struct RenderJob
 	{
-		RenderJob() : interrupted(false), sampleCount(0) {}
+		RenderJob() : interrupted(false), totalSampleCount(0) {}
 
 		Scene* scene = nullptr;
 		Film* film = nullptr;
 
 		std::atomic<bool> interrupted;
-		std::atomic<uint32_t> sampleCount;
+		std::atomic<uint32_t> totalSampleCount;
 	};
 
 	class Renderer

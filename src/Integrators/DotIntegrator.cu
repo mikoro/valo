@@ -27,8 +27,3 @@ CUDA_CALLABLE Color DotIntegrator::calculateLight(const Scene& scene, const Inte
 
 	return dotColor;
 }
-
-uint32_t DotIntegrator::getSampleCount() const
-{
-	return 1;
-}

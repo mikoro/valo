@@ -18,7 +18,5 @@ namespace Raycer
 	public:
 
 		CUDA_CALLABLE Color calculateLight(const Scene& scene, const Intersection& intersection, const Ray& ray, Random& random) const;
-
-		uint32_t getSampleCount() const;
 	};
 }

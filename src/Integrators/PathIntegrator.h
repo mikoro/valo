@@ -19,9 +19,6 @@ namespace Raycer
 
 		CUDA_CALLABLE Color calculateLight(const Scene& scene, const Intersection& intersection, const Ray& ray, Random& random) const;
 
-		uint32_t getSampleCount() const;
-
-		uint32_t pathSamples = 1;
 		uint32_t minPathLength = 3;
 		uint32_t maxPathLength = 10;
 		float terminationProbability = 0.2f;

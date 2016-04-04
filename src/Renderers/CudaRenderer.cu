@@ -58,53 +58,57 @@ __global__ void renderKernel(const Scene& scene, Film& film, RandomGeneratorStat
 
 	Random random(randomStates[index]);
 
-	Vector2 pixel = Vector2(x, y);
-	float filterWeight = 1.0f;
-
-	if (filtering && scene.renderer.filtering)
+	for (uint32_t i = 0; i < scene.renderer.pixelSamples2; ++i)
 	{
-		Vector2 offset = (random.getVector2() - Vector2(0.5f, 0.5f)) * 2.0f * scene.renderer.filter.getRadius();
-		filterWeight = scene.renderer.filter.getWeight(offset);
-		pixel += offset;
+		Vector2 pixel = Vector2(x, y);
+		float filterWeight = 1.0f;
+
+		if (filtering && scene.renderer.filtering)
+		{
+			Vector2 offset = (random.getVector2() - Vector2(0.5f, 0.5f)) * 2.0f * scene.renderer.filter.getRadius();
+			filterWeight = scene.renderer.filter.getWeight(offset);
+			pixel += offset;
+		}
+
+		bool isOffLens;
+		Ray ray = scene.camera.getRay(pixel, isOffLens);
+
+		if (isOffLens)
+		{
+			film.addSample(x, y, scene.general.offLensColor, filterWeight);
+			randomStates[index] = random.getState();
+			return;
+		}
+
+		Intersection intersection;
+
+		if (!scene.intersect(ray, intersection))
+		{
+			film.addSample(x, y, scene.general.backgroundColor, filterWeight);
+			randomStates[index] = random.getState();
+			return;
 	}
 
-	bool isOffLens;
-	Ray ray = scene.camera.getRay(pixel, isOffLens);
+		if (intersection.hasColor)
+		{
+			film.addSample(x, y, intersection.color, filterWeight);
+			randomStates[index] = random.getState();
+			return;
+		}
 
-	if (isOffLens)
-	{
-		film.addSample(x, y, scene.general.offLensColor, filterWeight);
-		randomStates[index] = random.getState();
-		return;
+		scene.calculateNormalMapping(intersection);
+
+		if (scene.general.normalVisualization)
+		{
+			film.addSample(x, y, Color::fromNormal(intersection.normal), filterWeight);
+			randomStates[index] = random.getState();
+			return;
+		}
+
+		Color color = scene.integrator.calculateLight(scene, intersection, ray, random);
+		film.addSample(x, y, color, filterWeight);
 	}
 
-	Intersection intersection;
-
-	if (!scene.intersect(ray, intersection))
-	{
-		film.addSample(x, y, scene.general.backgroundColor, filterWeight);
-		randomStates[index] = random.getState();
-		return;
-	}
-
-	if (intersection.hasColor)
-	{
-		film.addSample(x, y, intersection.color, filterWeight);
-		randomStates[index] = random.getState();
-		return;
-	}
-
-	scene.calculateNormalMapping(intersection);
-
-	if (scene.general.normalVisualization)
-	{
-		film.addSample(x, y, Color::fromNormal(intersection.normal), filterWeight);
-		randomStates[index] = random.getState();
-		return;
-	}
-
-	Color color = scene.integrator.calculateLight(scene, intersection, ray, random);
-	film.addSample(x, y, color, filterWeight);
 	randomStates[index] = random.getState();
 }
 

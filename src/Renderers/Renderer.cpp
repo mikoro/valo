@@ -14,7 +14,7 @@ using namespace Raycer;
 
 void Renderer::initialize(const Settings& settings)
 {
-	type = static_cast<RendererType>(settings.renderer.type);
+	type = static_cast<RendererType>(settings.general.rendererType);
 	cpuRenderer.maxThreadCount = settings.general.maxCpuThreadCount;
 	imageAutoWrite = settings.renderer.imageAutoWrite;
 	imageAutoWriteInterval = settings.renderer.imageAutoWriteInterval;
@@ -38,7 +38,7 @@ void Renderer::render(RenderJob& job)
 
 	imageAutoWriteTimer.restart();
 
-	for (uint32_t i = 0; i < scene.renderer.pixelSamples && !job.interrupted; ++i)
+	for (uint32_t i = 0; i < scene.renderer.imageSamples && !job.interrupted; ++i)
 	{
 		switch (type)
 		{
@@ -47,7 +47,7 @@ void Renderer::render(RenderJob& job)
 			default: break;
 		}
 
-		++film.pixelSamples;
+		film.pixelSamples += scene.renderer.pixelSamples;
 
 		if (imageAutoWrite && imageAutoWriteTimer.getElapsedSeconds() > imageAutoWriteInterval)
 		{

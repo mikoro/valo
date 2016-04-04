@@ -210,7 +210,7 @@ void InfoPanel::renderFull(const Renderer& renderer, const RenderJob& job)
 	nvgText(context, currentX, currentY, tfm::format("Pixel samples: %d", film.pixelSamples).c_str(), nullptr);
 	currentY += lineSpacing;
 
-	float samplesPerSecond = fpsCounter.getFps() * float(job.sampleCount);
+	float samplesPerSecond = fpsCounter.getFps() * float(job.totalSampleCount);
 
 	nvgText(context, currentX, currentY, tfm::format("Samples/s: %s", StringUtils::humanizeNumber(samplesPerSecond)).c_str(), nullptr);
 	currentY += lineSpacing;

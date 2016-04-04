@@ -20,6 +20,7 @@ bool Settings::load(int argc, char** argv)
 		("help", "")
 
 		("general.windowed", po::value(&general.windowed)->default_value(true), "")
+		("general.rendererType", po::value(&general.rendererType)->default_value(0), "")
 		("general.maxCpuThreadCount", po::value(&general.maxCpuThreadCount)->default_value(0), "")
 		("general.cudaDeviceNumber", po::value(&general.cudaDeviceNumber)->default_value(0), "")
 
@@ -42,7 +43,6 @@ bool Settings::load(int argc, char** argv)
 		("scene.useTestScene", po::value(&scene.useTestScene)->default_value(true), "")
 		("scene.testSceneNumber", po::value(&scene.testSceneNumber)->default_value(1), "")
 
-		("renderer.type", po::value(&renderer.type)->default_value(0), "")
 		("renderer.imageAutoWrite", po::value(&renderer.imageAutoWrite)->default_value(false), "")
 		("renderer.imageAutoWriteInterval", po::value(&renderer.imageAutoWriteInterval)->default_value(60.0f), "")
 		("renderer.imageAutoWriteMaxNumber", po::value(&renderer.imageAutoWriteMaxNumber)->default_value(10), "")

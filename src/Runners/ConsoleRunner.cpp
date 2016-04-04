@@ -45,18 +45,19 @@ int ConsoleRunner::run()
 	renderJob.scene = &scene;
 	renderJob.film = &film;
 	renderJob.interrupted = false;
-	renderJob.sampleCount = 0;
+	renderJob.totalSampleCount = 0;
 	
 	SysUtils::setConsoleTextColor(ConsoleTextColor::WHITE_ON_BLACK);
 
-	uint64_t totalSamples = uint64_t(settings.image.width) * uint64_t(settings.image.height) * uint64_t(scene.renderer.pixelSamples);
+	uint64_t totalSamples = uint64_t(settings.image.width) * uint64_t(settings.image.height) * uint64_t(scene.renderer.imageSamples) * uint64_t(scene.renderer.pixelSamples);
 
-	std::cout << tfm::format("\nRendering started (size: %dx%d, pixels: %s, samples: %s, pixel samples: %d)\n\n",
+	std::cout << tfm::format("\nRendering started (size: %dx%d, pixels: %s, image samples: %d, pixel samples: %d, total samples: %d)\n\n",
 		settings.image.width,
 		settings.image.height,
 		StringUtils::humanizeNumber(double(settings.image.width * settings.image.height)),
-		StringUtils::humanizeNumber(double(totalSamples)),
-		scene.renderer.pixelSamples);
+		scene.renderer.imageSamples,
+		scene.renderer.pixelSamples,
+		StringUtils::humanizeNumber(double(totalSamples)));
 
 	Timer renderingElapsedTimer;
 	renderingElapsedTimer.setAveragingAlpha(0.05f);
@@ -83,13 +84,13 @@ int ConsoleRunner::run()
 
 	while (!renderThreadFinished)
 	{
-		renderingElapsedTimer.updateCurrentValue(float(renderJob.sampleCount));
+		renderingElapsedTimer.updateCurrentValue(float(renderJob.totalSampleCount));
 
 		auto elapsed = renderingElapsedTimer.getElapsed();
 		auto remaining = renderingElapsedTimer.getRemaining();
 
 		if (elapsed.totalMilliseconds > 0)
-			samplesPerSecondAverage.addMeasurement(float(renderJob.sampleCount) / (float(elapsed.totalMilliseconds) / 1000.0f));
+			samplesPerSecondAverage.addMeasurement(float(renderJob.totalSampleCount) / (float(elapsed.totalMilliseconds) / 1000.0f));
 
 		printProgress(renderingElapsedTimer.getPercentage(), elapsed, remaining, film.pixelSamples);
 		std::this_thread::sleep_for(std::chrono::milliseconds(250));
@@ -100,7 +101,7 @@ int ConsoleRunner::run()
 	if (renderThreadException != nullptr)
 		std::rethrow_exception(renderThreadException);
 
-	renderingElapsedTimer.updateCurrentValue(float(renderJob.sampleCount));
+	renderingElapsedTimer.updateCurrentValue(float(renderJob.totalSampleCount));
 
 	auto elapsed = renderingElapsedTimer.getElapsed();
 	auto remaining = renderingElapsedTimer.getRemaining();
@@ -110,7 +111,7 @@ int ConsoleRunner::run()
 	float totalSamplesPerSecond = 0.0f;
 
 	if (elapsed.totalMilliseconds > 0)
-		totalSamplesPerSecond = float(renderJob.sampleCount) / (float(elapsed.totalMilliseconds) / 1000.0f);
+		totalSamplesPerSecond = float(renderJob.totalSampleCount) / (float(elapsed.totalMilliseconds) / 1000.0f);
 
 	std::cout << tfm::format("\n\nRendering %s (time: %s, samples/s: %s)\n\n",
 		renderJob.interrupted ? "interrupted" : "finished",
