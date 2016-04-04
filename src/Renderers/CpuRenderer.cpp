@@ -55,11 +55,11 @@ void CpuRenderer::render(RenderJob& job, bool filtering)
 	{
 		try
 		{
+			if ((pixelIndex + 1) % 100 == 0)
+				job.totalSampleCount += 100 * scene.renderer.pixelSamples;
+
 			for (uint32_t i = 0; i < scene.renderer.pixelSamples; ++i)
 			{
-				if ((pixelIndex + 1) % 100 == 0)
-					job.totalSampleCount += 100 * scene.renderer.pixelSamples;
-
 				if (job.interrupted)
 					continue;
 
