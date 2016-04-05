@@ -256,6 +256,9 @@ void BVH8::build(std::vector<Triangle>& triangles)
 
 CUDA_CALLABLE bool BVH8::intersect(const Scene& scene, const Ray& ray, Intersection& intersection) const
 {
+	if (nodesAlloc.getPtr() == nullptr || triangles8Alloc.getPtr() == nullptr || scene.getTriangles() == nullptr)
+		return false;
+
 	if (ray.isVisibilityRay && intersection.wasFound)
 		return true;
 

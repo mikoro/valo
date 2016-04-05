@@ -144,6 +144,9 @@ void BVH1::build(std::vector<Triangle>& triangles)
 
 CUDA_CALLABLE bool BVH1::intersect(const Scene& scene, const Ray& ray, Intersection& intersection) const
 {
+	if (nodesAlloc.getPtr() == nullptr || scene.getTriangles() == nullptr)
+		return false;
+
 	if (ray.isVisibilityRay && intersection.wasFound)
 		return true;
 

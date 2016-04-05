@@ -58,7 +58,7 @@ __global__ void renderKernel(const Scene& scene, Film& film, RandomGeneratorStat
 
 	Random random(randomStates[index]);
 
-	for (uint32_t i = 0; i < scene.renderer.pixelSamples2; ++i)
+	for (uint32_t i = 0; i < scene.renderer.pixelSamples; ++i)
 	{
 		Vector2 pixel = Vector2(x, y);
 		float filterWeight = 1.0f;
