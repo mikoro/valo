@@ -165,7 +165,7 @@ __global__ void normalizeKernel(cudaSurfaceObject_t cumulative, cudaSurfaceObjec
 
 void Film::normalize(RendererType type)
 {
-	if (type == RendererType::CPU)
+	auto normalize_ = [&]()
 	{
 		#pragma omp parallel for
 		for (int32_t i = 0; i < int32_t(length); ++i)
@@ -176,7 +176,10 @@ void Film::normalize(RendererType type)
 
 			normalizedImage.setPixel(i, color);
 		}
-	}
+	};
+
+	if (type == RendererType::CPU)
+		normalize_();
 	else
 	{
 #ifdef USE_CUDA
@@ -190,7 +193,8 @@ void Film::normalize(RendererType type)
 		normalizeKernel<<<dimGrid, dimBlock>>>(cumulativeImage.getSurfaceObject(), normalizedImage.getSurfaceObject(), width, height);
 		CudaUtils::checkError(cudaPeekAtLastError(), "Could not launch normalize kernel");
 		CudaUtils::checkError(cudaDeviceSynchronize(), "Could not execute normalize kernel");
-
+#else
+		normalize_();
 #endif
 	}
 }
@@ -237,7 +241,8 @@ void Film::tonemap(Tonemapper& tonemapper, RendererType type)
 		tonemapKernel<<<dimGrid, dimBlock>>>(normalizedImage.getSurfaceObject(), tonemappedImage.getSurfaceObject(), width, height);
 		CudaUtils::checkError(cudaPeekAtLastError(), "Could not launch tonemap kernel");
 		CudaUtils::checkError(cudaDeviceSynchronize(), "Could not execute tonemap kernel");
-
+#else
+		tonemapper.apply(normalizedImage, tonemappedImage);
 #endif
 	}
 }
@@ -261,16 +266,19 @@ __global__ void updateTextureKernel(cudaSurfaceObject_t input, cudaSurfaceObject
 
 void Film::updateTexture(RendererType type)
 {
+	auto update = [&]()
+	{
+		glBindTexture(GL_TEXTURE_2D, textureId);
+		glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, GLsizei(width), GLsizei(height), GL_RGBA, GL_FLOAT, tonemappedImage.getData());
+		glBindTexture(GL_TEXTURE_2D, 0);
+
+		GLUtils::checkError("Could not upload OpenGL texture data");
+	};
+
 	if (windowed)
 	{
 		if (type == RendererType::CPU)
-		{
-			glBindTexture(GL_TEXTURE_2D, textureId);
-			glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, GLsizei(width), GLsizei(height), GL_RGBA, GL_FLOAT, tonemappedImage.getData());
-			glBindTexture(GL_TEXTURE_2D, 0);
-
-			GLUtils::checkError("Could not upload OpenGL texture data");
-		}
+			update();
 		else
 		{
 #ifdef USE_CUDA
@@ -300,7 +308,8 @@ void Film::updateTexture(RendererType type)
 
 			CudaUtils::checkError(cudaDestroySurfaceObject(surfaceObject), "Could not destroy surface object");
 			CudaUtils::checkError(cudaGraphicsUnmapResources(1, &textureResource, 0), "Could not unmap texture resource");
-
+#else
+			update();
 #endif
 		}
 	}

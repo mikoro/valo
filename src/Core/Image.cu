@@ -294,7 +294,8 @@ void Image::clear(RendererType type)
 		clearKernel<<<dimGrid, dimBlock>>>(surfaceObject, width, height);
 		CudaUtils::checkError(cudaPeekAtLastError(), "Could not launch clear kernel");
 		CudaUtils::checkError(cudaDeviceSynchronize(), "Could not execute clear kernel");
-
+#else
+		memset(data, 0, length * sizeof(Color));
 #endif
 	}
 }

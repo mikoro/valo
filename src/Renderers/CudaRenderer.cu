@@ -129,14 +129,16 @@ void CudaRenderer::render(RenderJob& job, bool filtering)
 	renderKernel<<<dimGrid, dimBlock>>>(*sceneAlloc.getDevicePtr(), *filmAlloc.getDevicePtr(), randomStatesAlloc.getDevicePtr(), filtering);
 	CudaUtils::checkError(cudaPeekAtLastError(), "Could not launch render kernel");
 	CudaUtils::checkError(cudaDeviceSynchronize(), "Could not execute render kernel");
+
+	job.totalSampleCount += film.getWidth() * film.getHeight() * scene.renderer.pixelSamples;
 }
 
 #else
 
 void CudaRenderer::render(RenderJob& job, bool filtering)
 {
-	(void)job;
 	(void)filtering;
+	job.film->clear(RendererType::CPU);
 }
 
 #endif
