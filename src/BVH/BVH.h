@@ -6,7 +6,7 @@
 #include <cstdint>
 #include <vector>
 
-#include "BVH/BVH1.h"
+#include "BVH/BVH2.h"
 #include "BVH/BVH4.h"
 #include "BVH/BVH8.h"
 #include "BVH/Common.h"
@@ -18,7 +18,7 @@ namespace Raycer
 	class Ray;
 	class Intersection;
 
-	enum class BVHType { BVH1, BVH4, BVH8 };
+	enum class BVHType { BVH2, BVH4, BVH8 };
 
 	class BVH
 	{
@@ -29,9 +29,9 @@ namespace Raycer
 
 		static BVHSplitOutput calculateSplit(std::vector<BVHBuildTriangle>& buildTriangles, std::vector<BVHSplitCache>& cache, uint32_t start, uint32_t end);
 
-		BVHType type = BVHType::BVH1;
+		BVHType type = BVHType::BVH2;
 
-		BVH1 bvh1;
+		BVH2 bvh2;
 		BVH4 bvh4;
 		BVH8 bvh8;
 	};

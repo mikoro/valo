@@ -19,6 +19,8 @@ Scene TestScene::create8()
 	scene.camera.position = Vector3(2.5747f, 1.5601f, 2.5999f);
 	scene.camera.orientation = EulerAngle(-9.9896f, 47.4465f, 0.0000f);
 
+	scene.bvh.type = BVHType::BVH4;
+
 	// MODELS //
 
 	ModelLoaderInfo model;

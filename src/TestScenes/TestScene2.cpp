@@ -18,6 +18,8 @@ Scene TestScene::create2()
 
 	scene.camera.position = Vector3(0.0000f, 0.7808f, 2.9691f);
 
+	scene.bvh.type = BVHType::BVH4;
+
 	ModelLoaderInfo model;
 	model.modelFileName = "data/models/cornellbox-spheres/cornellbox.obj";
 

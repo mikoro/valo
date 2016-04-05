@@ -19,6 +19,8 @@ Scene TestScene::create3()
 	scene.camera.position = Vector3(0.0f, 1.0f, 0.0f);
 	scene.camera.orientation = EulerAngle(0.0f, 0.0f, 0.0f);
 
+	scene.bvh.type = BVHType::BVH4;
+
 	ModelLoaderInfo model;
 	model.modelFileName = "data/models/spheres/spheres.obj";
 

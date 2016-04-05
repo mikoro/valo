@@ -3,7 +3,7 @@
 
 #include "Precompiled.h"
 
-#include "BVH/BVH1.h"
+#include "BVH/BVH2.h"
 #include "App.h"
 #include "Core/Common.h"
 #include "Utils/Log.h"
@@ -17,7 +17,7 @@ using namespace Raycer;
 
 namespace
 {
-	struct BVH1BuildEntry
+	struct BVH2BuildEntry
 	{
 		uint32_t start;
 		uint32_t end;
@@ -25,11 +25,11 @@ namespace
 	};
 }
 
-BVH1::BVH1() : nodesAlloc(false)
+BVH2::BVH2() : nodesAlloc(false)
 {
 }
 
-void BVH1::build(std::vector<Triangle>& triangles)
+void BVH2::build(std::vector<Triangle>& triangles)
 {
 	Log& log = App::getLog();
 
@@ -42,7 +42,7 @@ void BVH1::build(std::vector<Triangle>& triangles)
 		return;
 	}
 
-	log.logInfo("BVH1 building started (triangles: %d)", triangleCount);
+	log.logInfo("BVH2 building started (triangles: %d)", triangleCount);
 
 	std::vector<BVHBuildTriangle> buildTriangles(triangleCount);
 	std::vector<BVHSplitCache> cache(triangleCount);
@@ -60,7 +60,7 @@ void BVH1::build(std::vector<Triangle>& triangles)
 	std::vector<BVHNode> nodes;
 	nodes.reserve(triangleCount);
 
-	BVH1BuildEntry stack[128];
+	BVH2BuildEntry stack[128];
 	uint32_t stackIndex = 0;
 	uint32_t nodeCount = 0;
 	uint32_t leafCount = 0;
@@ -76,7 +76,7 @@ void BVH1::build(std::vector<Triangle>& triangles)
 		nodeCount++;
 
 		// pop from stack
-		BVH1BuildEntry buildEntry = stack[--stackIndex];
+		BVH2BuildEntry buildEntry = stack[--stackIndex];
 
 		BVHNode node;
 		node.rightOffset = -3;
@@ -139,10 +139,10 @@ void BVH1::build(std::vector<Triangle>& triangles)
 
 	triangles = sortedTriangles;
 
-	log.logInfo("BVH1 building finished (time: %s, nodes: %d, leafs: %d, triangles/leaf: %.2f)", timer.getElapsed().getString(true), nodeCount - leafCount, leafCount, float(triangleCount) / float(leafCount));
+	log.logInfo("BVH2 building finished (time: %s, nodes: %d, leafs: %d, triangles/leaf: %.2f)", timer.getElapsed().getString(true), nodeCount - leafCount, leafCount, float(triangleCount) / float(leafCount));
 }
 
-CUDA_CALLABLE bool BVH1::intersect(const Scene& scene, const Ray& ray, Intersection& intersection) const
+CUDA_CALLABLE bool BVH2::intersect(const Scene& scene, const Ray& ray, Intersection& intersection) const
 {
 	if (nodesAlloc.getPtr() == nullptr || scene.getTriangles() == nullptr)
 		return false;

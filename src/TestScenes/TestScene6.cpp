@@ -21,6 +21,8 @@ Scene TestScene::create6()
 	scene.camera.position = Vector3(8.92f, 0.68f, -2.02f);
 	scene.camera.orientation = EulerAngle(6.66f, 111.11f, 0.0f);
 
+	scene.bvh.type = BVHType::BVH4;
+
 	// PLANE MODEL //
 
 	Material planeMaterial;

@@ -187,12 +187,12 @@
     <ClCompile Include="src\BVH\BVH8.cu">
       <Filter>BVH</Filter>
     </ClCompile>
+    <ClCompile Include="src\BVH\BVH2.cu">
+      <Filter>BVH</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\BVH\BVH.h">
-      <Filter>BVH</Filter>
-    </ClInclude>
-    <ClInclude Include="src\BVH\BVH1.h">
       <Filter>BVH</Filter>
     </ClInclude>
     <ClInclude Include="src\BVH\BVH4.h">
@@ -404,6 +404,9 @@
     <ClInclude Include="src\BVH\BVH8.h">
       <Filter>BVH</Filter>
     </ClInclude>
+    <ClInclude Include="src\BVH\BVH2.h">
+      <Filter>BVH</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="platform\windows\raycer.rc">
@@ -444,9 +447,6 @@
       <Filter>Filters</Filter>
     </ClCompile>
     <ClCompile Include="src\BVH\BVH.cu">
-      <Filter>BVH</Filter>
-    </ClCompile>
-    <ClCompile Include="src\BVH\BVH1.cu">
       <Filter>BVH</Filter>
     </ClCompile>
     <ClCompile Include="src\BVH\BVH4.cu">

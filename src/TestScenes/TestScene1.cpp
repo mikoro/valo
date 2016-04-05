@@ -18,7 +18,7 @@ Scene TestScene::create1()
 
 	scene.camera.position = Vector3(0.0f, 1.0f, 3.5f);
 
-	scene.bvh.type = BVHType::BVH8;
+	scene.bvh.type = BVHType::BVH4;
 
 	scene.integrator.aoIntegrator.maxDistance = 0.25f;
 

@@ -17,11 +17,11 @@ namespace Raycer
 	class Ray;
 	class Intersection;
 
-	class BVH1
+	class BVH2
 	{
 	public:
 
-		BVH1();
+		BVH2();
 
 		void build(std::vector<Triangle>& triangles);
 		CUDA_CALLABLE bool intersect(const Scene& scene, const Ray& ray, Intersection& intersection) const;

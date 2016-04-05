@@ -20,6 +20,8 @@ Scene TestScene::create4()
 	scene.camera.orientation = EulerAngle(-13.3503f, -56.3473f, 0.0000f);
 	scene.camera.fov = 65.0f;
 
+	scene.bvh.type = BVHType::BVH4;
+
 	ModelLoaderInfo model;
 	model.modelFileName = "data/models/conference/conference.obj";
 
