@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="Utils">
@@ -434,158 +434,158 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Filters\BellFilter.cu">
+    <CudaCompile Include="src\Filters\BellFilter.cu">
       <Filter>Filters</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Filters\BoxFilter.cu">
+    </CudaCompile>
+    <CudaCompile Include="src\Filters\BoxFilter.cu">
       <Filter>Filters</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Filters\Filter.cu">
+    </CudaCompile>
+    <CudaCompile Include="src\Filters\Filter.cu">
       <Filter>Filters</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Filters\GaussianFilter.cu">
+    </CudaCompile>
+    <CudaCompile Include="src\Filters\GaussianFilter.cu">
       <Filter>Filters</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Filters\LanczosSincFilter.cu">
+    </CudaCompile>
+    <CudaCompile Include="src\Filters\LanczosSincFilter.cu">
       <Filter>Filters</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Filters\MitchellFilter.cu">
+    </CudaCompile>
+    <CudaCompile Include="src\Filters\MitchellFilter.cu">
       <Filter>Filters</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Filters\TentFilter.cu">
+    </CudaCompile>
+    <CudaCompile Include="src\Filters\TentFilter.cu">
       <Filter>Filters</Filter>
-    </ClCompile>
-    <ClCompile Include="src\BVH\BVH.cu">
+    </CudaCompile>
+    <CudaCompile Include="src\BVH\BVH.cu">
       <Filter>BVH</Filter>
-    </ClCompile>
-    <ClCompile Include="src\BVH\BVH2.cu">
+    </CudaCompile>
+    <CudaCompile Include="src\BVH\BVH2.cu">
       <Filter>BVH</Filter>
-    </ClCompile>
-    <ClCompile Include="src\BVH\BVH4.cu">
+    </CudaCompile>
+    <CudaCompile Include="src\BVH\BVH4.cu">
       <Filter>BVH</Filter>
-    </ClCompile>
-    <ClCompile Include="src\BVH\BVH8.cu">
+    </CudaCompile>
+    <CudaCompile Include="src\BVH\BVH8.cu">
       <Filter>BVH</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Core\AABB.cu">
+    </CudaCompile>
+    <CudaCompile Include="src\Core\AABB.cu">
       <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Core\Camera.cu">
+    </CudaCompile>
+    <CudaCompile Include="src\Core\Camera.cu">
       <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Core\Film.cu">
+    </CudaCompile>
+    <CudaCompile Include="src\Core\Film.cu">
       <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Core\Image.cu">
+    </CudaCompile>
+    <CudaCompile Include="src\Core\Image.cu">
       <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Core\Scene.cu">
+    </CudaCompile>
+    <CudaCompile Include="src\Core\Scene.cu">
       <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Core\Ray.cu">
+    </CudaCompile>
+    <CudaCompile Include="src\Core\Ray.cu">
       <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Core\Triangle.cu">
+    </CudaCompile>
+    <CudaCompile Include="src\Core\Triangle.cu">
       <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Math\AxisAngle.cu">
+    </CudaCompile>
+    <CudaCompile Include="src\Math\AxisAngle.cu">
       <Filter>Math</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Math\Color.cu">
+    </CudaCompile>
+    <CudaCompile Include="src\Math\Color.cu">
       <Filter>Math</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Math\EulerAngle.cu">
+    </CudaCompile>
+    <CudaCompile Include="src\Math\EulerAngle.cu">
       <Filter>Math</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Math\Mapper.cu">
+    </CudaCompile>
+    <CudaCompile Include="src\Math\Mapper.cu">
       <Filter>Math</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Math\MathUtils.cu">
+    </CudaCompile>
+    <CudaCompile Include="src\Math\MathUtils.cu">
       <Filter>Math</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Math\Matrix4x4.cu">
+    </CudaCompile>
+    <CudaCompile Include="src\Math\Matrix4x4.cu">
       <Filter>Math</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Math\MovingAverage.cu">
+    </CudaCompile>
+    <CudaCompile Include="src\Math\MovingAverage.cu">
       <Filter>Math</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Math\ONB.cu">
+    </CudaCompile>
+    <CudaCompile Include="src\Math\ONB.cu">
       <Filter>Math</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Math\Quaternion.cu">
+    </CudaCompile>
+    <CudaCompile Include="src\Math\Quaternion.cu">
       <Filter>Math</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Math\Random.cu">
+    </CudaCompile>
+    <CudaCompile Include="src\Math\Random.cu">
       <Filter>Math</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Math\Solver.cu">
+    </CudaCompile>
+    <CudaCompile Include="src\Math\Solver.cu">
       <Filter>Math</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Math\Vector2.cu">
+    </CudaCompile>
+    <CudaCompile Include="src\Math\Vector2.cu">
       <Filter>Math</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Math\Vector3.cu">
+    </CudaCompile>
+    <CudaCompile Include="src\Math\Vector3.cu">
       <Filter>Math</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Math\Vector4.cu">
+    </CudaCompile>
+    <CudaCompile Include="src\Math\Vector4.cu">
       <Filter>Math</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Materials\BlinnPhongMaterial.cu">
+    </CudaCompile>
+    <CudaCompile Include="src\Materials\BlinnPhongMaterial.cu">
       <Filter>Materials</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Materials\DiffuseMaterial.cu">
+    </CudaCompile>
+    <CudaCompile Include="src\Materials\DiffuseMaterial.cu">
       <Filter>Materials</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Materials\Material.cu">
+    </CudaCompile>
+    <CudaCompile Include="src\Materials\Material.cu">
       <Filter>Materials</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Textures\CheckerTexture.cu">
+    </CudaCompile>
+    <CudaCompile Include="src\Textures\CheckerTexture.cu">
       <Filter>Textures</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Textures\FireTexture.cu">
+    </CudaCompile>
+    <CudaCompile Include="src\Textures\FireTexture.cu">
       <Filter>Textures</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Textures\ImageTexture.cu">
+    </CudaCompile>
+    <CudaCompile Include="src\Textures\ImageTexture.cu">
       <Filter>Textures</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Textures\MarbleTexture.cu">
+    </CudaCompile>
+    <CudaCompile Include="src\Textures\MarbleTexture.cu">
       <Filter>Textures</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Textures\WoodTexture.cu">
+    </CudaCompile>
+    <CudaCompile Include="src\Textures\WoodTexture.cu">
       <Filter>Textures</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Textures\Texture.cu">
+    </CudaCompile>
+    <CudaCompile Include="src\Textures\Texture.cu">
       <Filter>Textures</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Integrators\DotIntegrator.cu">
+    </CudaCompile>
+    <CudaCompile Include="src\Integrators\DotIntegrator.cu">
       <Filter>Integrators</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Integrators\Integrator.cu">
+    </CudaCompile>
+    <CudaCompile Include="src\Integrators\Integrator.cu">
       <Filter>Integrators</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Integrators\PathIntegrator.cu">
+    </CudaCompile>
+    <CudaCompile Include="src\Integrators\PathIntegrator.cu">
       <Filter>Integrators</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Renderers\CudaRenderer.cu">
+    </CudaCompile>
+    <CudaCompile Include="src\Renderers\CudaRenderer.cu">
       <Filter>Renderers</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Core\ImagePool.cu">
+    </CudaCompile>
+    <CudaCompile Include="src\Core\ImagePool.cu">
       <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Integrators\AmbientOcclusionIntegrator.cu">
+    </CudaCompile>
+    <CudaCompile Include="src\Integrators\AmbientOcclusionIntegrator.cu">
       <Filter>Integrators</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Integrators\DirectLightIntegrator.cu">
+    </CudaCompile>
+    <CudaCompile Include="src\Integrators\DirectLightIntegrator.cu">
       <Filter>Integrators</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Utils\ColorGradient.cu">
+    </CudaCompile>
+    <CudaCompile Include="src\Utils\ColorGradient.cu">
       <Filter>Utils</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Utils\PerlinNoise.cu">
+    </CudaCompile>
+    <CudaCompile Include="src\Utils\PerlinNoise.cu">
       <Filter>Utils</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Utils\CudaAlloc.cu">
+    </CudaCompile>
+    <CudaCompile Include="src\Utils\CudaAlloc.cu">
       <Filter>Utils</Filter>
-    </ClCompile>
+    </CudaCompile>
   </ItemGroup>
 </Project>
