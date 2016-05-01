@@ -112,7 +112,7 @@ void Image::load(const std::string& fileName)
 {
 	App::getLog().logInfo("Loading image from %s", fileName);
 
-	if (StringUtils::endsWith(fileName, ".png") || StringUtils::endsWith(fileName, ".bmp") || StringUtils::endsWith(fileName, ".tga"))
+	if (StringUtils::endsWith(fileName, ".jpg") || StringUtils::endsWith(fileName, ".png") || StringUtils::endsWith(fileName, ".bmp") || StringUtils::endsWith(fileName, ".tga"))
 	{
 		int32_t newWidth, newHeight, components;
 		uint32_t* loadData = reinterpret_cast<uint32_t*>(stbi_load(fileName.c_str(), &newWidth, &newHeight, &components, 4)); // RGBA

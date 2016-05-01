@@ -168,6 +168,7 @@ void WindowRunner::initialize()
 	if (!glfwWindow)
 		throw std::runtime_error("Could not create the window");
 
+	printWindowSize();
 	glfwSetScrollCallback(glfwWindow, ::glfwMouseWheelScroll);
 
 	const GLFWvidmode* videoMode = glfwGetVideoMode(glfwGetPrimaryMonitor());
@@ -188,10 +189,13 @@ void WindowRunner::initialize()
 	if (settings.window.hideCursor)
 		glfwSetInputMode(glfwWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
+	windowWidth = settings.window.width;
+	windowHeight = settings.window.height;
+
+	glViewport(0, 0, GLsizei(windowWidth), GLsizei(windowHeight));
+
 	renderState = std::make_unique<WindowRunnerRenderState>();
 	renderState->initialize();
-
-	checkWindowSize();
 }
 
 void WindowRunner::shutdown()
@@ -202,17 +206,17 @@ void WindowRunner::shutdown()
 
 void WindowRunner::checkWindowSize()
 {
-	int tempFramebufferWidth, tempFramebufferHeight;
+	int tempWindowWidth, tempWindowHeight;
 
-	glfwGetFramebufferSize(glfwWindow, &tempFramebufferWidth, &tempFramebufferHeight);
+	glfwGetFramebufferSize(glfwWindow, &tempWindowWidth, &tempWindowHeight);
 
-	if (tempFramebufferWidth == 0 || tempFramebufferHeight == 0)
+	if (tempWindowWidth == 0 || tempWindowHeight == 0)
 		return;
 
-	if (uint32_t(tempFramebufferWidth) != windowWidth || uint32_t(tempFramebufferHeight) != windowHeight)
+	if (uint32_t(tempWindowWidth) != windowWidth || uint32_t(tempWindowHeight) != windowHeight)
 	{
 		printWindowSize();
-		windowResized(uint32_t(tempFramebufferWidth), uint32_t(tempFramebufferHeight));
+		windowResized(uint32_t(tempWindowWidth), uint32_t(tempWindowHeight));
 	}
 }
 

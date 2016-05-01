@@ -34,6 +34,11 @@ void WindowRunnerRenderState::initialize()
 	infoPanel.setState(InfoPanelState(settings.window.infoPanelState));
 
 	resizeFilm();
+
+	if (settings.film.load)
+		film.load(film.getWidth(), film.getHeight(), settings.film.loadFileName, renderer.type);
+	else if (settings.film.loadDir)
+		film.loadMultiple(film.getWidth(), film.getHeight(), settings.film.loadDirName, renderer.type);
 }
 
 void WindowRunnerRenderState::shutdown()
