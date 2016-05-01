@@ -36,14 +36,11 @@ int ConsoleRunner::run()
 	renderer.initialize(settings);
 
 	if (settings.film.load)
-		film.load(settings.image.width, settings.image.height, settings.film.loadFileName);
+		film.load(settings.image.width, settings.image.height, settings.film.loadFileName, renderer.type);
 	else if (settings.film.loadDir)
-		film.loadMultiple(settings.image.width, settings.image.height, settings.film.loadDirName);
+		film.loadMultiple(settings.image.width, settings.image.height, settings.film.loadDirName, renderer.type);
 	else
-	{
-		film.resize(settings.image.width, settings.image.height);
-		film.clear(renderer.type);
-	}
+		film.resize(settings.image.width, settings.image.height, renderer.type);
 
 	renderer.resize(settings.image.width, settings.image.height);
 	

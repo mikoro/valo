@@ -28,12 +28,12 @@ namespace Raycer
 
 		void initialize();
 		void shutdown();
-		void resize(uint32_t width, uint32_t height);
+		void resize(uint32_t width, uint32_t height, RendererType type);
 		void clear(RendererType type);
 		bool hasBeenCleared() const;
 		void resetCleared();
-		void load(uint32_t width, uint32_t height, const std::string& fileName);
-		void loadMultiple(uint32_t width, uint32_t height, const std::string& dirName);
+		void load(uint32_t width, uint32_t height, const std::string& fileName, RendererType type);
+		void loadMultiple(uint32_t width, uint32_t height, const std::string& dirName, RendererType type);
 		void save(const std::string& fileName, bool writeToLog = true) const;
 
 		CUDA_CALLABLE void addSample(uint32_t x, uint32_t y, const Color& color, float filterWeight);

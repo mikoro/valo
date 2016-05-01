@@ -64,7 +64,7 @@ void Film::shutdown()
 	}
 }
 
-void Film::resize(uint32_t width_, uint32_t height_)
+void Film::resize(uint32_t width_, uint32_t height_, RendererType type)
 {
 	width = width_;
 	height = height_;
@@ -98,6 +98,8 @@ void Film::resize(uint32_t width_, uint32_t height_)
 		CudaUtils::checkError(cudaGraphicsGLRegisterImage(&textureResource, textureId, GL_TEXTURE_2D, cudaGraphicsRegisterFlagsSurfaceLoadStore), "Could not register OpenGL texture");
 #endif
 	}
+
+	clear(type);
 }
 
 void Film::clear(RendererType type)
@@ -117,7 +119,7 @@ void Film::resetCleared()
 	cleared = false;
 }
 
-void Film::load(uint32_t width_, uint32_t height_, const std::string& fileName)
+void Film::load(uint32_t width_, uint32_t height_, const std::string& fileName, RendererType type)
 {
 	App::getLog().logInfo("Loading film from %s", fileName);
 
@@ -131,7 +133,7 @@ void Film::load(uint32_t width_, uint32_t height_, const std::string& fileName)
 	if (!file.is_open())
 		throw std::runtime_error("Could not open the film file for reading");
 
-	resize(width_, height_);
+	resize(width_, height_, type);
 
 	file.read(reinterpret_cast<char*>(cumulativeImage.getData()), fileSize);
 	file.close();
@@ -139,11 +141,44 @@ void Film::load(uint32_t width_, uint32_t height_, const std::string& fileName)
 	cumulativeImage.upload();
 }
 
-void Film::loadMultiple(uint32_t width_, uint32_t height_, const std::string& dirName)
+void Film::loadMultiple(uint32_t width_, uint32_t height_, const std::string& dirName, RendererType type)
 {
 	(void)width_;
 	(void)height_;
 	(void)dirName;
+
+	App::getLog().logInfo("Loading multiple films from %s", dirName);
+
+	resize(width_, height_, type);
+
+	std::vector<std::string> fileNames = SysUtils::getAllFiles(dirName);
+	std::vector<Color> inputData(length);
+
+	Color* inputPtr = inputData.data();
+	Color* cumulativePtr = cumulativeImage.getData();
+
+	for (const std::string& fileName : fileNames)
+	{
+		App::getLog().logInfo("Loading film from %s", fileName);
+
+		uint64_t fileSize = SysUtils::getFileSize(fileName);
+
+		if (fileSize != length * sizeof(Color))
+			throw std::runtime_error("Film file has wrong size");
+
+		std::ifstream file(fileName, std::ios::in | std::ios::binary);
+
+		if (!file.is_open())
+			throw std::runtime_error("Could not open the film file for reading");
+
+		file.read(reinterpret_cast<char*>(inputPtr), fileSize);
+		file.close();
+
+		for (uint32_t i = 0; i < length; ++i)
+			cumulativePtr[i] += inputPtr[i];
+	}
+
+	cumulativeImage.upload();
 }
 
 void Film::save(const std::string& fileName, bool writeToLog) const

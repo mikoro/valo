@@ -16,13 +16,13 @@
 #include <Materials/Material.h>
 
 using namespace Raycer;
-using namespace boost::filesystem;
+namespace bf = boost::filesystem;
 
 namespace
 {
 	std::string getAbsolutePath(const std::string& rootDirectory, const std::string& relativeFileName)
 	{
-		path tempPath(rootDirectory);
+		bf::path tempPath(rootDirectory);
 		tempPath.append(relativeFileName.begin(), relativeFileName.end());
 		std::string tempPathString = tempPath.string();
 		std::replace(tempPathString.begin(), tempPathString.end(), '\\', '/');
@@ -254,7 +254,7 @@ ModelLoaderResult ModelLoader::load(const ModelLoaderInfo& info)
 	log.logInfo("Reading OBJ file %s(%s)", info.loadOnlyMaterials ? "(materials only) " : "", info.modelFileName);
 
 	Timer timer;
-	std::string rootDirectory = boost::filesystem::absolute(info.modelFileName).parent_path().string();
+	std::string rootDirectory = bf::absolute(info.modelFileName).parent_path().string();
 	currentMaterialId = info.defaultMaterialId;
 
 	Matrix4x4 scaling = Matrix4x4::scale(info.scale);

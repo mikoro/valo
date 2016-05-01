@@ -363,8 +363,7 @@ void WindowRunnerRenderState::resizeFilm()
     filmWidth = MAX(uint32_t(1), filmWidth);
     filmHeight = MAX(uint32_t(1), filmHeight);
 
-	film.resize(filmWidth, filmHeight);
+	film.resize(filmWidth, filmHeight, renderer.type);
 	renderer.resize(filmWidth, filmHeight);
-	film.clear(renderer.type);
 	scene.camera.setImagePlaneSize(filmWidth, filmHeight);
 }
