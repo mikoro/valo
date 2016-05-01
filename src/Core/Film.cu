@@ -139,9 +139,17 @@ void Film::load(uint32_t width_, uint32_t height_, const std::string& fileName)
 	cumulativeImage.upload();
 }
 
-void Film::save(const std::string& fileName) const
+void Film::loadMultiple(uint32_t width_, uint32_t height_, const std::string& dirName)
 {
-	App::getLog().logInfo("Saving film to %s", fileName);
+	(void)width_;
+	(void)height_;
+	(void)dirName;
+}
+
+void Film::save(const std::string& fileName, bool writeToLog) const
+{
+	if (writeToLog)
+		App::getLog().logInfo("Saving film to %s", fileName);
 
 	std::ofstream file(fileName, std::ios::out | std::ios::binary);
 

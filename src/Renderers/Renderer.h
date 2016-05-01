@@ -45,14 +45,17 @@ namespace Raycer
 
 		bool imageAutoWrite = false;
 		float imageAutoWriteInterval = 60.0f;
-		uint32_t imageAutoWriteMaxNumber = 10;
-		std::string imageAutoWriteFileName = "temp_image_%d.png";
+		std::string imageAutoWriteFileName = "temp_image.png";
+
+		bool filmAutoWrite = false;
+		float filmAutoWriteInterval = 60.0f;
+		std::string filmAutoWriteFileName = "temp_film.bin";
 
 		bool filtering = true;
 
 	private:
 
 		Timer imageAutoWriteTimer;
-		uint32_t imageAutoWriteNumber = 1;
+		Timer filmAutoWriteTimer;
 	};
 }

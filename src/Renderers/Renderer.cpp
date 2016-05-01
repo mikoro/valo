@@ -14,12 +14,14 @@ using namespace Raycer;
 
 void Renderer::initialize(const Settings& settings)
 {
-	type = static_cast<RendererType>(settings.general.rendererType);
+	type = static_cast<RendererType>(settings.renderer.type);
 	cpuRenderer.maxThreadCount = settings.general.maxCpuThreadCount;
-	imageAutoWrite = settings.renderer.imageAutoWrite;
-	imageAutoWriteInterval = settings.renderer.imageAutoWriteInterval;
-	imageAutoWriteMaxNumber = settings.renderer.imageAutoWriteMaxNumber;
-	imageAutoWriteFileName = settings.renderer.imageAutoWriteFileName;
+	imageAutoWrite = settings.image.autoWrite;
+	imageAutoWriteInterval = settings.image.autoWriteInterval;
+	imageAutoWriteFileName = settings.image.autoWriteFileName;
+	filmAutoWrite = settings.film.autoWrite;
+	filmAutoWriteInterval = settings.film.autoWriteInterval;
+	filmAutoWriteFileName = settings.film.autoWriteFileName;
 
 	cpuRenderer.initialize();
 	cudaRenderer.initialize();
@@ -37,6 +39,7 @@ void Renderer::render(RenderJob& job)
 	Film& film = *job.film;
 
 	imageAutoWriteTimer.restart();
+	filmAutoWriteTimer.restart();
 
 	for (uint32_t i = 0; i < scene.renderer.imageSamples && !job.interrupted; ++i)
 	{
@@ -54,12 +57,17 @@ void Renderer::render(RenderJob& job)
 			film.normalize(type);
 			film.tonemap(scene.tonemapper, type);
 			film.getTonemappedImage().download();
-			film.getTonemappedImage().save(tfm::format(imageAutoWriteFileName.c_str(), imageAutoWriteNumber), false);
-
-			if (++imageAutoWriteNumber > imageAutoWriteMaxNumber)
-				imageAutoWriteNumber = 1;
+			film.getTonemappedImage().save(imageAutoWriteFileName, false);
 
 			imageAutoWriteTimer.restart();
+		}
+
+		if (filmAutoWrite && filmAutoWriteTimer.getElapsedSeconds() > filmAutoWriteInterval)
+		{
+			film.getCumulativeImage().download();
+			film.getCumulativeImage().save(filmAutoWriteFileName, false);
+
+			filmAutoWriteTimer.restart();
 		}
 	}
 }

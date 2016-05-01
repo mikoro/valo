@@ -20,9 +20,11 @@ bool Settings::load(int argc, char** argv)
 		("help", "")
 
 		("general.windowed", po::value(&general.windowed)->default_value(true), "")
-		("general.rendererType", po::value(&general.rendererType)->default_value(0), "")
 		("general.maxCpuThreadCount", po::value(&general.maxCpuThreadCount)->default_value(0), "")
 		("general.cudaDeviceNumber", po::value(&general.cudaDeviceNumber)->default_value(0), "")
+
+		("renderer.type", po::value(&renderer.type)->default_value(0), "")
+		("renderer.skip", po::value(&renderer.skip)->default_value(false), "")
 
 		("window.width", po::value(&window.width)->default_value(1280), "")
 		("window.height", po::value(&window.height)->default_value(800), "")
@@ -34,20 +36,30 @@ bool Settings::load(int argc, char** argv)
 		("window.infoPanelFontSize", po::value(&window.infoPanelFontSize)->default_value(18), "")
 		("window.checkGLErrors", po::value(&window.checkGLErrors)->default_value(true), "")
 
-		("image.width", po::value(&image.width)->default_value(1280), "")
-		("image.height", po::value(&image.height)->default_value(800), "")
-		("image.fileName", po::value(&image.fileName)->default_value("image.png"), "")
-		("image.autoView", po::value(&image.autoView)->default_value(true), "")
-
 		("scene.fileName", po::value(&scene.fileName)->default_value("scene.xml"), "")
 		("scene.useTestScene", po::value(&scene.useTestScene)->default_value(true), "")
 		("scene.testSceneNumber", po::value(&scene.testSceneNumber)->default_value(1), "")
 
-		("renderer.imageAutoWrite", po::value(&renderer.imageAutoWrite)->default_value(false), "")
-		("renderer.imageAutoWriteInterval", po::value(&renderer.imageAutoWriteInterval)->default_value(60.0f), "")
-		("renderer.imageAutoWriteMaxNumber", po::value(&renderer.imageAutoWriteMaxNumber)->default_value(10), "")
-		("renderer.imageAutoWriteFileName", po::value(&renderer.imageAutoWriteFileName)->default_value("temp_image_%d.png"), "");
+		("image.width", po::value(&image.width)->default_value(1280), "")
+		("image.height", po::value(&image.height)->default_value(800), "")
+		("image.write", po::value(&image.write)->default_value(true), "")
+		("image.fileName", po::value(&image.fileName)->default_value("image.png"), "")
+		("image.autoView", po::value(&image.autoView)->default_value(true), "")
+		("image.autoWrite", po::value(&image.autoWrite)->default_value(false), "")
+		("image.autoWriteInterval", po::value(&image.autoWriteInterval)->default_value(60.0f), "")
+		("image.autoWriteFileName", po::value(&image.autoWriteFileName)->default_value("temp_image.png"), "")
 
+		("film.load", po::value(&film.load)->default_value(false), "")
+		("film.loadFileName", po::value(&film.loadFileName)->default_value("film.bin"), "")
+		("film.loadDir", po::value(&film.loadDir)->default_value(false), "")
+		("film.loadDirName", po::value(&film.loadDirName)->default_value("film_data"), "")
+		("film.write", po::value(&film.write)->default_value(false), "")
+		("film.writeFileName", po::value(&film.writeFileName)->default_value("film.bin"), "")
+		("film.autoView", po::value(&film.autoView)->default_value(true), "")
+		("film.autoWrite", po::value(&film.autoWrite)->default_value(false), "")
+		("film.autoWriteInterval", po::value(&film.autoWriteInterval)->default_value(60.0f), "")
+		("film.autoWriteFileName", po::value(&film.autoWriteFileName)->default_value("temp_film.bin"), "");
+	
 	std::ifstream iniFile("raycer.ini");
 	po::variables_map vm;
 

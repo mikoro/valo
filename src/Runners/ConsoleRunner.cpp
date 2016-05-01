@@ -35,10 +35,18 @@ int ConsoleRunner::run()
 	film.initialize();
 	renderer.initialize(settings);
 
-	film.resize(settings.image.width, settings.image.height);
-	renderer.resize(settings.image.width, settings.image.height);
-	film.clear(renderer.type);
+	if (settings.film.load)
+		film.load(settings.image.width, settings.image.height, settings.film.loadFileName);
+	else if (settings.film.loadDir)
+		film.loadMultiple(settings.image.width, settings.image.height, settings.film.loadDirName);
+	else
+	{
+		film.resize(settings.image.width, settings.image.height);
+		film.clear(renderer.type);
+	}
 
+	renderer.resize(settings.image.width, settings.image.height);
+	
 	scene.camera.setImagePlaneSize(settings.image.width, settings.image.height);
 	scene.camera.update(0.0f);
 
@@ -70,7 +78,8 @@ int ConsoleRunner::run()
 	{
 		try
 		{
-			renderer.render(renderJob);
+			if (!settings.renderer.skip)
+				renderer.render(renderJob);
 		}
 		catch (...)
 		{
@@ -126,15 +135,21 @@ int ConsoleRunner::run()
 
 	log.logInfo("Total elapsed time: %s", totalElapsedTimer.getElapsed().getString(true));
 
-	if (!renderJob.interrupted)
+	if (settings.image.write)
 	{
-		film.getTonemappedImage().save(settings.image.fileName);
+		if (!renderJob.interrupted)
+		{
+			film.getTonemappedImage().save(settings.image.fileName);
 
-		if (settings.image.autoView)
-			SysUtils::openFileExternally(settings.image.fileName);
+			if (settings.image.autoView)
+				SysUtils::openFileExternally(settings.image.fileName);
+		}
+		else
+			film.getTonemappedImage().save("partial_image.png");
 	}
-	else
-		film.getTonemappedImage().save("partial_image.png");
+	
+	if (settings.film.write)
+		film.save(settings.film.writeFileName, true);
 
 	return 0;
 }

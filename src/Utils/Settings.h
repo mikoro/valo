@@ -14,10 +14,15 @@ namespace Raycer
 		struct General
 		{
 			bool windowed;
-			uint32_t rendererType;
 			uint32_t maxCpuThreadCount;
 			uint32_t cudaDeviceNumber;
 		} general;
+
+		struct Renderer
+		{
+			uint32_t type;
+			bool skip;
+		} renderer;
 
 		struct Window
 		{
@@ -32,14 +37,6 @@ namespace Raycer
 			bool checkGLErrors;
 		} window;
 
-		struct Image
-		{
-			uint32_t width;
-			uint32_t height;
-			std::string fileName;
-			bool autoView;
-		} image;
-
 		struct Scene
 		{
 			std::string fileName;
@@ -47,12 +44,30 @@ namespace Raycer
 			uint32_t testSceneNumber;
 		} scene;
 
-		struct Renderer
+		struct Image
 		{
-			bool imageAutoWrite;
-			float imageAutoWriteInterval;
-			uint32_t imageAutoWriteMaxNumber;
-			std::string imageAutoWriteFileName;
-		} renderer;
+			uint32_t width;
+			uint32_t height;
+			bool write;
+			std::string fileName;
+			bool autoView;
+			bool autoWrite;
+			float autoWriteInterval;
+			std::string autoWriteFileName;
+		} image;
+
+		struct Film
+		{
+			bool load;
+			std::string loadFileName;
+			bool loadDir;
+			std::string loadDirName;
+			bool write;
+			std::string writeFileName;
+			bool autoView;
+			bool autoWrite;
+			float autoWriteInterval;
+			std::string autoWriteFileName;
+		} film;
 	};
 }
