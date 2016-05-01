@@ -31,10 +31,12 @@ namespace Raycer
 		Image();
 		~Image();
 
-		explicit Image(uint32_t length);
 		Image(uint32_t width, uint32_t height);
 		Image(uint32_t width, uint32_t height, float* rgbaData);
-		explicit Image(const std::string& fileName);
+		Image(const std::string& fileName);
+		Image(const Image& other);
+
+		Image& operator=(const Image& other);
 
 		void load(uint32_t width, uint32_t height, float* rgbaData);
 		void load(const std::string& fileName);

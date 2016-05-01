@@ -20,5 +20,6 @@ namespace Raycer
 
 		static void openFileExternally(const std::string& fileName);
 		static void setConsoleTextColor(ConsoleTextColor color);
+		static uint64_t getFileSize(const std::string& fileName);
 	};
 }

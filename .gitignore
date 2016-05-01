@@ -16,6 +16,7 @@
 *.plist
 *.exe
 *.db3
+*.db
 *.pdb
 .vs
 My*

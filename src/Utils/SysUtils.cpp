@@ -12,6 +12,8 @@
 #include <unistd.h>
 #endif
 
+#include <sys/stat.h>
+
 #include "Utils/SysUtils.h"
 #include "App.h"
 #include "Utils/Log.h"
@@ -76,4 +78,11 @@ void SysUtils::setConsoleTextColor(ConsoleTextColor color)
 		default: break;
 	}
 #endif
+}
+
+uint64_t SysUtils::getFileSize(const std::string& fileName)
+{
+	struct stat stat_buf;
+	int rc = stat(fileName.c_str(), &stat_buf);
+	return rc == 0 ? stat_buf.st_size : 0;
 }

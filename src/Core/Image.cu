@@ -21,6 +21,7 @@
 #include "Math/MathUtils.h"
 #include "Filters/Filter.h"
 #include "Renderers/Renderer.h"
+#include "Utils/SysUtils.h"
 
 using namespace Raycer;
 
@@ -59,11 +60,6 @@ Image::~Image()
 #endif
 }
 
-Image::Image(uint32_t length_)
-{
-	resize(length_);
-}
-
 Image::Image(uint32_t width_, uint32_t height_)
 {
 	resize(width_, height_);
@@ -77,6 +73,24 @@ Image::Image(uint32_t width_, uint32_t height_, float* rgbaData)
 Image::Image(const std::string& fileName)
 {
 	load(fileName);
+}
+
+Image::Image(const Image& other)
+{
+	resize(other.width, other.height);
+
+	for (uint32_t i = 0; i < length; ++i)
+		data[i] = other.data[i];
+}
+
+Image& Image::operator=(const Image& other)
+{
+	resize(other.width, other.height);
+
+	for (uint32_t i = 0; i < length; ++i)
+		data[i] = other.data[i];
+
+	return *this;
 }
 
 void Image::load(uint32_t width_, uint32_t height_, float* rgbaData)
@@ -98,7 +112,25 @@ void Image::load(const std::string& fileName)
 {
 	App::getLog().logInfo("Loading image from %s", fileName);
 
-	if (stbi_is_hdr(fileName.c_str()))
+	if (StringUtils::endsWith(fileName, ".png") || StringUtils::endsWith(fileName, ".bmp") || StringUtils::endsWith(fileName, ".tga"))
+	{
+		int32_t newWidth, newHeight, components;
+		uint32_t* loadData = reinterpret_cast<uint32_t*>(stbi_load(fileName.c_str(), &newWidth, &newHeight, &components, 4)); // RGBA
+
+		if (loadData == nullptr)
+			throw std::runtime_error(tfm::format("Could not load image file: %s", stbi_failure_reason()));
+
+		resize(uint32_t(newWidth), uint32_t(newHeight));
+
+		for (uint32_t y = 0; y < height; ++y)
+		{
+			for (uint32_t x = 0; x < width; ++x)
+				data[y * width + x] = Color::fromAbgrValue(loadData[(height - 1 - y) * width + x]); // flip vertically
+		}
+
+		stbi_image_free(loadData);
+	}
+	else if (StringUtils::endsWith(fileName, ".hdr"))
 	{
 		int32_t newWidth, newHeight, components;
 		float* loadData = stbi_loadf(fileName.c_str(), &newWidth, &newHeight, &components, 3); // RGB
@@ -124,24 +156,31 @@ void Image::load(const std::string& fileName)
 
 		stbi_image_free(loadData);
 	}
-	else
+	else if (StringUtils::endsWith(fileName, ".bin"))
 	{
-		int32_t newWidth, newHeight, components;
-		uint32_t* loadData = reinterpret_cast<uint32_t*>(stbi_load(fileName.c_str(), &newWidth, &newHeight, &components, 4)); // RGBA
+		uint64_t fileSize = SysUtils::getFileSize(fileName);
 
-		if (loadData == nullptr)
-			throw std::runtime_error(tfm::format("Could not load image file: %s", stbi_failure_reason()));
+		if (fileSize < 8)
+			throw std::runtime_error("Binary image file is not valid (too small)");
 
-		resize(uint32_t(newWidth), uint32_t(newHeight));
+		std::ifstream file(fileName, std::ios::in | std::ios::binary);
 
-		for (uint32_t y = 0; y < height; ++y)
-		{
-			for (uint32_t x = 0; x < width; ++x)
-				data[y * width + x] = Color::fromAbgrValue(loadData[(height - 1 - y) * width + x]); // flip vertically
-		}
+		if (!file.is_open())
+			throw std::runtime_error("Could not open the binary file for reading");
 
-		stbi_image_free(loadData);
+		uint32_t newWidth, newHeight;
+		file.read(reinterpret_cast<char*>(&newWidth), 4);
+		file.read(reinterpret_cast<char*>(&newHeight), 4);
+
+		if (fileSize != (width * height * sizeof(Color) + 8))
+			throw std::runtime_error("Binary image file is not valid (wrong size)");
+
+		resize(newWidth, newHeight);
+		file.read(reinterpret_cast<char*>(data), fileSize - 8);
+		file.close();
 	}
+	else
+		throw std::runtime_error("Could not load the image (non-supported format)");
 }
 
 void Image::save(const std::string& fileName, bool writeToLog) const
@@ -186,6 +225,19 @@ void Image::save(const std::string& fileName, bool writeToLog) const
 		}
 
 		result = stbi_write_hdr(fileName.c_str(), int32_t(width), int32_t(height), 3, &saveData[0]);
+	}
+	else if (StringUtils::endsWith(fileName, ".bin"))
+	{
+		std::ofstream file(fileName, std::ios::out | std::ios::binary);
+
+		if (!file.is_open())
+			throw std::runtime_error("Could not open the binary file for writing");
+
+		file.write(reinterpret_cast<const char*>(&width), 4);
+		file.write(reinterpret_cast<const char*>(&height), 4);
+		file.write(reinterpret_cast<const char*>(&data), sizeof(Color) * length);
+
+		file.close();
 	}
 	else
 		throw std::runtime_error("Could not save the image (non-supported format)");

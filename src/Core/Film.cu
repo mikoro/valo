@@ -18,6 +18,7 @@
 #include "Utils/CudaUtils.h"
 #include "Utils/GLUtils.h"
 #include "Renderers/Renderer.h"
+#include "Utils/SysUtils.h"
 
 using namespace Raycer;
 
@@ -114,6 +115,41 @@ bool Film::hasBeenCleared() const
 void Film::resetCleared()
 {
 	cleared = false;
+}
+
+void Film::load(uint32_t width_, uint32_t height_, const std::string& fileName)
+{
+	App::getLog().logInfo("Loading film from %s", fileName);
+
+	uint64_t fileSize = SysUtils::getFileSize(fileName);
+
+	if (fileSize != (width_ * height_ * sizeof(Color)))
+		throw std::runtime_error("Film file has wrong size");
+
+	std::ifstream file(fileName, std::ios::in | std::ios::binary);
+
+	if (!file.is_open())
+		throw std::runtime_error("Could not open the film file for reading");
+
+	resize(width_, height_);
+
+	file.read(reinterpret_cast<char*>(cumulativeImage.getData()), fileSize);
+	file.close();
+
+	cumulativeImage.upload();
+}
+
+void Film::save(const std::string& fileName) const
+{
+	App::getLog().logInfo("Saving film to %s", fileName);
+
+	std::ofstream file(fileName, std::ios::out | std::ios::binary);
+
+	if (!file.is_open())
+		throw std::runtime_error("Could not open the film file for writing");
+
+	file.write(reinterpret_cast<const char*>(cumulativeImage.getData()), sizeof(Color) * length);
+	file.close();
 }
 
 CUDA_CALLABLE void Film::addSample(uint32_t x, uint32_t y, const Color& color, float filterWeight)
