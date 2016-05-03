@@ -47,7 +47,10 @@ Log::Log(const std::string& logFileName)
 
 void Log::setLogFile(const std::string& logFileName)
 {
-	logFile = std::ofstream(logFileName);
+	if (logFile.is_open())
+		logFile.close();
+
+	logFile.open(logFileName);
 }
 
 void Log::setMinimumMessageLevel(LogMessageLevel value)
