@@ -56,7 +56,7 @@ TEST_CASE("Vector3 functionality", "[vector3]")
 	REQUIRE(!v6.isNormal());
 	REQUIRE(MathUtils::almostSame(v1.dot(v2), 10.0f));
 	REQUIRE(v1.cross(v2) == Vector3(-4.0f, 8.0f, -4.0f));
-	REQUIRE(Vector3::RIGHT.cross(Vector3::UP) == Vector3::FORWARD);
+	REQUIRE(Vector3::right().cross(Vector3::up()) == Vector3::forward());
 	REQUIRE(Vector3(2.0f, -2.0f).reflect(Vector3(0.0f, 1.0f, 0.0f)) == Vector3(2.0f, 2.0f, 0.0f));
 	REQUIRE(Vector3(2.0f, -2.0f).reflect(Vector3(0.0f, -1.0f, 0.0f)) == Vector3(2.0f, 2.0f, 0.0f));
 	REQUIRE(Vector3::lerp(v4, v6, 0.5f) == Vector3(0.5f, 1.0f, 1.5f));

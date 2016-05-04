@@ -19,7 +19,7 @@ TEST_CASE("ModelLoader functionality", "[modelloader]")
 	info.modelFileName = "data/models/cornellbox-cuboids/cornellbox.obj";
 	ModelLoaderResult result = modelLoader.load(info);
 	
-	REQUIRE(result.triangles.size() == 158);
+	REQUIRE(result.triangles.size() == 32);
 }
 
 #endif

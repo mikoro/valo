@@ -151,6 +151,7 @@ void CudaAlloc<T>::release()
 #endif
 }
 
+template class CudaAlloc<uint32_t>;
 template class CudaAlloc<Scene>;
 template class CudaAlloc<Film>;
 template class CudaAlloc<Image>;

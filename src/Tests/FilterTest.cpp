@@ -6,7 +6,7 @@
 #ifdef RUN_UNIT_TESTS
 
 #include "catch/catch.hpp"
-
+#include "tinyformat/tinyformat.h"
 #include "Filters/Filter.h"
 
 using namespace Raycer;

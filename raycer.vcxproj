@@ -243,6 +243,7 @@
     <ClCompile Include="src\Core\Film.cu" />
     <ClCompile Include="src\Core\Image.cu" />
     <ClCompile Include="src\Core\ImagePool.cu" />
+	<ClCompile Include="src\Core\PerlinNoise.cu" />
     <ClCompile Include="src\Core\Ray.cu" />
     <ClCompile Include="src\Core\Scene.cu" />
     <ClCompile Include="src\Core\Triangle.cu" />
@@ -276,6 +277,7 @@
     <ClCompile Include="src\Math\Vector3.cu" />
     <ClCompile Include="src\Math\Vector4.cu" />
     <ClCompile Include="src\Renderers\CudaRenderer.cu" />
+    <ClCompile Include="src\Tests\PerlinNoiseTest.cpp" />
     <ClCompile Include="src\Textures\CheckerTexture.cu" />
     <ClCompile Include="src\Textures\ImageTexture.cu" />
     <ClCompile Include="src\Textures\Texture.cu" />
@@ -327,7 +329,6 @@
     <ClCompile Include="src\Tests\Matrix4x4Test.cpp" />
     <ClCompile Include="src\Tests\ModelLoaderTest.cpp" />
     <ClCompile Include="src\Tests\OnbTest.cpp" />
-    <ClCompile Include="src\Tests\PolynomialTest.cpp" />
     <ClCompile Include="src\Tests\SolverTest.cpp" />
     <ClCompile Include="src\Tests\Vector3Test.cpp" />
     <ClCompile Include="src\Tonemappers\LinearTonemapper.cpp" />
@@ -362,6 +363,7 @@
     <ClInclude Include="src\Core\Image.h" />
     <ClInclude Include="src\Core\ImagePool.h" />
     <ClInclude Include="src\Core\Intersection.h" />
+    <ClInclude Include="src\Core\PerlinNoise.h" />
     <ClInclude Include="src\Core\Ray.h" />
     <ClInclude Include="src\Core\Scene.h" />
     <ClInclude Include="src\Core\Triangle.h" />

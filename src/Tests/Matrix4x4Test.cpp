@@ -50,7 +50,7 @@ TEST_CASE("Matrix4x4 functionality", "[matrix4x4]")
 		18.0f, 2.0f, 4.0f, 6.0f,
 		8.0f, 10.0f, 12.0f, 14.0f));
 
-	REQUIRE((m1 - m2) == Matrix4x4::ZERO);
+	REQUIRE((m1 - m2) == Matrix4x4());
 
 	REQUIRE((m1 * 2.0f) == Matrix4x4(
 		2.0f, 4.0f, 6.0f, 8.0f,
