@@ -130,7 +130,7 @@ CUDA_CALLABLE uint32_t Color::getAbgrValue() const
 
 CUDA_CALLABLE float Color::getLuminance() const
 {
-	return 0.2126f * r + 0.7152f * g + 0.0722f * b; // expects linear space
+	return std::max(0.0f, 0.2126f * r + 0.7152f * g + 0.0722f * b); // expects linear space
 }
 
 CUDA_CALLABLE bool Color::isTransparent() const

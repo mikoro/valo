@@ -68,6 +68,13 @@ void ReinhardTonemapper::apply(const Image& inputImage, Image& outputImage)
 		Color inputColor = inputPixels[i];
 
 		float originalLuminance = inputColor.getLuminance();
+
+		if (originalLuminance == 0.0f)
+		{
+			outputPixels[i] = Color(0.0f, 0.0f, 0.0f, 1.0f);
+			continue;
+		}
+
 		float scaledLuminance = luminanceScale * originalLuminance;
 		float mappedLuminance = (scaledLuminance * (1.0f + (scaledLuminance * maxLuminance2Inv))) / (1.0f + scaledLuminance);
 		float colorScale = mappedLuminance / originalLuminance;

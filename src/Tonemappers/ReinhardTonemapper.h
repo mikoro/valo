@@ -23,7 +23,7 @@ namespace Raycer
 		bool shouldClamp = true;
 		float gamma = 2.2f;
 		float key = 0.18f;
-		bool enableAveraging = true;
+		bool enableAveraging = false;
 		float averagingAlpha = 0.001f;
 
 	private:
