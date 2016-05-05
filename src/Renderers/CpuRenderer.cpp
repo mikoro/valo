@@ -79,7 +79,8 @@ void CpuRenderer::render(RenderJob& job, bool filtering)
 				}
 
 				CameraRay cameraRay = scene.camera.getRay(pixel, random);
-				
+				cameraRay.ray.isPrimaryRay = true;
+
 				if (cameraRay.offLens)
 				{
 					film.addSample(pixelIndex, scene.general.offLensColor, filterWeight);

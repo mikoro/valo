@@ -427,6 +427,8 @@ void ModelLoader::processMaterialFile(const std::string& rootDirectory, const st
 			ss >> currentMaterial.invertNormal;
 		else if (part == "primaryRayInvisible")
 			ss >> currentMaterial.primaryRayInvisible;
+		else if (part == "showEmittance")
+			ss >> currentMaterial.showEmittance;
 		else if (part == "texcoordScale")
 		{
 			ss >> currentMaterial.texcoordScale.x;

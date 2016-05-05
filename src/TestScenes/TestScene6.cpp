@@ -8,7 +8,7 @@
 
 using namespace Raycer;
 
-// CRYTEK SPONZA CUSTOM //
+// CRYTEK SPONZA 2 //
 
 Scene TestScene::create6()
 {
@@ -70,7 +70,7 @@ Scene TestScene::create6()
 	// SPONZA MODEL //
 
 	ModelLoaderInfo model;
-	model.modelFileName = "data/models/crytek-sponza-custom/sponza.obj";
+	model.modelFileName = "data/models/crytek-sponza/sponza2.obj";
 	model.scale = Vector3(0.01f, 0.01f, 0.01f);
 
 	scene.models.push_back(model);

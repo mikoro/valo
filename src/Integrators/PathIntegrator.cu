@@ -20,14 +20,13 @@ CUDA_CALLABLE Color PathIntegrator::calculateLight(const Scene& scene, const Int
 	uint32_t pathLength = 0;
 	Intersection pathIntersection = intersection;
 	Ray pathRay = ray;
-	pathRay.isPrimaryRay = true;
 
 	for (;;)
 	{
 		const Material& material = scene.getMaterial(pathIntersection.materialIndex);
 
-		if (++pathLength == 1 && !pathIntersection.isBehind && material.isEmissive())
-			result += pathThroughput * material.getEmittance(scene, pathIntersection.texcoord, pathIntersection.position);
+		if (++pathLength == 1 && !pathIntersection.isBehind && material.showEmittance && material.isEmissive())
+			result = material.getEmittance(scene, pathIntersection.texcoord, pathIntersection.position);
 
 		Vector3 in = -pathRay.direction;
 		Vector3 out = material.getDirection(pathIntersection, random);

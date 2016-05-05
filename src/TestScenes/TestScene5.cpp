@@ -20,6 +20,9 @@ Scene TestScene::create5()
 	scene.renderer.pixelSamples = 1;
 
 	scene.integrator.type = IntegratorType::DOT;
+	scene.renderer.filter.type = FilterType::MITCHELL;
+	scene.tonemapper.type = TonemapperType::REINHARD;
+	scene.tonemapper.reinhardTonemapper.key = 0.25f;
 
 	scene.camera.position = Vector3(0.0836f, 1.8613f, 2.6068f);
 	scene.camera.orientation = EulerAngle(-11.3541f, 24.7832f, 0.0000f);

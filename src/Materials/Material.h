@@ -34,6 +34,7 @@ namespace Raycer
 		bool autoInvertNormal = true;
 		bool invertNormal = false;
 		bool primaryRayInvisible = false;
+		bool showEmittance = true;
 
 		Vector2 texcoordScale = Vector2(1.0f, 1.0f);
 
