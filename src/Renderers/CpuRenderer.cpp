@@ -78,11 +78,9 @@ void CpuRenderer::render(RenderJob& job, bool filtering)
 					pixel += offset;
 				}
 
-				bool isOffLens;
-				Ray ray = scene.camera.getRay(pixel, isOffLens);
-				ray.isPrimaryRay = true;
-
-				if (isOffLens)
+				CameraRay cameraRay = scene.camera.getRay(pixel);
+				
+				if (cameraRay.offLens)
 				{
 					film.addSample(pixelIndex, scene.general.offLensColor, filterWeight);
 					continue;
@@ -90,15 +88,15 @@ void CpuRenderer::render(RenderJob& job, bool filtering)
 
 				Intersection intersection;
 
-				if (!scene.intersect(ray, intersection))
+				if (!scene.intersect(cameraRay.ray, intersection))
 				{
-					film.addSample(pixelIndex, scene.general.backgroundColor, filterWeight);
+					film.addSample(pixelIndex, scene.general.backgroundColor * cameraRay.brightness, filterWeight);
 					continue;
 				}
 
 				if (intersection.hasColor)
 				{
-					film.addSample(pixelIndex, intersection.color, filterWeight);
+					film.addSample(pixelIndex, intersection.color * cameraRay.brightness, filterWeight);
 					continue;
 				}
 
@@ -106,12 +104,12 @@ void CpuRenderer::render(RenderJob& job, bool filtering)
 
 				if (scene.general.normalVisualization)
 				{
-					film.addSample(pixelIndex, Color::fromNormal(intersection.normal), filterWeight);
+					film.addSample(pixelIndex, Color::fromNormal(intersection.normal) * cameraRay.brightness, filterWeight);
 					continue;
 				}
 
-				Color color = scene.integrator.calculateLight(scene, intersection, ray, random);
-				film.addSample(pixelIndex, color, filterWeight);
+				Color color = scene.integrator.calculateLight(scene, intersection, cameraRay.ray, random);
+				film.addSample(pixelIndex, color * cameraRay.brightness, filterWeight);
 			}
 		}
 		catch (...)

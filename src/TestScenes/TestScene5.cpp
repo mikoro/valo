@@ -14,15 +14,18 @@ Scene TestScene::create5()
 {
 	Scene scene;
 
-	scene.bvh.type = BVHType::BVH4;
+	scene.bvh.type = BVHType::BVH2;
 
 	scene.renderer.imageSamples = 1;
 	scene.renderer.pixelSamples = 1;
 
-	scene.integrator.type = IntegratorType::PATH;
+	scene.integrator.type = IntegratorType::DOT;
 
 	scene.camera.position = Vector3(0.0836f, 1.8613f, 2.6068f);
 	scene.camera.orientation = EulerAngle(-11.3541f, 24.7832f, 0.0000f);
+	scene.camera.vignette = true;
+	scene.camera.vignetteFactor1 = 1.0f;
+	scene.camera.vignetteFactor2 = 0.1f;
 
 	// MODELS //
 

@@ -6,17 +6,24 @@
 #include <cstdint>
 
 #include "Core/Common.h"
+#include "Core/Ray.h"
+#include "Math/Vector2.h"
 #include "Math/Vector3.h"
 #include "Math/EulerAngle.h"
 
 namespace Raycer
 {
-	class Ray;
-	class Vector2;
 	class Scene;
 	class ONB;
 
 	enum class CameraType { PERSPECTIVE, ORTHOGRAPHIC, FISHEYE };
+
+	struct CameraRay
+	{
+		Ray ray;
+		bool offLens = false;
+		float brightness = 1.0f;
+	};
 
 	class Camera
 	{
@@ -29,7 +36,7 @@ namespace Raycer
 		bool isMoving() const;
 		void saveState(const std::string& fileName) const;
 
-		CUDA_CALLABLE Ray getRay(const Vector2& pixel, bool& isOffLens) const;
+		CUDA_CALLABLE CameraRay getRay(const Vector2& pixel) const;
 
 		Vector3 getRight() const;
 		Vector3 getUp() const;
@@ -46,6 +53,8 @@ namespace Raycer
 		float fishEyeAngle = 180.0f;
 		float apertureSize = 0.1f;
 		float focalDistance = 10.0f;
+		float vignetteFactor1 = 1.0f;
+		float vignetteFactor2 = 0.0f;
 		float moveSpeed = 10.0f;
 		float mouseSpeed = 40.0f;
 		float moveDrag = 3.0f;
@@ -55,7 +64,8 @@ namespace Raycer
 		float fastSpeedModifier = 2.5f;
 		float veryFastSpeedModifier = 5.0f;
 
-		bool enableDepthOfField = false;
+		bool depthOfField = false;
+		bool vignette = false;
 		bool enableMovement = true;
 		bool smoothMovement = true;
 		bool freeLook = false;
@@ -67,11 +77,13 @@ namespace Raycer
 		float imagePlaneWidth = 0.0f;
 		float imagePlaneHeight = 0.0f;
 		float currentSpeedModifier = 1.0f;
+		float maxVignetteDistance = 0.0f;
 
 		Vector3 right;
 		Vector3 up;
 		Vector3 forward;
 		Vector3 imagePlaneCenter;
+		Vector2 imageCenter;
 
 		Vector3 velocity;
 		Vector3 smoothVelocity;

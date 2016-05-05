@@ -32,6 +32,8 @@ void Camera::setImagePlaneSize(uint32_t width, uint32_t height)
 	imagePlaneWidth = float(width - 1);
 	imagePlaneHeight = float(height - 1);
 	aspectRatio = float(height) / float(width);
+	imageCenter = Vector2(float(width / 2), float(height / 2));
+	maxVignetteDistance = imageCenter.lengthSquared();
 }
 
 void Camera::reset()
@@ -234,11 +236,10 @@ void Camera::saveState(const std::string& fileName) const
 	file.close();
 }
 
-CUDA_CALLABLE Ray Camera::getRay(const Vector2& pixel, bool& isOffLens) const
+CUDA_CALLABLE CameraRay Camera::getRay(const Vector2& pixel) const
 {
-	Ray ray;
-	isOffLens = false;
-
+	CameraRay cameraRay;
+	
 	switch (type)
 	{
 		case CameraType::PERSPECTIVE:
@@ -248,8 +249,8 @@ CUDA_CALLABLE Ray Camera::getRay(const Vector2& pixel, bool& isOffLens) const
 
 			Vector3 imagePlanePixelPosition = imagePlaneCenter + (dx * right) + (dy * aspectRatio * up);
 
-			ray.origin = position;
-			ray.direction = (imagePlanePixelPosition - position).normalized();
+			cameraRay.ray.origin = position;
+			cameraRay.ray.direction = (imagePlanePixelPosition - position).normalized();
 
 		} break;
 
@@ -258,8 +259,8 @@ CUDA_CALLABLE Ray Camera::getRay(const Vector2& pixel, bool& isOffLens) const
 			float dx = (pixel.x / imagePlaneWidth) - 0.5f;
 			float dy = (pixel.y / imagePlaneHeight) - 0.5f;
 
-			ray.origin = position + (dx * orthoSize * right) + (dy * orthoSize * aspectRatio * up);
-			ray.direction = forward;
+			cameraRay.ray.origin = position + (dx * orthoSize * right) + (dy * orthoSize * aspectRatio * up);
+			cameraRay.ray.direction = forward;
 
 		} break;
 
@@ -275,7 +276,7 @@ CUDA_CALLABLE Ray Camera::getRay(const Vector2& pixel, bool& isOffLens) const
 			float r = sqrt(dx * dx + dy * dy);
 
 			if (r > 1.0f)
-				isOffLens = true;
+				cameraRay.offLens = true;
 
 			float phi = std::atan2(dy, dx);
 			float theta = r * (MathUtils::degToRad(fishEyeAngle) / 2.0f);
@@ -284,16 +285,24 @@ CUDA_CALLABLE Ray Camera::getRay(const Vector2& pixel, bool& isOffLens) const
 			float v = std::sin(theta) * std::sin(phi);
 			float w = std::cos(theta);
 
-			ray.origin = position;
-			ray.direction = u * right + v * up + w * forward;
+			cameraRay.ray.origin = position;
+			cameraRay.ray.direction = u * right + v * up + w * forward;
 
 		} break;
 
 		default: break;
 	}
 
-	ray.precalculate();
-	return ray;
+	cameraRay.ray.precalculate();
+
+	if (vignette)
+	{
+		float vignetteDistance = (imageCenter - pixel).lengthSquared();
+		float vignetteAmount = std::max(0.0f, std::min(vignetteDistance / maxVignetteDistance + vignetteFactor2, 1.0f));
+		cameraRay.brightness = 1.0f - std::pow(vignetteAmount, vignetteFactor1);
+	}
+
+	return cameraRay;
 }
 
 Vector3 Camera::getRight() const

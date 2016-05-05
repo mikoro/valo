@@ -20,6 +20,7 @@ CUDA_CALLABLE Color PathIntegrator::calculateLight(const Scene& scene, const Int
 	uint32_t pathLength = 0;
 	Intersection pathIntersection = intersection;
 	Ray pathRay = ray;
+	pathRay.isPrimaryRay = true;
 
 	for (;;)
 	{
