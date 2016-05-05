@@ -99,30 +99,6 @@
     <ClCompile Include="src\TestScenes\TestScene1.cpp">
       <Filter>TestScenes</Filter>
     </ClCompile>
-    <ClCompile Include="src\TestScenes\TestScene2.cpp">
-      <Filter>TestScenes</Filter>
-    </ClCompile>
-    <ClCompile Include="src\TestScenes\TestScene3.cpp">
-      <Filter>TestScenes</Filter>
-    </ClCompile>
-    <ClCompile Include="src\TestScenes\TestScene4.cpp">
-      <Filter>TestScenes</Filter>
-    </ClCompile>
-    <ClCompile Include="src\TestScenes\TestScene5.cpp">
-      <Filter>TestScenes</Filter>
-    </ClCompile>
-    <ClCompile Include="src\TestScenes\TestScene6.cpp">
-      <Filter>TestScenes</Filter>
-    </ClCompile>
-    <ClCompile Include="src\TestScenes\TestScene7.cpp">
-      <Filter>TestScenes</Filter>
-    </ClCompile>
-    <ClCompile Include="src\TestScenes\TestScene8.cpp">
-      <Filter>TestScenes</Filter>
-    </ClCompile>
-    <ClCompile Include="src\TestScenes\TestScene9.cpp">
-      <Filter>TestScenes</Filter>
-    </ClCompile>
     <ClCompile Include="src\Tonemappers\LinearTonemapper.cpp">
       <Filter>Tonemappers</Filter>
     </ClCompile>
@@ -210,6 +186,21 @@
     </ClCompile>
     <ClCompile Include="src\Utils\CudaAlloc.cu">
       <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="src\TestScenes\TestScene2.cpp">
+      <Filter>TestScenes</Filter>
+    </ClCompile>
+    <ClCompile Include="src\TestScenes\TestScene3.cpp">
+      <Filter>TestScenes</Filter>
+    </ClCompile>
+    <ClCompile Include="src\TestScenes\TestScene4.cpp">
+      <Filter>TestScenes</Filter>
+    </ClCompile>
+    <ClCompile Include="src\TestScenes\TestScene5.cpp">
+      <Filter>TestScenes</Filter>
+    </ClCompile>
+    <ClCompile Include="src\TestScenes\TestScene6.cpp">
+      <Filter>TestScenes</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

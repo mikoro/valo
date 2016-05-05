@@ -284,7 +284,7 @@
     <ClCompile Include="src\Textures\MarbleTexture.cu" />
     <ClCompile Include="src\Textures\WoodTexture.cu" />
     <ClCompile Include="src\Utils\ColorGradient.cu" />
-	<ClCompile Include="src\Utils\CudaAlloc.cu" />
+    <ClCompile Include="src\Utils\CudaAlloc.cu" />
     <ClCompile Include="src\Utils\PerlinNoise.cu" />
   </ItemGroup>
   <ItemGroup>
@@ -322,11 +322,8 @@
     <ClCompile Include="src\TestScenes\TestScene2.cpp" />
     <ClCompile Include="src\TestScenes\TestScene3.cpp" />
     <ClCompile Include="src\TestScenes\TestScene4.cpp" />
-    <ClCompile Include="src\TestScenes\TestScene5.cpp" />
     <ClCompile Include="src\TestScenes\TestScene6.cpp" />
-    <ClCompile Include="src\TestScenes\TestScene7.cpp" />
-    <ClCompile Include="src\TestScenes\TestScene8.cpp" />
-    <ClCompile Include="src\TestScenes\TestScene9.cpp" />
+    <ClCompile Include="src\TestScenes\TestScene5.cpp" />
     <ClCompile Include="src\Tests\EulerAngleTest.cpp" />
     <ClCompile Include="src\Tests\FilterTest.cpp" />
     <ClCompile Include="src\Tests\ImageTest.cpp" />

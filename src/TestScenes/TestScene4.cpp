@@ -8,22 +8,44 @@
 
 using namespace Raycer;
 
-// CONFERENCE //
+// CRYTEK SPONZA //
 
 Scene TestScene::create4()
 {
 	Scene scene;
 
+	Color skyColor(182, 126, 91);
+
 	scene.integrator.type = IntegratorType::DOT;
 
-	scene.camera.position = Vector3(-4.6401f, 0.4618f, 2.7327f);
-	scene.camera.orientation = EulerAngle(-13.3503f, -56.3473f, 0.0000f);
-	scene.camera.fov = 65.0f;
+	scene.camera.position = Vector3(8.92f, 0.68f, -2.02f);
+	scene.camera.orientation = EulerAngle(6.66f, 111.11f, 0.0f);
 
 	scene.bvh.type = BVHType::BVH4;
 
+	// PLANE MODEL //
+
+	Material planeMaterial;
+	planeMaterial.id = 1;
+	planeMaterial.reflectance = skyColor;
+	planeMaterial.emittance = skyColor * 10.0f;
+	planeMaterial.invertNormal = false;
+
 	ModelLoaderInfo model;
-	model.modelFileName = "data/models/conference/conference.obj";
+	model.modelFileName = "data/models/plane.obj";
+	model.defaultMaterialId = planeMaterial.id;
+	model.scale = Vector3(9.0f, 1.0f, 2.0f);
+	model.translate = Vector3(-0.6f, 13.0f, -0.3f);
+	model.rotate = EulerAngle(180.0f, 0.0f, 0.0f);
+
+	scene.materials.push_back(planeMaterial);
+	scene.models.push_back(model);
+
+	// SPONZA MODEL //
+
+	model = ModelLoaderInfo();
+	model.modelFileName = "data/models/crytek-sponza/sponza.obj";
+	model.scale = Vector3(0.01f, 0.01f, 0.01f);
 
 	scene.models.push_back(model);
 

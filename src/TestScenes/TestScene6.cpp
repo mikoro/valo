@@ -8,46 +8,65 @@
 
 using namespace Raycer;
 
-// CRYTEK SPONZA //
+// BUDDHA + DRAGON //
 
 Scene TestScene::create6()
 {
 	Scene scene;
 
-	Color skyColor(182, 126, 91);
-
 	scene.integrator.type = IntegratorType::DOT;
-
-	scene.camera.position = Vector3(8.92f, 0.68f, -2.02f);
-	scene.camera.orientation = EulerAngle(6.66f, 111.11f, 0.0f);
+	
+	scene.camera.position = Vector3(0.0f, 0.6f, 1.5f);
+	scene.camera.orientation = EulerAngle(-8.0f, -0.0f, 0.0f);
 
 	scene.bvh.type = BVHType::BVH4;
 
-	// PLANE MODEL //
+	// MODELS //
+
+	ModelLoaderInfo planeModel;
+	planeModel.modelFileName = "data/models/plane.obj";
+	planeModel.defaultMaterialId = 1;
+	planeModel.scale = Vector3(10.0f, 10.0f, 10.0f);
+
+	scene.models.push_back(planeModel);
+
+	ModelLoaderInfo buddhaModel;
+	buddhaModel.modelFileName = "data/models/buddha.obj";
+	buddhaModel.defaultMaterialId = 2;
+	buddhaModel.triangleCountEstimate = 1087451;
+	buddhaModel.translate = Vector3(0.6f, 0.0f, 0.0f);
+	buddhaModel.rotate = EulerAngle(0.0f, 150.0f, 0.0f);
+	
+	scene.models.push_back(buddhaModel);
+
+	ModelLoaderInfo dragonModel;
+	dragonModel.modelFileName = "data/models/dragon.obj";
+	dragonModel.defaultMaterialId = 3;
+	dragonModel.triangleCountEstimate = 871306;
+	dragonModel.translate = Vector3(-0.4f, 0.0f, 0.0f);
+	dragonModel.rotate = EulerAngle(0.0f, 110.0f, 0.0f);
+
+	scene.models.push_back(dragonModel);
+
+	// MATERIALS //
 
 	Material planeMaterial;
 	planeMaterial.id = 1;
-	planeMaterial.reflectance = skyColor;
-	planeMaterial.emittance = skyColor * 10.0f;
-	planeMaterial.invertNormal = false;
-
-	ModelLoaderInfo model;
-	model.modelFileName = "data/models/plane.obj";
-	model.defaultMaterialId = planeMaterial.id;
-	model.scale = Vector3(9.0f, 1.0f, 2.0f);
-	model.translate = Vector3(-0.6f, 13.0f, -0.3f);
-	model.rotate = EulerAngle(180.0f, 0.0f, 0.0f);
-
+	planeMaterial.reflectance = Color(1.0f, 1.0f, 1.0f);
+	
 	scene.materials.push_back(planeMaterial);
-	scene.models.push_back(model);
 
-	// SPONZA MODEL //
+	Material buddhaMaterial;
+	buddhaMaterial.id = 2;
+	buddhaMaterial.reflectance = Color(1.0f, 1.0f, 1.0f);
+	
+	scene.materials.push_back(buddhaMaterial);
 
-	model = ModelLoaderInfo();
-	model.modelFileName = "data/models/crytek-sponza/sponza.obj";
-	model.scale = Vector3(0.01f, 0.01f, 0.01f);
-
-	scene.models.push_back(model);
+	Material dragonMaterial;
+	dragonMaterial.id = 3;
+	dragonMaterial.reflectance = Color(1.0f, 1.0f, 1.0f);
+	
+	scene.materials.push_back(dragonMaterial);
 
 	return scene;
 }

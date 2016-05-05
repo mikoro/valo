@@ -8,7 +8,7 @@
 
 using namespace Raycer;
 
-// CORNELL BOX CUBOIDS //
+// CORNELL BOX //
 
 Scene TestScene::create1()
 {
@@ -26,7 +26,7 @@ Scene TestScene::create1()
 	scene.renderer.pixelSamples = 1;
 
 	ModelLoaderInfo model;
-	model.modelFileName = "data/models/cornellbox-cuboids/cornellbox.obj";
+	model.modelFileName = "data/models/cornellbox/cornellbox.obj";
 
 	scene.models.push_back(model);
 
