@@ -78,7 +78,7 @@ void CpuRenderer::render(RenderJob& job, bool filtering)
 					pixel += offset;
 				}
 
-				CameraRay cameraRay = scene.camera.getRay(pixel);
+				CameraRay cameraRay = scene.camera.getRay(pixel, random);
 				
 				if (cameraRay.offLens)
 				{

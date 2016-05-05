@@ -24,8 +24,11 @@ Scene TestScene::create5()
 	scene.camera.position = Vector3(0.0836f, 1.8613f, 2.6068f);
 	scene.camera.orientation = EulerAngle(-11.3541f, 24.7832f, 0.0000f);
 	scene.camera.vignette = true;
-	scene.camera.vignetteFactor1 = 1.0f;
-	scene.camera.vignetteFactor2 = 0.1f;
+	scene.camera.vignettePower = 1.0f;
+	scene.camera.vignetteOffset = 0.1f;
+	scene.camera.depthOfField = false;
+	scene.camera.focalDistance = 1.0f;
+	scene.camera.apertureSize = 0.01f;
 
 	// MODELS //
 

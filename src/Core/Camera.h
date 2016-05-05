@@ -13,6 +13,7 @@
 
 namespace Raycer
 {
+	class Random;
 	class Scene;
 	class ONB;
 
@@ -36,7 +37,7 @@ namespace Raycer
 		bool isMoving() const;
 		void saveState(const std::string& fileName) const;
 
-		CUDA_CALLABLE CameraRay getRay(const Vector2& pixel) const;
+		CUDA_CALLABLE CameraRay getRay(const Vector2& pixel, Random& random) const;
 
 		Vector3 getRight() const;
 		Vector3 getUp() const;
@@ -53,8 +54,8 @@ namespace Raycer
 		float fishEyeAngle = 180.0f;
 		float apertureSize = 0.1f;
 		float focalDistance = 10.0f;
-		float vignetteFactor1 = 1.0f;
-		float vignetteFactor2 = 0.0f;
+		float vignettePower = 1.0f;
+		float vignetteOffset = 0.0f;
 		float moveSpeed = 10.0f;
 		float mouseSpeed = 40.0f;
 		float moveDrag = 3.0f;

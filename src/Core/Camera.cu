@@ -13,6 +13,7 @@
 #include "Core/Ray.h"
 #include "Math/MathUtils.h"
 #include "Math/Vector2.h"
+#include "Math/Mapper.h"
 #include "Runners/WindowRunner.h"
 #include "Utils/Log.h"
 
@@ -236,10 +237,12 @@ void Camera::saveState(const std::string& fileName) const
 	file.close();
 }
 
-CUDA_CALLABLE CameraRay Camera::getRay(const Vector2& pixel) const
+CUDA_CALLABLE CameraRay Camera::getRay(const Vector2& pixel, Random& random) const
 {
-	CameraRay cameraRay;
-	
+	Vector3 origin;
+	Vector3 direction;
+	bool offLens = false;
+
 	switch (type)
 	{
 		case CameraType::PERSPECTIVE:
@@ -249,8 +252,8 @@ CUDA_CALLABLE CameraRay Camera::getRay(const Vector2& pixel) const
 
 			Vector3 imagePlanePixelPosition = imagePlaneCenter + (dx * right) + (dy * aspectRatio * up);
 
-			cameraRay.ray.origin = position;
-			cameraRay.ray.direction = (imagePlanePixelPosition - position).normalized();
+			origin = position;
+			direction = (imagePlanePixelPosition - position).normalized();
 
 		} break;
 
@@ -259,8 +262,8 @@ CUDA_CALLABLE CameraRay Camera::getRay(const Vector2& pixel) const
 			float dx = (pixel.x / imagePlaneWidth) - 0.5f;
 			float dy = (pixel.y / imagePlaneHeight) - 0.5f;
 
-			cameraRay.ray.origin = position + (dx * orthoSize * right) + (dy * orthoSize * aspectRatio * up);
-			cameraRay.ray.direction = forward;
+			origin = position + (dx * orthoSize * right) + (dy * orthoSize * aspectRatio * up);
+			direction = forward;
 
 		} break;
 
@@ -276,7 +279,7 @@ CUDA_CALLABLE CameraRay Camera::getRay(const Vector2& pixel) const
 			float r = sqrt(dx * dx + dy * dy);
 
 			if (r > 1.0f)
-				cameraRay.offLens = true;
+				offLens = true;
 
 			float phi = std::atan2(dy, dx);
 			float theta = r * (MathUtils::degToRad(fishEyeAngle) / 2.0f);
@@ -285,21 +288,34 @@ CUDA_CALLABLE CameraRay Camera::getRay(const Vector2& pixel) const
 			float v = std::sin(theta) * std::sin(phi);
 			float w = std::cos(theta);
 
-			cameraRay.ray.origin = position;
-			cameraRay.ray.direction = u * right + v * up + w * forward;
+			origin = position;
+			direction = u * right + v * up + w * forward;
 
 		} break;
 
 		default: break;
 	}
 
+	if (depthOfField)
+	{
+		Vector3 focalPoint = origin + direction * focalDistance;
+		Vector2 originOffset = Mapper::mapToDisc(random.getVector2());
+
+		origin = origin + ((originOffset.x * apertureSize) * right + (originOffset.y * apertureSize) * up);
+		direction = (focalPoint - origin).normalized();
+	}
+
+	CameraRay cameraRay;
+	cameraRay.ray.origin = origin;
+	cameraRay.ray.direction = direction;
+	cameraRay.offLens = offLens;
 	cameraRay.ray.precalculate();
 
 	if (vignette)
 	{
 		float vignetteDistance = (imageCenter - pixel).lengthSquared();
-		float vignetteAmount = std::max(0.0f, std::min(vignetteDistance / maxVignetteDistance + vignetteFactor2, 1.0f));
-		cameraRay.brightness = 1.0f - std::pow(vignetteAmount, vignetteFactor1);
+		float vignetteAmount = std::max(0.0f, std::min(vignetteDistance / maxVignetteDistance + vignetteOffset, 1.0f));
+		cameraRay.brightness = 1.0f - std::pow(vignetteAmount, vignettePower);
 	}
 
 	return cameraRay;
