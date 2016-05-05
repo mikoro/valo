@@ -190,8 +190,26 @@
     <ClCompile Include="src\Tests\PerlinNoiseTest.cpp">
       <Filter>Tests</Filter>
     </ClCompile>
-    <ClCompile Include="src\Core\PerlinNoise.cu">
-      <Filter>Core</Filter>
+    <ClCompile Include="src\Textures\FireTexture.cu">
+      <Filter>Textures</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Textures\MarbleTexture.cu">
+      <Filter>Textures</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Textures\WoodTexture.cu">
+      <Filter>Textures</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Tests\TextureTest.cpp">
+      <Filter>Tests</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Utils\ColorGradient.cu">
+      <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Utils\PerlinNoise.cu">
+      <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Utils\CudaAlloc.cu">
+      <Filter>Utils</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -388,9 +406,6 @@
     <ClInclude Include="src\Utils\CudaUtils.h">
       <Filter>Utils</Filter>
     </ClInclude>
-    <ClInclude Include="src\Core\CudaAlloc.h">
-      <Filter>Core</Filter>
-    </ClInclude>
     <ClInclude Include="src\Core\ImagePool.h">
       <Filter>Core</Filter>
     </ClInclude>
@@ -410,8 +425,23 @@
     <ClInclude Include="src\BVH\BVH2.h">
       <Filter>BVH</Filter>
     </ClInclude>
-    <ClInclude Include="src\Core\PerlinNoise.h">
-      <Filter>Core</Filter>
+    <ClInclude Include="src\Textures\MarbleTexture.h">
+      <Filter>Textures</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Textures\FireTexture.h">
+      <Filter>Textures</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Textures\WoodTexture.h">
+      <Filter>Textures</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Utils\ColorGradient.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Utils\PerlinNoise.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Utils\CudaAlloc.h">
+      <Filter>Utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -550,9 +580,6 @@
     </ClCompile>
     <ClCompile Include="src\Renderers\CudaRenderer.cu">
       <Filter>Renderers</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Core\CudaAlloc.cu">
-      <Filter>Core</Filter>
     </ClCompile>
     <ClCompile Include="src\Core\ImagePool.cu">
       <Filter>Core</Filter>

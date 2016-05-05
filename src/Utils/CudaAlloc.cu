@@ -8,8 +8,9 @@
 #endif
 
 #include "Core/Common.h"
-#include "Core/CudaAlloc.h"
+#include "Utils/CudaAlloc.h"
 #include "Utils/CudaUtils.h"
+#include "Utils/ColorGradient.h"
 #include "Core/Scene.h"
 #include "Core/Film.h"
 #include "Math/Random.h"
@@ -166,3 +167,4 @@ template class CudaAlloc<TriangleSOA<4>>;
 template class CudaAlloc<TriangleSOA<8>>;
 template class CudaAlloc<TriangleSOA<16>>;
 template class CudaAlloc<RandomGeneratorState>;
+template class CudaAlloc<ColorGradientSegment>;

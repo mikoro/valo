@@ -9,7 +9,7 @@
 #include "BVH/BVH.h"
 #include "Core/Camera.h"
 #include "Core/Common.h"
-#include "Core/CudaAlloc.h"
+#include "Utils/CudaAlloc.h"
 #include "Core/ImagePool.h"
 #include "Filters/Filter.h"
 #include "Integrators/Integrator.h"

@@ -3,6 +3,8 @@
 
 #pragma once
 
+#include "Core/Common.h"
+
 namespace Raycer
 {
 	template <typename T>

@@ -10,12 +10,19 @@
 
 using namespace Raycer;
 
+Texture::Texture(TextureType type_) : type(type_)
+{
+}
+
 void Texture::initialize(Scene& scene)
 {
 	switch (type)
 	{
-		case TextureType::CHECKER: break;
 		case TextureType::IMAGE: imageTexture.initialize(scene); break;
+		case TextureType::CHECKER: break;
+		case TextureType::MARBLE: marbleTexture.initialize(); break;
+		case TextureType::WOOD: woodTexture.initialize(); break;
+		case TextureType::FIRE: fireTexture.initialize(); break;
 		default: break;
 	}
 }
@@ -24,8 +31,11 @@ CUDA_CALLABLE Color Texture::getColor(const Scene& scene, const Vector2& texcoor
 {
 	switch (type)
 	{
-		case TextureType::CHECKER: return checkerTexture.getColor(texcoord, position);
 		case TextureType::IMAGE: return imageTexture.getColor(scene, texcoord, position);
+		case TextureType::CHECKER: return checkerTexture.getColor(texcoord, position);
+		case TextureType::MARBLE: return marbleTexture.getColor(texcoord, position);
+		case TextureType::WOOD: return woodTexture.getColor(texcoord, position);
+		case TextureType::FIRE: return fireTexture.getColor(texcoord, position);
 		default: return Color::black();
 	}
 }

@@ -8,7 +8,7 @@
 #include "catch/catch.hpp"
 
 #include "Core/Image.h"
-#include "Core/PerlinNoise.h"
+#include "Utils/PerlinNoise.h"
 #include "Math/Color.h"
 
 using namespace Raycer;

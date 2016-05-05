@@ -239,11 +239,9 @@
     <ClCompile Include="src\BVH\BVH8.cu" />
     <ClCompile Include="src\Core\AABB.cu" />
     <ClCompile Include="src\Core\Camera.cu" />
-    <ClCompile Include="src\Core\CudaAlloc.cu" />
     <ClCompile Include="src\Core\Film.cu" />
     <ClCompile Include="src\Core\Image.cu" />
     <ClCompile Include="src\Core\ImagePool.cu" />
-	<ClCompile Include="src\Core\PerlinNoise.cu" />
     <ClCompile Include="src\Core\Ray.cu" />
     <ClCompile Include="src\Core\Scene.cu" />
     <ClCompile Include="src\Core\Triangle.cu" />
@@ -278,9 +276,16 @@
     <ClCompile Include="src\Math\Vector4.cu" />
     <ClCompile Include="src\Renderers\CudaRenderer.cu" />
     <ClCompile Include="src\Tests\PerlinNoiseTest.cpp" />
+    <ClCompile Include="src\Tests\TextureTest.cpp" />
     <ClCompile Include="src\Textures\CheckerTexture.cu" />
     <ClCompile Include="src\Textures\ImageTexture.cu" />
     <ClCompile Include="src\Textures\Texture.cu" />
+    <ClCompile Include="src\Textures\FireTexture.cu" />
+    <ClCompile Include="src\Textures\MarbleTexture.cu" />
+    <ClCompile Include="src\Textures\WoodTexture.cu" />
+    <ClCompile Include="src\Utils\ColorGradient.cu" />
+	<ClCompile Include="src\Utils\CudaAlloc.cu" />
+    <ClCompile Include="src\Utils\PerlinNoise.cu" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\App.cpp">
@@ -358,12 +363,10 @@
     <ClInclude Include="src\Core\AABB.h" />
     <ClInclude Include="src\Core\Camera.h" />
     <ClInclude Include="src\Core\Common.h" />
-    <ClInclude Include="src\Core\CudaAlloc.h" />
     <ClInclude Include="src\Core\Film.h" />
     <ClInclude Include="src\Core\Image.h" />
     <ClInclude Include="src\Core\ImagePool.h" />
     <ClInclude Include="src\Core\Intersection.h" />
-    <ClInclude Include="src\Core\PerlinNoise.h" />
     <ClInclude Include="src\Core\Ray.h" />
     <ClInclude Include="src\Core\Scene.h" />
     <ClInclude Include="src\Core\Triangle.h" />
@@ -405,13 +408,18 @@
     <ClInclude Include="src\Runners\WindowRunnerRenderState.h" />
     <ClInclude Include="src\TestScenes\TestScene.h" />
     <ClInclude Include="src\Textures\CheckerTexture.h" />
+    <ClInclude Include="src\Textures\FireTexture.h" />
     <ClInclude Include="src\Textures\ImageTexture.h" />
+    <ClInclude Include="src\Textures\MarbleTexture.h" />
     <ClInclude Include="src\Textures\Texture.h" />
+    <ClInclude Include="src\Textures\WoodTexture.h" />
     <ClInclude Include="src\Tonemappers\LinearTonemapper.h" />
     <ClInclude Include="src\Tonemappers\PassthroughTonemapper.h" />
     <ClInclude Include="src\Tonemappers\ReinhardTonemapper.h" />
     <ClInclude Include="src\Tonemappers\SimpleTonemapper.h" />
     <ClInclude Include="src\Tonemappers\Tonemapper.h" />
+    <ClInclude Include="src\Utils\ColorGradient.h" />
+    <ClInclude Include="src\Utils\CudaAlloc.h" />
     <ClInclude Include="src\Utils\CudaUtils.h" />
     <ClInclude Include="src\Utils\FilmQuad.h" />
     <ClInclude Include="src\Utils\FpsCounter.h" />
@@ -419,6 +427,7 @@
     <ClInclude Include="src\Utils\InfoPanel.h" />
     <ClInclude Include="src\Utils\Log.h" />
     <ClInclude Include="src\Utils\ModelLoader.h" />
+    <ClInclude Include="src\Utils\PerlinNoise.h" />
     <ClInclude Include="src\Utils\Settings.h" />
     <ClInclude Include="src\Utils\StringUtils.h" />
     <ClInclude Include="src\Utils\SysUtils.h" />

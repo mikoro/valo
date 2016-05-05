@@ -8,7 +8,7 @@
 
 #include "BVH/Common.h"
 #include "Core/Common.h"
-#include "Core/CudaAlloc.h"
+#include "Utils/CudaAlloc.h"
 
 namespace Raycer
 {

@@ -3,7 +3,7 @@
 
 #include "Precompiled.h"
 
-#include "Core/PerlinNoise.h"
+#include "Utils/PerlinNoise.h"
 
 using namespace Raycer;
 

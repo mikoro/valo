@@ -8,7 +8,7 @@
 #include <vector>
 
 #include "Core/Image.h"
-#include "Core/CudaAlloc.h"
+#include "Utils/CudaAlloc.h"
 #include "Core/Common.h"
 
 namespace Raycer

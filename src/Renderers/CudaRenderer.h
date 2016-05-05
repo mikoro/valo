@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include "Core/CudaAlloc.h"
+#include "Utils/CudaAlloc.h"
 
 namespace Raycer
 {
