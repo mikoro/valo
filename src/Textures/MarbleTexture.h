@@ -26,6 +26,7 @@ namespace Raycer
 		float density = 10.0f;
 		float swirliness = 15.0f;
 		float transparency = 2.0f;
+		float scale = 1.0f;
 
 	private:
 

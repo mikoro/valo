@@ -24,6 +24,7 @@ namespace Raycer
 		float maxDistance = FLT_MAX;
 
 		bool isVisibilityRay = false;
+		bool isPrimaryRay = false;
 		bool directionIsNegative[3];
 	};
 }

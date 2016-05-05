@@ -22,6 +22,7 @@ namespace Raycer
 		CUDA_CALLABLE Color getColor(const Vector2& texcoord, const Vector3& position) const;
 		
 		uint32_t seed = 1;
+		float scale = 1.0f;
 
 	private:
 

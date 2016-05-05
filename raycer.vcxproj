@@ -275,8 +275,6 @@
     <ClCompile Include="src\Math\Vector3.cu" />
     <ClCompile Include="src\Math\Vector4.cu" />
     <ClCompile Include="src\Renderers\CudaRenderer.cu" />
-    <ClCompile Include="src\Tests\PerlinNoiseTest.cpp" />
-    <ClCompile Include="src\Tests\TextureTest.cpp" />
     <ClCompile Include="src\Textures\CheckerTexture.cu" />
     <ClCompile Include="src\Textures\ImageTexture.cu" />
     <ClCompile Include="src\Textures\Texture.cu" />
@@ -322,8 +320,10 @@
     <ClCompile Include="src\TestScenes\TestScene2.cpp" />
     <ClCompile Include="src\TestScenes\TestScene3.cpp" />
     <ClCompile Include="src\TestScenes\TestScene4.cpp" />
-    <ClCompile Include="src\TestScenes\TestScene6.cpp" />
     <ClCompile Include="src\TestScenes\TestScene5.cpp" />
+	<ClCompile Include="src\TestScenes\TestScene6.cpp" />
+    <ClCompile Include="src\Tests\PerlinNoiseTest.cpp" />
+    <ClCompile Include="src\Tests\TextureTest.cpp" />
     <ClCompile Include="src\Tests\EulerAngleTest.cpp" />
     <ClCompile Include="src\Tests\FilterTest.cpp" />
     <ClCompile Include="src\Tests\ImageTest.cpp" />

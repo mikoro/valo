@@ -19,7 +19,7 @@ CUDA_CALLABLE Color MarbleTexture::getColor(const Vector2& texcoord, const Vecto
 {
 	(void)texcoord;
 
-	float n1 = std::abs(std::cos(position.x * density + noise.getFbmNoise(8, 2.0f, 0.5f, position.x * 2.0f, position.y * 2.0f, position.z * 2.0f) * swirliness));
+	float n1 = std::abs(std::cos(position.x * scale * density + noise.getFbmNoise(8, 2.0f, 0.5f, position.x * scale * 2.0f, position.y * scale * 2.0f, position.z * scale * 2.0f) * swirliness));
 	n1 = (1.0f - n1) / transparency;
 
 	Color streakColor1(streakColor);

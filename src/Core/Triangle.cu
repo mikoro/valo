@@ -226,6 +226,9 @@ CUDA_CALLABLE bool Triangle::calculateIntersectionData(const Scene& scene, const
 {
 	const Material& material = scene.getMaterial(triangle.materialIndex);
 
+	if (ray.isPrimaryRay && material.primaryRayInvisible)
+		return false;
+
 	float w = 1.0f - u - v;
 
 	Vector3 intersectionPosition = ray.origin + (distance * ray.direction);

@@ -76,6 +76,11 @@ namespace Raycer
 
 	private:
 
+		std::vector<Texture> allTextures;
+		std::vector<Material> allMaterials;
+		std::vector<Triangle> allTriangles;
+		std::vector<Triangle> emissiveTriangles;
+
 		CudaAlloc<Texture> texturesAlloc;
 		CudaAlloc<Material> materialsAlloc;
 		CudaAlloc<Triangle> trianglesAlloc;

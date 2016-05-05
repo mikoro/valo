@@ -24,6 +24,7 @@ namespace Raycer
 		Color woodColor = Color(110, 71, 11);
 		float density = 8.0;
 		float bumpiness = 4.0;
+		float scale = 1.0f;
 
 	private:
 

@@ -29,11 +29,6 @@ void Scene::initialize()
 
 	Timer timer;
 
-	std::vector<Texture> allTextures;
-	std::vector<Material> allMaterials;
-	std::vector<Triangle> allTriangles;
-	std::vector<Triangle> emissiveTriangles;
-
 	allTextures.insert(allTextures.end(), textures.begin(), textures.end());
 	allMaterials.insert(allMaterials.end(), materials.begin(), materials.end());
 	allTriangles.insert(allTriangles.end(), triangles.begin(), triangles.end());

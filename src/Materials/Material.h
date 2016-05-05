@@ -33,6 +33,7 @@ namespace Raycer
 		bool normalInterpolation = true;
 		bool autoInvertNormal = true;
 		bool invertNormal = false;
+		bool primaryRayInvisible = false;
 
 		Vector2 texcoordScale = Vector2(1.0f, 1.0f);
 

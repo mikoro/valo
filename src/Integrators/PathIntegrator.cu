@@ -14,11 +14,12 @@ using namespace Raycer;
 
 CUDA_CALLABLE Color PathIntegrator::calculateLight(const Scene& scene, const Intersection& intersection, const Ray& ray, Random& random) const
 {
+	Color result(0.0f, 0.0f, 0.0f);
+
+	Color pathThroughput(1.0f, 1.0f, 1.0f);
+	uint32_t pathLength = 0;
 	Intersection pathIntersection = intersection;
 	Ray pathRay = ray;
-	Color pathThroughput(1.0f, 1.0f, 1.0f);
-	Color result(0.0f, 0.0f, 0.0f);
-	uint32_t pathLength = 0;
 
 	for (;;)
 	{

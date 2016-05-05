@@ -80,6 +80,7 @@ void CpuRenderer::render(RenderJob& job, bool filtering)
 
 				bool isOffLens;
 				Ray ray = scene.camera.getRay(pixel, isOffLens);
+				ray.isPrimaryRay = true;
 
 				if (isOffLens)
 				{
