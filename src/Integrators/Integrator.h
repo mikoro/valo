@@ -24,7 +24,9 @@ namespace Raycer
 	{
 		Color emittance;
 		Vector3 direction;
-		float pdf = 0.0f;
+		float originCosine = 0.0f;
+		float lightCosine = 0.0f;
+		float lightPdf = 0.0f;
 		bool visible = false;
 	};
 
@@ -36,10 +38,11 @@ namespace Raycer
 
 		std::string getName() const;
 
-		CUDA_CALLABLE static bool getRandomEmissiveIntersection(const Scene& scene, const Intersection& origin, Random& random, Intersection& emissiveIntersection);
+		CUDA_CALLABLE static Intersection getRandomEmissiveIntersection(const Scene& scene, Random& random);
+		CUDA_CALLABLE static bool isIntersectionVisible(const Scene& scene, const Intersection& origin, const Intersection& emissiveIntersection);
 		CUDA_CALLABLE static DirectLightSample calculateDirectLightSample(const Scene& scene, const Intersection& origin, const Intersection& emissiveIntersection);
-		CUDA_CALLABLE static float calculateBalanceHeuristic(uint32_t nf, float fPdf, uint32_t ng, float gPdf);
-		CUDA_CALLABLE static float calculatePowerHeuristic(uint32_t nf, float fPdf, uint32_t ng, float gPdf);
+		CUDA_CALLABLE static float balanceHeuristic(uint32_t nf, float fPdf, uint32_t ng, float gPdf);
+		CUDA_CALLABLE static float powerHeuristic(uint32_t nf, float fPdf, uint32_t ng, float gPdf);
 
 		IntegratorType type = IntegratorType::PATH;
 

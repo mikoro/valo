@@ -16,6 +16,9 @@ CUDA_CALLABLE Color PathIntegrator::calculateLight(const Scene& scene, const Int
 {
 	Color result(0.0f, 0.0f, 0.0f);
 
+	if (scene.getEmissiveTrianglesCount() == 0)
+		return result;
+
 	Color pathThroughput(1.0f, 1.0f, 1.0f);
 	uint32_t pathLength = 0;
 	Intersection pathIntersection = intersection;
@@ -23,38 +26,73 @@ CUDA_CALLABLE Color PathIntegrator::calculateLight(const Scene& scene, const Int
 
 	for (;;)
 	{
+		++pathLength;
 		const Material& material = scene.getMaterial(pathIntersection.materialIndex);
 
-		if (++pathLength == 1 && !pathIntersection.isBehind && material.showEmittance && material.isEmissive())
+		if (pathLength == 1 && !pathIntersection.isBehind && material.showEmittance && material.isEmissive())
 			result += pathThroughput * material.getEmittance(scene, pathIntersection.texcoord, pathIntersection.position);
 
 		Vector3 in = -pathRay.direction;
 		Vector3 out = material.getDirection(pathIntersection, random);
 
-		Intersection emissiveIntersection;
+		Intersection emissiveIntersection = Integrator::getRandomEmissiveIntersection(scene, random);
 
-		if (Integrator::getRandomEmissiveIntersection(scene, pathIntersection, random, emissiveIntersection))
+		if (Integrator::isIntersectionVisible(scene, pathIntersection, emissiveIntersection))
 		{
 			DirectLightSample lightSample = Integrator::calculateDirectLightSample(scene, pathIntersection, emissiveIntersection);
-			float lightCosine = lightSample.direction.dot(pathIntersection.normal);
-
-			if (lightSample.visible && lightCosine > 0.0f)
+			
+			if (lightSample.visible && lightSample.lightPdf > 0.0f)
 			{
 				Color lightBrdf = material.getBrdf(scene, pathIntersection, in, lightSample.direction);
-				float lightPdf = material.getPdf(pathIntersection, lightSample.direction);
-				float weight = Integrator::calculatePowerHeuristic(1, lightSample.pdf, 1, lightPdf);
-				result += pathThroughput * lightSample.emittance * lightBrdf * lightCosine * weight / lightSample.pdf;
+				float brdfPdf = material.getPdf(pathIntersection, lightSample.direction);
+				float weight = Integrator::powerHeuristic(1, lightSample.lightPdf, 1, brdfPdf);
+				result += pathThroughput * lightSample.emittance * lightBrdf * lightSample.originCosine * weight / lightSample.lightPdf;
 			}
 		}
 
-		Color pathBrdf = material.getBrdf(scene, pathIntersection, in, out);
-		float pathCosine = out.dot(pathIntersection.normal);
-		float pathPdf = material.getPdf(pathIntersection, out);
+		pathRay = Ray();
+		pathRay.origin = pathIntersection.position;
+		pathRay.direction = out;
+		pathRay.minDistance = scene.general.rayMinDistance;
+		pathRay.precalculate();
 
-		if (pathCosine < 0.0f || pathPdf == 0.0f)
+		Intersection previousPathIntersection = pathIntersection;
+		pathIntersection = Intersection();
+
+		if (!scene.intersect(pathRay, pathIntersection))
+			break;
+
+		scene.calculateNormalMapping(pathIntersection);
+
+		const Material& nextMaterial = scene.getMaterial(pathIntersection.materialIndex);
+
+		if (nextMaterial.isEmissive())
+		{
+			DirectLightSample lightSample = Integrator::calculateDirectLightSample(scene, previousPathIntersection, pathIntersection);
+
+			if (lightSample.visible && lightSample.lightPdf > 0.0f)
+			{
+				Color lightBrdf = material.getBrdf(scene, previousPathIntersection, in, lightSample.direction);
+				float brdfPdf = material.getPdf(previousPathIntersection, lightSample.direction);
+				float weight = Integrator::powerHeuristic(1, lightSample.lightPdf, 1, brdfPdf);
+				result += pathThroughput * lightSample.emittance * lightBrdf * lightSample.originCosine * weight / lightSample.lightPdf;
+			}
+		}
+
+		Color pathBrdf = material.getBrdf(scene, previousPathIntersection, in, out);
+		float pathCosine = out.dot(previousPathIntersection.normal);
+		float pathPdf = material.getPdf(previousPathIntersection, out);
+
+		if (pathCosine <= 0.0f || pathPdf <= 0.0f)
 			break;
 
 		pathThroughput *= pathBrdf * pathCosine / pathPdf;
+
+		if (pathThroughput.isZero())
+			break;
+
+		if (pathLength >= maxPathLength)
+			break;
 
 		if (pathLength >= minPathLength)
 		{
@@ -63,22 +101,6 @@ CUDA_CALLABLE Color PathIntegrator::calculateLight(const Scene& scene, const Int
 
 			pathThroughput /= (1.0f - terminationProbability);
 		}
-
-		if (pathLength >= maxPathLength)
-			break;
-
-		pathRay = Ray();
-		pathRay.origin = pathIntersection.position;
-		pathRay.direction = out;
-		pathRay.minDistance = scene.general.rayMinDistance;
-		pathRay.precalculate();
-
-		pathIntersection = Intersection();
-
-		if (!scene.intersect(pathRay, pathIntersection))
-			break;
-
-		scene.calculateNormalMapping(pathIntersection);
 	}
 
 	return result;
