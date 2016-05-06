@@ -88,12 +88,12 @@ void WindowRunnerRenderState::update(float timeStep)
 		if (windowRunner.keyWasPressed(GLFW_KEY_F4))
 		{
 			if (scene.integrator.type == IntegratorType::PATH)
+				scene.integrator.type = IntegratorType::DIRECT_LIGHT;
+			else if (scene.integrator.type == IntegratorType::DIRECT_LIGHT)
 				scene.integrator.type = IntegratorType::DOT;
 			else if (scene.integrator.type == IntegratorType::DOT)
 				scene.integrator.type = IntegratorType::AMBIENT_OCCLUSION;
 			else if (scene.integrator.type == IntegratorType::AMBIENT_OCCLUSION)
-				scene.integrator.type = IntegratorType::DIRECT_LIGHT;
-			else if (scene.integrator.type == IntegratorType::DIRECT_LIGHT)
 				scene.integrator.type = IntegratorType::PATH;
 
 			film.clear(renderer.type);
