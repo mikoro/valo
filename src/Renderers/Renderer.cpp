@@ -65,7 +65,7 @@ void Renderer::render(RenderJob& job)
 		if (filmAutoWrite && filmAutoWriteTimer.getElapsedSeconds() > filmAutoWriteInterval)
 		{
 			film.getCumulativeImage().download();
-			film.getCumulativeImage().save(filmAutoWriteFileName, false);
+			film.save(filmAutoWriteFileName, false);
 
 			filmAutoWriteTimer.restart();
 		}

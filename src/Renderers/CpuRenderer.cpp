@@ -110,7 +110,9 @@ void CpuRenderer::render(RenderJob& job, bool filtering)
 				}
 
 				Color color = scene.integrator.calculateLight(scene, intersection, cameraRay.ray, random);
-				film.addSample(pixelIndex, color * cameraRay.brightness, filterWeight);
+
+				if (!color.isNegative() && !color.isNan())
+					film.addSample(pixelIndex, color * cameraRay.brightness, filterWeight);
 			}
 		}
 		catch (...)

@@ -188,8 +188,6 @@ void Image::save(const std::string& fileName, bool writeToLog) const
 	if (writeToLog)
 		App::getLog().logInfo("Saving image to %s", fileName);
 
-	int32_t result = 0;
-
 	if (StringUtils::endsWith(fileName, ".png") || StringUtils::endsWith(fileName, ".bmp") || StringUtils::endsWith(fileName, ".tga"))
 	{
 		std::vector<uint32_t> saveData(length);
@@ -200,12 +198,17 @@ void Image::save(const std::string& fileName, bool writeToLog) const
 				saveData[(height - 1 - y) * width + x] = data[y * width + x].clamped().getAbgrValue(); // flip vertically
 		}
 
+		int32_t result = 0;
+
 		if (StringUtils::endsWith(fileName, ".png"))
 			result = stbi_write_png(fileName.c_str(), int32_t(width), int32_t(height), 4, &saveData[0], int32_t(width * sizeof(uint32_t)));
 		else if (StringUtils::endsWith(fileName, ".bmp"))
 			result = stbi_write_bmp(fileName.c_str(), int32_t(width), int32_t(height), 4, &saveData[0]);
 		else if (StringUtils::endsWith(fileName, ".tga"))
 			result = stbi_write_tga(fileName.c_str(), int32_t(width), int32_t(height), 4, &saveData[0]);
+
+		if (result == 0)
+			throw std::runtime_error(tfm::format("Could not save the image: %s", stbi_failure_reason()));
 	}
 	else if (StringUtils::endsWith(fileName, ".hdr"))
 	{
@@ -224,7 +227,10 @@ void Image::save(const std::string& fileName, bool writeToLog) const
 			}
 		}
 
-		result = stbi_write_hdr(fileName.c_str(), int32_t(width), int32_t(height), 3, &saveData[0]);
+		int32_t result = stbi_write_hdr(fileName.c_str(), int32_t(width), int32_t(height), 3, &saveData[0]);
+
+		if (result == 0)
+			throw std::runtime_error(tfm::format("Could not save the image: %s", stbi_failure_reason()));
 	}
 	else if (StringUtils::endsWith(fileName, ".bin"))
 	{
@@ -235,15 +241,12 @@ void Image::save(const std::string& fileName, bool writeToLog) const
 
 		file.write(reinterpret_cast<const char*>(&width), 4);
 		file.write(reinterpret_cast<const char*>(&height), 4);
-		file.write(reinterpret_cast<const char*>(&data), sizeof(Color) * length);
+		file.write(reinterpret_cast<const char*>(data), sizeof(Color) * length);
 
 		file.close();
 	}
 	else
 		throw std::runtime_error("Could not save the image (non-supported format)");
-
-	if (result == 0)
-		throw std::runtime_error(tfm::format("Could not save the image: %s", stbi_failure_reason()));
 }
 
 void Image::resize(uint32_t length_)
