@@ -134,15 +134,10 @@ int ConsoleRunner::run()
 
 	if (settings.image.write)
 	{
-		if (!renderJob.interrupted)
-		{
-			film.getTonemappedImage().save(settings.image.fileName);
+		film.getTonemappedImage().save(settings.image.fileName);
 
-			if (settings.image.autoView)
-				SysUtils::openFileExternally(settings.image.fileName);
-		}
-		else
-			film.getTonemappedImage().save("partial_image.png");
+		if (settings.image.autoView)
+			SysUtils::openFileExternally(settings.image.fileName);
 	}
 	
 	if (settings.film.write)
