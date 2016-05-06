@@ -33,6 +33,7 @@ namespace Raycer
 		bool normalInterpolation = true;
 		bool autoInvertNormal = true;
 		bool invertNormal = false;
+		bool invisible = false;
 		bool primaryRayInvisible = false;
 		bool showEmittance = true;
 

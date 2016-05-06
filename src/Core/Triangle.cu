@@ -226,6 +226,9 @@ CUDA_CALLABLE bool Triangle::calculateIntersectionData(const Scene& scene, const
 {
 	const Material& material = scene.getMaterial(triangle.materialIndex);
 
+	if (material.invisible)
+		return false;
+
 	if (ray.isPrimaryRay && material.primaryRayInvisible)
 		return false;
 

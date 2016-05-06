@@ -72,6 +72,8 @@ Scene TestScene::create6()
 	ModelLoaderInfo model;
 	model.modelFileName = "data/models/crytek-sponza/sponza.obj";
 	model.scale = Vector3(0.01f, 0.01f, 0.01f);
+	model.substituteMaterial = true;
+	model.substituteMaterialFileName = "sponza2.mtl";
 
 	scene.models.push_back(model);
 

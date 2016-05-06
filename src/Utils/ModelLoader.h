@@ -32,6 +32,8 @@ namespace Raycer
 		uint32_t defaultMaterialId = 0;
 		uint32_t triangleCountEstimate = 0;
 		bool loadOnlyMaterials = false;
+		bool substituteMaterial = false;
+		std::string substituteMaterialFileName;
 	};
 
 	struct ModelLoaderResult

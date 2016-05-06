@@ -299,6 +299,9 @@ ModelLoaderResult ModelLoader::load(const ModelLoaderInfo& info)
 	uint32_t lineEndIndex = 0;
 	uint32_t lineNumber = 0;
 
+	if (info.substituteMaterial)
+		processMaterialFile(rootDirectory, info.substituteMaterialFileName, result);
+
 	while (getLine(fileBufferPtr, fileBufferLength, lineStartIndex, lineEndIndex))
 	{
 		lineNumber++;
@@ -365,7 +368,7 @@ ModelLoaderResult ModelLoader::load(const ModelLoaderInfo& info)
 			}
 		}
 
-		if (compareWord(fileBufferPtr, wordStartIndex, wordEndIndex, "mtllib")) // new material file
+		if (!info.substituteMaterial && compareWord(fileBufferPtr, wordStartIndex, wordEndIndex, "mtllib")) // new material file
 		{
 			wordStartIndex = wordEndIndex;
 			getWord(fileBufferPtr, lineEndIndex, wordStartIndex, wordEndIndex);
@@ -425,6 +428,8 @@ void ModelLoader::processMaterialFile(const std::string& rootDirectory, const st
 			ss >> currentMaterial.autoInvertNormal;
 		else if (part == "invertNormal")
 			ss >> currentMaterial.invertNormal;
+		else if (part == "invisible")
+			ss >> currentMaterial.invisible;
 		else if (part == "primaryRayInvisible")
 			ss >> currentMaterial.primaryRayInvisible;
 		else if (part == "showEmittance")
