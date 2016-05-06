@@ -96,9 +96,6 @@
     <ClCompile Include="src\TestScenes\TestScene.cpp">
       <Filter>TestScenes</Filter>
     </ClCompile>
-    <ClCompile Include="src\TestScenes\TestScene1.cpp">
-      <Filter>TestScenes</Filter>
-    </ClCompile>
     <ClCompile Include="src\Tonemappers\LinearTonemapper.cpp">
       <Filter>Tonemappers</Filter>
     </ClCompile>
@@ -187,6 +184,9 @@
     <ClCompile Include="src\Utils\CudaAlloc.cu">
       <Filter>Utils</Filter>
     </ClCompile>
+    <ClCompile Include="src\TestScenes\TestScene1.cpp">
+      <Filter>TestScenes</Filter>
+    </ClCompile>
     <ClCompile Include="src\TestScenes\TestScene2.cpp">
       <Filter>TestScenes</Filter>
     </ClCompile>
@@ -200,6 +200,12 @@
       <Filter>TestScenes</Filter>
     </ClCompile>
     <ClCompile Include="src\TestScenes\TestScene6.cpp">
+      <Filter>TestScenes</Filter>
+    </ClCompile>
+    <ClCompile Include="src\TestScenes\TestScene7.cpp">
+      <Filter>TestScenes</Filter>
+    </ClCompile>
+    <ClCompile Include="src\TestScenes\TestScene8.cpp">
       <Filter>TestScenes</Filter>
     </ClCompile>
   </ItemGroup>

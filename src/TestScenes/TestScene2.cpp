@@ -8,22 +8,33 @@
 
 using namespace Raycer;
 
-// CONFERENCE //
+// KITCHEN 1 //
 
 Scene TestScene::create2()
 {
 	Scene scene;
 
-	scene.integrator.type = IntegratorType::DOT;
+	scene.bvh.type = BVHType::BVH2;
 
-	scene.camera.position = Vector3(-4.6401f, 0.4618f, 2.7327f);
-	scene.camera.orientation = EulerAngle(-13.3503f, -56.3473f, 0.0000f);
-	scene.camera.fov = 65.0f;
+	scene.renderer.imageSamples = 1;
+	scene.renderer.pixelSamples = 1;
 
-	scene.bvh.type = BVHType::BVH4;
+	scene.integrator.type = IntegratorType::PATH;
+	scene.renderer.filter.type = FilterType::MITCHELL;
+	scene.tonemapper.type = TonemapperType::REINHARD;
+	scene.tonemapper.reinhardTonemapper.key = 0.25f;
+
+	scene.camera.position = Vector3(0.0836f, 1.8613f, 2.6068f);
+	scene.camera.orientation = EulerAngle(-11.3541f, 24.7832f, 0.0000f);
+	scene.camera.vignette = true;
+	scene.camera.vignettePower = 1.0f;
+	scene.camera.vignetteOffset = 0.1f;
+
+	// MODEL //
 
 	ModelLoaderInfo model;
-	model.modelFileName = "data/models/conference/conference.obj";
+	model.modelFileName = "data/models/kitchen/kitchen.obj";
+	model.scale = Vector3(1.0f, 1.0f, 1.0f);
 
 	scene.models.push_back(model);
 

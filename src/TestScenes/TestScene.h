@@ -18,6 +18,8 @@ namespace Raycer
 		static Scene create4();
 		static Scene create5();
 		static Scene create6();
+		static Scene create7();
+		static Scene create8();
 
 		static const uint32_t TEST_SCENE_COUNT = 8;
 	};

@@ -8,36 +8,71 @@
 
 using namespace Raycer;
 
-// KITCHEN //
+// CRYTEK SPONZA 1 //
 
 Scene TestScene::create5()
 {
 	Scene scene;
 
-	scene.bvh.type = BVHType::BVH2;
-
-	scene.renderer.imageSamples = 1;
-	scene.renderer.pixelSamples = 1;
-
 	scene.integrator.type = IntegratorType::DOT;
 	scene.renderer.filter.type = FilterType::MITCHELL;
 	scene.tonemapper.type = TonemapperType::REINHARD;
-	scene.tonemapper.reinhardTonemapper.key = 0.25f;
+	scene.tonemapper.reinhardTonemapper.key = 0.08f;
 
-	scene.camera.position = Vector3(0.0836f, 1.8613f, 2.6068f);
-	scene.camera.orientation = EulerAngle(-11.3541f, 24.7832f, 0.0000f);
-	scene.camera.vignette = true;
-	scene.camera.vignettePower = 1.0f;
-	scene.camera.vignetteOffset = 0.1f;
-	scene.camera.depthOfField = false;
-	scene.camera.focalDistance = 1.0f;
-	scene.camera.apertureSize = 0.01f;
+	scene.camera.position = Vector3(-8.4359f, 1.1074f, -0.5245f);
+	scene.camera.orientation = EulerAngle(-20.3729f, -90.0f, 0.0f);
+	scene.camera.fov = 100.0f;
 
-	// MODELS //
+	scene.bvh.type = BVHType::BVH2;
+
+	// MATERIALS //
+
+	Texture texture1;
+	texture1.type = TextureType::WOOD;
+	texture1.id = 1;
+	texture1.woodTexture.scale = 1.0f;
+	texture1.woodTexture.density = 32.0f;
+	texture1.woodTexture.bumpiness = 3.0f;
+
+	Material material1;
+	material1.type = MaterialType::DIFFUSE;
+	material1.id = 1;
+	material1.reflectanceTextureId = 1;
+
+	scene.textures.push_back(texture1);
+	scene.materials.push_back(material1);
+
+	Texture texture2;
+	texture2.type = TextureType::MARBLE;
+	texture2.id = 2;
+	texture2.marbleTexture.scale = 4.0f;
+	
+	Material material2;
+	material2.type = MaterialType::DIFFUSE;
+	material2.id = 2;
+	material2.reflectanceTextureId = 2;
+
+	scene.textures.push_back(texture2);
+	scene.materials.push_back(material2);
+
+	Texture texture3;
+	texture3.type = TextureType::FIRE;
+	texture3.id = 3;
+	texture3.fireTexture.scale = 4.0f;
+
+	Material material3;
+	material3.type = MaterialType::DIFFUSE;
+	material3.id = 3;
+	material3.reflectanceTextureId = 3;
+
+	scene.textures.push_back(texture3);
+	scene.materials.push_back(material3);
+
+	// SPONZA MODEL //
 
 	ModelLoaderInfo model;
-	model.modelFileName = "data/models/kitchen/kitchen.obj";
-	model.scale = Vector3(1.0f, 1.0f, 1.0f);
+	model.modelFileName = "data/models/crytek-sponza/sponza.obj";
+	model.scale = Vector3(0.01f, 0.01f, 0.01f);
 
 	scene.models.push_back(model);
 

@@ -8,25 +8,22 @@
 
 using namespace Raycer;
 
-// CORNELL BOX //
+// CONFERENCE //
 
-Scene TestScene::create1()
+Scene TestScene::create7()
 {
 	Scene scene;
 
-	scene.integrator.type = IntegratorType::PATH;
+	scene.integrator.type = IntegratorType::DOT;
 
-	scene.camera.position = Vector3(0.0f, 1.0f, 3.5f);
+	scene.camera.position = Vector3(-4.6401f, 0.4618f, 2.7327f);
+	scene.camera.orientation = EulerAngle(-13.3503f, -56.3473f, 0.0000f);
+	scene.camera.fov = 65.0f;
 
 	scene.bvh.type = BVHType::BVH2;
 
-	scene.integrator.aoIntegrator.maxDistance = 0.25f;
-
-	scene.renderer.imageSamples = 1;
-	scene.renderer.pixelSamples = 1;
-
 	ModelLoaderInfo model;
-	model.modelFileName = "data/models/cornellbox/cornellbox.obj";
+	model.modelFileName = "data/models/conference/conference.obj";
 
 	scene.models.push_back(model);
 

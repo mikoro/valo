@@ -15,21 +15,21 @@ Scene TestScene::create6()
 	Scene scene;
 
 	scene.integrator.type = IntegratorType::DOT;
+	scene.renderer.filter.type = FilterType::MITCHELL;
+	scene.tonemapper.type = TonemapperType::REINHARD;
+	scene.tonemapper.reinhardTonemapper.key = 0.08f;
 
-	scene.camera.position = Vector3(-0.1103f, 0.0586f, 0.0411f);
-	scene.camera.orientation = EulerAngle(-12.5f, -90.0f, 0.0f);
-	scene.camera.moveSpeed = 0.1f;
-
+	scene.camera.position = Vector3(-12.3421f, 6.4827f, 4.0746f);
+	scene.camera.orientation = EulerAngle(-8.0f, -90.0f, 0.0f);
+	
 	scene.bvh.type = BVHType::BVH2;
-
-	scene.renderer.filtering = false;
 
 	// MATERIALS //
 
 	Texture texture1;
 	texture1.type = TextureType::WOOD;
 	texture1.id = 1;
-	texture1.woodTexture.scale = 100.0f;
+	texture1.woodTexture.scale = 1.0f;
 	texture1.woodTexture.density = 32.0f;
 	texture1.woodTexture.bumpiness = 3.0f;
 
@@ -44,8 +44,8 @@ Scene TestScene::create6()
 	Texture texture2;
 	texture2.type = TextureType::MARBLE;
 	texture2.id = 2;
-	texture2.marbleTexture.scale = 400.0f;
-	
+	texture2.marbleTexture.scale = 4.0f;
+
 	Material material2;
 	material2.type = MaterialType::DIFFUSE;
 	material2.id = 2;
@@ -57,7 +57,7 @@ Scene TestScene::create6()
 	Texture texture3;
 	texture3.type = TextureType::FIRE;
 	texture3.id = 3;
-	texture3.fireTexture.scale = 400.0f;
+	texture3.fireTexture.scale = 4.0f;
 
 	Material material3;
 	material3.type = MaterialType::DIFFUSE;
@@ -70,7 +70,7 @@ Scene TestScene::create6()
 	// SPONZA MODEL //
 
 	ModelLoaderInfo model;
-	model.modelFileName = "data/models/crytek-sponza/sponza2.obj";
+	model.modelFileName = "data/models/crytek-sponza/sponza.obj";
 	model.scale = Vector3(0.01f, 0.01f, 0.01f);
 
 	scene.models.push_back(model);

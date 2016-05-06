@@ -8,44 +8,32 @@
 
 using namespace Raycer;
 
-// CRYTEK SPONZA //
+// KITCHEN 3 //
 
 Scene TestScene::create4()
 {
 	Scene scene;
 
-	Color skyColor(182, 126, 91);
+	scene.bvh.type = BVHType::BVH2;
 
-	scene.integrator.type = IntegratorType::DOT;
+	scene.renderer.imageSamples = 1;
+	scene.renderer.pixelSamples = 1;
 
-	scene.camera.position = Vector3(8.92f, 0.68f, -2.02f);
-	scene.camera.orientation = EulerAngle(6.66f, 111.11f, 0.0f);
+	scene.integrator.type = IntegratorType::PATH;
+	scene.renderer.filter.type = FilterType::MITCHELL;
+	scene.tonemapper.type = TonemapperType::REINHARD;
+	scene.tonemapper.reinhardTonemapper.key = 0.06f;
 
-	scene.bvh.type = BVHType::BVH4;
+	scene.camera.position = Vector3(1.5705f, 1.3210f, 0.2419f);
+	scene.camera.orientation = EulerAngle(-2.2362f, 69.1348f, 0.0000f);
+	scene.camera.fishEyeAngle = 125.0f;
+	scene.camera.type = CameraType::FISHEYE;
 
-	// PLANE MODEL //
-
-	Material planeMaterial;
-	planeMaterial.id = 1;
-	planeMaterial.reflectance = skyColor;
-	planeMaterial.emittance = skyColor * 10.0f;
-	planeMaterial.invertNormal = false;
+	// MODEL //
 
 	ModelLoaderInfo model;
-	model.modelFileName = "data/models/plane.obj";
-	model.defaultMaterialId = planeMaterial.id;
-	model.scale = Vector3(9.0f, 1.0f, 2.0f);
-	model.translate = Vector3(-0.6f, 13.0f, -0.3f);
-	model.rotate = EulerAngle(180.0f, 0.0f, 0.0f);
-
-	scene.materials.push_back(planeMaterial);
-	scene.models.push_back(model);
-
-	// SPONZA MODEL //
-
-	model = ModelLoaderInfo();
-	model.modelFileName = "data/models/crytek-sponza/sponza.obj";
-	model.scale = Vector3(0.01f, 0.01f, 0.01f);
+	model.modelFileName = "data/models/kitchen/kitchen.obj";
+	model.scale = Vector3(1.0f, 1.0f, 1.0f);
 
 	scene.models.push_back(model);
 
