@@ -20,7 +20,7 @@ Scene TestScene::create1()
 
 	scene.bvh.type = BVHType::BVH2;
 
-	scene.integrator.aoIntegrator.maxDistance = 0.25f;
+	scene.integrator.aoIntegrator.maxDistance = 0.5f;
 
 	scene.renderer.imageSamples = 1;
 	scene.renderer.pixelSamples = 1;

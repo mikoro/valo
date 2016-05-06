@@ -15,6 +15,7 @@ Scene TestScene::create5()
 	Scene scene;
 
 	scene.integrator.type = IntegratorType::DOT;
+	scene.integrator.aoIntegrator.maxDistance = 0.5f;
 	scene.renderer.filter.type = FilterType::MITCHELL;
 	scene.tonemapper.type = TonemapperType::REINHARD;
 	scene.tonemapper.reinhardTonemapper.key = 0.08f;

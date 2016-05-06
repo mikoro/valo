@@ -14,7 +14,11 @@ Scene TestScene::create7()
 {
 	Scene scene;
 
-	scene.integrator.type = IntegratorType::DOT;
+	scene.integrator.type = IntegratorType::AMBIENT_OCCLUSION;
+	scene.integrator.aoIntegrator.maxDistance = 0.5f;
+	scene.renderer.filter.type = FilterType::MITCHELL;
+	scene.tonemapper.type = TonemapperType::LINEAR;
+	scene.tonemapper.linearTonemapper.exposure = -0.5f;
 
 	scene.camera.position = Vector3(-4.6401f, 0.4618f, 2.7327f);
 	scene.camera.orientation = EulerAngle(-13.3503f, -56.3473f, 0.0000f);
