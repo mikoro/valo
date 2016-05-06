@@ -36,45 +36,69 @@ std::string Integrator::getName() const
 	}
 }
 
-CUDA_CALLABLE Color Integrator::calculateDirectLight(const Scene& scene, const Intersection& intersection, const Vector3& in, Random& random)
+CUDA_CALLABLE bool Integrator::getRandomEmissiveIntersection(const Scene& scene, const Intersection& origin, Random& random, Intersection& emissiveIntersection)
 {
 	if (scene.getEmissiveTrianglesCount() == 0)
-		return Color(0.0f, 0.0f, 0.0f);
+		return false;
 
 	const Triangle& triangle = scene.getEmissiveTriangles()[random.getUint32(0, scene.getEmissiveTrianglesCount() - 1)];
 	Intersection triangleIntersection = triangle.getRandomIntersection(scene, random);
-	Vector3 intersectionToTriangle = triangleIntersection.position - intersection.position;
-	float triangleDistance2 = intersectionToTriangle.lengthSquared();
-	float triangleDistance = sqrt(triangleDistance2);
-	Vector3 out = intersectionToTriangle / triangleDistance;
+	Vector3 originToTriangle = triangleIntersection.position - origin.position;
+	float distance2 = originToTriangle.lengthSquared();
+	float distance = std::sqrt(distance2);
+	Vector3 direction = originToTriangle / distance;
 
 	Ray visibilityRay;
-	visibilityRay.origin = intersection.position;
-	visibilityRay.direction = out;
+	visibilityRay.origin = origin.position;
+	visibilityRay.direction = direction;
 	visibilityRay.minDistance = scene.general.rayMinDistance;
-	visibilityRay.maxDistance = triangleDistance - scene.general.rayMinDistance;
+	visibilityRay.maxDistance = distance - scene.general.rayMinDistance;
 	visibilityRay.isVisibilityRay = true;
 	visibilityRay.precalculate();
 
 	Intersection visibilityIntersection;
+	
+	if (!scene.intersect(visibilityRay, visibilityIntersection))
+	{
+		emissiveIntersection = triangleIntersection;
+		return true;
+	}
 
-	if (scene.intersect(visibilityRay, visibilityIntersection))
-		return Color(0.0f, 0.0f, 0.0f);
+	return false;
+}
 
-	float cosine1 = intersection.normal.dot(out);
-	float cosine2 = out.dot(-triangle.normal);
+CUDA_CALLABLE DirectLightSample Integrator::calculateDirectLightSample(const Scene& scene, const Intersection& origin, const Intersection& emissiveIntersection)
+{
+	Vector3 originToEmissive = emissiveIntersection.position - origin.position;
+	float distance2 = originToEmissive.lengthSquared();
+	float distance = std::sqrt(distance2);
+	Vector3 direction = originToEmissive / distance;
 
-	if (cosine1 < 0.0f || cosine2 < 0.0f)
-		return Color(0.0f, 0.0f, 0.0f);
+	float cosine = direction.dot(-emissiveIntersection.normal);
 
-	float probability1 = 1.0f / float(scene.getEmissiveTrianglesCount());
-	float probability2 = 1.0f / triangle.area;
+	if (cosine < 0.0f)
+		return DirectLightSample();
 
-	const Material& triangleMaterial = scene.getMaterial(triangle.materialIndex);
-	const Material& intersectionMaterial = scene.getMaterial(intersection.materialIndex);
+	const Material& emissiveMaterial = scene.getMaterial(emissiveIntersection.materialIndex);
 
-	Color emittance = triangleMaterial.getEmittance(scene, triangleIntersection.texcoord, triangleIntersection.position);
-	Color brdf = intersectionMaterial.getBrdf(scene, intersection, in, out);
+	DirectLightSample directLightSample;
+	directLightSample.emittance = emissiveMaterial.getEmittance(scene, emissiveIntersection.texcoord, emissiveIntersection.position);
+	directLightSample.direction = direction;
+	directLightSample.pdf = (1.0f / scene.getEmissiveTrianglesCount()) * (1.0f / emissiveIntersection.area) * (distance2 / cosine);
+	directLightSample.visible = true;
 
-	return emittance * brdf * cosine1 * cosine2 * (1.0f / triangleDistance2) / (probability1 * probability2);
+	return directLightSample;
+}
+
+float Integrator::calculateBalanceHeuristic(uint32_t nf, float fPdf, uint32_t ng, float gPdf)
+{
+	return (nf * fPdf) / (nf * fPdf + ng * gPdf);
+}
+
+float Integrator::calculatePowerHeuristic(uint32_t nf, float fPdf, uint32_t ng, float gPdf)
+{
+	float f = nf * fPdf;
+	float g = ng * gPdf;
+
+	return (f * f) / (f * f + g * g);
 }

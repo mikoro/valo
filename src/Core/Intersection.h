@@ -21,6 +21,7 @@ namespace Raycer
 		bool hasColor = false;
 
 		float distance = FLT_MAX;
+		float area = 0.0f;
 
 		Vector3 position;
 		Vector3 normal;

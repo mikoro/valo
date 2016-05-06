@@ -26,21 +26,35 @@ CUDA_CALLABLE Color PathIntegrator::calculateLight(const Scene& scene, const Int
 		const Material& material = scene.getMaterial(pathIntersection.materialIndex);
 
 		if (++pathLength == 1 && !pathIntersection.isBehind && material.showEmittance && material.isEmissive())
-			result = material.getEmittance(scene, pathIntersection.texcoord, pathIntersection.position);
+			result += pathThroughput * material.getEmittance(scene, pathIntersection.texcoord, pathIntersection.position);
 
 		Vector3 in = -pathRay.direction;
 		Vector3 out = material.getDirection(pathIntersection, random);
 
-		result += pathThroughput * Integrator::calculateDirectLight(scene, pathIntersection, in, random);
+		Intersection emissiveIntersection;
 
-		Color brdf = material.getBrdf(scene, pathIntersection, in, out);
-		float cosine = out.dot(pathIntersection.normal);
-		float pdf = material.getPdf(pathIntersection, out);
+		if (Integrator::getRandomEmissiveIntersection(scene, pathIntersection, random, emissiveIntersection))
+		{
+			DirectLightSample lightSample = Integrator::calculateDirectLightSample(scene, pathIntersection, emissiveIntersection);
+			float lightCosine = lightSample.direction.dot(pathIntersection.normal);
 
-		if (pdf == 0.0f)
+			if (lightSample.visible && lightCosine > 0.0f)
+			{
+				Color lightBrdf = material.getBrdf(scene, pathIntersection, in, lightSample.direction);
+				float lightPdf = material.getPdf(pathIntersection, lightSample.direction);
+				float weight = Integrator::calculatePowerHeuristic(1, lightSample.pdf, 1, lightPdf);
+				result += pathThroughput * lightSample.emittance * lightBrdf * lightCosine * weight / lightSample.pdf;
+			}
+		}
+
+		Color pathBrdf = material.getBrdf(scene, pathIntersection, in, out);
+		float pathCosine = out.dot(pathIntersection.normal);
+		float pathPdf = material.getPdf(pathIntersection, out);
+
+		if (pathCosine < 0.0f || pathPdf == 0.0f)
 			break;
 
-		pathThroughput *= brdf * cosine / pdf;
+		pathThroughput *= pathBrdf * pathCosine / pathPdf;
 
 		if (pathLength >= minPathLength)
 		{

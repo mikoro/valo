@@ -4,20 +4,29 @@
 #pragma once
 
 #include "Core/Common.h"
+#include "Core/Intersection.h"
 #include "Integrators/PathIntegrator.h"
 #include "Integrators/DotIntegrator.h"
 #include "Integrators/AmbientOcclusionIntegrator.h"
 #include "Integrators/DirectLightIntegrator.h"
+#include "Materials/Material.h"
 
 namespace Raycer
 {
 	class Color;
 	class Scene;
-	class Intersection;
 	class Ray;
 	class Random;
 
 	enum class IntegratorType { PATH, DOT, AMBIENT_OCCLUSION, DIRECT_LIGHT };
+
+	struct DirectLightSample
+	{
+		Color emittance;
+		Vector3 direction;
+		float pdf = 0.0f;
+		bool visible = false;
+	};
 
 	class Integrator
 	{
@@ -27,7 +36,10 @@ namespace Raycer
 
 		std::string getName() const;
 
-		CUDA_CALLABLE static Color calculateDirectLight(const Scene& scene, const Intersection& intersection, const Vector3& in, Random& random);
+		CUDA_CALLABLE static bool getRandomEmissiveIntersection(const Scene& scene, const Intersection& origin, Random& random, Intersection& emissiveIntersection);
+		CUDA_CALLABLE static DirectLightSample calculateDirectLightSample(const Scene& scene, const Intersection& origin, const Intersection& emissiveIntersection);
+		CUDA_CALLABLE static float calculateBalanceHeuristic(uint32_t nf, float fPdf, uint32_t ng, float gPdf);
+		CUDA_CALLABLE static float calculatePowerHeuristic(uint32_t nf, float fPdf, uint32_t ng, float gPdf);
 
 		IntegratorType type = IntegratorType::PATH;
 

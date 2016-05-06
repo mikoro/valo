@@ -261,6 +261,7 @@ CUDA_CALLABLE bool Triangle::calculateIntersectionData(const Scene& scene, const
 
 	intersection.wasFound = true;
 	intersection.distance = distance;
+	intersection.area = triangle.area;
 	intersection.position = intersectionPosition;
 	intersection.normal = tempNormal;
 	intersection.texcoord = texcoord;
@@ -291,6 +292,8 @@ CUDA_CALLABLE Intersection Triangle::getRandomIntersection(const Scene& scene, R
 
 	Intersection intersection;
 
+	intersection.wasFound = true;
+	intersection.area = area;
 	intersection.position = position;
 	intersection.normal = tempNormal;
 	intersection.texcoord = texcoord;
