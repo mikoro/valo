@@ -57,7 +57,7 @@ BOOL consoleCtrlHandler(DWORD fdwCtrlType)
 
 		return true;
 	}
-	
+
 	return false;
 }
 #else
@@ -76,6 +76,7 @@ int App::run(int argc, char** argv)
 	SetConsoleCtrlHandler(PHANDLER_ROUTINE(consoleCtrlHandler), TRUE);
 #else
 	signal(SIGINT, signalHandler);
+	signal(SIGTERM, signalHandler);
 #endif
 
 	Log& log = getLog();
@@ -104,9 +105,9 @@ int App::run(int argc, char** argv)
 
 		log.logInfo("CUDA selected device: %d (device count: %d)", settings.general.cudaDeviceNumber, deviceCount);
 
-		cudaDeviceProp deviceProp; 
+		cudaDeviceProp deviceProp;
 		CudaUtils::checkError(cudaGetDeviceProperties(&deviceProp, settings.general.cudaDeviceNumber), "Could not get device properties");
-		
+
 		int driverVersion;
 		CudaUtils::checkError(cudaDriverGetVersion(&driverVersion), "Could not get driver version");
 
