@@ -58,8 +58,6 @@ namespace Raycer
 		{
 			bool filtering = true;
 			Filter filter;
-			uint32_t imageSamples = 1;
-			uint32_t pixelSamples = 1;
 
 		} renderer;
 

@@ -22,6 +22,8 @@ namespace Raycer
 		{
 			uint32_t type;
 			bool skip;
+			uint32_t imageSamples;
+			uint32_t pixelSamples;
 		} renderer;
 
 		struct Window

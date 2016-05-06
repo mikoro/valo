@@ -54,14 +54,14 @@ int ConsoleRunner::run()
 	
 	SysUtils::setConsoleTextColor(ConsoleTextColor::WHITE_ON_BLACK);
 
-	uint64_t totalSamples = uint64_t(settings.image.width) * uint64_t(settings.image.height) * uint64_t(scene.renderer.imageSamples) * uint64_t(scene.renderer.pixelSamples);
+	uint64_t totalSamples = uint64_t(settings.image.width) * uint64_t(settings.image.height) * uint64_t(settings.renderer.imageSamples) * uint64_t(settings.renderer.pixelSamples);
 
 	std::cout << tfm::format("\nRendering started (size: %dx%d, pixels: %s, image samples: %d, pixel samples: %d, total samples: %d)\n\n",
 		settings.image.width,
 		settings.image.height,
 		StringUtils::humanizeNumber(double(settings.image.width * settings.image.height)),
-		scene.renderer.imageSamples,
-		scene.renderer.pixelSamples,
+		settings.renderer.imageSamples,
+		settings.renderer.pixelSamples,
 		StringUtils::humanizeNumber(double(totalSamples)));
 
 	Timer renderingElapsedTimer;

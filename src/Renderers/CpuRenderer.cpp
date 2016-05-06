@@ -11,6 +11,8 @@
 #include "Core/Intersection.h"
 #include "Renderers/CpuRenderer.h"
 #include "Renderers/Renderer.h"
+#include "Utils/Settings.h"
+#include "App.h"
 
 using namespace Raycer;
 
@@ -42,6 +44,7 @@ void CpuRenderer::render(RenderJob& job, bool filtering)
 {
 	Scene& scene = *job.scene;
 	Film& film = *job.film;
+	Settings& settings = App::getSettings();
 
 	std::mutex ompThreadExceptionMutex;
 	std::exception_ptr ompThreadException = nullptr;
@@ -56,9 +59,9 @@ void CpuRenderer::render(RenderJob& job, bool filtering)
 		try
 		{
 			if ((pixelIndex + 1) % 100 == 0)
-				job.totalSampleCount += 100 * scene.renderer.pixelSamples;
+				job.totalSampleCount += 100 * settings.renderer.pixelSamples;
 
-			for (uint32_t i = 0; i < scene.renderer.pixelSamples; ++i)
+			for (uint32_t i = 0; i < settings.renderer.pixelSamples; ++i)
 			{
 				if (job.interrupted)
 					continue;

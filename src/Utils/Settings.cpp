@@ -25,6 +25,8 @@ bool Settings::load(int argc, char** argv)
 
 		("renderer.type", po::value(&renderer.type)->default_value(0), "")
 		("renderer.skip", po::value(&renderer.skip)->default_value(false), "")
+		("renderer.imageSamples", po::value(&renderer.imageSamples)->default_value(1), "")
+		("renderer.pixelSamples", po::value(&renderer.pixelSamples)->default_value(1), "")
 
 		("window.width", po::value(&window.width)->default_value(1280), "")
 		("window.height", po::value(&window.height)->default_value(800), "")

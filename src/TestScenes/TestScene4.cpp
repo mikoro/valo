@@ -16,9 +16,6 @@ Scene TestScene::create4()
 
 	scene.bvh.type = BVHType::BVH2;
 
-	scene.renderer.imageSamples = 1;
-	scene.renderer.pixelSamples = 1;
-
 	scene.integrator.aoIntegrator.maxDistance = 0.5f;
 
 	scene.integrator.type = IntegratorType::PATH;

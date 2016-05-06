@@ -9,6 +9,8 @@
 #include "Core/Scene.h"
 #include "Renderers/Renderer.h"
 #include "Utils/Settings.h"
+#include "Utils/Settings.h"
+#include "App.h"
 
 using namespace Raycer;
 
@@ -37,11 +39,12 @@ void Renderer::render(RenderJob& job)
 {
 	Scene& scene = *job.scene;
 	Film& film = *job.film;
+	Settings& settings = App::getSettings();
 
 	imageAutoWriteTimer.restart();
 	filmAutoWriteTimer.restart();
 
-	for (uint32_t i = 0; i < scene.renderer.imageSamples && !job.interrupted; ++i)
+	for (uint32_t i = 0; i < settings.renderer.imageSamples && !job.interrupted; ++i)
 	{
 		switch (type)
 		{
@@ -50,7 +53,7 @@ void Renderer::render(RenderJob& job)
 			default: break;
 		}
 
-		film.pixelSamples += scene.renderer.pixelSamples;
+		film.pixelSamples += settings.renderer.pixelSamples;
 
 		if (imageAutoWrite && imageAutoWriteTimer.getElapsedSeconds() > imageAutoWriteInterval)
 		{

@@ -22,9 +22,6 @@ Scene TestScene::create1()
 
 	scene.integrator.aoIntegrator.maxDistance = 0.5f;
 
-	scene.renderer.imageSamples = 1;
-	scene.renderer.pixelSamples = 1;
-
 	ModelLoaderInfo model;
 	model.modelFileName = "data/models/cornellbox/cornellbox.obj";
 
