@@ -23,6 +23,9 @@ Scene TestScene::create5()
 	scene.camera.position = Vector3(-8.4359f, 1.1074f, -0.5245f);
 	scene.camera.orientation = EulerAngle(-20.3729f, -90.0f, 0.0f);
 	scene.camera.fov = 100.0f;
+	scene.camera.depthOfField = true;
+	scene.camera.focalDistance = 1.0f;
+	scene.camera.apertureSize = 0.01f;
 
 	scene.bvh.type = BVHType::BVH2;
 
@@ -31,7 +34,7 @@ Scene TestScene::create5()
 	Texture texture1;
 	texture1.type = TextureType::WOOD;
 	texture1.id = 1;
-	texture1.woodTexture.scale = 1.0f;
+	texture1.woodTexture.scale = 2.0f;
 	texture1.woodTexture.density = 32.0f;
 	texture1.woodTexture.bumpiness = 3.0f;
 
@@ -47,6 +50,7 @@ Scene TestScene::create5()
 	texture2.type = TextureType::MARBLE;
 	texture2.id = 2;
 	texture2.marbleTexture.scale = 4.0f;
+	texture2.marbleTexture.transparency = 1.5f;
 	
 	Material material2;
 	material2.type = MaterialType::DIFFUSE;
