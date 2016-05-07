@@ -40,7 +40,7 @@ namespace Raycer
 		CUDA_CALLABLE bool isTransparent() const;
 		CUDA_CALLABLE bool isZero() const;
 		CUDA_CALLABLE bool isClamped() const;
-		bool isNan() const;
+		CUDA_CALLABLE bool isNan() const;
 		CUDA_CALLABLE bool isNegative() const;
 		CUDA_CALLABLE void clamp();
 		CUDA_CALLABLE Color clamped() const;

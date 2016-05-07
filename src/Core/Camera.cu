@@ -314,7 +314,7 @@ CUDA_CALLABLE CameraRay Camera::getRay(const Vector2& pixel, Random& random) con
 	if (vignette)
 	{
 		float vignetteDistance = (imageCenter - pixel).lengthSquared();
-		float vignetteAmount = std::max(0.0f, std::min(vignetteDistance / maxVignetteDistance + vignetteOffset, 1.0f));
+		float vignetteAmount = MAX(0.0f, MIN(vignetteDistance / maxVignetteDistance + vignetteOffset, 1.0f));
 		cameraRay.brightness = 1.0f - std::pow(vignetteAmount, vignettePower);
 	}
 

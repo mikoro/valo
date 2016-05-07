@@ -56,7 +56,7 @@ CUDA_CALLABLE float PerlinNoise::getNoise(float x, float y, float z) const
 		lerp(u, grad(permutations[AB + 1], x, y - 1, z - 1),
 		grad(permutations[BB + 1], x - 1, y - 1, z - 1))));
 
-	return std::max(0.0f, std::min(0.5f + n / 2.0f, 1.0f)); // move and clamp to 0.0-1.0 range
+	return MAX(0.0f, MIN(0.5f + n / 2.0f, 1.0f)); // move and clamp to 0.0-1.0 range
 }
 
 CUDA_CALLABLE float PerlinNoise::getFbmNoise(uint32_t octaves, float lacunarity, float persistence, float x, float y, float z) const

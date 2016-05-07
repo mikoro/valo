@@ -130,7 +130,7 @@ CUDA_CALLABLE uint32_t Color::getAbgrValue() const
 
 CUDA_CALLABLE float Color::getLuminance() const
 {
-	return std::max(0.0f, 0.2126f * r + 0.7152f * g + 0.0722f * b); // expects linear space
+	return MAX(0.0f, 0.2126f * r + 0.7152f * g + 0.0722f * b); // expects linear space
 }
 
 CUDA_CALLABLE bool Color::isTransparent() const
@@ -148,9 +148,9 @@ CUDA_CALLABLE bool Color::isClamped() const
 	return (r >= 0.0f && r <= 1.0f && g >= 0.0f && g <= 1.0f && b >= 0.0f && b <= 1.0f && a >= 0.0f && a <= 1.0f);
 }
 
-bool Color::isNan() const
+CUDA_CALLABLE bool Color::isNan() const
 {
-	return (std::isnan(r) || std::isnan(g) || std::isnan(b) || std::isnan(a));
+	return (isnan(r) || isnan(g) || isnan(b) || isnan(a));
 }
 
 CUDA_CALLABLE bool Color::isNegative() const

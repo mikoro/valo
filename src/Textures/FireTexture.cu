@@ -28,7 +28,7 @@ CUDA_CALLABLE Color FireTexture::getColor(const Vector2& texcoord, const Vector3
 	(void)texcoord;
 
 	float n1 = noise.getFbmNoise(8, 2.0f, 0.75f, position.x * scale * 4.0f, position.y * scale * 4.0f, position.z * scale * 4.0f) / 3.0f;
-	n1 = std::max(0.0f, std::min(n1, 1.0f));
+	n1 = MAX(0.0f, MIN(n1, 1.0f));
 	
 	return gradient.getColor(n1);
 }

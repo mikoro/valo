@@ -24,7 +24,7 @@ CUDA_CALLABLE Color WoodTexture::getColor(const Vector2& texcoord, const Vector3
 	n1 *= density;
 	n1 -= int32_t(n1);
 	n1 += 0.4f;
-	n1 = std::min(n1, 1.0f);
+	n1 = MIN(n1, 1.0f);
 
 	// subtle bumpiness
 	float n2 = (1.0f - 1.0f / bumpiness) + noise.getNoise(position.x * 16.0f * scale, position.y * 16.0f * scale, position.z * 16.0f * scale) / bumpiness;

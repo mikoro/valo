@@ -15,6 +15,8 @@
 #include "Renderers/CudaRenderer.h"
 #include "Renderers/Renderer.h"
 #include "Utils/CudaUtils.h"
+#include "Utils/Settings.h"
+#include "App.h"
 
 using namespace Raycer;
 
@@ -47,7 +49,7 @@ void CudaRenderer::resize(uint32_t width, uint32_t height)
 
 #ifdef USE_CUDA
 
-__global__ void renderKernel(const Scene& scene, Film& film, RandomGeneratorState* randomStates, bool filtering)
+__global__ void renderKernel(const Scene& scene, Film& film, RandomGeneratorState* randomStates, bool filtering, uint32_t pixelSamples)
 {
 	uint32_t x = threadIdx.x + blockIdx.x * blockDim.x;
 	uint32_t y = threadIdx.y + blockIdx.y * blockDim.y;
@@ -58,7 +60,7 @@ __global__ void renderKernel(const Scene& scene, Film& film, RandomGeneratorStat
 
 	Random random(randomStates[index]);
 
-	for (uint32_t i = 0; i < scene.renderer.pixelSamples; ++i)
+	for (uint32_t i = 0; i < pixelSamples; ++i)
 	{
 		Vector2 pixel = Vector2(x, y);
 		float filterWeight = 1.0f;
@@ -70,10 +72,10 @@ __global__ void renderKernel(const Scene& scene, Film& film, RandomGeneratorStat
 			pixel += offset;
 		}
 
-		bool isOffLens;
-		Ray ray = scene.camera.getRay(pixel, isOffLens);
+		CameraRay cameraRay = scene.camera.getRay(pixel, random);
+		cameraRay.ray.isPrimaryRay = true;
 
-		if (isOffLens)
+		if (cameraRay.offLens)
 		{
 			film.addSample(x, y, scene.general.offLensColor, filterWeight);
 			randomStates[index] = random.getState();
@@ -82,12 +84,12 @@ __global__ void renderKernel(const Scene& scene, Film& film, RandomGeneratorStat
 
 		Intersection intersection;
 
-		if (!scene.intersect(ray, intersection))
+		if (!scene.intersect(cameraRay.ray, intersection))
 		{
 			film.addSample(x, y, scene.general.backgroundColor, filterWeight);
 			randomStates[index] = random.getState();
 			return;
-	}
+		}
 
 		if (intersection.hasColor)
 		{
@@ -105,8 +107,10 @@ __global__ void renderKernel(const Scene& scene, Film& film, RandomGeneratorStat
 			return;
 		}
 
-		Color color = scene.integrator.calculateLight(scene, intersection, ray, random);
-		film.addSample(x, y, color, filterWeight);
+		Color color = scene.integrator.calculateLight(scene, intersection, cameraRay.ray, random);
+
+		if (!color.isNegative() && !color.isNan())
+			film.addSample(x, y, color * cameraRay.brightness, filterWeight);
 	}
 
 	randomStates[index] = random.getState();
@@ -116,6 +120,7 @@ void CudaRenderer::render(RenderJob& job, bool filtering)
 {
 	Scene& scene = *job.scene;
 	Film& film = *job.film;
+	Settings& settings = App::getSettings();
 
 	sceneAlloc.write(&scene, 1);
 	filmAlloc.write(&film, 1);
@@ -126,11 +131,11 @@ void CudaRenderer::render(RenderJob& job, bool filtering)
 	dimGrid.x = (film.getWidth() + dimBlock.x - 1) / dimBlock.x;
 	dimGrid.y = (film.getHeight() + dimBlock.y - 1) / dimBlock.y;
 
-	renderKernel<<<dimGrid, dimBlock>>>(*sceneAlloc.getDevicePtr(), *filmAlloc.getDevicePtr(), randomStatesAlloc.getDevicePtr(), filtering);
+	renderKernel<<<dimGrid, dimBlock>>>(*sceneAlloc.getDevicePtr(), *filmAlloc.getDevicePtr(), randomStatesAlloc.getDevicePtr(), filtering, settings.renderer.pixelSamples);
 	CudaUtils::checkError(cudaPeekAtLastError(), "Could not launch render kernel");
 	CudaUtils::checkError(cudaDeviceSynchronize(), "Could not execute render kernel");
 
-	job.totalSampleCount += film.getWidth() * film.getHeight() * scene.renderer.pixelSamples;
+	job.totalSampleCount += film.getWidth() * film.getHeight() * settings.renderer.pixelSamples;
 }
 
 #else
