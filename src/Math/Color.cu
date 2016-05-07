@@ -37,6 +37,11 @@ namespace Raycer
 		return Color(c1.r - c2.r, c1.g - c2.g, c1.b - c2.b, c1.a - c2.a);
 	}
 
+	CUDA_CALLABLE Color operator-(const Color& c)
+	{
+		return Color(-c.r, -c.g, -c.b, -c.a);
+	}
+
 	CUDA_CALLABLE Color operator*(const Color& c1, const Color& c2)
 	{
 		return Color(c1.r * c2.r, c1.g * c2.g, c1.b * c2.b, c1.a * c2.a);
@@ -241,6 +246,11 @@ CUDA_CALLABLE Color Color::fromNormal(const Vector3& normal)
 	return c;
 }
 
+CUDA_CALLABLE Color Color::fromFloat(float c)
+{
+	return Color(c, c, c, 1.0f);
+}
+
 CUDA_CALLABLE Color Color::lerp(const Color& start, const Color& end, float alpha)
 {
 	Color c;
@@ -275,7 +285,7 @@ CUDA_CALLABLE Color Color::pow(const Color& color, float power)
 	c.r = std::pow(color.r, power);
 	c.g = std::pow(color.g, power);
 	c.b = std::pow(color.b, power);
-	c.a = color.a;
+	c.a = std::pow(color.a, power);
 
 	return c;
 }
@@ -287,7 +297,19 @@ CUDA_CALLABLE Color Color::fastPow(const Color& color, float power)
 	c.r = MathUtils::fastPow(color.r, power);
 	c.g = MathUtils::fastPow(color.g, power);
 	c.b = MathUtils::fastPow(color.b, power);
-	c.a = color.a;
+	c.a = MathUtils::fastPow(color.a, power);
+
+	return c;
+}
+
+CUDA_CALLABLE Color Color::exp(const Color& color)
+{
+	Color c;
+
+	c.r = std::exp(color.r);
+	c.g = std::exp(color.g);
+	c.b = std::exp(color.b);
+	c.a = std::exp(color.a);
 
 	return c;
 }

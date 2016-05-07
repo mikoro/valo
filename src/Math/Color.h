@@ -20,6 +20,7 @@ namespace Raycer
 
 		CUDA_CALLABLE friend Color operator+(const Color& c1, const Color& c2);
 		CUDA_CALLABLE friend Color operator-(const Color& c1, const Color& c2);
+		CUDA_CALLABLE friend Color operator-(const Color& c);
 		CUDA_CALLABLE friend Color operator*(const Color& c1, const Color& c2);
 		CUDA_CALLABLE friend Color operator*(const Color& c, float s);
 		CUDA_CALLABLE friend Color operator*(float s, const Color& c);
@@ -50,10 +51,12 @@ namespace Raycer
 		CUDA_CALLABLE static Color fromRgbaValue(uint32_t rgba);
 		CUDA_CALLABLE static Color fromAbgrValue(uint32_t abgr);
 		CUDA_CALLABLE static Color fromNormal(const Vector3& normal);
+		CUDA_CALLABLE static Color fromFloat(float c);
 		CUDA_CALLABLE static Color lerp(const Color& start, const Color& end, float alpha);
 		CUDA_CALLABLE static Color alphaBlend(const Color& first, const Color& second);
 		CUDA_CALLABLE static Color pow(const Color& color, float power);
 		CUDA_CALLABLE static Color fastPow(const Color& color, float power);
+		CUDA_CALLABLE static Color exp(const Color& color);
 
 		CUDA_CALLABLE static Color red();
 		CUDA_CALLABLE static Color green();

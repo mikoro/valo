@@ -18,6 +18,8 @@ getFbmNoise return values between 0.0 - inf
 
 namespace Raycer
 {
+	class Vector3;
+
 	class PerlinNoise
 	{
 	public:
@@ -25,7 +27,9 @@ namespace Raycer
 		PerlinNoise();
 
 		void initialize(uint32_t seed);
+		CUDA_CALLABLE float getNoise(const Vector3& position) const;
 		CUDA_CALLABLE float getNoise(float x, float y, float z) const;
+		CUDA_CALLABLE float getFbmNoise(uint32_t octaves, float lacunarity, float persistence, const Vector3& position) const;
 		CUDA_CALLABLE float getFbmNoise(uint32_t octaves, float lacunarity, float persistence, float x, float y, float z) const;
 
 	private:

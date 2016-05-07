@@ -4,6 +4,7 @@
 #include "Precompiled.h"
 
 #include "Utils/PerlinNoise.h"
+#include "Math/Vector3.h"
 
 using namespace Raycer;
 
@@ -22,6 +23,11 @@ void PerlinNoise::initialize(uint32_t seed)
 
 	permutationsAlloc.resize(tempPermutations.size());
 	permutationsAlloc.write(tempPermutations.data(), tempPermutations.size());
+}
+
+CUDA_CALLABLE float PerlinNoise::getNoise(const Vector3& position) const
+{
+	return getNoise(position.x, position.y, position.z);
 }
 
 CUDA_CALLABLE float PerlinNoise::getNoise(float x, float y, float z) const
@@ -57,6 +63,11 @@ CUDA_CALLABLE float PerlinNoise::getNoise(float x, float y, float z) const
 		grad(permutations[BB + 1], x - 1, y - 1, z - 1))));
 
 	return MAX(0.0f, MIN(0.5f + n / 2.0f, 1.0f)); // move and clamp to 0.0-1.0 range
+}
+
+CUDA_CALLABLE float PerlinNoise::getFbmNoise(uint32_t octaves, float lacunarity, float persistence, const Vector3& position) const
+{
+	return getFbmNoise(octaves, lacunarity, persistence, position.x, position.y, position.z);
 }
 
 CUDA_CALLABLE float PerlinNoise::getFbmNoise(uint32_t octaves, float lacunarity, float persistence, float x, float y, float z) const

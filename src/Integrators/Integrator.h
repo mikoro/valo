@@ -24,10 +24,17 @@ namespace Raycer
 	{
 		Color emittance;
 		Vector3 direction;
+		float distance2 = 0.0f;
 		float originCosine = 0.0f;
 		float lightCosine = 0.0f;
 		float lightPdf = 0.0f;
 		bool visible = false;
+	};
+
+	struct VolumeEffect
+	{
+		Color transmittance;
+		Color emittance;
 	};
 
 	class Integrator
@@ -43,6 +50,7 @@ namespace Raycer
 		CUDA_CALLABLE static DirectLightSample calculateDirectLightSample(const Scene& scene, const Intersection& origin, const Intersection& emissiveIntersection);
 		CUDA_CALLABLE static float balanceHeuristic(uint32_t nf, float fPdf, uint32_t ng, float gPdf);
 		CUDA_CALLABLE static float powerHeuristic(uint32_t nf, float fPdf, uint32_t ng, float gPdf);
+		CUDA_CALLABLE static VolumeEffect calculateVolumeEffect(const Scene& scene, const Vector3& start, const Vector3& end, Random& random);
 
 		IntegratorType type = IntegratorType::PATH;
 

@@ -144,6 +144,7 @@ void Scene::initialize()
 
 	camera.initialize();
 	imagePool.commit();
+	volume.noiseDensity.initialize(volume.noiseSeed);
 
 	log.logInfo("Scene initialization finished (time: %s)", timer.getElapsed().getString(true));
 }

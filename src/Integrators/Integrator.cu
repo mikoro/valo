@@ -36,13 +36,13 @@ std::string Integrator::getName() const
 	}
 }
 
-Intersection Integrator::getRandomEmissiveIntersection(const Scene& scene, Random& random)
+CUDA_CALLABLE Intersection Integrator::getRandomEmissiveIntersection(const Scene& scene, Random& random)
 {
 	const Triangle& triangle = scene.getEmissiveTriangles()[random.getUint32(0, scene.getEmissiveTrianglesCount() - 1)];
 	return triangle.getRandomIntersection(scene, random);
 }
 
-bool Integrator::isIntersectionVisible(const Scene& scene, const Intersection& origin, const Intersection& emissiveIntersection)
+CUDA_CALLABLE bool Integrator::isIntersectionVisible(const Scene& scene, const Intersection& origin, const Intersection& emissiveIntersection)
 {
 	Vector3 originToEmissive = emissiveIntersection.position - origin.position;
 	float distance = originToEmissive.length();
@@ -68,6 +68,7 @@ CUDA_CALLABLE DirectLightSample Integrator::calculateDirectLightSample(const Sce
 
 	DirectLightSample result;
 	result.direction = originToEmissive / distance;
+	result.distance2 = distance2;
 	result.originCosine = result.direction.dot(origin.normal);
 	result.lightCosine = result.direction.dot(-emissiveIntersection.normal);
 
@@ -86,15 +87,75 @@ CUDA_CALLABLE DirectLightSample Integrator::calculateDirectLightSample(const Sce
 	return result;
 }
 
-float Integrator::balanceHeuristic(uint32_t nf, float fPdf, uint32_t ng, float gPdf)
+CUDA_CALLABLE float Integrator::balanceHeuristic(uint32_t nf, float fPdf, uint32_t ng, float gPdf)
 {
 	return (nf * fPdf) / (nf * fPdf + ng * gPdf);
 }
 
-float Integrator::powerHeuristic(uint32_t nf, float fPdf, uint32_t ng, float gPdf)
+CUDA_CALLABLE float Integrator::powerHeuristic(uint32_t nf, float fPdf, uint32_t ng, float gPdf)
 {
 	float f = nf * fPdf;
 	float g = ng * gPdf;
 
 	return (f * f) / (f * f + g * g);
+}
+
+VolumeEffect Integrator::calculateVolumeEffect(const Scene& scene, const Vector3& start, const Vector3& end, Random& random)
+{
+	Vector3 startToEnd = end - start;
+	float distance = startToEnd.length();
+	Vector3 direction = startToEnd / distance;
+	float travelled = 0.0f;
+	Color thickness(0.0f, 0.0f, 0.0f);
+	Color emittance(0.0f, 0.0f, 0.0f);
+	Color inscatter(0.0f, 0.0f, 0.0f);
+
+	while (travelled < distance)
+	{
+		float density;
+		float stepSize;
+
+		Vector3 position = start + travelled * direction;
+
+		if (scene.volume.constant)
+		{
+			density = scene.volume.constantDensity;
+			stepSize = scene.volume.stepSize;
+		}
+		else
+		{
+			density = scene.volume.noiseDensity.getNoise(position * scene.volume.noisePositionScale) * scene.volume.noiseValueScale;
+			stepSize = scene.volume.stepSize + random.getFloat() * scene.volume.stepSize;
+		}
+
+		travelled += stepSize;
+		thickness += scene.volume.attenuationColor * density * stepSize;
+		emittance += scene.volume.emissionColor * density * stepSize;
+		
+		if (scene.volume.inscatter)
+		{
+			Intersection origin;
+			Intersection emissiveIntersection = getRandomEmissiveIntersection(scene, random);
+
+			origin.position = position;
+			origin.normal = (emissiveIntersection.position - position).normalized();
+
+			if (isIntersectionVisible(scene, origin, emissiveIntersection))
+			{
+				DirectLightSample lightSample = calculateDirectLightSample(scene, origin, emissiveIntersection);
+
+				if (lightSample.visible)
+					inscatter += scene.volume.inscatterColor * density * stepSize * lightSample.emittance * lightSample.lightCosine / lightSample.distance2;
+			}
+		}
+	}
+
+	VolumeEffect effect;
+	effect.transmittance = scene.volume.attenuation ? Color::exp(-thickness) : Color(1.0f, 1.0f, 1.0f);
+	effect.emittance = scene.volume.emission ? emittance : Color(0.0f, 0.0f, 0.0f);
+
+	if (scene.volume.inscatter)
+		effect.emittance += inscatter;
+
+	return effect;
 }
