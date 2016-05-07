@@ -14,6 +14,8 @@ Scene TestScene::create6()
 {
 	Scene scene;
 
+	scene.bvh.type = BVHType::BVH2;
+
 	scene.integrator.type = IntegratorType::PATH;
 	scene.integrator.aoIntegrator.maxDistance = 0.5f;
 	scene.renderer.filter.type = FilterType::MITCHELL;
@@ -23,17 +25,15 @@ Scene TestScene::create6()
 	scene.camera.position = Vector3(-12.3421f, 6.4827f, 4.0746f);
 	scene.camera.orientation = EulerAngle(-8.0f, -90.0f, 0.0f);
 	
-	scene.bvh.type = BVHType::BVH2;
-
 	scene.volume.enabled = true;
-	scene.volume.attenuation = false;
+	scene.volume.attenuation = true;
 	scene.volume.emission = false;
 	scene.volume.inscatter = true;
-	scene.volume.constant = true;
+	scene.volume.constant = false;
 	scene.volume.stepSize = 0.1f;
-	scene.volume.constantDensity = 0.5f;
-	scene.volume.noisePositionScale = 10.0f;
-	scene.volume.noiseValueScale = 1.0f;
+	scene.volume.noiseScale = 2.0f;
+	scene.volume.attenuationFactor = 0.4f;
+	scene.volume.inscatterFactor = 0.3f;
 
 	// MATERIALS //
 

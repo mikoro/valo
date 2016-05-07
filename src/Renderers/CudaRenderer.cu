@@ -109,6 +109,12 @@ __global__ void renderKernel(const Scene& scene, Film& film, RandomGeneratorStat
 
 		Color color = scene.integrator.calculateLight(scene, intersection, cameraRay.ray, random);
 
+		if (scene.volume.enabled)
+		{
+			VolumeEffect volumeEffect = Integrator::calculateVolumeEffect(scene, cameraRay.ray.origin, intersection.position, random);
+			color = color * volumeEffect.transmittance + volumeEffect.emittance;
+		}
+
 		if (!color.isNegative() && !color.isNan())
 			film.addSample(x, y, color * cameraRay.brightness, filterWeight);
 	}

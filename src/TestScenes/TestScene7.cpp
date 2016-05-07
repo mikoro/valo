@@ -14,6 +14,8 @@ Scene TestScene::create7()
 {
 	Scene scene;
 
+	scene.bvh.type = BVHType::BVH2;
+
 	scene.integrator.type = IntegratorType::AMBIENT_OCCLUSION;
 	scene.integrator.aoIntegrator.maxDistance = 0.5f;
 	scene.renderer.filter.type = FilterType::MITCHELL;
@@ -23,8 +25,6 @@ Scene TestScene::create7()
 	scene.camera.position = Vector3(-4.6401f, 0.4618f, 2.7327f);
 	scene.camera.orientation = EulerAngle(-13.3503f, -56.3473f, 0.0000f);
 	scene.camera.fov = 65.0f;
-
-	scene.bvh.type = BVHType::BVH2;
 
 	ModelLoaderInfo model;
 	model.modelFileName = "data/models/conference/conference.obj";

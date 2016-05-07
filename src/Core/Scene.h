@@ -70,13 +70,14 @@ namespace Raycer
 			Color attenuationColor = Color(1.0f, 1.0f, 1.0f);
 			Color emissionColor = Color(1.0f, 1.0f, 1.0f);
 			Color inscatterColor = Color(1.0f, 1.0f, 1.0f);
+			float attenuationFactor = 0.0f;
+			float emissionFactor = 0.0f;
+			float inscatterFactor = 0.0f;
 			float stepSize = 0.1f;
 			bool constant = true;
-			float constantDensity = 0.1f;
 			PerlinNoise noiseDensity;
 			uint32_t noiseSeed = 1;
-			float noisePositionScale = 1.0f;
-			float noiseValueScale = 1.0f;
+			float noiseScale = 1.0f;
 
 		} volume;
 

@@ -14,7 +14,9 @@ Scene TestScene::create5()
 {
 	Scene scene;
 
-	scene.integrator.type = IntegratorType::DOT;
+	scene.bvh.type = BVHType::BVH2;
+
+	scene.integrator.type = IntegratorType::PATH;
 	scene.integrator.aoIntegrator.maxDistance = 0.5f;
 	scene.renderer.filter.type = FilterType::MITCHELL;
 	scene.tonemapper.type = TonemapperType::REINHARD;
@@ -26,8 +28,6 @@ Scene TestScene::create5()
 	scene.camera.depthOfField = true;
 	scene.camera.focalDistance = 1.0f;
 	scene.camera.apertureSize = 0.01f;
-
-	scene.bvh.type = BVHType::BVH2;
 
 	// MATERIALS //
 

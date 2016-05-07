@@ -112,25 +112,19 @@ VolumeEffect Integrator::calculateVolumeEffect(const Scene& scene, const Vector3
 
 	while (travelled < distance)
 	{
-		float density;
-		float stepSize;
-
+		float density = 1.0f;
+		float stepSize = scene.volume.stepSize;
 		Vector3 position = start + travelled * direction;
 
-		if (scene.volume.constant)
+		if (!scene.volume.constant)
 		{
-			density = scene.volume.constantDensity;
-			stepSize = scene.volume.stepSize;
-		}
-		else
-		{
-			density = scene.volume.noiseDensity.getNoise(position * scene.volume.noisePositionScale) * scene.volume.noiseValueScale;
+			density = scene.volume.noiseDensity.getNoise(position * scene.volume.noiseScale);
 			stepSize = scene.volume.stepSize + random.getFloat() * scene.volume.stepSize;
 		}
 
 		travelled += stepSize;
-		thickness += scene.volume.attenuationColor * density * stepSize;
-		emittance += scene.volume.emissionColor * density * stepSize;
+		thickness += scene.volume.attenuationColor * density * stepSize * scene.volume.attenuationFactor;
+		emittance += scene.volume.emissionColor * density * stepSize * scene.volume.emissionFactor;
 		
 		if (scene.volume.inscatter)
 		{
@@ -145,7 +139,7 @@ VolumeEffect Integrator::calculateVolumeEffect(const Scene& scene, const Vector3
 				DirectLightSample lightSample = calculateDirectLightSample(scene, origin, emissiveIntersection);
 
 				if (lightSample.visible)
-					inscatter += scene.volume.inscatterColor * density * stepSize * lightSample.emittance * lightSample.lightCosine / lightSample.distance2;
+					inscatter += scene.volume.inscatterColor * density * stepSize * scene.volume.inscatterFactor * lightSample.emittance * lightSample.lightCosine / lightSample.distance2;
 			}
 		}
 	}

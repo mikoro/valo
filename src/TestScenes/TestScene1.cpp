@@ -14,9 +14,10 @@ Scene TestScene::create1()
 {
 	Scene scene;
 
+	scene.bvh.type = BVHType::BVH2;
+
 	scene.integrator.type = IntegratorType::DOT;
 	scene.integrator.aoIntegrator.maxDistance = 0.5f;
-	scene.bvh.type = BVHType::BVH2;
 
 	scene.camera.position = Vector3(0.0f, 1.0f, 3.5f);
 
@@ -26,10 +27,9 @@ Scene TestScene::create1()
 	scene.volume.inscatter = false;
 	scene.volume.constant = true;
 	scene.volume.stepSize = 0.1f;
-	scene.volume.constantDensity = 0.5f;
-	scene.volume.noisePositionScale = 10.0f;
-	scene.volume.noiseValueScale = 0.5f;
-
+	scene.volume.attenuationFactor = 0.5f;
+	scene.volume.noiseScale = 10.0f;
+	
 	ModelLoaderInfo model;
 	model.modelFileName = "data/models/cornellbox/cornellbox.obj";
 
