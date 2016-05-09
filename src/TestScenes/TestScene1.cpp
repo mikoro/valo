@@ -6,7 +6,7 @@
 #include "TestScenes/TestScene.h"
 #include "Core/Scene.h"
 
-using namespace Raycer;
+using namespace Valo;
 
 // CORNELL BOX //
 
@@ -16,7 +16,7 @@ Scene TestScene::create1()
 
 	scene.bvh.type = BVHType::BVH2;
 
-	scene.integrator.type = IntegratorType::DOT;
+	scene.integrator.type = IntegratorType::PATH;
 	scene.integrator.aoIntegrator.maxDistance = 0.5f;
 
 	scene.camera.position = Vector3(0.0f, 1.0f, 3.5f);

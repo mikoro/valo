@@ -9,7 +9,7 @@
 #include "Math/Vector3.h"
 #include "Math/Vector2.h"
 
-namespace Raycer
+namespace Valo
 {
 	class Scene;
 	class Ray;

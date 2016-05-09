@@ -8,7 +8,7 @@
 #include "Math/Vector3.h"
 #include "Textures/Texture.h"
 
-using namespace Raycer;
+using namespace Valo;
 
 CUDA_CALLABLE Vector3 Material::getDirection(const Intersection& intersection, Random& random) const
 {

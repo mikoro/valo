@@ -5,7 +5,7 @@
 
 #include "Filters/LanczosSincFilter.h"
 
-using namespace Raycer;
+using namespace Valo;
 
 namespace
 {

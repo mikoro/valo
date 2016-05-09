@@ -10,7 +10,7 @@
 #include "Core/Common.h"
 #include "Utils/CudaAlloc.h"
 
-namespace Raycer
+namespace Valo
 {
 	class Triangle;
 	class Scene;

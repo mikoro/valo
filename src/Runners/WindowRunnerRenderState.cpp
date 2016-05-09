@@ -15,7 +15,7 @@
 #include "Utils/Log.h"
 #include "Utils/Settings.h"
 
-using namespace Raycer;
+using namespace Valo;
 
 WindowRunnerRenderState::WindowRunnerRenderState() : film(true)
 {

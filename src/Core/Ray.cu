@@ -5,7 +5,7 @@
 
 #include "Core/Ray.h"
 
-using namespace Raycer;
+using namespace Valo;
 
 CUDA_CALLABLE void Ray::precalculate()
 {

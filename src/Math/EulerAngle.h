@@ -17,7 +17,7 @@ angles are in degrees
 
 */
 
-namespace Raycer
+namespace Valo
 {
 	class Vector3;
 

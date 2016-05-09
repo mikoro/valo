@@ -7,7 +7,7 @@
 
 #include "Utils/Timer.h"
 
-using namespace Raycer;
+using namespace Valo;
 namespace sc = std::chrono;
 
 std::string TimerData::getString(bool withMilliseconds) const

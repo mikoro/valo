@@ -12,7 +12,7 @@ q = w + xi + yj + zk
 
 */
 
-namespace Raycer
+namespace Valo
 {
 	class AxisAngle;
 	class Matrix4x4;

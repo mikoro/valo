@@ -15,7 +15,7 @@
 #include "Utils/Timer.h"
 #include <Materials/Material.h>
 
-using namespace Raycer;
+using namespace Valo;
 namespace bf = boost::filesystem;
 
 namespace

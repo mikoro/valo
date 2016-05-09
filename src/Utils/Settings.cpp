@@ -7,7 +7,7 @@
 
 #include "Utils/Settings.h"
 
-using namespace Raycer;
+using namespace Valo;
 
 namespace po = boost::program_options;
 
@@ -62,7 +62,7 @@ bool Settings::load(int argc, char** argv)
 		("film.autoWriteInterval", po::value(&film.autoWriteInterval)->default_value(60.0f), "")
 		("film.autoWriteFileName", po::value(&film.autoWriteFileName)->default_value("temp_film.bin"), "");
 	
-	std::ifstream iniFile("raycer.ini");
+	std::ifstream iniFile("valo.ini");
 	po::variables_map vm;
 
 	try

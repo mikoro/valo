@@ -5,7 +5,7 @@
 
 struct NVGcontext;
 
-namespace Raycer
+namespace Valo
 {
 	struct RenderJob;
 

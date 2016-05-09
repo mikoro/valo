@@ -6,7 +6,7 @@
 #include "Core/Common.h"
 #include "Math/Vector2.h"
 
-namespace Raycer
+namespace Valo
 {
 	class Vector2;
 

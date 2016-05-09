@@ -5,7 +5,7 @@
 
 #include "Filters/TentFilter.h"
 
-using namespace Raycer;
+using namespace Valo;
 
 namespace
 {

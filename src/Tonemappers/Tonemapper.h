@@ -12,7 +12,7 @@
 #include "Tonemappers/SimpleTonemapper.h"
 #include "Tonemappers/ReinhardTonemapper.h"
 
-namespace Raycer
+namespace Valo
 {
 	class Image;
 

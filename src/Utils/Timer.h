@@ -7,7 +7,7 @@
 
 #include "Math/MovingAverage.h"
 
-namespace Raycer
+namespace Valo
 {
 	struct TimerData
 	{

@@ -6,7 +6,7 @@
 #include "Core/Common.h"
 #include "Core/Image.h"
 
-namespace Raycer
+namespace Valo
 {
 	class Scene;
 	class Vector2;

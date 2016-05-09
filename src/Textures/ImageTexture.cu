@@ -9,7 +9,7 @@
 #include "Math/Vector3.h"
 #include "Textures/ImageTexture.h"
 
-using namespace Raycer;
+using namespace Valo;
 
 void ImageTexture::initialize(Scene& scene)
 {

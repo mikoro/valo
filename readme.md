@@ -1,11 +1,11 @@
-# Raycer
+# Valo
 
 WIP
 
-Raytracing and pathtracing using CPU (C++ / OpenMP) and GPU (CUDA).
+C++11/OpenMP/CUDA physically based renderer with an interactive preview mode.
 
 * Author: [Mikko Ronkainen](http://mikkoronkainen.com)
-* Website: [github.com/mikoro/raycer](https://github.com/mikoro/raycer-ng)
+* Website: [github.com/mikoro/valo](https://github.com/mikoro/valo)
 
 ## Download
 
@@ -21,7 +21,7 @@ Download the latest version:
 
 Running the program will open the first test scene in an interactive windowed mode. Use WASD to move and left mouse button to look around. Cycle through the test scenes with number keys.
 
-Edit the raycer.ini file to further configure the program. All options can be overridden with command line switches.
+Edit the valo.ini file to further configure the program. All options can be overridden with command line switches.
 
 ### Controls
 
@@ -38,7 +38,7 @@ Websites where the test scene data was sourced from:
 
 ## License
 
-    Raycer
+    Valo
     Copyright © 2016 Mikko Ronkainen
     
     Permission is hereby granted, free of charge, to any person obtaining a copy

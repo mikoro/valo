@@ -7,7 +7,7 @@
 #include "Math/Color.h"
 #include "Tonemappers/ReinhardTonemapper.h"
 
-using namespace Raycer;
+using namespace Valo;
 
 ReinhardTonemapper::ReinhardTonemapper()
 {

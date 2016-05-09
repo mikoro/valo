@@ -8,7 +8,7 @@
 #include "Math/MathUtils.h"
 #include "Tonemappers/SimpleTonemapper.h"
 
-using namespace Raycer;
+using namespace Valo;
 
 void SimpleTonemapper::apply(const Image& inputImage, Image& outputImage)
 {

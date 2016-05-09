@@ -15,7 +15,7 @@
 #include "Utils/StringUtils.h"
 #include "Utils/SysUtils.h"
 
-using namespace Raycer;
+using namespace Valo;
 using namespace std::chrono;
 
 int ConsoleRunner::run()

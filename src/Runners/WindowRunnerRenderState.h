@@ -9,7 +9,7 @@
 #include "Utils/FilmQuad.h"
 #include "Utils/InfoPanel.h"
 
-namespace Raycer
+namespace Valo
 {
 	class WindowRunnerRenderState
 	{

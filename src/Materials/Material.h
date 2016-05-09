@@ -9,7 +9,7 @@
 #include "Materials/DiffuseMaterial.h"
 #include "Materials/BlinnPhongMaterial.h"
 
-namespace Raycer
+namespace Valo
 {
 	enum class MaterialType { DIFFUSE, BLINN_PHONG };
 

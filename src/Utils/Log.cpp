@@ -6,7 +6,7 @@
 #include "Utils/Log.h"
 #include "Utils/SysUtils.h"
 
-using namespace Raycer;
+using namespace Valo;
 using namespace std::chrono;
 
 namespace

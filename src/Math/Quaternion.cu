@@ -9,7 +9,7 @@
 #include "Math/Vector3.h"
 #include "Math/MathUtils.h"
 
-using namespace Raycer;
+using namespace Valo;
 
 CUDA_CALLABLE Quaternion::Quaternion(float w_, float x_, float y_, float z_) : w(w_), x(x_), y(y_), z(z_)
 {
@@ -33,7 +33,7 @@ CUDA_CALLABLE Quaternion::Quaternion(const Vector3& axis, float angle)
 	z = axis.z * sine;
 }
 
-namespace Raycer
+namespace Valo
 {
 	CUDA_CALLABLE Quaternion operator+(const Quaternion& q1, const Quaternion& q2)
 	{

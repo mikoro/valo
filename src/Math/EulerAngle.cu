@@ -7,13 +7,13 @@
 #include "Math/Vector3.h"
 #include "Math/MathUtils.h"
 
-using namespace Raycer;
+using namespace Valo;
 
 CUDA_CALLABLE EulerAngle::EulerAngle(float pitch_, float yaw_, float roll_) : pitch(pitch_), yaw(yaw_), roll(roll_)
 {
 }
 
-namespace Raycer
+namespace Valo
 {
 	CUDA_CALLABLE EulerAngle operator+(const EulerAngle& e1, const EulerAngle& e2)
 	{

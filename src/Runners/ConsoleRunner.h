@@ -6,7 +6,7 @@
 #include "Math/MovingAverage.h"
 #include "Renderers/Renderer.h"
 
-namespace Raycer
+namespace Valo
 {
 	class ConsoleRunner
 	{

@@ -8,7 +8,7 @@
 #include "TestScenes/TestScene.h"
 #include "Utils/Log.h"
 
-using namespace Raycer;
+using namespace Valo;
 
 Scene TestScene::create(uint32_t number)
 {

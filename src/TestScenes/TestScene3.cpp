@@ -6,7 +6,7 @@
 #include "TestScenes/TestScene.h"
 #include "Core/Scene.h"
 
-using namespace Raycer;
+using namespace Valo;
 
 // KITCHEN 2 //
 

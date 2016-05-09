@@ -5,7 +5,7 @@
 
 #include "Filters/BoxFilter.h"
 
-using namespace Raycer;
+using namespace Valo;
 
 namespace
 {

@@ -9,7 +9,7 @@
 
 #include "Utils/ModelLoader.h"
 
-using namespace Raycer;
+using namespace Valo;
 
 TEST_CASE("ModelLoader functionality", "[modelloader]")
 {

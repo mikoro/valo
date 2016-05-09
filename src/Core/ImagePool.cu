@@ -6,7 +6,7 @@
 #include "Core/ImagePool.h"
 #include "Core/Image.h"
 
-using namespace Raycer;
+using namespace Valo;
 
 ImagePool::ImagePool() : imagesAlloc(true)
 {

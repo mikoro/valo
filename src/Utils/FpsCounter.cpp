@@ -9,7 +9,7 @@
 
 #include "Utils/FpsCounter.h"
 
-using namespace Raycer;
+using namespace Valo;
 
 FpsCounter::FpsCounter()
 {

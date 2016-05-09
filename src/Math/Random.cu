@@ -13,7 +13,7 @@
 #pragma warning (disable : 4146)
 #endif
 
-using namespace Raycer;
+using namespace Valo;
 
 CUDA_CALLABLE RandomGenerator::RandomGenerator()
 {

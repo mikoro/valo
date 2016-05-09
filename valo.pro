@@ -1,4 +1,4 @@
-TARGET = raycer
+TARGET = valo
 TEMPLATE = app
 DESTDIR = bin
 OBJECTS_DIR = build

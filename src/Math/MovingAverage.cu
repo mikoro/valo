@@ -5,7 +5,7 @@
 
 #include "Math/MovingAverage.h"
 
-using namespace Raycer;
+using namespace Valo;
 
 CUDA_CALLABLE MovingAverage::MovingAverage(float alpha_, float average_)
 {

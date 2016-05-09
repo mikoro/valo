@@ -19,7 +19,7 @@ w = forward (normal)
 
 */
 
-namespace Raycer
+namespace Valo
 {
 	class Matrix4x4;
 

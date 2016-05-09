@@ -5,7 +5,7 @@
 
 #include <GL/glcorearb.h>
 
-namespace Raycer
+namespace Valo
 {
 	class Film;
 

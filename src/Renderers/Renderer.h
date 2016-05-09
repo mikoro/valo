@@ -9,7 +9,7 @@
 #include "Renderers/CudaRenderer.h"
 #include "Utils/Timer.h"
 
-namespace Raycer
+namespace Valo
 {
 	class Scene;
 	class Film;

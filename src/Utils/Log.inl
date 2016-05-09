@@ -1,7 +1,7 @@
 // Copyright © 2016 Mikko Ronkainen <firstname@mikkoronkainen.com>
 // License: MIT, see the LICENSE file.
 
-namespace Raycer
+namespace Valo
 {
 	template <typename... Args>
 	void Log::logMessage(LogMessageLevel messageLevel, const std::string& message, const Args&... args)

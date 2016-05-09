@@ -11,7 +11,7 @@
 http://www.pcg-random.org
 */
 
-namespace Raycer
+namespace Valo
 {
 	class Color;
 	class Vector2;

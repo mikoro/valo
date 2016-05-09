@@ -8,7 +8,7 @@
 #include "Utils/ColorGradient.h"
 #include "Math/Color.h"
 
-namespace Raycer
+namespace Valo
 {
 	class Vector2;
 	class Vector3;

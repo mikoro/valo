@@ -6,7 +6,7 @@
 #include "Filters/BellFilter.h"
 #include "Math/Vector2.h"
 
-using namespace Raycer;
+using namespace Valo;
 
 namespace
 {

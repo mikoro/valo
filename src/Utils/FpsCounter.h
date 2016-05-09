@@ -5,7 +5,7 @@
 
 #include "Math/MovingAverage.h"
 
-namespace Raycer
+namespace Valo
 {
 	class FpsCounter
 	{

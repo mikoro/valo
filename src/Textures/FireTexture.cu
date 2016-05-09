@@ -8,7 +8,7 @@
 #include "Math/Vector3.h"
 #include "Math/Color.h"
 
-using namespace Raycer;
+using namespace Valo;
 
 void FireTexture::initialize()
 {

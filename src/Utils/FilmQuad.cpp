@@ -9,7 +9,7 @@
 #include "Utils/FilmQuad.h"
 #include "Utils/GLUtils.h"
 
-using namespace Raycer;
+using namespace Valo;
 
 void FilmQuad::initialize()
 {

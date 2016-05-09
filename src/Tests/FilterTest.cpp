@@ -9,7 +9,7 @@
 #include "tinyformat/tinyformat.h"
 #include "Filters/Filter.h"
 
-using namespace Raycer;
+using namespace Valo;
 
 TEST_CASE("Filter functionality", "[filter]")
 {

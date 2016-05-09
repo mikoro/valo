@@ -6,7 +6,7 @@
 #include "Core/Common.h"
 #include "Math/Vector3.h"
 
-namespace Raycer
+namespace Valo
 {
 	class Matrix4x4;
 

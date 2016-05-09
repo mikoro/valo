@@ -7,7 +7,7 @@
 
 #include "Math/Random.h"
 
-namespace Raycer
+namespace Valo
 {
 	struct RenderJob;
 	

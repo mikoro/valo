@@ -7,7 +7,7 @@
 
 #include "Utils/CudaUtils.h"
 
-using namespace Raycer;
+using namespace Valo;
 
 void CudaUtils::checkError(cudaError_t code, const std::string& message)
 {

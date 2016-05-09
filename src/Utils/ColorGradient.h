@@ -9,7 +9,7 @@
 #include "Core/Common.h"
 #include "Utils/CudaAlloc.h"
 
-namespace Raycer
+namespace Valo
 {
 	struct ColorGradientSegment
 	{

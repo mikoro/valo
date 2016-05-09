@@ -30,7 +30,7 @@ T = translation
 
 */
 
-namespace Raycer
+namespace Valo
 {
 	class Vector3;
 	class Vector4;

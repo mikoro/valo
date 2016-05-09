@@ -12,7 +12,7 @@
 #include "Utils/Settings.h"
 #include "App.h"
 
-using namespace Raycer;
+using namespace Valo;
 
 void Renderer::initialize(const Settings& settings)
 {

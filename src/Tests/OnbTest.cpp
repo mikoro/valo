@@ -9,7 +9,7 @@
 
 #include "Math/ONB.h"
 
-using namespace Raycer;
+using namespace Valo;
 
 TEST_CASE("ONB functionality", "[onb]")
 {

@@ -11,7 +11,7 @@
 #include "Math/Vector3.h"
 #include "Math/EulerAngle.h"
 
-namespace Raycer
+namespace Valo
 {
 	class Random;
 	class Scene;

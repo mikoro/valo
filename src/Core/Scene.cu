@@ -16,7 +16,7 @@
 #include "Utils/Log.h"
 #include "Utils/Timer.h"
 
-using namespace Raycer;
+using namespace Valo;
 
 Scene::Scene() : texturesAlloc(false), materialsAlloc(false), trianglesAlloc(false), emissiveTrianglesAlloc(false)
 {

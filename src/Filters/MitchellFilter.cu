@@ -5,7 +5,7 @@
 
 #include "Filters/MitchellFilter.h"
 
-using namespace Raycer;
+using namespace Valo;
 
 namespace
 {

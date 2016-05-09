@@ -6,7 +6,7 @@
 #include "Math/ONB.h"
 #include "Math/Matrix4x4.h"
 
-using namespace Raycer;
+using namespace Valo;
 
 CUDA_CALLABLE ONB::ONB()
 {

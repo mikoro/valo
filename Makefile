@@ -7,7 +7,7 @@ CU_SOURCES := $(call rwildcard, src/, *.cu)
 CU_OBJS := $(subst src/,build/,$(CU_SOURCES:.cu=.cu.o))
 CFLAGS = -isystem include -Isrc -std=c++14 -Wpedantic -Wall -Wextra -Werror -Ofast -fopenmp -march=native -x c++
 LDFLAGS = 
-TARGET = raycer
+TARGET = valo
 
 # these might be needed
 # -lXrandr -lXi -lXcursor -lXinerama
@@ -31,9 +31,9 @@ ifdef CUDA
 	CFLAGS := --std c++11 --machine 64 --gpu-architecture=sm_52 --use_fast_math --cudart static -DUSE_CUDA -Xcompiler "$(CFLAGS)"
 endif
 
-default: raycer
+default: valo
 
-raycer: $(OBJS) $(CU_OBJS)
+valo: $(OBJS) $(CU_OBJS)
 	@mkdir -p bin
 	@echo "Linking $@"
 	@$(CXX) $(OBJS) $(CU_OBJS) $(CFLAGS) $(LDFLAGS) -o bin/$(TARGET)

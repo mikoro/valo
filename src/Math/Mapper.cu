@@ -6,7 +6,7 @@
 #include "Math/Mapper.h"
 #include "Math/Vector2.h"
 
-using namespace Raycer;
+using namespace Valo;
 
 CUDA_CALLABLE Vector2 Mapper::mapToDisc(const Vector2& point)
 {

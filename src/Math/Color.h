@@ -7,7 +7,7 @@
 
 #include "Core/Common.h"
 
-namespace Raycer
+namespace Valo
 {
 	class Vector3;
 

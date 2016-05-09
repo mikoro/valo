@@ -5,7 +5,7 @@
 
 #include "Math/Solver.h"
 
-using namespace Raycer;
+using namespace Valo;
 
 // numerically stable quadratic formula
 QuadraticResult Solver::findQuadraticRoots(float a, float b, float c)

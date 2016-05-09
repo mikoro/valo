@@ -7,7 +7,7 @@
 
 #include <GL/glcorearb.h>
 
-namespace Raycer
+namespace Valo
 {
 	class GLUtils
 	{

@@ -11,7 +11,7 @@
 #include "Textures/WoodTexture.h"
 #include "Textures/FireTexture.h"
 
-namespace Raycer
+namespace Valo
 {
 	class Scene;
 	class Vector2;

@@ -28,7 +28,7 @@
 #include "Runners/WindowRunner.h"
 #include "Runners/ConsoleRunner.h"
 
-using namespace Raycer;
+using namespace Valo;
 
 int main(int argc, char** argv)
 {
@@ -90,7 +90,7 @@ int App::run(int argc, char** argv)
 		if (!settings.load(argc, argv))
 			return 0;
 
-		log.logInfo(std::string("Raycer v") + RAYCER_VERSION);
+		log.logInfo(std::string("Valo v") + VALO_VERSION);
 
 		if (settings.general.maxCpuThreadCount == 0)
 			settings.general.maxCpuThreadCount = std::thread::hardware_concurrency();
@@ -132,7 +132,7 @@ int App::run(int argc, char** argv)
 
 Log& App::getLog()
 {
-	static Log log("raycer.log");
+	static Log log("valo.log");
 	return log;
 }
 

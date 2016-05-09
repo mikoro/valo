@@ -11,7 +11,7 @@
 #include "Utils/PerlinNoise.h"
 #include "Math/Color.h"
 
-using namespace Raycer;
+using namespace Valo;
 
 TEST_CASE("Perlin noise functionality", "[perlin]")
 {

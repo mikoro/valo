@@ -7,7 +7,7 @@
 
 // https://www.cs.utah.edu/~reinhard/cdrom/tonemap.pdf
 
-namespace Raycer
+namespace Valo
 {
 	class Image;
 

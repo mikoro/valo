@@ -19,7 +19,7 @@
 #include "Tonemappers/Tonemapper.h"
 #include "Utils/ModelLoader.h"
 
-namespace Raycer
+namespace Valo
 {
 	class Scene
 	{

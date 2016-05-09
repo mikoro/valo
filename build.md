@@ -4,7 +4,7 @@
 - Open solution with VS2015
 - Adjust project include paths to point to the boost libraries
 - Compile the code
-- Run bin/{Debug,Release}/raycer.exe
+- Run bin/{Debug,Release}/valo.exe
 
 ### Boost
 
@@ -33,7 +33,7 @@ Download the sources and run the commands from a corresponding developer console
 - Copy test scene data to the bin/data directory (download link below)
 - Run:
     ```
-    cd bin && ./raycer
+    cd bin && ./valo
     ```
 
 The GLFW library maybe named as *glfw* or *glfw3*. If there is a linking error, try adding or removing the last number.
@@ -54,7 +54,7 @@ Can be compiled with the Apple clang supplied with Xcode 7.0 (OS X 10.11).
 - Copy test scene data to the bin/data directory (download link below)
 - Run:
     ```
-    cd bin && ./raycer
+    cd bin && ./valo
     ```
 - Build app bundle:
     ```

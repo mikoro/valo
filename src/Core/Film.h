@@ -15,7 +15,7 @@
 #include "Core/Common.h"
 #include "Core/Image.h"
 
-namespace Raycer
+namespace Valo
 {
 	class Color;
 	class Tonemapper;

@@ -13,7 +13,7 @@ point is assumed to be in [0, 1]^2
 
 */
 
-namespace Raycer
+namespace Valo
 {
 	class Vector2;
 	class Vector3;

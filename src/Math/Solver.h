@@ -5,7 +5,7 @@
 
 #include <functional>
 
-namespace Raycer
+namespace Valo
 {
 	struct QuadraticResult
 	{

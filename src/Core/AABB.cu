@@ -9,7 +9,7 @@
 #include "Core/AABB.h"
 #include "Core/Ray.h"
 
-using namespace Raycer;
+using namespace Valo;
 
 AABB::AABB()
 {

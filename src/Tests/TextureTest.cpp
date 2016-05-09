@@ -11,7 +11,7 @@
 #include "Core/Scene.h"
 #include "Textures/Texture.h"
 
-using namespace Raycer;
+using namespace Valo;
 
 TEST_CASE("Texture functionality", "[texture]")
 {

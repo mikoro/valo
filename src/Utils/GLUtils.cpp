@@ -11,7 +11,7 @@
 #include "Utils/Log.h"
 #include "Utils/StringUtils.h"
 
-using namespace Raycer;
+using namespace Valo;
 
 GLuint GLUtils::buildProgram(const std::string& vertexShaderPath, const std::string& fragmentShaderPath)
 {

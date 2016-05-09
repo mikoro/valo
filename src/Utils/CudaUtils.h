@@ -9,7 +9,7 @@
 #define cudaError_t int
 #endif
 
-namespace Raycer
+namespace Valo
 {
 	class CudaUtils
 	{

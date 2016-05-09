@@ -7,7 +7,7 @@
 #include "Math/Vector2.h"
 #include "Math/Vector3.h"
 
-using namespace Raycer;
+using namespace Valo;
 
 CUDA_CALLABLE Color CheckerTexture::getColor(const Vector2& texcoord, const Vector3& position) const
 {

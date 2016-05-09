@@ -15,7 +15,7 @@
 #include "Core/Film.h"
 #include "Math/Random.h"
 
-using namespace Raycer;
+using namespace Valo;
 
 template <typename T>
 CudaAlloc<T>::CudaAlloc(bool pinned_) : pinned(pinned_)

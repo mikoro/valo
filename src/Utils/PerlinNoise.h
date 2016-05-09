@@ -16,7 +16,7 @@ getFbmNoise return values between 0.0 - inf
 
 */
 
-namespace Raycer
+namespace Valo
 {
 	class Vector3;
 

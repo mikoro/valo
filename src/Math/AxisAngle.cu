@@ -7,7 +7,7 @@
 #include "Math/Matrix4x4.h"
 #include "Math/MathUtils.h"
 
-using namespace Raycer;
+using namespace Valo;
 
 CUDA_CALLABLE AxisAngle::AxisAngle(const Vector3& axis_, float angle_) : axis(axis_), angle(angle_)
 {

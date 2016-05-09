@@ -13,7 +13,7 @@
 #include "Utils/Log.h"
 #include "Utils/Settings.h"
 
-using namespace Raycer;
+using namespace Valo;
 
 namespace
 {
@@ -163,7 +163,7 @@ void WindowRunner::initialize()
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 #endif
 
-	glfwWindow = glfwCreateWindow(int32_t(settings.window.width), int32_t(settings.window.height), "Raycer", settings.window.fullscreen ? glfwGetPrimaryMonitor() : nullptr, nullptr);
+	glfwWindow = glfwCreateWindow(int32_t(settings.window.width), int32_t(settings.window.height), "Valo", settings.window.fullscreen ? glfwGetPrimaryMonitor() : nullptr, nullptr);
 
 	if (!glfwWindow)
 		throw std::runtime_error("Could not create the window");

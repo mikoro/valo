@@ -5,7 +5,7 @@
 
 #include "Utils/ColorGradient.h"
 
-using namespace Raycer;
+using namespace Valo;
 
 ColorGradient::ColorGradient() : segmentsAlloc(false)
 {

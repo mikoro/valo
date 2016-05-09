@@ -9,7 +9,7 @@
 #include "Math/Mapper.h"
 #include "Math/Random.h"
 
-using namespace Raycer;
+using namespace Valo;
 
 CUDA_CALLABLE Vector3 DiffuseMaterial::getDirection(const Material& material, const Intersection& intersection, Random& random) const
 {

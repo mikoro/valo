@@ -9,7 +9,7 @@
 #include "Math/EulerAngle.h"
 #include "Math/MathUtils.h"
 
-using namespace Raycer;
+using namespace Valo;
 
 CUDA_CALLABLE Matrix4x4::Matrix4x4()
 {
@@ -32,7 +32,7 @@ CUDA_CALLABLE Matrix4x4::Matrix4x4(const Vector4& r, const Vector4& u, const Vec
 	m[3][0] = r.w; m[3][1] = u.w; m[3][2] = f.w; m[3][3] = t.w;
 }
 
-namespace Raycer
+namespace Valo
 {
 	CUDA_CALLABLE Matrix4x4 operator+(const Matrix4x4& m, const Matrix4x4& n)
 	{

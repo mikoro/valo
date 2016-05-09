@@ -5,7 +5,7 @@
 
 #include "Math/MathUtils.h"
 
-using namespace Raycer;
+using namespace Valo;
 
 CUDA_CALLABLE bool MathUtils::almostZero(float value, float threshold)
 {

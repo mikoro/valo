@@ -11,7 +11,7 @@
 #include "Integrators/DirectLightIntegrator.h"
 #include "Materials/Material.h"
 
-namespace Raycer
+namespace Valo
 {
 	class Color;
 	class Scene;

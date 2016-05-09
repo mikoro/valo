@@ -13,7 +13,7 @@
 #include "Textures/Texture.h"
 #include "Math/Random.h"
 
-using namespace Raycer;
+using namespace Valo;
 
 void Triangle::initialize()
 {

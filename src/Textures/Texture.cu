@@ -8,7 +8,7 @@
 #include "Math/Vector3.h"
 #include "Textures/Texture.h"
 
-using namespace Raycer;
+using namespace Valo;
 
 Texture::Texture(TextureType type_) : type(type_)
 {

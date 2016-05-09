@@ -11,7 +11,7 @@
 #include "Math/Random.h"
 #include "Math/Mapper.h"
 
-using namespace Raycer;
+using namespace Valo;
 
 CUDA_CALLABLE Color AmbientOcclusionIntegrator::calculateLight(const Scene& scene, const Intersection& intersection, const Ray& ray, Random& random) const
 {

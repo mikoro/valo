@@ -21,7 +21,7 @@
 #include "Utils/Settings.h"
 #include "Utils/StringUtils.h"
 
-using namespace Raycer;
+using namespace Valo;
 
 InfoPanel::~InfoPanel()
 {

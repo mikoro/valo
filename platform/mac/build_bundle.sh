@@ -1,16 +1,16 @@
 #!/bin/sh
 
-rm -rf Raycer.app
+rm -rf Valo.app
 
-mkdir -p Raycer.app/Contents/MacOS
-mkdir -p Raycer.app/Contents/Resources
-mkdir -p Raycer.app/Contents/Libs
+mkdir -p Valo.app/Contents/MacOS
+mkdir -p Valo.app/Contents/Resources
+mkdir -p Valo.app/Contents/Libs
 
-cp platform/mac/Info.plist Raycer.app/Contents
-cp -R data Raycer.app/Contents/Resources
-cp misc/icons/raycer.icns Raycer.app/Contents/Resources
-cp misc/settings.ini Raycer.app/Contents/Resources
-cp bin/raycer Raycer.app/Contents/MacOS
+cp platform/mac/Info.plist Valo.app/Contents
+cp -R data Valo.app/Contents/Resources
+cp misc/icons/valo.icns Valo.app/Contents/Resources
+cp misc/settings.ini Valo.app/Contents/Resources
+cp bin/valo Valo.app/Contents/MacOS
 
-platform/mac/dylibbundler -od -b -x ./Raycer.app/Contents/MacOS/raycer -d ./Raycer.app/Contents/Libs/ -p @executable_path/../Libs/
-chmod a+x Raycer.app/Contents/Libs/*
+platform/mac/dylibbundler -od -b -x ./Valo.app/Contents/MacOS/valo -d ./Valo.app/Contents/Libs/ -p @executable_path/../Libs/
+chmod a+x Valo.app/Contents/Libs/*

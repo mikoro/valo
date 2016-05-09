@@ -19,7 +19,7 @@ Origin (0, 0) is at the bottom left corner.
 
 */
 
-namespace Raycer
+namespace Valo
 {
 	enum class RendererType;
 	class Filter;

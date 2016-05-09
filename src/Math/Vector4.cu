@@ -9,7 +9,7 @@
 #include "Math/Vector3.h"
 #include "Math/MathUtils.h"
 
-using namespace Raycer;
+using namespace Valo;
 
 CUDA_CALLABLE Vector4::Vector4(float x_, float y_, float z_, float w_) : x(x_), y(y_), z(z_), w(w_)
 {
@@ -19,7 +19,7 @@ CUDA_CALLABLE Vector4::Vector4(const Vector3& v, float w_) : x(v.x), y(v.y), z(v
 {
 }
 
-namespace Raycer
+namespace Valo
 {
 	CUDA_CALLABLE Vector4 operator+(const Vector4& v, const Vector4& w)
 	{

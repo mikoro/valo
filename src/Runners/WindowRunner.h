@@ -11,7 +11,7 @@
 
 struct GLFWwindow;
 
-namespace Raycer
+namespace Valo
 {
 	struct MouseInfo
 	{

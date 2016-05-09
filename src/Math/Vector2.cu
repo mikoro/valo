@@ -8,13 +8,13 @@
 #include "Math/Vector2.h"
 #include "Math/MathUtils.h"
 
-using namespace Raycer;
+using namespace Valo;
 
 CUDA_CALLABLE Vector2::Vector2(float x_, float y_) : x(x_), y(y_)
 {
 }
 
-namespace Raycer
+namespace Valo
 {
 	CUDA_CALLABLE Vector2 operator+(const Vector2& v, const Vector2& w)
 	{

@@ -11,7 +11,7 @@
 #include "Filters/Filter.h"
 #include "Math/Color.h"
 
-using namespace Raycer;
+using namespace Valo;
 
 TEST_CASE("Image save/load functionality", "[image]")
 {

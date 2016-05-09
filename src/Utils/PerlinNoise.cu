@@ -6,7 +6,7 @@
 #include "Utils/PerlinNoise.h"
 #include "Math/Vector3.h"
 
-using namespace Raycer;
+using namespace Valo;
 
 PerlinNoise::PerlinNoise() : permutationsAlloc(false)
 {

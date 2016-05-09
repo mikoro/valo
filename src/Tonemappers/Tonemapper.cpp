@@ -6,7 +6,7 @@
 #include "Tonemappers/Tonemapper.h"
 #include "Core/Image.h"
 
-using namespace Raycer;
+using namespace Valo;
 
 void Tonemapper::apply(const Image& inputImage, Image& outputImage)
 {

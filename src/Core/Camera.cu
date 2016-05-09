@@ -17,7 +17,7 @@
 #include "Runners/WindowRunner.h"
 #include "Utils/Log.h"
 
-using namespace Raycer;
+using namespace Valo;
 
 void Camera::initialize()
 {

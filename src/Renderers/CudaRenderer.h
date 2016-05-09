@@ -5,7 +5,7 @@
 
 #include "Utils/CudaAlloc.h"
 
-namespace Raycer
+namespace Valo
 {
 	struct RenderJob;
 	class Scene;

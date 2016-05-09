@@ -10,7 +10,7 @@
 #include "Math/Color.h"
 #include "Math/ONB.h"
 
-namespace Raycer
+namespace Valo
 {
 	class Intersection
 	{

@@ -10,7 +10,7 @@
 #include "Math/Vector3.h"
 #include "Math/MathUtils.h"
 
-using namespace Raycer;
+using namespace Valo;
 
 TEST_CASE("Vector3 functionality", "[vector3]")
 {

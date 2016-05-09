@@ -11,7 +11,7 @@
 #include "Math/Vector3.h"
 #include "Math/EulerAngle.h"
 
-using namespace Raycer;
+using namespace Valo;
 
 TEST_CASE("Matrix4x4 functionality", "[matrix4x4]")
 {

@@ -5,7 +5,7 @@
 
 #include "Core/Common.h"
 
-namespace Raycer
+namespace Valo
 {
 	class Color;
 	class Scene;

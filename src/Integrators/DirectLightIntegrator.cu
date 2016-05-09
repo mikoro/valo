@@ -10,7 +10,7 @@
 #include "Materials/Material.h"
 #include "Math/Random.h"
 
-using namespace Raycer;
+using namespace Valo;
 
 CUDA_CALLABLE Color DirectLightIntegrator::calculateLight(const Scene& scene, const Intersection& intersection, const Ray& ray, Random& random) const
 {

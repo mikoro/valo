@@ -7,7 +7,7 @@
 
 #include "Core/AABB.h"
 
-namespace Raycer
+namespace Valo
 {
 	class Triangle;
 

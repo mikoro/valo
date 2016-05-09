@@ -10,7 +10,7 @@
 #include "Math/Solver.h"
 #include "Math/MathUtils.h"
 
-using namespace Raycer;
+using namespace Valo;
 
 TEST_CASE("Solver functionality", "[solver]")
 {

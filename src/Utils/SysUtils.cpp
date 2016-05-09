@@ -19,7 +19,7 @@
 #include "App.h"
 #include "Utils/Log.h"
 
-using namespace Raycer;
+using namespace Valo;
 namespace bf = boost::filesystem;
 
 void SysUtils::openFileExternally(const std::string& fileName)

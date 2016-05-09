@@ -13,7 +13,7 @@
 #include "Filters/MitchellFilter.h"
 #include "Filters/LanczosSincFilter.h"
 
-namespace Raycer
+namespace Valo
 {
 	class Vector2;
 

@@ -13,7 +13,7 @@
 #undef ERROR
 #endif
 
-namespace Raycer
+namespace Valo
 {
 	enum class LogMessageLevel { DEBUG, INFO, WARNING, ERROR };
 

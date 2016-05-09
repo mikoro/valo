@@ -18,7 +18,7 @@
 #include "Utils/Settings.h"
 #include "App.h"
 
-using namespace Raycer;
+using namespace Valo;
 
 CudaRenderer::CudaRenderer() : sceneAlloc(true), filmAlloc(true), randomStatesAlloc(false)
 {

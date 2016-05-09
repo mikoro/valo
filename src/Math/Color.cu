@@ -7,7 +7,7 @@
 #include "Math/MathUtils.h"
 #include "Math/Vector3.h"
 
-using namespace Raycer;
+using namespace Valo;
 
 CUDA_CALLABLE Color::Color(float r_, float g_, float b_, float a_) : r(r_), g(g_), b(b_), a(a_)
 {
@@ -25,7 +25,7 @@ CUDA_CALLABLE Color::Color(int32_t r_, int32_t g_, int32_t b_, int32_t a_)
 	a = a_ * inv255;
 }
 
-namespace Raycer
+namespace Valo
 {
 	CUDA_CALLABLE Color operator+(const Color& c1, const Color& c2)
 	{

@@ -17,7 +17,7 @@
 
 #include "BVH/BVH.h"
 
-using namespace Raycer;
+using namespace Valo;
 
 void BVH::build(std::vector<Triangle>& triangles)
 {

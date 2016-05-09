@@ -3,7 +3,7 @@
 
 #pragma once
 
-namespace Raycer
+namespace Valo
 {
 	class Log;
 	class Settings;

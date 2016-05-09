@@ -5,7 +5,7 @@
 
 #include "Filters/GaussianFilter.h"
 
-using namespace Raycer;
+using namespace Valo;
 
 namespace
 {

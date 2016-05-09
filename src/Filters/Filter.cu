@@ -6,7 +6,7 @@
 #include "Filters/Filter.h"
 #include "Math/Vector2.h"
 
-using namespace Raycer;
+using namespace Valo;
 
 Filter::Filter(FilterType type_)
 {

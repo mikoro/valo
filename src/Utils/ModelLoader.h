@@ -21,7 +21,7 @@ Restrictions:
 
 */
 
-namespace Raycer
+namespace Valo
 {
 	struct ModelLoaderInfo
 	{

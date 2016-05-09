@@ -7,7 +7,7 @@
 
 #include "Utils/StringUtils.h"
 
-using namespace Raycer;
+using namespace Valo;
 
 bool StringUtils::endsWith(const std::string& input, const std::string& end)
 {

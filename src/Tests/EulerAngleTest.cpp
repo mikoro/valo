@@ -10,7 +10,7 @@
 #include "Math/EulerAngle.h"
 #include "Math/Vector3.h"
 
-using namespace Raycer;
+using namespace Valo;
 
 TEST_CASE("EulerAngle functionality", "[eulerangle]")
 {

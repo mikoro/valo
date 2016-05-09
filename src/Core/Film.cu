@@ -20,7 +20,7 @@
 #include "Renderers/Renderer.h"
 #include "Utils/SysUtils.h"
 
-using namespace Raycer;
+using namespace Valo;
 
 Film::Film(bool windowed_) : windowed(windowed_)
 {

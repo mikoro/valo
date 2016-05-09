@@ -13,7 +13,7 @@
 #include "Core/Ray.h"
 #include "Core/Intersection.h"
 
-using namespace Raycer;
+using namespace Valo;
 
 namespace
 {

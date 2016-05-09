@@ -3,22 +3,22 @@
 <plist version="1.0">
 <dict>
 	<key>CFBundleName</key>
-	<string>Raycer</string>
+	<string>Valo</string>
 	<key>CFBundleDisplayName</key>
-	<string>Raycer</string>
+	<string>Valo</string>
 	<key>CFBundleIdentifier</key>
-	<string>com.raycer.Raycer</string>
+	<string>com.valo.Valo</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.0.0</string>
+	<string>2.0.0</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleExecutable</key>
-	<string>raycer</string>
+	<string>valo</string>
 	<key>CFBundleIconFile</key>
-	<string>raycer.icns</string>
+	<string>valo.icns</string>
 	<key>NSHumanReadableCopyright</key>
-	<string>Copyright © 2015 Mikko Ronkainen</string>
+	<string>Copyright © 2016 Mikko Ronkainen</string>
 </dict>
 </plist>

@@ -7,7 +7,7 @@
 #include "Math/Color.h"
 #include "Tonemappers/PassthroughTonemapper.h"
 
-using namespace Raycer;
+using namespace Valo;
 
 void PassthroughTonemapper::apply(const Image& inputImage, Image& outputImage)
 {

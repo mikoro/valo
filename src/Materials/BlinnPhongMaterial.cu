@@ -11,7 +11,7 @@
 #include "Textures/Texture.h"
 #include "Math/Random.h"
 
-using namespace Raycer;
+using namespace Valo;
 
 CUDA_CALLABLE Vector3 BlinnPhongMaterial::getDirection(const Material& material, const Intersection& intersection, Random& random) const
 {
