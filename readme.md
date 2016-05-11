@@ -19,7 +19,9 @@ Download the latest version:
 | [valo-0.1.0-win-cuda.zip](https://github.com/mikoro/valo/releases/download/v0.1.0/valo-0.1.0-win-cuda.zip)   | | |
 | [valo-0.1.0-win-intel.zip](https://github.com/mikoro/valo/releases/download/v0.1.0/valo-0.1.0-win-intel.zip) | | |
 
-The CUDA version runs on NVIDIA GTX 900 Series or newer and the Intel version runs on Ivy Bridge processors or newer.
+You will also need the [Visual C++ Redistributable for Visual Studio 2015](https://www.microsoft.com/en-us/download/details.aspx?id=48145).
+
+The CUDA version runs on NVIDIA GTX 900 Series or newer and the Intel-specific version runs on Ivy Bridge processors or newer.
 
 ## Features
 
