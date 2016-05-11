@@ -3,6 +3,8 @@
 
 #include "Precompiled.h"
 
+#include <math.h>
+
 #include "Math/Color.h"
 #include "Math/MathUtils.h"
 #include "Math/Vector3.h"

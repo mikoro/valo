@@ -3,12 +3,9 @@
 
 #include "Precompiled.h"
 
-#include "tinyformat/tinyformat.h"
-
 #include "Core/Film.h"
 #include "Core/Scene.h"
 #include "Renderers/Renderer.h"
-#include "Utils/Settings.h"
 #include "Utils/Settings.h"
 #include "App.h"
 

@@ -8,6 +8,7 @@
 #ifdef USE_CUDA
 #include <cuda_gl_interop.h>
 #include <device_launch_parameters.h>
+#include "Utils/CudaUtils.h"
 #endif
 
 #include "Core/Common.h"
@@ -15,7 +16,6 @@
 #include "Core/Film.h"
 #include "Tonemappers/Tonemapper.h"
 #include "Utils/Log.h"
-#include "Utils/CudaUtils.h"
 #include "Utils/GLUtils.h"
 #include "Renderers/Renderer.h"
 #include "Utils/SysUtils.h"

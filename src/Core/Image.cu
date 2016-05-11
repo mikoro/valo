@@ -5,6 +5,7 @@
 
 #ifdef USE_CUDA
 #include <device_launch_parameters.h>
+#include "Utils/CudaUtils.h"
 #endif
 
 #include "tinyformat/tinyformat.h"
@@ -17,7 +18,6 @@
 #include "App.h"
 #include "Utils/Log.h"
 #include "Utils/StringUtils.h"
-#include "Utils/CudaUtils.h"
 #include "Math/MathUtils.h"
 #include "Filters/Filter.h"
 #include "Renderers/Renderer.h"

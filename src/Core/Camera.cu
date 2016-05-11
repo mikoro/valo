@@ -9,7 +9,6 @@
 
 #include "App.h"
 #include "Core/Camera.h"
-#include "Core/Intersection.h"
 #include "Core/Ray.h"
 #include "Math/MathUtils.h"
 #include "Math/Vector2.h"

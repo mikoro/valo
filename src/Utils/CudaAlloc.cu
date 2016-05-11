@@ -5,11 +5,11 @@
 
 #ifdef USE_CUDA
 #include <cuda_runtime.h>
+#include "Utils/CudaUtils.h"
 #endif
 
 #include "Core/Common.h"
 #include "Utils/CudaAlloc.h"
-#include "Utils/CudaUtils.h"
 #include "Utils/ColorGradient.h"
 #include "Core/Scene.h"
 #include "Core/Film.h"
