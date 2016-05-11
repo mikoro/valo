@@ -277,10 +277,8 @@ void WindowRunnerRenderState::update(float timeStep)
 
 		if (windowRunner.keyWasPressed(GLFW_KEY_F4))
 		{
-			film.normalize(renderer.type);
-			film.tonemap(scene.tonemapper, renderer.type);
-			film.getTonemappedImage().download();
-			film.getTonemappedImage().save("image.hdr");
+			film.getCumulativeImage().download();
+			film.save("film.bin");
 		}
 	}
 

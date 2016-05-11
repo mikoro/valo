@@ -128,6 +128,7 @@ int ConsoleRunner::run()
 
 	film.normalize(renderer.type);
 	film.tonemap(scene.tonemapper, renderer.type);
+	film.getCumulativeImage().download();
 	film.getTonemappedImage().download();
 
 	log.logInfo("Total elapsed time: %s", totalElapsedTimer.getElapsed().getString(true));
