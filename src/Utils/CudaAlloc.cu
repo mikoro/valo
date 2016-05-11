@@ -152,19 +152,22 @@ void CudaAlloc<T>::release()
 #endif
 }
 
-template class CudaAlloc<uint32_t>;
-template class CudaAlloc<Scene>;
-template class CudaAlloc<Film>;
-template class CudaAlloc<Image>;
-template class CudaAlloc<Texture>;
-template class CudaAlloc<Material>;
-template class CudaAlloc<Triangle>;
-template class CudaAlloc<BVHNode>;
-template class CudaAlloc<BVHNodeSOA<4>>;
-template class CudaAlloc<BVHNodeSOA<8>>;
-template class CudaAlloc<BVHNodeSOA<16>>;
-template class CudaAlloc<TriangleSOA<4>>;
-template class CudaAlloc<TriangleSOA<8>>;
-template class CudaAlloc<TriangleSOA<16>>;
-template class CudaAlloc<RandomGeneratorState>;
-template class CudaAlloc<ColorGradientSegment>;
+namespace Valo
+{
+	template class CudaAlloc<uint32_t>;
+	template class CudaAlloc<Scene>;
+	template class CudaAlloc<Film>;
+	template class CudaAlloc<Image>;
+	template class CudaAlloc<Texture>;
+	template class CudaAlloc<Material>;
+	template class CudaAlloc<Triangle>;
+	template class CudaAlloc<BVHNode>;
+	template class CudaAlloc<BVHNodeSOA<4>>;
+	template class CudaAlloc<BVHNodeSOA<8>>;
+	template class CudaAlloc<BVHNodeSOA<16>>;
+	template class CudaAlloc<TriangleSOA<4>>;
+	template class CudaAlloc<TriangleSOA<8>>;
+	template class CudaAlloc<TriangleSOA<16>>;
+	template class CudaAlloc<RandomGeneratorState>;
+	template class CudaAlloc<ColorGradientSegment>;
+}
