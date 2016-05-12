@@ -24,7 +24,6 @@ ifneq "$(findstring darwin,$(UNAME))" ""
 	LDFLAGS += -L/opt/local/lib -L/opt/local/lib/libomp -framework Cocoa -framework OpenGL -framework IOKit -framework CoreVideo -lstdc++ -lglfw -lboost_system-mt -lboost_filesystem-mt -lboost_program_options-mt
 endif
 
-
 ifdef CUDA
 	CXX = nvcc
 	CFLAGS += -DUSE_CUDA

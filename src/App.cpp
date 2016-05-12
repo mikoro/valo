@@ -20,6 +20,10 @@
 #include <cuda_runtime.h>
 #endif
 
+#ifdef __APPLE__
+#include <CoreFoundation/CoreFoundation.h>
+#endif
+
 #include "App.h"
 #include "Core/Common.h"
 #include "Utils/Settings.h"
@@ -70,6 +74,39 @@ void signalHandler(int signal)
 }
 #endif
 
+#ifdef __APPLE__
+// change directory to Resources when run as an app bundle
+void changeDirectory()
+{
+	CFBundleRef bundle = CFBundleGetMainBundle();
+
+	if (!bundle)
+		return;
+
+	CFURLRef resourcesURL = CFBundleCopyResourcesDirectoryURL(bundle);
+	CFStringRef last = CFURLCopyLastPathComponent(resourcesURL);
+
+	if (CFStringCompare(CFSTR("Resources"), last, 0) != kCFCompareEqualTo)
+	{
+		CFRelease(last);
+		CFRelease(resourcesURL);
+		return;
+	}
+
+	CFRelease(last);
+	char resourcesPath[1024];
+
+	if (!CFURLGetFileSystemRepresentation(resourcesURL, true, (UInt8*)resourcesPath, 1024))
+	{
+		CFRelease(resourcesURL);
+		return;
+	}
+
+	CFRelease(resourcesURL);
+	chdir(resourcesPath);
+}
+#endif
+
 int App::run(int argc, char** argv)
 {
 #ifdef _WIN32
@@ -77,6 +114,10 @@ int App::run(int argc, char** argv)
 #else
 	signal(SIGINT, signalHandler);
 	signal(SIGTERM, signalHandler);
+#endif
+
+#ifdef __APPLE__
+	changeDirectory();
 #endif
 
 	Log& log = getLog();

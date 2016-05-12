@@ -15,6 +15,10 @@
 #define PARALLEL_SORT __gnu_parallel::sort
 #endif
 
+#ifdef __APPLE__
+#define PARALLEL_SORT std::sort
+#endif
+
 #include "BVH/BVH.h"
 
 using namespace Valo;
