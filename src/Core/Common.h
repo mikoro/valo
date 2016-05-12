@@ -6,6 +6,12 @@
 #define VALO_VERSION "0.1.0"
 #define CACHE_LINE_SIZE 64
 
+#ifdef __INTEL_COMPILER
+#define DEFAULT_BVH_TYPE BVHType::BVH4
+#else
+#define DEFAULT_BVH_TYPE BVHType::BVH2
+#endif
+
 #ifdef _MSC_VER
 #define ALIGN(x) __declspec(align(x))
 #elif __GNUC__

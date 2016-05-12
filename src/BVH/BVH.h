@@ -29,7 +29,7 @@ namespace Valo
 
 		static BVHSplitOutput calculateSplit(std::vector<BVHBuildTriangle>& buildTriangles, std::vector<BVHSplitCache>& cache, uint32_t start, uint32_t end);
 
-		BVHType type = BVHType::BVH2;
+		BVHType type = DEFAULT_BVH_TYPE;
 
 		BVH2 bvh2;
 		BVH4 bvh4;

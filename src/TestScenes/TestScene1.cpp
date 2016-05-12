@@ -14,8 +14,6 @@ Scene TestScene::create1()
 {
 	Scene scene;
 
-	scene.bvh.type = BVHType::BVH2;
-
 	scene.integrator.type = IntegratorType::PATH;
 	scene.integrator.aoIntegrator.maxDistance = 0.5f;
 

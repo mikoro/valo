@@ -14,8 +14,6 @@ Scene TestScene::create7()
 {
 	Scene scene;
 
-	scene.bvh.type = BVHType::BVH2;
-
 	scene.integrator.type = IntegratorType::AMBIENT_OCCLUSION;
 	scene.integrator.aoIntegrator.maxDistance = 0.5f;
 	scene.renderer.filter.type = FilterType::MITCHELL;

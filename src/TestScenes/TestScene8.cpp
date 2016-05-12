@@ -16,8 +16,6 @@ Scene TestScene::create8()
 
 	Color skyColor(182, 126, 91);
 
-	scene.bvh.type = BVHType::BVH4;
-
 	scene.integrator.type = IntegratorType::DOT;
 
 	scene.camera.position = Vector3(8.92f, 0.68f, -2.02f);
