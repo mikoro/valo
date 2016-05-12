@@ -19,8 +19,8 @@ namespace Valo
 
 		CUDA_CALLABLE Color calculateLight(const Scene& scene, const Intersection& intersection, const Ray& ray, Random& random) const;
 
-		uint32_t minPathLength = 3;
-		uint32_t maxPathLength = 10;
-		float terminationProbability = 0.2f;
+		uint32_t minPathLength = 2;
+		uint32_t maxPathLength = 6;
+		float terminationProbability = 0.4f;
 	};
 }
