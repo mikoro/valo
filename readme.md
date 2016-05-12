@@ -13,15 +13,13 @@ C++11/OpenMP/CUDA physically based renderer with an interactive preview mode.
 
 Download the latest version:
 
-| Windows 64-bit                                                                                               | Mac OS X (10.9+)                                                                                       | Linux 64-bit (Ubuntu 15.10)                                                                                      |
+| Windows 64-bit                                                                                               | Mac OS X (10.9+)                                                                                       | Linux 64-bit (Ubuntu 16.04 LTS)                                                                                  |
 |--------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------|
-| [valo-0.1.0-win.zip](https://github.com/mikoro/valo/releases/download/v0.1.0/valo-0.1.0-win.zip)             | N/A | N/A |
-| [valo-0.1.0-win-cuda.zip](https://github.com/mikoro/valo/releases/download/v0.1.0/valo-0.1.0-win-cuda.zip)   | | |
-| [valo-0.1.0-win-intel.zip](https://github.com/mikoro/valo/releases/download/v0.1.0/valo-0.1.0-win-intel.zip) | | |
+| [valo-0.1.0-win.zip](https://github.com/mikoro/valo/releases/download/v0.1.0/valo-0.1.0-win.zip)             | [valo-0.1.0-mac.zip](https://github.com/mikoro/valo/releases/download/v0.1.0/valo-0.1.0-mac.zip)       | [valo-0.1.0-ubuntu.zip](https://github.com/mikoro/valo/releases/download/v0.1.0/valo-0.1.0-ubuntu.zip)           |
 
-You will also need the [Visual C++ Redistributable for Visual Studio 2015](https://www.microsoft.com/en-us/download/details.aspx?id=48145).
+For windows, you will also need the [Visual C++ Redistributable for Visual Studio 2015](https://www.microsoft.com/en-us/download/details.aspx?id=48145).
 
-The CUDA version runs on NVIDIA GTX 900 Series or newer and the Intel-specific version runs on Ivy Bridge processors or newer.
+The CUDA version runs on NVIDIA GTX 900 Series or newer.
 
 ## Features
 
@@ -89,8 +87,8 @@ For the interactive mode:
 
 Websites where the test scene data was sourced from:
 
-[Blend Swap](http://www.blendswap.com/) (user Jay-Artist)
-[McGuire Graphics Data](http://graphics.cs.williams.edu/data/meshes.xml)
+- [Blend Swap](http://www.blendswap.com/) (user Jay-Artist)
+- [McGuire Graphics Data](http://graphics.cs.williams.edu/data/meshes.xml)
 
 ## Build
 

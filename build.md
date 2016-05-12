@@ -30,7 +30,6 @@ Download the sources and run the commands from a corresponding developer console
     export CXX=<compiler>
     make -j4
     ```
-- Copy test scene data to the bin/data directory (download link below)
 - Run:
     ```
     cd bin && ./valo
@@ -51,7 +50,6 @@ Can be compiled with the Apple clang supplied with Xcode 7.0 (OS X 10.11).
     ```
     make -j4
     ```
-- Copy test scene data to the bin/data directory (download link below)
 - Run:
     ```
     cd bin && ./valo
@@ -60,8 +58,6 @@ Can be compiled with the Apple clang supplied with Xcode 7.0 (OS X 10.11).
     ```
     platform/mac/build_bundle.sh
     ```
-
-See remarks of the linux build.
 
 ## Framework versions
 
