@@ -3,8 +3,6 @@
 
 #include "Precompiled.h"
 
-#include <math.h>
-
 #include "Math/Color.h"
 #include "Math/MathUtils.h"
 #include "Math/Vector3.h"
@@ -157,7 +155,11 @@ CUDA_CALLABLE bool Color::isClamped() const
 
 CUDA_CALLABLE bool Color::isNan() const
 {
+#ifdef USE_CUDA
 	return (isnan(r) || isnan(g) || isnan(b) || isnan(a));
+#else
+	return (std::isnan(r) || std::isnan(g) || std::isnan(b) || std::isnan(a));
+#endif
 }
 
 CUDA_CALLABLE bool Color::isNegative() const

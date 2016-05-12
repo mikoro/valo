@@ -5,7 +5,7 @@ SOURCES := $(call rwildcard, src/, *.cpp)
 OBJS := $(subst src/,build/,$(SOURCES:.cpp=.o))
 CU_SOURCES := $(call rwildcard, src/, *.cu)
 CU_OBJS := $(subst src/,build/,$(CU_SOURCES:.cu=.cu.o))
-CFLAGS = -isystem include -Isrc -std=c++14 -Wpedantic -Wall -Wextra -Werror -Ofast -fopenmp -march=native -x c++
+CFLAGS = -isystem include -Isrc -std=c++14 -Wpedantic -Wall -Wextra -Werror -Ofast -fopenmp -x c++
 LDFLAGS = 
 TARGET = valo
 
@@ -22,6 +22,10 @@ endif
 ifneq "$(findstring darwin,$(UNAME))" ""
 	CFLAGS += -isystem /opt/local/include -isystem /opt/local/include/libomp -mmacosx-version-min=10.9
 	LDFLAGS += -L/opt/local/lib -L/opt/local/lib/libomp -framework Cocoa -framework OpenGL -framework IOKit -framework CoreVideo -lstdc++ -lglfw -lboost_system-mt -lboost_filesystem-mt -lboost_program_options-mt
+endif
+
+ifdef NATIVE
+	CFLAGS += -march=native
 endif
 
 ifdef CUDA
