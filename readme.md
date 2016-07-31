@@ -2,10 +2,10 @@
 
 C++11/OpenMP/CUDA physically based renderer with an interactive preview mode.
 
-[Image gallery](https://www.flickr.com/photos/136293057@N06/albums/72157665827123423)
-
 * Author: [Mikko Ronkainen](http://mikkoronkainen.com)
 * Website: [github.com/mikoro/valo](https://github.com/mikoro/valo)
+
+[Image gallery](https://www.flickr.com/photos/136293057@N06/albums/72157665827123423) / [Youtube video](https://youtu.be/rqemjBD6Lj4)
 
 ![Screenshot](http://mikoro.github.io/images/valo/readme-screenshot.jpg "Screenshot")
 
